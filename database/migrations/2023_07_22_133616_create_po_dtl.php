@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('po_dtl', function (Blueprint $table) {
+            $table->id();
+            $table->string('po_num', 20)->index();
+            $table->unsignedInteger('product_id')->index();
+            $table->unsignedInteger('uom');
+            $table->integer('requested_qty');
+            $table->decimal('unit_amount', $precision = 12, $scale = 2)->default(0);
+            $table->decimal('discount', $precision = 12, $scale = 2)->default(0);
+            $table->decimal('total_amount', $precision = 12, $scale = 2)->default(0);
+            $table->string('currency', 3)->nullable(); 
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('po_dtl');
+    }
+};

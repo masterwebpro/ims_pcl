@@ -1,0 +1,56 @@
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 36px !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 36px !important;
+}
+
+.selected {
+    background-color: #0ab39c;
+}
+
+.disabled {
+    background-color: var(--vz-input-disabled-bg) !important;
+    opacity: 1;
+}
+
+.modal-transparent {
+    background-color: transparent !important;
+    border: transparent !important;
+}
+
+.modal-transparent h5 {
+    color: #00F !important;
+}
+
+.open, .allocated {
+    color: #f1963b;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
+.on-process, .hot-a {
+    color: #3577f1;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
+.submitted, .hot-b {
+    color: #405189;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
+.doc-def {
+    color: #f06548;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
+.posted {
+    color: #0ab39c;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
