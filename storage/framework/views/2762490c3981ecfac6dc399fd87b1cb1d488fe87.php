@@ -1,18 +1,17 @@
-@extends('layouts.master')
-@section('title') Purchase Order @endsection
-@section('css')
+<?php $__env->startSection('title'); ?> Purchase Order <?php $__env->stopSection(); ?>
+<?php $__env->startSection('css'); ?>
 <!--datatable css-->
-<link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="<?php echo e(URL::asset('assets/css/dataTables.bootstrap5.min.css')); ?>" rel="stylesheet" type="text/css" />
 <!--datatable responsive css-->
-<link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="<?php echo e(URL::asset('assets/css/responsive.bootstrap.min.css')); ?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo e(URL::asset('assets/css/buttons.dataTables.min.css')); ?>" rel="stylesheet" type="text/css" />
 
-@endsection
-@section('content')
-@component('components.breadcrumb')
-@slot('li_1') Inbound @endslot
-@slot('title') Purchase Order @endslot
-@endcomponent
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+<?php $__env->startComponent('components.breadcrumb'); ?>
+<?php $__env->slot('li_1'); ?> Inbound <?php $__env->endSlot(); ?>
+<?php $__env->slot('title'); ?> Purchase Order <?php $__env->endSlot(); ?>
+<?php echo $__env->renderComponent(); ?>
 
 
 <div class="alert alert-danger d-none" id="error-handling" role="alert">
@@ -29,12 +28,12 @@
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                         <button type="button" data-status="open" class="btn btn-success btn-label rounded-pill submit-po"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
                         <button type="button" data-status="posted" class="btn btn-info btn-label rounded-pill submit-po"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
-                        <a  href="{{ URL::to('po') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
+                        <a  href="<?php echo e(URL::to('po')); ?>" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
                 </div>
             </div><!-- end card header -->
             <form  method="POST" name="form-po" action="javascript:void(0);" id="form-po" class="row g-3 needs-validation" novalidate>
-            @csrf
+            <?php echo csrf_field(); ?>
             <div class="card-body">
                 <div class="form-container">
                     <div class="row">
@@ -142,19 +141,19 @@
                                                 <tr>
                                                     <th scope="row">Sub Total</th>
                                                     <td style="width:200px;">
-                                                        <input type="text" class="form-control bg-light border-0 text-end" id="cart-subtotal" value="{{ number_format($subtotal,2) }}" placeholder="$0.00" readonly />
+                                                        <input type="text" class="form-control bg-light border-0 text-end" id="cart-subtotal" value="<?php echo e(number_format($subtotal,2)); ?>" placeholder="$0.00" readonly />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">Discount</th>
                                                     <td>
-                                                        <input type="text" class="form-control bg-light border-0 text-end" id="cart-discount"  value="{{ number_format(($total_discount * -1),2) }}" placeholder="$0.00" readonly />
+                                                        <input type="text" class="form-control bg-light border-0 text-end" id="cart-discount"  value="<?php echo e(number_format(($total_discount * -1),2)); ?>" placeholder="$0.00" readonly />
                                                     </td>
                                                 </tr>
                                                 <tr class="border-top border-top-dashed">
                                                     <th scope="row">Total Amount</th>
                                                     <td>
-                                                        <input type="text" class="form-control bg-light border-0 text-end" id="cart-total"  value="{{ number_format(($subtotal - $total_discount),2) }}" placeholder="$0.00" readonly />
+                                                        <input type="text" class="form-control bg-light border-0 text-end" id="cart-total"  value="<?php echo e(number_format(($subtotal - $total_discount),2)); ?>" placeholder="$0.00" readonly />
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -207,19 +206,21 @@
     </div>
 </div>
 
-	@endsection
-@section('script')
+	<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
 
-<script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
-<script src="{{ URL::asset('assets/libs/cleave.js/cleave.js.min.js') }}"></script>
-<script src="{{ URL::asset('assets/libs/masks/jquery.mask.min.js') }}"></script>
-<script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
+<script src="<?php echo e(URL::asset('assets/js/jquery-3.6.0.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('assets/libs/cleave.js/cleave.js.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('assets/libs/masks/jquery.mask.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('assets/libs/select2/select2.min.js')); ?>"></script>
 
-<script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js') }}"></script>
-<script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
+<script src="<?php echo e(URL::asset('assets/js/datatables/jquery.dataTables.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('assets/js/datatables/dataTables.responsive.min.js')); ?>"></script>
 
-<script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-<script src="{{ URL::asset('/assets/js/po/po.js') }}"></script>
+<script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('/assets/js/po/po.js')); ?>"></script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\MAMP\htdocs\ims\resources\views/po/create.blade.php ENDPATH**/ ?>

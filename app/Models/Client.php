@@ -10,4 +10,6 @@ class Client extends Model
     use HasFactory;
 
     protected $table = 'client_list';
+    protected $primaryKey = 'id';
+    protected $guarded = ['id'];
 }

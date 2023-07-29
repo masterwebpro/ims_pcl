@@ -10,4 +10,6 @@ class UOM extends Model
     use HasFactory;
 
     protected $table = 'uom';
+    protected $primaryKey = 'uom_id';
+    protected $guarded = ['uom_id'];
 }

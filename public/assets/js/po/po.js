@@ -25,7 +25,7 @@ $(document).on('click', '#find-items', function() {
    if ($.fn.DataTable.isDataTable("#show-items-list")) {
         $('#show-items-list').DataTable().clear().destroy();
     }
-    new DataTable("#show-items-list",{ 
+    new DataTable("#show-items-list",{
         order: [[1, 'desc']],
         paging: true,
         ajax: BASEURL+"settings/products" ,
@@ -42,16 +42,16 @@ $(document).on('click', '#find-items', function() {
 $(document).on('click', '#add-product', function() {
     var table = $('#show-items-list').DataTable();
     var data = ( table.rows('.selected').data()[0] );
-   
+
     if (table.rows('.selected').data().length > 0) {
         //get UOM list
-        
+
         var uom = getUom();
-       
+
         var btn = '<div class="text-center">';
         btn += '<a href="javascript:void(0)" class="text-danger"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
         btn += '</div>'
-        
+
         $('#product-list tbody').append('<tr id="product_'+data.product_id+'"> \
         <td class="text-start"> \
         <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
@@ -77,7 +77,7 @@ $(document).on('click', '#add-product', function() {
         </tr>');
     }
 
-    $('#show-items').modal('hide'); 
+    $('#show-items').modal('hide');
 
 });
 
@@ -115,13 +115,13 @@ $(document).on('click', '.submit-po', function (e) {
                         }, 300);
                     }
                     toastr.success(data.message);
-                
+
                 } else {
                     toastr.error(data.message,'Error on saving');
                 }
             } else {
                 $('#error-handling').removeClass('d-none');
-                
+
                 $.each(data.error, function(prefix, val) {
                     $('#error-handling ul').append('<li>'+val+'</li>');
                 });
@@ -130,7 +130,7 @@ $(document).on('click', '.submit-po', function (e) {
         complete: function() {
 			$('#preloading').modal('hide');
 		}
-    }); 
+    });
 });
 
 $(document).on('blur', '.qty', function () {
@@ -142,7 +142,7 @@ $(document).on('blur', '.qty', function () {
     $('#total_amount_'+id).val(number_format(parseFloat(val * unit_price).toFixed(2)));
 
     computeAll();
-  
+
 });
 
 $(document).on('blur', '.unit_price', function () {
@@ -154,7 +154,7 @@ $(document).on('blur', '.unit_price', function () {
     $('#total_amount_'+id).val(number_format(parseFloat(val * qty).toFixed(2)));
 
     computeAll();
-  
+
 });
 
 $(document).on('blur', '.discount', function () {
@@ -163,12 +163,12 @@ $(document).on('blur', '.discount', function () {
 
 
 function computeAll() {
-	
+
     var subtotal = 0;
     var discount = 0;
     var total_amount = 0;
     var qty = 0;
-    
+
 
     $("table#product-list").find('input[name^="amount"]').each(function () {
         subtotal += stringToFloat($(this).val());
