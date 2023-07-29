@@ -43,4 +43,9 @@ class SettingsController extends Controller
         ]);
     }
 
+    public function getWarehouseByStore(Request $request) {
+        $data = \App\Models\Warehouse::where('store_id', $request->store_id)->get();   
+        return response()->json($data);
+    }
+
 }

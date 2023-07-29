@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 
+
+
 Route::get('/setting/suppliers/getdata', [App\Http\Controllers\SuppliersController::class, 'getDataTableData'])->name('getdata');
 
 
@@ -58,6 +60,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     // Route::get('/store', [App\Http\Controllers\SettingsController::class, 'getStore']);
 
     Route::get('/getStore', [App\Http\Controllers\SettingsController::class, 'getStoreByClient']);
+    Route::get('/getWarehouse', [App\Http\Controllers\SettingsController::class, 'getWarehouseByStore']);
     Route::get('/products', [App\Http\Controllers\SettingsController::class, 'getProducts']);
     Route::get('/uom', [App\Http\Controllers\SettingsController::class, 'getUom']);
 

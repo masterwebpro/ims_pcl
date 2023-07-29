@@ -10,7 +10,7 @@
 @endcomponent
 
 <div class="row justify-content-center">
-    <div class="col-lg-9">
+    <div class="col-lg-11">
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
@@ -32,7 +32,7 @@
 
 
 <div class="row justify-content-center">
-    <div class="col-xxl-9">
+    <div class="col-xxl-11">
         <div class="card" id="demo">
             <div class="row ">
                 <div class="col-lg-12">
@@ -227,18 +227,18 @@
                         </div>
                         <div class="card-body p-4">
                             <div class="table-responsive">
-                                <table class="table table-borderless text-center table-nowrap align-middle mb-0">
+                                <table class="table table-nowrap align-middle mb-0">
                                     <thead>
                                         <tr class="table-active">
-                                            <th scope="col" style="width: 50px;">#</th>
-                                            <th scope="col">Code</th>
-                                            <th scope="col">SKU</th>
-                                            <th scope="col" class="text-start">Description</th>
-                                            <th scope="col">UOM</th>
-                                            <th scope="col">Rqstd Qty</th>
-                                            <th scope="col">Actual Qty</th>
-                                            <th scope="col" class="text-end">Unit Price</th>
-                                            <th scope="col" class="text-end">Amount</th>
+                                            <th scope="col"  style="width: 50px;">#</th>
+                                            <th scope="col" >Product</th>
+                                            <th scope="col" >Inv Qty</th>
+                                            <th scope="col" >WHSE Qty</th>
+                                            <th scope="col" >CBM</th>
+                                            <th scope="col" >WH Location</th>
+                                            <th scope="col" >Lot/Batch #</th>
+                                            <th scope="col" >Expiry Date</th>
+                                            <th scope="col" class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="products-list">
@@ -253,32 +253,34 @@
                                         ?>
                                         <tr>
                                             <th scope="row"><?=$x++;?></th>
-                                            <td>{{ $item->product->product_code}}</td>
-                                            <td>{{ $item->product->product_sku}}</td>
                                             <td class="text-start">
                                                 <span class="fw-medium">{{ $item->product->product_name}}</span>
-                                                <p class="text-muted mb-0"></p>
+                                                <p class="text-muted mb-0">{{ $item->product->product_code}} / {{ $item->product->product_sku}}</p>
                                             </td>
-                                            <td>{{ $item->uom->code}}</td>
-                                            <td>{{ $item->requested_qty}}</td>
-                                            <td>{{ $item->actual_qty}}</td>
-                                            <td class="text-end">{{ number_format($item->amount_per_unit,2)}}</td>
-                                            <td class="text-end">{{ number_format($item->actual_net_price,2)}}</td>
+                                            <td>
+                                                <span class="fw-medium">{{ $item->requested_qty}}</span>
+                                                <p class="text-muted mb-0">{{ $item->uom->code}}</p>    
+                                            </td>
+                                            <td>
+                                                <span class="fw-medium">{{ $item->actual_qty}}</span>
+                                                <p class="text-muted mb-0">{{ $item->uom->code}}</p>    
+                                            </td>
+                                            <td>0.0005</td>
+                                            <td>WA-A03</td>
+                                            <td class="text-start">
+                                                <span class="fw-medium">L: {{ $item->requested_qty}}</span>
+                                                <br/>
+                                                <span class="fw-medium">B: {{ $item->requested_qty}}</span>
+                                            </td>
+                                            <td> - </td>
+                                            <td class="text-center">
+                                                <a href="javascript:void(0)" class="text-warning"><i class="ri-eye-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
+                                                <a href="javascript:void(0)" class="text-info"><i class="ri-edit-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
+                                                <a href="javascript:void(0)" class="text-danger"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
+                                            </td>
                                         </tr>
                                         <? endforeach;?>
                                     </tbody>
-                                </table>
-                                <!--end table-->
-                            </div>
-                            <div class="border-top border-top-dashed mt-2">
-                                <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
-                                    <tbody>
-                                        <tr class="border-top border-top-dashed fs-15">
-                                            <th scope="row">Total Amount</th>
-                                            <th class="text-end">{{ number_format(($total_amount - $total_discount) ,2) }}</th>
-                                        </tr>
-                                    </tbody>
-                                </table>
                                 </table>
                                 <!--end table-->
                             </div>
