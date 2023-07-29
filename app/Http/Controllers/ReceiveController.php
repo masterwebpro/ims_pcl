@@ -8,8 +8,11 @@ use App\Models\RcvHdr;
 use App\Models\RcvDtl;
 use App\Models\Client;
 use App\Models\Store;
+use App\Models\Warehouse;
 use App\Models\Supplier;
 use App\Models\UOM;
+use App\Models\TruckType;
+
 
 use DataTables;
 
@@ -69,7 +72,22 @@ class ReceiveController extends Controller
 
     public function create()
     {
-        //
+        $truck_type_list = TruckType::all();
+        $store_list = Store::all();
+        $supplier_list = Supplier::all();
+        $client_list = Client::all();
+        $warehouse_list = Warehouse::all();
+
+        $uom = UOM::all();
+
+        return view('receive/create', [
+            'client_list'=>$client_list, 
+            'store_list'=>$store_list,
+            'supplier_list'=>$supplier_list,
+            'truck_type_list'=>$truck_type_list,
+            'warehouse_list'=>$warehouse_list,
+            'uom'=>$uom
+        ]);
     }
 
     public function store(Request $request)
