@@ -82,9 +82,9 @@
 
                         <tbody class="list form-check-all">
                             <? if($uom_list->total() > 0 ) : ?>
-                                <? foreach($uom_list as $uom) :?>
+                                <? foreach($uom_list as $uom) : ?>
                                     <tr>
-                                        <td class="id">{{ $uom->code}}</td>
+                                        <td class="id">{{ $uom->code }}</td>
                                         <td class="project_name">{{ $uom->uom_desc}}</td>
                                         <td>{{ $uom->convertion_pc}}</td>
                                         <td class="action">

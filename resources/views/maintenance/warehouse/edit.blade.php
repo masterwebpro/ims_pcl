@@ -49,7 +49,7 @@
                             <div class="row mb-4">
                                 <div class="col-md-4 form-group">
                                     <label for="warehouse_id" class="form-label">Warehouse Name <span class="text-danger">*</span></label>
-                                    <input type="hidden" class="form-control" name="id" id="id" value="{{ {{  $warehouse->id }} }}">
+                                    <input type="hidden" class="form-control" name="id" id="id" value="{{ $warehouse->id }}">
                                     <input type="text" class="form-control" required="required" name="warehouse_name" id="warehouse_name" value="{{ $warehouse->warehouse_name }}" placeholder="Enter Warehouse Name">
                                     <div class="invalid-feedback error-msg po_num_error">Warehouse is Required</div>
                                 </div>
