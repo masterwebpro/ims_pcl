@@ -9,4 +9,6 @@ class Store extends Model
 {
     use HasFactory;
     protected $table = 'store_list';
+    protected $primaryKey = 'id';
+    protected $guarded = ['id'];
 }

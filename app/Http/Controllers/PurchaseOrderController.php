@@ -16,15 +16,16 @@ use DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 class PurchaseOrderController extends Controller
 {
     public function index(Request $request)
     {
         $po_list = PoHdr::select('po_hdr.*', 'sp.supplier_name', 's.store_name','c.client_name', 'u.name', DB::raw(
-            '(SELECT sum(total_amount) as total_net 
+            '(SELECT sum(total_amount) as total_net
                 FROM po_dtl pd
-                WHERE pd.po_num = po_hdr.po_num 
+                WHERE pd.po_num = po_hdr.po_num
                 group by pd.po_num) AS total_net'
         , true))
         ->leftJoin('suppliers as sp', 'sp.id', '=', 'po_hdr.supplier_id')
@@ -59,7 +60,7 @@ class PurchaseOrderController extends Controller
                     if($request->filter_date == 'created_at') {
                         $query->whereBetween('po_hdr.created_at', [$request->po_date." 00:00:00", $request->po_date." 23:59:00"]);
                     }
-                    
+
                 }
 
                 $query->get();
@@ -78,7 +79,7 @@ class PurchaseOrderController extends Controller
         $uom = UOM::all();
 
         return view('po/create', [
-            'client_list'=>$client_list, 
+            'client_list'=>$client_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'uom'=>$uom
@@ -87,7 +88,7 @@ class PurchaseOrderController extends Controller
 
     public function store(Request $request)
     {
-        
+
         DB::connection()->beginTransaction();
 
         try {
@@ -119,18 +120,18 @@ class PurchaseOrderController extends Controller
 
             $result= PoDtl::where('po_num',$request->po_num)->delete();
             PoDtl::insert($dtl);
-            
+
             DB::connection()->commit();
-            
+
             return response()->json([
                 'success'  => true,
                 'message' => 'Saved successfully!',
                 'data'    => $po,
                 'id'=> _encode($po->id)
             ]);
-        
+
         }
-        catch(Throwable $e)
+        catch(\Throwable $e)
         {
             return response()->json([
                 'success'  => false,
@@ -144,14 +145,14 @@ class PurchaseOrderController extends Controller
     public function show($id)
     {
         $po = PoHdr::select('po_hdr.*', 'u.name', DB::raw(
-            '(SELECT (sum(total_amount) - sum(discount))  as total_net 
+            '(SELECT (sum(total_amount) - sum(discount))  as total_net
                 FROM po_dtl pd
-                WHERE pd.po_num = po_hdr.po_num 
+                WHERE pd.po_num = po_hdr.po_num
                 group by pd.po_num) AS total_net'
         , true))
         ->leftJoin('users as u', 'u.id', '=', 'po_hdr.created_by')
         ->where('po_hdr.id', _decode($id))->first();
-        
+
         $uom = UOM::all();
         return view('po/view', ['po'=>$po, 'uom'=>$uom]);
     }
@@ -168,8 +169,8 @@ class PurchaseOrderController extends Controller
         $uom = UOM::all();
 
         return view('po/edit', [
-            'po'=>$po, 
-            'client_list'=>$client_list, 
+            'po'=>$po,
+            'client_list'=>$client_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'uom'=>$uom

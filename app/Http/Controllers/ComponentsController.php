@@ -23,7 +23,7 @@ class ComponentsController extends Controller
             'menus.id as menu_id',
             'menus.menu_name as parent_menu',
             DB::raw("COALESCE(menus.icon,'ri-side-bar-line') as icon"),
-            DB::raw("group_concat(  DISTINCT CONCAT(submenus.id,',',submenus.submenu_name,',',submenus.url)
+            DB::raw("group_concat(DISTINCT CONCAT(submenus.id,',',submenus.submenu_name,',',submenus.url)
                     ORDER BY submenus.sort
                     SEPARATOR ';') as submenu_names")
         )

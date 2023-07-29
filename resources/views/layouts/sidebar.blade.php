@@ -51,7 +51,7 @@
                     ?>
 
                             <li class="nav-item">
-                                <a href="<?=URL::to($arr_submenu[2]);?>" class="nav-link">{{$arr_submenu[1]}}</a>
+                                <a href="<?php echo URL::to((isset($arr_submenu)) ? $arr_submenu[2] : '')?>" class="nav-link"><? isset($arr_submenu) ? $arr_submenu[1] : '' ?></a>
                             </li>
                     <?
                             }

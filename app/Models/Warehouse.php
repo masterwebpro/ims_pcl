@@ -10,4 +10,6 @@ class Warehouse extends Model
     use HasFactory;
 
     protected $table = 'warehouses';
+    protected $primaryKey = 'id';
+    protected $guarded = ['id'];
 }

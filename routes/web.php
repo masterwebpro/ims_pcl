@@ -24,6 +24,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
 
     Route::resource('/setting/suppliers', App\Http\Controllers\SuppliersController::class);
+
+    //Maintenance
+    Route::resource('/maintenance/unit', App\Http\Controllers\UnitOfMeasureController::class);
+    Route::resource('/maintenance/warehouse', App\Http\Controllers\WarehouseController::class);
+    Route::resource('/maintenance/supplier', App\Http\Controllers\SupplierController::class);
+    Route::resource('/maintenance/client', App\Http\Controllers\ClientController::class);
+    Route::resource('/maintenance/store', App\Http\Controllers\StoreController::class);
+
 });
 
 

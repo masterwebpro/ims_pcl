@@ -36,7 +36,7 @@
             <form  method="POST" name="form-po" action="javascript:void(0);" id="form-po" class="row g-3 needs-validation" novalidate>
             @csrf
             <div class="card-body">
-                <div class="form-container">                   
+                <div class="form-container">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row mb-4">
@@ -50,7 +50,7 @@
                                 <div class="col-md-4 form-group">
                                     <label for="inputZip" class="form-label">Supplier Name <span class="text-danger">*</span></label>
                                     <select class="form-select select2" required="required" id="supplier" name="supplier">
-                                        <option value="">Select Supplier</option>                                                            
+                                        <option value="">Select Supplier</option>
                                         <? foreach($supplier_list as $supplier) : ?>
                                             <option value="<?=$supplier->id?>" ><?=$supplier->supplier_name?></option>
                                         <? endforeach;?>
@@ -70,7 +70,7 @@
                                     <label for="client_id" class="form-label">Client Name</label>
                                     <input type="hidden" value="" class="client_id" name="client_id" id="client_id" />
                                     <select class="form-select select2" required="required" id="client" name="client">
-                                        <option value="">Select Client</option>                                                            
+                                        <option value="">Select Client</option>
                                         <? foreach($client_list as $client) : ?>
                                             <option value="<?=$client->id?>" ><?=$client->client_name?></option>
                                         <? endforeach;?>
@@ -82,7 +82,10 @@
                                     <label for="store_id" class="form-label">Warehouse/Store Name</label>
                                     <input type="hidden" value="" class="store_id" name="store_id" id="store_id" />
                                     <select class="form-select select2" required="required" id="store" name="store">
-                                        <option value="">Select Store/Warehouse</option>                                                            
+                                        <option value="">Select Store/Warehouse</option>
+                                        <? foreach($store_list as $store) : ?>
+                                        <option value="<?=$store->id?>" ><?=$store->store_name?></option>
+                                        <? endforeach;?>
                                     </select>
                                     <div class="invalid-feedback text-danger error-msg store_error">Store/Warehouse Name is Required</div>
                                 </div>
@@ -93,19 +96,19 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
-                    
+
                     <div class="col-md-12 mt-5">
                         <h5>Order Item Details</h5>
-                    </div> 
+                    </div>
                     <div class="col-md-12 mb-2">
                         <div class="input-group">
                             <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
                             <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
                             <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                         </div>
-                    </div> 
+                    </div>
 
                     <!-- ITEMS -->
                     <div class="table-responsive">
@@ -123,10 +126,10 @@
                                 </tr>
                             </thead>
                             <tbody id="newlink">
-                                <? 
+                                <?
                                     $total_discount = 0;
                                     $subtotal =0;
-                                    
+
                                 ?>
                             </tbody>
                             </table>
@@ -163,7 +166,7 @@
                         </table>
                         <!--end table-->
                     </div>
-                
+
                 </div>
             </div>
             </form>
@@ -179,7 +182,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Product List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
-           
+
             <div class="modal-body">
                 <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
                     <thead class="table-light">
@@ -193,7 +196,7 @@
                     <tbody>
                     </tbody>
                 </table>
-                
+
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
