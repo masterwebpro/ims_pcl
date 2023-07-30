@@ -36,37 +36,27 @@
                 <li class="menu-title"><span>@lang('translation.menu')</span></li>
                 @foreach ($components->listsidebar() as $_menu)
                 <li class="nav-item">
-                    <?
-                        if(isset($_menu->submenu_names)){
-                    ?>
+                    @if(isset($_menu->submenu_names))
                         <a class="nav-link menu-link" href="#side_menu_{{$_menu->menu_id}}" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="side_menu_{{$_menu->menu_id}}">
                             <i class="{{$_menu->icon}}"></i> <span>{{$_menu->parent_menu}}</span>
                         </a>
                         <div class="collapse menu-dropdown" id="side_menu_{{$_menu->menu_id}}">
                             <ul class="nav nav-sm flex-column">
-                    <?
-                        $_submenu_names = explode(';', $_menu->submenu_names);
-                        foreach ($_submenu_names as $submenu_name){
-                            $arr_submenu = explode(',', $submenu_name);
-                    ?>
-
+                            <?php $_submenu_names = explode(";", $_menu->submenu_names); ?>
+                            @foreach ($_submenu_names as $submenu_name)
+                                <?php $arr_submenu = explode(',', $submenu_name); ?>
+                   
                             <li class="nav-item">
-                                <a href="<?php echo URL::to((isset($arr_submenu)) ? $arr_submenu[2] : '') ?>" class="nav-link"><? isset($arr_submenu) ? $arr_submenu[1] : '' ?></a>
+                                <a href="{{ URL::to((isset($arr_submenu)) ? $arr_submenu[2] : '') }}" class="nav-link">{{ isset($arr_submenu) ? $arr_submenu[1] : '' }}</a>
                             </li>
-                    <?
-                            }
-                    ?>
+                            @endforeach
                         </ul>
                     </div>
-                    <?
-                        }else{
-                    ?>
+                    @else
                         <a class="nav-link menu-link" href="#side_menu_{{$_menu->menu_id}}">
                             <i class="{{$_menu->icon}}"></i> <span>{{$_menu->parent_menu}}</span>
                         </a>
-                    <?
-                        }
-                    ?>
+                    @endif
                 </li>
                 @endforeach
             </ul>
