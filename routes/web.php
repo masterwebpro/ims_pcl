@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/supplier', App\Http\Controllers\SupplierController::class);
     Route::resource('/maintenance/client', App\Http\Controllers\ClientController::class);
     Route::resource('/maintenance/store', App\Http\Controllers\StoreController::class);
+    Route::resource('/maintenance/brand', App\Http\Controllers\BrandController::class);
 
 });
 

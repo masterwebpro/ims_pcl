@@ -46,12 +46,12 @@
                             <ul class="nav nav-sm flex-column">
                     <?
                         $_submenu_names = explode(';', $_menu->submenu_names);
-                            foreach ($_submenu_names as $submenu_name){
-                                $arr_submenu = explode(',', $submenu_name);
+                        foreach ($_submenu_names as $submenu_name){
+                            $arr_submenu = explode(',', $submenu_name);
                     ?>
 
                             <li class="nav-item">
-                                <a href="<?php echo URL::to((isset($arr_submenu)) ? $arr_submenu[2] : '')?>" class="nav-link"><? isset($arr_submenu) ? $arr_submenu[1] : '' ?></a>
+                                <a href="<?php echo URL::to((isset($arr_submenu)) ? $arr_submenu[2] : '') ?>" class="nav-link"><? isset($arr_submenu) ? $arr_submenu[1] : '' ?></a>
                             </li>
                     <?
                             }

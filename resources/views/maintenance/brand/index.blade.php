@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Unit of Measure @endsection
+@section('title') Brand @endsection
 @section('css')
 
 @endsection
@@ -14,14 +14,14 @@
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">All UOM List</h5>
+                    <h5 class="card-title mb-0 flex-grow-1">All Brand List</h5>
                     <div class="flex-shrink-0">
-                        <a href="{{ URL::to('maintenance/unit/create') }}"class="btn btn-danger add-po" ><i class="ri-add-line align-bottom me-1"></i> Create UOM</a>
+                        <a href="{{ URL::to('maintenance/brand/create') }}"class="btn btn-danger add-po" ><i class="ri-add-line align-bottom me-1"></i> Create Brand</a>
                     </div>
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">
-                <form action="{{ route('unit.index') }}" method="GET">
+                <form action="{{ route('brand.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-xxl-4 col-sm-12">
                             <div class="search-box">
@@ -73,24 +73,28 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="code">Code</th>
-                                <th class="sort" data-sort="uom_desc">Description</th>
-                                <th class="sort" data-sort="convertion_pc">Conversion</th>
+                                <th class="sort" data-sort="brand_name">Brand Name</th>
+                                <th class="sort" data-sort="sort_by">Sort By</th>
+                                <th class="sort" data-sort="is_enabled">Enable</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
 
                         <tbody class="list form-check-all">
-                            <? if($uom_list->total() > 0 ) : ?>
-                                <? foreach($uom_list as $uom) : ?>
+                            <? if($brand_list->total() > 0 ) : ?>
+                                <? foreach($brand_list as $brand) : ?>
                                     <tr>
-                                        <td class="id">{{ $uom->code }}</td>
-                                        <td class="project_name">{{ $uom->uom_desc}}</td>
-                                        <td>{{ $uom->convertion_pc}}</td>
+                                        <td class="id">{{ $brand->brand_name }}</td>
+                                        <td class="project_name">{{ $brand->sort_by}}</td>
+                                        <td>
+                                            <div class="form-check form-switch form-switch-custom form-switch-primary">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($brand->is_enabled == 1) ? "checked" : "") }} disabled>
+                                            </div>
+                                        </td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('maintenance/unit') }}/<?=_encode($uom->uom_id)?>" data-id="{{$uom->uom_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <a href="{{ URL::to('maintenance/unit') }}/<?=_encode($uom->uom_id);?>/edit" data-id="{{$uom->uom_id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                <a href="{{ URL::to('maintenance/brand') }}/<?=_encode($brand->brand_id)?>" data-id="{{$brand->brand_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <a href="{{ URL::to('maintenance/brand') }}/<?=_encode($brand->brand_id);?>/edit" data-id="{{$brand->brand_id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                         </td>
                                     </tr>
                                 <? endforeach; ?>
@@ -110,7 +114,7 @@
                     <!--end table-->
                 </div>
                 <!-- Pagination -->
-                {!! $uom_list->withQueryString()->links('pagination::bootstrap-5') !!}
+                {!! $brand_list->withQueryString()->links('pagination::bootstrap-5') !!}
             </div>
             <!--end card-body-->
         </div>

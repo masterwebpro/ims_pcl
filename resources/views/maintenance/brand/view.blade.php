@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Unit of Measure @endsection
+@section('title') Brand @endsection
 @section('css')
 <!--datatable css-->
 <link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 @section('content')
 @component('components.breadcrumb')
 @slot('li_1') Maintenance @endslot
-@slot('title') Unit of Measure @endslot
+@slot('title') Brand @endslot
 @endcomponent
 
 
@@ -24,15 +24,15 @@
     <div class="col-xxl-10">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Unit of Measure Creation</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Brand View</h4>
                 <div class="flex-shrink-0">
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                        <button type="button" data-status="open" class="btn btn-success btn-label rounded-pill submit-uom"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
-                        <a  href="{{ URL::to('maintenance/unit') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
+                        <a href="{{ URL::to('maintenance/brand') }}/<?=_encode($brand->brand_id)?>/edit" class="btn btn-success btn-label rounded-pill"><i class="ri-edit-line label-icon align-middle rounded-pill fs-16 me-2"></i> Edit</a>
+                        <a  href="{{ URL::to('maintenance/brand') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
                 </div>
             </div><!-- end card header -->
-            <form  method="POST" name="form-uom" action="javascript:void(0);" id="form-uom" class="row g-3 needs-validation" novalidate>
+            <form  method="POST" name="form-brand" action="javascript:void(0);" id="form-brand" class="row g-3 needs-validation" novalidate>
             @csrf
             <div class="card-body">
                 <div class="form-container">
@@ -40,23 +40,24 @@
                         <div class="col-md-12">
                             <div class="row mb-4">
                                 <div class="col-md-4 form-group">
-                                    <label for="uom_id" class="form-label">Code <span class="text-danger">*</span></label>
-                                    <input type="hidden" class="form-control" name="uom_id" id="uom_id" value="">
-                                    <input type="text" class="form-control" required="required" name="code" id="code" value="" placeholder="Enter Code">
+                                    <label for="brand_id" class="form-label">Brand Name <span class="text-danger">*</span></label>
+                                    <input type="hidden" class="form-control" name="brand_id" id="brand_id" value="{{ $brand->brand_id }}">
+                                    <input type="text" class="form-control" required="required" name="brand_name" id="brand_name" value="{{ $brand->brand_name }}" placeholder="Enter Brand Name" disabled>
                                     <div class="invalid-feedback error-msg po_num_error">code is Required</div>
                                 </div>
 
                                 <div class="col-md-4 form-group">
-                                    <label for="uom_desc" class="form-label">Description <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" required="required" name="uom_desc" id="uom_desc" value="" placeholder="Enter Description">
-                                    <div class="invalid-feedback error-msg po_num_error">Description is Required</div>
+                                    <label for="sort_by" class="form-label">Sort By <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" required="required" name="sort_by" id="sort_by" value="{{ $brand->sort_by }}" placeholder="Enter Sort by" disabled>
+                                    <div class="invalid-feedback error-msg po_num_error">Sortby is Required</div>
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <div class="form-check form-switch form-switch-custom form-switch-primary my-4 mx-5">
+                                        <label class="form-check-label" for="is_enabled">Enable</label>
+                                        <input class="form-check-input" type="checkbox" role="switch" id="is_enabled" {{ (($brand->is_enabled == 1) ? "checked" : "") }} disabled>
+                                    </div>
                                 </div>
 
-                                <div class="col-md-4 form-group">
-                                    <label for="inputState" class="form-label">Conversion <span class="text-danger">*</span></label>
-                                    <input type="number" id="convertion_pc" required="required"  name="convertion_pc" class="form-control" value="" placeholder="Enter Conversion">
-                                    <div class="invalid-feedback text-danger error-msg po_date_error">Conversion is Required</div>
-                                </div>
                             </div>
                         </div>
 
@@ -81,6 +82,6 @@
 <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-<script src="{{ URL::asset('/assets/js/maintenance/unit.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/maintenance/brand.js') }}"></script>
 
 @endsection
