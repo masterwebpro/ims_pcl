@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Category;
+use App\Models\CategoryBrand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -52,9 +54,10 @@ class BrandController extends Controller
     public function create()
     {
         $brand = Brand::all();
-
+        $category_list = Category::all();
         return view('maintenance/brand/create', [
-            'brand'=>$brand
+            'brand'=>$brand,
+            'category_list' => $category_list
         ]);
     }
 
@@ -80,6 +83,8 @@ class BrandController extends Controller
                 return response()->json(["status" => false, "message" => $error[0]],200);
             }
         }
+
+        $category = json_decode($request->category);
         try {
             $brand = Brand::updateOrCreate(['brand_id' => $request->brand_id], [
                 'brand_name'=>$request->brand_name,
@@ -88,6 +93,19 @@ class BrandController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
+
+            if(!empty($category)){
+                foreach($category as $category_id){
+                    CategoryBrand::updateOrCreate([
+                        'category_id' => $category_id,
+                        'brand_id' => $brand->brand_id
+                    ],
+                    [
+                        'category_id' => $category_id,
+                        'brand_id' => $brand->brand_id,
+                    ]);
+                }
+            }
 
             DB::connection()->commit();
 
@@ -118,10 +136,11 @@ class BrandController extends Controller
      */
     public function show($id)
     {
-         $brand = Brand::find(_decode($id));
-
+        $brand = Brand::with('category')->find(_decode($id));
+        $category_list = Category::all();
         return view('maintenance/brand/view', [
-            'brand'=>$brand
+            'brand'=>$brand,
+            'category_list' => $category_list
         ]);
     }
 
@@ -133,10 +152,15 @@ class BrandController extends Controller
      */
     public function edit($id)
     {
-         $brand = Brand::find(_decode($id));
-
+         $brand = Brand::with('category')->find(_decode($id));
+         $category =  $brand['category']->map(function ($item) {
+            return $item['category_id'];
+        })->toArray();
+        $category_list = Category::all();
         return view('maintenance/brand/edit', [
-            'brand'=>$brand
+            'brand'=>$brand,
+            'category_list' => $category_list,
+            'category' => array_values($category)
         ]);
     }
 

@@ -59,8 +59,17 @@
                                 </div>
 
                             </div>
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    <label>Category</label>
+                                    <ul class="list-group">
+                                        <?foreach($brand['category'] as $cat):?>
+                                        <li class="list-group-item"><i class="ri-price-tag-3-line align-middle me-2"></i> {{ $cat['category_name'] }}</li>
+                                        <?endforeach;?>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>

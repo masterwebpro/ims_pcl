@@ -59,6 +59,20 @@
                                 </div>
 
                             </div>
+                            <div class="row mb-4">
+                                <div class="col-md-12 form-group">
+                                        <label for="category_id" class="form-label">Category</label>
+                                        <select class="form-control category_id" id="category_id" data-choices
+                                            data-choices-removeItem multiple>
+                                            <option value="">Select Category</option>
+                                            <? foreach ($category_list as $key => $cat) :?>
+                                            <option value="{{ $cat->category_id }}">{{ $cat->category_name }}
+                                            </option>
+                                            <? endforeach;?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
