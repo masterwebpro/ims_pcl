@@ -50,8 +50,9 @@
                                 <div class="col-md-4 form-group">
                                     <label for="parent_id" class="form-label">Parent</label>
                                     <select class="form-select" id="parent_id" name="parent_id">
+                                        <option value="0">Root</option>
                                         <? foreach($category_list as $cat) : ?>
-                                        <option value="<?=(($cat->parent_id == 0) ? 0 : $cat->parent_id)?>" <?=($cat->category_id == $category->parent_id) ? 'selected' : ''?> ><?=($category->parent_id == 0) ? 'Root' : $cat->category_name?></option>
+                                        <option value="{{ $cat->category_id }}" <?=($cat->category_id == $category->parent_id) ? 'selected' : ''?> ><?=($category->parent_id == 0) ? 'Root' : $cat->category_name?></option>
                                         <? endforeach;?>
                                     </select>
                                 </div>

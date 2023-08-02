@@ -21,9 +21,14 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $category_list = Category::where('parent_id',0)
+                            ->with('brand')
                             ->orderBy('sort_by','ASC')
                             ->get();
         $category_list  =  $this->parent($category_list,$request);
+        // echo "<pre>";
+        // print_r($category_list);
+        // echo "</pre>";
+        // die();
         $category = $this->category_list($category_list);
         $brand = Brand::all();
         return view('maintenance/category/index',['category_list' => $category_list, 'category' => $category, 'brand_list' => $brand]);
@@ -39,7 +44,12 @@ class CategoryController extends Controller
             $ul .= '<a href="'.URL::to('maintenance/category/'._encode($category->category_id)).'/edit" data-id="'.$category->category_id.'" class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> edit </a>';
             $ul .= '</div>';
             $ul .= '<a data-bs-toggle="collapse" href="#collapseExample'.$key.'" role="button" aria-expanded="true" aria-controls="collapseExample'.$key.'">';
-            $ul .= '    <span class="file-list-link fs-4"><i class="ri-folder-fill align-middle me-2 text-warning"></i> '. $category->category_name .'</span></a>';
+            $ul .= '    <span class="file-list-link fs-4"><i class="ri-folder-fill align-middle me-2 text-warning"></i> '. $category->category_name .'</span>';
+            if($category->brand)
+            foreach($category->brand as $brand){
+                $ul .= '<span class="badge badge-label bg-primary"><i class="mdi mdi-circle-medium"></i> '.$brand->brand_name.'</span>';
+            }
+            $ul .= '</a>';
             if(!empty($category->child))
             {
                 $ul .= $this->addChild($category->child, $key);
@@ -61,7 +71,12 @@ class CategoryController extends Controller
             $ul .= '</div>';
             $ul .= '            <a data-bs-toggle="collapse" href="#collapseExample'.$k.$key.'" role="button"';
             $ul .= '                aria-expanded="true" aria-controls="collapse'.$k.$key.'"';
-            $ul .= '                href="#!"><i class="ri-menu-3-line align-middle me-2"></i> '.$ch['category_name'].'</a>';
+            $ul .= '                href="#!"><i class="ri-menu-3-line align-middle me-2"></i> '.$ch['category_name'];
+            if($ch['brand'])
+            foreach($ch['brand'] as $brand){
+                $ul .= '<span class="badge badge-label bg-success"><i class="mdi mdi-circle-medium"></i> '.$brand['brand_name'].'</span>';
+            }
+            $ul .= '</a>';
 
             if(!empty($ch['child']))
             {
@@ -80,7 +95,6 @@ class CategoryController extends Controller
         {
             $res['category_name'] = $res['category_name'];
             $res['child'] = $this->children($res['category_id'],$request);
-            $res['children'] = $this->children($res['category_id'],$request);
         }
         return $data;
     }
@@ -88,6 +102,7 @@ class CategoryController extends Controller
     private function children($parent_id,$request)
     {
         $child = Category::where('parent_id',$parent_id)
+                ->with('brand')
                 ->orderBy('sort_by','ASC')
                 ->where('is_enabled',1);
         $child  = $child->get()->toArray();
@@ -97,7 +112,6 @@ class CategoryController extends Controller
             {
                 $res['category_name'] = $res['category_name'];
                 $res['child'] = $this->children($res['category_id'],$request);
-                // $res['children'] = $this->children($res['category_id'],$request);
             }
             return $child;
         }
@@ -127,7 +141,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-
+        // return $request->all();
         DB::connection()->beginTransaction();
         $validator = Validator::make($request->all(), [
             'category_name' => 'required',
@@ -145,6 +159,9 @@ class CategoryController extends Controller
             }
         }
 
+        $sub_categories = json_decode($request->sub_categories);
+        $brand_id = json_decode($request->brand_id);
+
         try {
             $category = Category::updateOrCreate(['category_id' => $request->id], [
                 'category_name' => $request->category_name,
@@ -153,8 +170,8 @@ class CategoryController extends Controller
                 'is_enabled' => $request->is_enabled,
             ]);
 
-            if(!empty($request->sub_categories)){
-                foreach(json_decode($request->sub_categories) as $key => $sub_category)
+            if(!empty($sub_categories)){
+                foreach($sub_categories as $key => $sub_category)
                 {
                     Category::updateOrCreate(['category_id' => $sub_category->category_id], [
                         'category_name' => $sub_category->category_name,
@@ -162,22 +179,29 @@ class CategoryController extends Controller
                         'sort_by' => $key + 1,
                         'is_enabled' => $request->is_enabled,
                     ]);
-
-                    if(!empty($request->brand_id)){
-                        foreach(json_decode($request->brand_id) as $key => $brand_id)
-                        {
-                            CategoryBrand::updateOrCreate([
-                                    'category_id' => $category->category_id,
-                                    'brand_id' => $brand_id,
-                                ], [
-                                'category_id' => $category->category_id,
-                                'brand_id' => $brand_id,
-                                'is_enabled' => 1,
-                            ]);
-                        }
-                    }
                 }
             }
+            else{
+                Category::where('parent_id',$category->category_id)->delete();
+            }
+
+            if(!empty($brand_id)){
+                foreach($brand_id as $key => $brand_id)
+                {
+                    CategoryBrand::updateOrCreate([
+                            'category_id' => $category->category_id,
+                            'brand_id' => $brand_id,
+                        ], [
+                        'category_id' => $category->category_id,
+                        'brand_id' => $brand_id,
+                        'is_enabled' => 1,
+                    ]);
+                }
+            }
+            else{
+                CategoryBrand::where('category_id',$category->category_id)->delete();
+            }
+
             DB::connection()->commit();
 
             return response()->json([

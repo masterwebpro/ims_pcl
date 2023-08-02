@@ -69,24 +69,34 @@
                                 </div>
                             </div>
                             <div class="row mb-4">
+                                <div class="input-group">
+                                    <span class="input-group-text">Sub Category Name</span>
+                                    <input type="text" class="form-control" id="sub_category" aria-label="Sub Category Name" disabled
+                                        placeholder="Enter Sub Category">
+                                    <button type="button" data-status="open" disabled
+                                        class="btn btn-success btn-label add-sub-category" id="add"><i
+                                            class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>
+                                        Add Sub Category</button>
+                                </div>
+                            </div>
+                            <?php if(count($sub_category) > 0):?>
+                            <div class="row mb-4">
                                 <div class="col-md-12">
                                 <label for="">Sub Category</label>
                                 <ul class="list-group">
-                                <?php if($sub_category):?>
                                     <? foreach($sub_category as $sub):?>
                                         <li class="list-group-item"><i class="ri-menu-3-line align-middle me-2"></i> {{ $sub->category_name }}</li>
                                     <?endforeach;?>
-                                <? else :?>
-                                    <li class="list-group-item text-danger"><i class="ri-menu-3-line align-middle me-2"></i> No Sub Category</li>
-                                <? endif; ?>
                                 </ul>
                                 </div>
                             </div>
+                            <? endif; ?>
                             <div class="row mb-2">
                                 <div class="col-md-12 form-group">
                                     <label for="brand_id" class="form-label">Brand</label>
                                     <select class="form-control brand_id" id="brand_id" data-choices disabled
                                         data-choices-removeItem multiple>
+                                        <option value="">Select Brand</option>
                                         <? foreach ($category_brand as $key => $brand) :?>
                                         <option value="{{ $brand->brand_id }}" selected>{{ $brand->brand_name }} </option>
                                         <? endforeach;?>

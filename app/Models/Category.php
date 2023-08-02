@@ -21,4 +21,11 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id', 'category_id')->with('children');
     }
+
+    public function brand()
+    {
+        return $this->hasMany(CategoryBrand::class, 'category_id', 'category_id')
+            ->select('category_brands.brand_id','category_brands.category_id','brands.brand_name')
+            ->leftJoin('brands','brands.brand_id','category_brands.brand_id');
+    }
 }
