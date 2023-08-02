@@ -66,8 +66,7 @@
                                             data-choices-removeItem multiple>
                                             <option value="">Select Category</option>
                                             <? foreach ($category_list as $key => $cat) :?>
-                                            <option value="{{ $cat->category_id }}" <?=(in_array($cat->category_id, $category)) ? 'selected' : ''?>>{{ $cat->category_name }}
-                                            </option>
+                                            <option value="{{ $cat->category_id }}" <?=(in_array($cat->category_id, $category)) ? 'selected' : ''?>>{{ $cat->category_name }} </option>
                                             <? endforeach;?>
                                         </select>
                                     </div>
