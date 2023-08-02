@@ -56,8 +56,6 @@
         </div>
     </div>
 
-    <!-- @include('layouts.customizer') -->
-
     <!-- JAVASCRIPT -->
     @include('layouts.vendor-scripts')
 </body>
