@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 
 use App\Models\RcvHdr;
 use App\Models\RcvDtl;
+use App\Models\SeriesModel;
 use App\Models\Client;
 use App\Models\Store;
 use App\Models\Warehouse;
@@ -13,14 +14,12 @@ use App\Models\Supplier;
 use App\Models\UOM;
 use App\Models\TruckType;
 
-
 use DataTables;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-
+use Illuminate\Support\Facades\Validator;
 
 class ReceiveController extends Controller
 {
@@ -93,6 +92,145 @@ class ReceiveController extends Controller
     public function store(Request $request)
     {
         
+        $validator = Validator::make($request->all(), [
+            'supplier'=>'required',
+            'client'=>'required',
+            'store'=>'required',
+            'po_num'=>'required',
+            'sales_invoice'=>'required',
+            'received_by'=>'required',
+            'date_received'=>'required',
+            'inspect_by'=>'required',
+            'inspect_date'=>'required',
+            'date_arrived'=>'required',
+            'time_arrived'=>'required',
+            'date_departed'=>'required',
+            'time_departed'=>'required',
+            'truck_type'=>'required',
+            'plate_no'=>'required',
+            'warehouse'=>'required',
+            'whse_qty.*' => 'required',
+            'whse_uom.*' => 'required',
+            'inv_qty.*' => 'required',
+            'inv_uom.*' => 'required',
+        ], [
+            'supplier'=>'Supplier is required',
+            'client'=>'Client  is required',
+            'store'=>'Store is required',
+            'po_num'=>'Po Number is required',
+            'sales_invoice'=>'Sales invoice is required',
+            'received_by'=>'Received by is required',
+            'date_received'=>'Date received is required',
+            'inspect_by'=>'Inspect by is required',
+            'plate_no'=>'Plate no is required',
+            'inspect_date'=>'Inspect date is required',
+            'date_arrived'=>'Date arrived  is required',
+            'time_arrived'=>'Time arrived  is required',
+            'date_departed'=>'Date Departed  is required',
+            'time_departed'=>'Time Departed  is required',
+            'truck_type'=>'Truck Type  is required',
+            'warehouse'=>'Warehose  is required',
+            'whse_qty.*' => 'Whse Qty  is required',
+            'whse_uom.*' => 'Whse UOM  is required',
+            'inv_qty.*' => 'Inv Qty  is required',
+            'inv_uom.*' => 'Inv UOM  is required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+
+        DB::connection()->beginTransaction();
+
+        try 
+        {
+
+            $rcv_no = $request->rcv_no;
+
+            if(empty($rcv_no)) {
+                $rcv_no = $this->generateRcvNo();
+
+                $series[] = [
+                    'series' => $rcv_no,
+                    'trans_type' => 'RCV',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                ];
+
+                SeriesModel::insert($series);
+            }
+           
+            $date_arrived = date("Y-m-d", strtotime($request->date_arrived)). " ".date("h:i:s", strtotime($request->time_arrived));
+            $date_departed = date("Y-m-d", strtotime($request->date_departed)). " ".date("h:i:s", strtotime($request->time_departed));
+                
+            $po = RcvHdr::updateOrCreate(['id' => $request->rcv_no], [
+                'po_num'=>$request->po_num,
+                'store_id'=>$request->store,
+                'client_id'=>$request->client,
+                'supplier_id'=>$request->supplier,
+                'sales_invoice'=>$request->sales_invoice,
+                // 'received_by'=>$request->received_by,
+                'po_date'=>date("Y-m-d", strtotime($request->po_date)),
+                'date_received'=>date("Y-m-d", strtotime($request->date_received)),
+                'inspect_by'=>$request->inspect_by,
+                'date_arrived'=>date("Y-m-d h:i:s", strtotime($date_arrived)),
+                'date_departed'=>date("Y-m-d h:i:s", strtotime($date_departed)),
+                'plate_no'=>$request->plate_no,
+                'truck_type'=>$request->truck_type,
+                'warehouse_id'=>$request->warehouse,
+                'status'=>$request->status,
+                'created_by' =>Auth::user()->id,
+                'created_at'=>$this->current_datetime,
+                'updated_at'=>$this->current_datetime,
+            ]);
+
+            whse_qty[]: 1
+            whse_uom[]: 2
+            inv_qty[]: 1
+            inv_uom[]: 2
+            product_id[]: 7
+            whse_qty[]: 1
+            whse_uom[]: 1
+            inv_qty[]: 1
+            inv_uom[]: 1
+
+            //save on dtl
+            $dtl = array();
+            for($x=0; $x < count($request->product_id); $x++ ) {
+                $dtl[] = array(
+                    'rcv_no'=>$rcv_no,
+                    'product_id'=>$request->product_id[$x],
+                    'inv_qty'=>$request->inv_qty[$x],
+                    'inv_uom'=>$request->inv_uom[$x],
+                    'whse_qty'=>$request->whse_qty[$x],
+                    'whse_uom'=>$request->whse_uom[$x],
+                );
+            }
+
+            $result= RcvDtl::where('rcv_no',$rcv_no)->delete();
+            RcvDtl::insert($dtl);
+
+            DB::connection()->commit();
+
+            return response()->json([
+                'success'  => true,
+                'message' => 'Saved successfully!',
+                'data'    => $po,
+                'id'=> _encode($po->id)
+            ]);
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }
+
+
+      
     }
 
     public function show($id)
@@ -137,5 +275,20 @@ class ReceiveController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function generateRcvNo()
+    {
+
+        $data = SeriesModel::where('trans_type', '=', 'RCV')->where('created_at', '>=', date('Y-m-01 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'));
+        $count = $data->count();
+        $count = $count + 1;
+        $date = date('ym');
+
+        $num = str_pad((int)$count, 4, "0", STR_PAD_LEFT);
+
+        $series = "R-" . $date . "-" . $num;
+
+        return $series;
     }
 }

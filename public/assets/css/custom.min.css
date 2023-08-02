@@ -54,3 +54,11 @@
     font-size: 15px;
     background-color: rgba(10,179,156,.1);
 }
+
+.uom_select {
+    width: 100px;
+}
+
+.has_error {
+    border:#f06548 solid 1px !important;
+}

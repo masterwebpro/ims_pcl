@@ -23,18 +23,25 @@ class SettingsController extends Controller
         $products = \App\Models\Products::all(); 
         return Datatables::of($products)->addIndexColumn()->make();
     }
+
+    function getProductBySupplier(Request $request, $supplier_id) {
+        $products = \App\Models\Products::where('supplier_id', $supplier_id)->get(); 
+        return Datatables::of($products)->addIndexColumn()->make();
+    }
+
+    
     
     public function getUom(Request $request) {
         $uom_list = $products = \App\Models\Uom::all(); 
 
         $rand_no = mt_rand(1000,9999)."A";
 
-        $html = '<select name="uom[]" data-id="'.$rand_no.'" id="uom_'.$rand_no.'" class="uom form-select select2">';
-        $html .= '<option value="">UOM</option>';
+       // $html = '<select name="uom[]" data-id="'.$rand_no.'" id="uom_'.$rand_no.'" class="uom form-select select2">';
+        $html = '<option value="">UOM</option>';
         foreach ($uom_list as $uom) {
             $html .= "<option value='".$uom->uom_id."'>".$uom->code."</option>";
         }
-        $html .= " </select> ";
+       // $html .= " </select> ";
 
         return response()->json([
             'success'  => true,

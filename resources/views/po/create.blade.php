@@ -21,7 +21,7 @@
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-xxl-10">
+    <div class="col-xxl-11">
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">PO Creation</h4>

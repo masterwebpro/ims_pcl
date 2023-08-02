@@ -190,19 +190,3 @@ function computeAll() {
     $("#total_qty").val(qty);
 }
 
-function getUom() {
-    var result = false;
-    $.ajax({
-        url: BASEURL + 'settings/uom',
-        method: 'get',
-        dataType: 'json',
-        async: false,
-        success: function(res){
-            if(res.success == true) {
-                result = res.data;
-            }
-        }
-    });
-    return result;
-}
-
