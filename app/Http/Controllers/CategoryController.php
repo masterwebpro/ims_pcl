@@ -25,10 +25,6 @@ class CategoryController extends Controller
                             ->orderBy('sort_by','ASC')
                             ->get();
         $category_list  =  $this->parent($category_list,$request);
-        // echo "<pre>";
-        // print_r($category_list);
-        // echo "</pre>";
-        // die();
         $category = $this->category_list($category_list);
         $brand = Brand::all();
         return view('maintenance/category/index',['category_list' => $category_list, 'category' => $category, 'brand_list' => $brand]);
