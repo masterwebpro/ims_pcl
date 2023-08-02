@@ -16,9 +16,9 @@ return new class extends Migration
         //
         Schema::table('rcv_dtl', function (Blueprint $table) {
             $table->dropColumn(['sku', 'gtin', 'upc_no', 'item_desc','requested_qty','actual_qty','amount_per_unit','net_price' ,'actual_net_price','amount_per_pc','uom_id']);
-            $table->bigInteger('inv_qty')->after('product_id');
+            $table->double('inv_qty', 8, 2)->after('product_id')->default(0);
             $table->bigInteger('inv_uom')->after('inv_qty');
-            $table->bigInteger('whse_qty')->after('inv_uom');
+            $table->double('whse_qty', 8, 2)->after('inv_uom')->default(0);
             $table->bigInteger('whse_uom')->after('whse_qty');
         });
     }
