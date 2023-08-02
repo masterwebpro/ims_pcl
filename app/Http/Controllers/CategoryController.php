@@ -41,10 +41,10 @@ class CategoryController extends Controller
             $ul .= '</div>';
             $ul .= '<a data-bs-toggle="collapse" href="#collapseExample'.$key.'" role="button" aria-expanded="true" aria-controls="collapseExample'.$key.'">';
             $ul .= '    <span class="file-list-link fs-4"><i class="ri-folder-fill align-middle me-2 text-warning"></i> '. $category->category_name .'</span>';
-            if($category->brand)
-            foreach($category->brand as $brand){
-                $ul .= '<span class="badge badge-label bg-primary"><i class="mdi mdi-circle-medium"></i> '.$brand->brand_name.'</span>';
-            }
+            // if($category->brand)
+            // foreach($category->brand as $brand){
+            //     $ul .= '<span class="badge badge-label bg-primary"><i class="mdi mdi-circle-medium"></i> '.$brand->brand_name.'</span>';
+            // }
             $ul .= '</a>';
             if(!empty($category->child))
             {
@@ -68,10 +68,10 @@ class CategoryController extends Controller
             $ul .= '            <a data-bs-toggle="collapse" href="#collapseExample'.$k.$key.'" role="button"';
             $ul .= '                aria-expanded="true" aria-controls="collapse'.$k.$key.'"';
             $ul .= '                href="#!"><i class="ri-menu-3-line align-middle me-2"></i> '.$ch['category_name'];
-            if($ch['brand'])
-            foreach($ch['brand'] as $brand){
-                $ul .= '<span class="badge badge-label bg-success"><i class="mdi mdi-circle-medium"></i> '.$brand['brand_name'].'</span>';
-            }
+            // if($ch['brand'])
+            // foreach($ch['brand'] as $brand){
+            //     $ul .= '<span class="badge badge-label bg-success"><i class="mdi mdi-circle-medium"></i> '.$brand['brand_name'].'</span>';
+            // }
             $ul .= '</a>';
 
             if(!empty($ch['child']))
