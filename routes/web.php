@@ -37,8 +37,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-
-
+Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
+    Route::get('/getStore', [App\Http\Controllers\SettingsController::class, 'getStoreByClient']);
+    Route::get('/getWarehouse', [App\Http\Controllers\SettingsController::class, 'getWarehouseByStore']);
+    Route::get('/products/{supplier_id}/get', [App\Http\Controllers\SettingsController::class, 'getProductBySupplier']);
+    Route::get('/products', [App\Http\Controllers\SettingsController::class, 'getProducts']);
+    Route::get('/uom', [App\Http\Controllers\SettingsController::class, 'getUom']);
+});
 
 
 
@@ -57,15 +62,4 @@ Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class
 
 Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
-Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
-    // Route::get('/supplier', [App\Http\Controllers\SettingsController::class, 'getSupplier']);
-    // Route::get('/client', [App\Http\Controllers\SettingsController::class, 'getClient']);
-    // Route::get('/store', [App\Http\Controllers\SettingsController::class, 'getStore']);
 
-    Route::get('/getStore', [App\Http\Controllers\SettingsController::class, 'getStoreByClient']);
-    Route::get('/getWarehouse', [App\Http\Controllers\SettingsController::class, 'getWarehouseByStore']);
-    Route::get('/products', [App\Http\Controllers\SettingsController::class, 'getProducts']);
-    Route::get('/uom', [App\Http\Controllers\SettingsController::class, 'getUom']);
-
-
-});
