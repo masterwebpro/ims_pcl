@@ -40,6 +40,7 @@ class ReceiveController extends Controller
                     $query->orWhere('sp.supplier_name', 'like', '%' . $s . '%');
                     $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
                     $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
+                    $query->orWhere('rcv_hdr.rcv_no', 'LIKE', '%' . $s . '%');
                     $query->get();
                 }
             }]
@@ -153,29 +154,29 @@ class ReceiveController extends Controller
                 $series[] = [
                     'series' => $rcv_no,
                     'trans_type' => 'RCV',
-                    'created_at' => date('y-m-d h:i:s'),
-                    'updated_at' => date('y-m-d h:i:s'),
+                    'created_at' => $this->current_datetime,
+                    'updated_at' => $this->current_datetime,
                     'user_id' => Auth::user()->id,
                 ];
 
                 SeriesModel::insert($series);
             }
            
-            $date_arrived = date("Y-m-d", strtotime($request->date_arrived)). " ".date("h:i:s", strtotime($request->time_arrived));
-            $date_departed = date("Y-m-d", strtotime($request->date_departed)). " ".date("h:i:s", strtotime($request->time_departed));
+            $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
+            $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
                 
-            $po = RcvHdr::updateOrCreate(['id' => $request->rcv_no], [
+            $rcv = RcvHdr::updateOrCreate(['rcv_no' => $request->rcv_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
                 'client_id'=>$request->client,
                 'supplier_id'=>$request->supplier,
                 'sales_invoice'=>$request->sales_invoice,
-                // 'received_by'=>$request->received_by,
+                'received_by'=>$request->received_by,
                 'po_date'=>date("Y-m-d", strtotime($request->po_date)),
                 'date_received'=>date("Y-m-d", strtotime($request->date_received)),
                 'inspect_by'=>$request->inspect_by,
-                'date_arrived'=>date("Y-m-d h:i:s", strtotime($date_arrived)),
-                'date_departed'=>date("Y-m-d h:i:s", strtotime($date_departed)),
+                'date_arrived'=>date("Y-m-d H:i:s", strtotime($date_arrived)),
+                'date_departed'=>date("Y-m-d H:i:s", strtotime($date_departed)),
                 'plate_no'=>$request->plate_no,
                 'truck_type'=>$request->truck_type,
                 'warehouse_id'=>$request->warehouse,
@@ -190,11 +191,19 @@ class ReceiveController extends Controller
                 $dtl[] = array(
                     'rcv_no'=>$rcv_no,
                     'product_id'=>$request->product_id[$x],
+                    'item_type'=>$request->item_type[$x],
                     'inv_qty'=>$request->inv_qty[$x],
                     'inv_uom'=>$request->inv_uom[$x],
                     'whse_qty'=>$request->whse_qty[$x],
                     'whse_uom'=>$request->whse_uom[$x],
+                    'created_at'=>$this->current_datetime,
+                    'updated_at'=>$this->current_datetime,
                 );
+            }
+
+            if($request->status == 'posted') {
+                //add on the masterfile
+
             }
 
             $result= RcvDtl::where('rcv_no',$rcv_no)->delete();
@@ -205,8 +214,8 @@ class ReceiveController extends Controller
             return response()->json([
                 'success'  => true,
                 'message' => 'Saved successfully!',
-                'data'    => $po,
-                'id'=> _encode($po->id)
+                'data'    => $rcv,
+                'id'=> _encode($rcv->id)
             ]);
         }
         catch(\Throwable $e)
@@ -216,10 +225,7 @@ class ReceiveController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }
-
-
-      
+        }      
     }
 
     public function show($id)
@@ -240,7 +246,25 @@ class ReceiveController extends Controller
      */
     public function edit($id)
     {
-        //
+        $rcv = RcvHdr::select('rcv_hdr.*', 'u.name')
+        ->leftJoin('users as u', 'u.id', '=', 'rcv_hdr.created_by')
+        ->where('rcv_hdr.id', _decode($id))->first();
+        
+        $uom_list = UOM::all();
+        $truck_type_list = TruckType::all();
+        $store_list = Store::all();
+        $supplier_list = Supplier::all();
+        $client_list = Client::all();
+        $warehouse_list = Warehouse::all();
+
+        return view('receive/edit', [
+            'rcv'=>$rcv, 
+            'client_list'=>$client_list, 
+            'store_list'=>$store_list,
+            'supplier_list'=>$supplier_list,
+            'truck_type_list'=>$truck_type_list,
+            'warehouse_list'=>$warehouse_list,
+            'uom_list'=>$uom_list]);
     }
 
     /**
@@ -274,7 +298,7 @@ class ReceiveController extends Controller
         $count = $count + 1;
         $date = date('ym');
 
-        $num = str_pad((int)$count, 4, "0", STR_PAD_LEFT);
+        $num = str_pad((int)$count, 5, "0", STR_PAD_LEFT);
 
         $series = "R-" . $date . "-" . $num;
 

@@ -16,12 +16,13 @@
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1">Receiving List</h5>
                     <div class="flex-shrink-0">
-                        <a href="{{ URL::to('po/create') }}"class="btn btn-success add-po" ><i class="ri-download-line align-bottom me-1"></i> Receive PO</a>
+                        <button data-status="open" class="create-receiving btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Receiving</button>
+                        <button data-status="posted" class="receive-po  btn btn-secondary btn-label rounded-pill"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Receive PO</button>
                     </div>
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">
-                <form action="{{ route('po.index') }}" method="GET">
+                <form action="{{ route('receive.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-xxl-4 col-sm-12">
                             <div class="search-box">
@@ -77,13 +78,12 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="id">RCV Number</th>
+                                <th class="sort" data-sort="id">RCV #</th>
                                 <th class="sort" data-sort="id">PO Number</th>
                                 <th class="sort" data-sort="id">Invoice Number</th>
                                 <th class="sort" data-sort="supplier_name">Supplier Name</th>
                                 <th class="sort" data-sort="client_name">Client Name</th>
                                 <th class="sort" data-sort="store">Store/Warehouse</th>
-                                <th class="sort" data-sort="store">Rqstd / Act Qty</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
@@ -99,7 +99,6 @@
                                         <td>{{ $receive->supplier_name}}</td>
                                         <td class="client_name">{{ $receive->client_name}}</td>
                                         <td class="store">{{ $receive->store_name}}</td>
-                                        <td class="qty">{{ $receive->total_requested_qty}} / {{ $receive->total_actual_qty}}</td>
                                         <td class="status"><span class="badge {{ $receive->status }} text-uppercase fs-11">{{ $receive->status }}</span></td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
@@ -140,6 +139,9 @@
 @section('script')
 
 <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
+
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/receive/receive.js') }}"></script>
 
 @endsection

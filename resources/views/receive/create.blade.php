@@ -46,6 +46,7 @@
                             <div class="row g-3">
                                 <div class="col-4">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name</h6>
+                                    <input type="hidden" name="rcv_no" id="rcv_no" />
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="supplier" name="supplier">
                                             <option value="">Select Supplier</option>                                                            
@@ -109,7 +110,7 @@
                 <div class="row ">
                     <div class="col-lg-12">
                         <div class="row ms-3 mt-3 mx-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label> 
                                     <div class="col-lg-8">
@@ -118,7 +119,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Sales Invoice</label>
                                     <div class="col-lg-8">
@@ -132,7 +133,7 @@
 
                     <div class="col-lg-12">
                         <div class="row ms-3 mt-3 mx-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Received By</label> 
                                     <div class="col-lg-8">
@@ -141,11 +142,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" id="date_received" name="date_received" value="" placeholder="Date Received">
+                                        <input type="date" class="form-control" id="date_received" name="date_received" value="" placeholder="Date Received">
                                         <span class="text-danger error-msg date_received_error"></span>
                                     </div>
                                 </div>
@@ -155,7 +156,7 @@
 
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By</label> 
                                     <div class="col-lg-8">
@@ -164,11 +165,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control"  id="inspect_date" name="inspect_date" value="" placeholder="Inspect Date">
+                                        <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="" placeholder="Inspect Date">
                                         <span class="text-danger error-msg inspect_date_error"></span>
                                     </div>
                                 </div>
@@ -178,20 +179,20 @@
 
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived</label> 
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" name="date_arrived" id="date_arrived" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_arrived" id="date_arrived" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="time_arrived" class="col-lg-4  col-form-label">Time Arrived</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" name="time_arrived" id="time_arrived" placeholder="hh:mm" id="cleave-time">
+                                        <input type="time" class="form-control" name="time_arrived" id="time_arrived" placeholder="hh:mm" id="cleave-time">
                                         <span class="text-danger error-msg time_arrived_error"></span>
                                     </div>
                                 </div>
@@ -201,20 +202,20 @@
 
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label> 
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" name="date_departed" id="date_departed" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_departed" id="date_departed" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="time_departed" class="col-lg-4  col-form-label">Time Departed</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" name="time_departed" id="time_departed" placeholder="hh:mm" id="cleave-time">
+                                        <input type="time" class="form-control" name="time_departed" id="time_departed" placeholder="hh:mm" id="cleave-time">
                                         <span class="text-danger error-msg time_departed_error"></span>
                                     </div>
                                 </div>
@@ -224,7 +225,7 @@
 
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number</label> 
                                     <div class="col-lg-8">
@@ -233,7 +234,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Truck Type</label>
                                     <div class="col-lg-8">
@@ -252,7 +253,7 @@
 
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse</label> 
                                     <div class="col-lg-8">
@@ -263,7 +264,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
                                     <div class="col-lg-8">
@@ -298,9 +299,11 @@
                                             <tr class="table-active">
                                                 <th scope="col"  style="width: 10px;">#</th>
                                                 <th scope="col" >Product</th>
+                                                <th scope="col" >Item Type</th>
                                                 <th scope="col" >WHSE Qty</th>
+                                                <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
-                                                <th scope="col" >CBM</th>
+                                                <th scope="col" >Inv UOM</th>
                                                 <th scope="col" >Lot/Batch #</th>
                                                 <th scope="col" >Expiry Date</th>
                                                 <th scope="col" class="text-center">Action</th>

@@ -6,7 +6,7 @@
         <!-- Dark Logo-->
         <a href="index" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ URL::asset('assets/images/logo.png') }}" alt="1" height="60">
+                <img src="{{ URL::asset('assets/images/logo.png') }}" alt="1" height="40">
             </span>
             <span class="logo-lg">
                 <img src="{{ URL::asset('assets/images/pcl_logo.png') }}" alt="2" height="60">
@@ -16,7 +16,7 @@
         <!-- Light Logo-->
         <a href="index" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ URL::asset('assets/images/logo.png') }}" alt="3" height="60">
+                <img src="{{ URL::asset('assets/images/logo.png') }}" alt="3" height="40">
             </span>
             <span class="logo-lg">
                 <img src="{{ URL::asset('assets/images/pcl_logo.png') }}" alt="4" height="60">

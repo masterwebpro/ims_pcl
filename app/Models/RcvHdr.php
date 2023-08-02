@@ -11,6 +11,30 @@ class RcvHdr extends Model
 
     protected $table = 'rcv_hdr';
 
+    protected $fillable = [
+        'rcv_no',
+        'po_num',
+        'store_id',
+        'client_id',
+        'supplier_id',
+        'date_received',
+        'received_by',
+        'po_date',
+        'inspect_by',
+        'inspect_date',
+        'date_arrived',
+        'date_departed',
+        'plate_no',
+        'sales_invoice',
+        'truck_type',
+        'warehouse_id',
+        'remarks',
+        'status',
+        'created_by',
+        'created_at',
+        'updated_at'
+    ];
+
     public function items() 
     {
         return $this->hasMany(RcvDtl::class, 'rcv_no', 'rcv_no');

@@ -11,6 +11,18 @@ class RcvDtl extends Model
 
     protected $table = 'rcv_dtl';
 
+    protected $fillable = [
+        'rcv_no',
+        'product_id',
+        'item_type',
+        'inv_qty',
+        'inv_uom',
+        'whse_qty',
+        'whse_uom',
+        'updated_at',
+        'created_at'
+    ];
+
     public function header()
     {
         return $this->belongsTo(RcvHdr::class, 'rcv_no', 'rcv_no');
