@@ -184,17 +184,6 @@ class ReceiveController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
-
-            whse_qty[]: 1
-            whse_uom[]: 2
-            inv_qty[]: 1
-            inv_uom[]: 2
-            product_id[]: 7
-            whse_qty[]: 1
-            whse_uom[]: 1
-            inv_qty[]: 1
-            inv_uom[]: 1
-
             //save on dtl
             $dtl = array();
             for($x=0; $x < count($request->product_id); $x++ ) {
