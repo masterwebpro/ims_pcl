@@ -6,7 +6,7 @@
 @section('content')
 @component('components.breadcrumb')
 @slot('li_1') Dashboards @endslot
-@slot('title') Dashboard @endslot
+@slot('title') Brand @endslot
 @endcomponent
 
 <div class="row">
