@@ -21,9 +21,6 @@ $(document).on('change', '#store', function() {
     populateWarehouse(store_id, '');
 });
 
-
-
-
 $(document).on('click', '.submit-location', function (e) {
     e.preventDefault();
     var form_data = new FormData(document.getElementById("form-location"));
@@ -58,7 +55,7 @@ $(document).on('click', '.submit-location', function (e) {
                             $('#preloading').modal('show');
                             setTimeout(function () {
                                 window.location = BASEURL+'maintenance/location';
-                            }, 1500);
+                            }, 800);
                         }
                     });
                 } else {
