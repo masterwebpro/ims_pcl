@@ -21,7 +21,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="card-title mb-0 flex-grow-1">All Menu List</h5>
                         {{-- <div class="flex-shrink-0">
-                            <a href="{{ URL::to('maintenance/menu/create') }}"class="btn btn-danger add-po"><i
+                            <a href="{{ URL::to('maintenance/menu/create') }}"class="btn btn-info add-po"><i
                                     class="ri-add-line align-bottom me-1"></i> Create menu</a>
                         </div> --}}
                     </div>

@@ -9,6 +9,7 @@ use App\Models\RcvDtl;
 use App\Models\SeriesModel;
 use App\Models\Client;
 use App\Models\Store;
+use App\Models\MasterfileModel;
 use App\Models\Warehouse;
 use App\Models\Supplier;
 use App\Models\UOM;
@@ -145,10 +146,9 @@ class ReceiveController extends Controller
 
         try 
         {
-
             $rcv_no = $request->rcv_no;
 
-            if(empty($rcv_no)) {
+            if($rcv_no=='') {
                 $rcv_no = $this->generateRcvNo();
 
                 $series[] = [
@@ -165,7 +165,7 @@ class ReceiveController extends Controller
             $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
                 
-            $rcv = RcvHdr::updateOrCreate(['rcv_no' => $request->rcv_no], [
+            $rcv = RcvHdr::updateOrCreate(['rcv_no' => $rcv_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
                 'client_id'=>$request->client,
@@ -175,6 +175,7 @@ class ReceiveController extends Controller
                 'po_date'=>date("Y-m-d", strtotime($request->po_date)),
                 'date_received'=>date("Y-m-d", strtotime($request->date_received)),
                 'inspect_by'=>$request->inspect_by,
+                'inspect_date'=>date("Y-m-d H:i:s", strtotime($request->inspect_date)),
                 'date_arrived'=>date("Y-m-d H:i:s", strtotime($date_arrived)),
                 'date_departed'=>date("Y-m-d H:i:s", strtotime($date_departed)),
                 'plate_no'=>$request->plate_no,
@@ -187,6 +188,7 @@ class ReceiveController extends Controller
             ]);
             //save on dtl
             $dtl = array();
+            $masterfile = [];
             for($x=0; $x < count($request->product_id); $x++ ) {
                 $dtl[] = array(
                     'rcv_no'=>$rcv_no,
@@ -199,15 +201,32 @@ class ReceiveController extends Controller
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
-            }
 
-            if($request->status == 'posted') {
                 //add on the masterfile
-
+                $masterfile[] = array(
+                    'ref_no'=>$rcv_no,
+                    'product_id'=>$request->product_id[$x],
+                    'item_type'=>$request->item_type[$x],
+                    'inv_qty'=>$request->inv_qty[$x],
+                    'inv_uom'=>$request->inv_uom[$x],
+                    'whse_qty'=>$request->whse_qty[$x],
+                    'whse_uom'=>$request->whse_uom[$x],
+                    'store_id'=>$request->store,
+                    'client_id'=>$request->client,
+                    'warehouse_id'=>$request->warehouse,
+                    'storage_location_id'=>null,
+                    'created_at'=>$this->current_datetime,
+                    'updated_at'=>$this->current_datetime,
+                );
             }
 
             $result= RcvDtl::where('rcv_no',$rcv_no)->delete();
             RcvDtl::insert($dtl);
+
+            if($request->status == 'posted') {
+                //add on the masterfile
+                MasterfileModel::insert($masterfile);
+            }
 
             DB::connection()->commit();
 
@@ -234,8 +253,21 @@ class ReceiveController extends Controller
         ->leftJoin('users as u', 'u.id', '=', 'rcv_hdr.created_by')
         ->where('rcv_hdr.id', _decode($id))->first();
         
-        $uom = UOM::all();
-        return view('receive/view', ['rcv'=>$rcv, 'uom'=>$uom]);
+        $uom_list = UOM::all();
+        $truck_type_list = TruckType::all();
+        $store_list = Store::all();
+        $supplier_list = Supplier::all();
+        $client_list = Client::all();
+        $warehouse_list = Warehouse::all();
+
+        return view('receive/view', [
+            'rcv'=>$rcv, 
+            'client_list'=>$client_list, 
+            'store_list'=>$store_list,
+            'supplier_list'=>$supplier_list,
+            'truck_type_list'=>$truck_type_list,
+            'warehouse_list'=>$warehouse_list,
+            'uom_list'=>$uom_list]);
     }
 
     /**
@@ -267,18 +299,7 @@ class ReceiveController extends Controller
             'uom_list'=>$uom_list]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -292,7 +313,6 @@ class ReceiveController extends Controller
 
     public function generateRcvNo()
     {
-
         $data = SeriesModel::where('trans_type', '=', 'RCV')->where('created_at', '>=', date('Y-m-01 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'));
         $count = $data->count();
         $count = $count + 1;

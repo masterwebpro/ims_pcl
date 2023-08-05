@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Store @endsection
+@section('title') Storage Location @endsection
 @section('css')
 
 @endsection
@@ -14,14 +14,14 @@
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">All Store List</h5>
+                    <h5 class="card-title mb-0 flex-grow-1">All Storage Location List</h5>
                     <div class="flex-shrink-0">
-                        <a href="{{ URL::to('maintenance/store/create') }}"class="btn btn-info add-po" ><i class="ri-add-line align-bottom me-1"></i> Create Store</a>
+                        <a href="{{ URL::to('maintenance/location/create') }}"class="btn btn-info" ><i class="ri-add-line align-bottom me-1"></i> Create Location</a>
                     </div>
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">
-                <form action="{{ route('client.index') }}" method="GET">
+                <form action="{{ route('location.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-xxl-4 col-sm-12">
                             <div class="search-box">
@@ -73,56 +73,37 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="store_code">Store Code</th>
-                                <th class="sort" data-sort="store_name">Store Name</th>
                                 <th class="sort" data-sort="client_name">Client Name</th>
-                                <th class="sort" data-sort="tin">Tin</th>
-                                <th class="sort" data-sort="address_1">Address 1</th>
-                                <th class="sort" data-sort="address_1">Address 2</th>
-                                <th class="sort" data-sort="city">City</th>
-                                <th class="sort" data-sort="province">Province</th>
-                                <th class="sort" data-sort="country">Country</th>
-                                <th class="sort" data-sort="zipcode">Zip Code</th>
-                                <th class="sort" data-sort="contact">Contact Person</th>
-                                <th class="sort" data-sort="email_address">Email Address</th>
-                                <th class="sort" data-sort="phone_no">Phone Number</th>
-                                <th class="sort" data-sort="is_vatable">Vatable</th>
-                                <th class="sort" data-sort="is_enable">Enable</th>
+                                <th class="sort" data-sort="store_name">Store Name</th>
+                                <th class="sort" data-sort="warehouse_name">Warehouse Name</th>
+                                <th class="sort" data-sort="location">Location</th>
+                                <th class="sort" data-sort="rack">Rack</th>
+                                <th class="sort" data-sort="level">Level</th>
+                                <th class="sort" data-sort="is_enabled">Enable</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
 
                         <tbody class="list form-check-all">
-                            <? if($store->total() > 0 ) : ?>
-                                <? foreach($store as $str) :?>
+                            <? if($locations->total() > 0 ) : ?>
+                                <? foreach($locations as $location) :?>
                                     <tr>
-                                        <td class="project_name">{{ $str->store_code}}</td>
-                                        <td class="id">{{ $str->store_name}}</td>
-                                        <td>{{ $str->client_name }}</td>
-                                        <td>{{ $str->tin}}</td>
-                                        <td>{{ $str->address_1}}</td>
-                                        <td>{{ $str->address_1}}</td>
-                                        <td>{{ $str->city}}</td>
-                                        <td>{{ $str->province}}</td>
-                                        <td>{{ $str->country}}</td>
-                                        <td>{{ $str->zipcode}}</td>
-                                        <td>{{ $str->contact_person}}</td>
-                                        <td>{{ $str->email_address}}</td>
-                                        <td>{{ $str->phone_no}}</td>
+                                        
+                                        <td class="client_name">{{ $location->client_name}}</td>
+                                        <td class="store_name">{{ $location->store_name}}</td>
+                                        <td class="warehouse_name">{{ $location->warehouse_name}}</td>
+                                        <td class="store_name">{{ $location->location}}</td>
+                                        <td class="store_name">{{ $location->rack}}</td>
+                                        <td class="store_name">{{ $location->level}}</td>
                                         <td>
-                                            <div class="form-check form-switch form-switch-custom form-switch-primary">
-                                                <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_vatable"  {{ (($str->is_vatable == 1) ? "checked" : "") }} disabled>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-switch form-switch-custom form-switch-primary">
-                                                <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($str->is_enabled == 1) ? "checked" : "") }} disabled>
+                                            <div class="form-check form-switch {{ (($location->is_enabled == 1) ? 'form-switch-success' : 'form-switch-primary') }} ">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($location->is_enabled == 1) ? "checked" : "") }} disabled>
                                             </div>
                                         </td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('maintenance/store') }}/<?=_encode($str->id)?>" data-id="{{$str->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <a href="{{ URL::to('maintenance/store') }}/<?=_encode($str->id);?>/edit" data-id="{{$str->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                <a href="{{ URL::to('maintenance/location') }}/<?=_encode($location->storage_location_id)?>" data-id="{{$location->storage_location_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <a href="{{ URL::to('maintenance/location') }}/<?=_encode($location->storage_location_id);?>/edit" data-id="{{$location->storage_location_id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                         </td>
                                     </tr>
                                 <? endforeach; ?>
@@ -142,7 +123,7 @@
                     <!--end table-->
                 </div>
                 <!-- Pagination -->
-                {!! $store->withQueryString()->links('pagination::bootstrap-5') !!}
+                {!! $locations->withQueryString()->links('pagination::bootstrap-5') !!}
             </div>
             <!--end card-body-->
         </div>
@@ -157,6 +138,5 @@
 
 <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-<script src="{{ URL::asset('/assets/js/pages/form-masks.init.js') }}"></script>
 
 @endsection

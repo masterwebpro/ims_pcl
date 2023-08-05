@@ -20,13 +20,18 @@
     <div class="col-xxl-11">
         <div class="card" id="tasksList">
             <div class="card-header border-0">
-                <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1"><?=$rcv->rcv_no?> <span class="badge  fs-16 <?=$rcv->status?> text-uppercase"><?=$rcv->status?></span></h5>
-                    <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                        <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+                <div class="row align-items-center">
+                    <div class="col-md-4 text-start">
+                        <h5 class="card-title mb-0 flex-grow-1"><?=$rcv->rcv_no?> </h5>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <span class="badge  fs-16 <?=$rcv->status?> text-uppercase"><?=$rcv->status?></span>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
                         <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
                         <a href="{{ URL::to('receive') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
-                    </div>
+                    </div>            
                 </div>
             </div>
         </div>

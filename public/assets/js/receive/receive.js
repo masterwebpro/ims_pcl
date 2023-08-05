@@ -1,3 +1,5 @@
+// create a program for odd even number
+
 $(document).ready(function () {
     $(".select2").select2();
 
