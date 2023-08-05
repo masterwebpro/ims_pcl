@@ -48,5 +48,8 @@ Homestead.json
 Homestead.yaml
 /.idea
 
+vendor/*
+storage/*
+
 npm-debug.log
 yarn-error.log
