@@ -55,7 +55,7 @@ $(document).on('click', '.submit-location', function (e) {
                             $('#preloading').modal('show');
                             setTimeout(function () {
                                 window.location = BASEURL+'maintenance/location';
-                            }, 800);
+                            }, 300);
                         }
                     });
                 } else {

@@ -115,67 +115,69 @@
                         <table class="table table-borderless table-nowrap" id="product-list">
                             <thead>
                                 <tr class="table-active">
-                                    <th scope="col" style="width: 100px;">Product Code</th>
+                                    <th scope="col" style="width: 20px;">#</th>
                                     <th scope="col" class="text-start">Particulars</th>
-                                    <th scope="col" style="width: 120px;">UOM</th>
-                                    <th scope="col" style="width: 50px;">Quantity</th>
-                                    <th scope="col" style="width: 110px;" class="text-start">Unit Price</th>
-                                    <th scope="col" style="width: 100px;">Discount</th>
-                                    <th scope="col" style="width: 100px;" class="text-start">Amount</th>
-                                    <th scope="col" style="width: 50px;"class="text-center">Action</th>
+                                    <th scope="col" >UOM</th>
+                                    <th scope="col" >Quantity</th>
+                                    <th scope="col" class="text-start">Unit Price</th>
+                                    <th scope="col" >Discount</th>
+                                    <th scope="col" class="text-start">Amount</th>
+                                    <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="newlink">
                                 <? 
                                     $total_discount = 0;
                                     $subtotal =0;
+                                    $x=1;
                                     foreach($po->items as $item) :
                                     
                                         $total_discount += $item->discount ;
                                         $subtotal += $item->total_amount;
                                     ?>
-                                    <tr id="product_{{ $item->id }}" class="product">
+                                    <tr id="product_{{$x}}" class="product">
                                         <td class="text-start">
+                                        <?=$x?>
+                                        </td>
+                                        <td class="text-start fs-14">
                                             <div class="mb-0">
-                                                <input type="text" class="form-control" name="product_code[]" readonly id="product_code_{{ $item->id }}" value="{{ $item->product->product_code }}"/>
+                                                {{ $item->product->product_name }}<br/><small>{{ $item->product->product_code }}</small>
+                                                <input type="hidden" class="form-control" name="product_code[]" readonly id="product_code_{{ $item->id }}" value="{{ $item->product->product_code }}"/>
                                                 <input type="hidden" class="form-control" name="product_id[]" readonly id="product_id_{{ $item->id }}" value="{{ $item->product->product_id }}" />
-                                                <div class="invalid-feedback">Please enter a product name</div>
+                                                <input type="hidden" class="form-control" name="product_name[]" readonly id="product_name_{{ $item->id }}" value="{{ $item->product->product_name }}" placeholder="Product Desc" required />
                                             </div>
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control product-price" name="product_name[]" readonly id="product_name_{{ $item->id }}" value="{{ $item->product->product_name }}" placeholder="Product Desc" required />
-                                            <div class="invalid-feedback">Please enter a rate</div>
-                                        </td>
-                                        <td>
-                                            <select class="form-select select2" required="required" name="uom[]" id="uom_{{ $item->id }}" required>
+                                            <select class="form-select uom uom-select " required="required" name="uom[]" id="uom_{{ $item->id }}" required>
                                                 <option value="">UOM</option>                                                            
                                                 <? foreach($uom as $u) : ?>
                                                     <option value="<?=$u->uom_id?>" <?=($u->uom_id == $item->uom_id) ? 'selected' : ''?> ><?=$u->code?></option>
                                                 <? endforeach;?>
                                             </select>
-                                            <div class="invalid-feedback">Please select uom</div>
+                                            <span class="text-danger error-msg uom{{($x-1)}}_error"></span>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control text-end qty" name="qty[]" id="qty_{{ $item->id }}" value="{{ $item->requested_qty }}" placeholder="Qty" required />
-                                            <div class="invalid-feedback">Please select uom</div>
+                                            <span class="text-danger error-msg qty{{($x-1)}}_error"></span>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control unit_price text-end" name="unit_price[]" id="unit_price_{{ $item->id }}" value="{{ $item->unit_amount }}" placeholder="Unit price" required />
-                                            <div class="invalid-feedback">Please select uom</div>
+                                            <span class="text-danger error-msg unit_price{{($x-1)}}_error"></span>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control discount text-end" name="discount[]" id="discount_{{ $item->id }}" value="{{ number_format($item->discount,2) }}" placeholder="Discount" required />
-                                            <div class="invalid-feedback">Please select uom</div>
                                         </td>
-                                        <td class="text-end">
+                                        <td class="text-start">
                                             <div>
                                                 <input type="text" class="form-control total_amount text-end" name="amount[]" id="total_amount_{{ $item->id }}" value="{{ number_format($item->total_amount,2) }}" placeholder="0.00" readonly />
+                                                <span class="text-danger error-msg amount{{($x-1)}}_error"></span>
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <a href="javascript:void(0)" class="text-danger"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
+                                            <a href="javascript:void(0)" class="text-danger remove-product" data-id="{{ $x }}"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
                                         </td>
                                     </tr>
+                                    <?$x++;?>
                                 <? endforeach;?>
                             </tbody>
                             </table>
@@ -264,7 +266,6 @@
 <script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js') }}"></script>
 <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
-
 
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
 <script src="{{ URL::asset('/assets/js/po/po.js') }}"></script>

@@ -100,7 +100,6 @@ class ReceiveController extends Controller
             'supplier'=>'required',
             'client'=>'required',
             'store'=>'required',
-            'po_num'=>'required',
             'sales_invoice'=>'required',
             'received_by'=>'required',
             'date_received'=>'required',
@@ -117,11 +116,11 @@ class ReceiveController extends Controller
             'whse_uom.*' => 'required',
             'inv_qty.*' => 'required',
             'inv_uom.*' => 'required',
+            'item_type.*' => 'required',
         ], [
             'supplier'=>'Supplier is required',
             'client'=>'Client  is required',
             'store'=>'Store is required',
-            'po_num'=>'Po Number is required',
             'sales_invoice'=>'Sales invoice is required',
             'received_by'=>'Received by is required',
             'date_received'=>'Date received is required',
@@ -134,10 +133,11 @@ class ReceiveController extends Controller
             'time_departed'=>'Time Departed  is required',
             'truck_type'=>'Truck Type  is required',
             'warehouse'=>'Warehose  is required',
-            'whse_qty.*' => 'Whse Qty  is required',
-            'whse_uom.*' => 'Whse UOM  is required',
-            'inv_qty.*' => 'Inv Qty  is required',
-            'inv_uom.*' => 'Inv UOM  is required'
+            'whse_qty.*' => 'Qty  is required',
+            'whse_uom.*' => 'UOM  is required',
+            'inv_qty.*' => 'Qty  is required',
+            'inv_uom.*' => 'UOM  is required',
+            'item_type.*' => 'This is required'
         ]);
 
         if ($validator->fails()) {

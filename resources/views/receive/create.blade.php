@@ -45,7 +45,7 @@
                         <div class="card-body p-4 ">
                             <div class="row g-3">
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span class="text-danger">*</span></h6>
                                     <input type="hidden" name="rcv_no" id="rcv_no" />
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="supplier" name="supplier">
@@ -62,7 +62,7 @@
                                 </div>
 
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
                                     <p class="fw-medium mb-2" id="billing-name">
                                         <select class="form-select select2" required="required" id="client" name="client">
                                             <option value="">Select Client</option>                                                            
@@ -78,7 +78,7 @@
                                 </div>
                                 <!--end col-->
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address <span class="text-danger">*</span></h6>
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="store" name="store">
                                             <option value="">Select Store/Warehouse</option>                                                            
@@ -121,7 +121,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Sales Invoice</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Sales Invoice <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control"  id="sales_invoice" name="sales_invoice" value="" placeholder="Sales Invoice">
                                         <span class="text-danger error-msg sales_invoice_error"></span>
@@ -135,7 +135,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="received_by" name="received_by" value="" placeholder="Received By">
                                         <span class="text-danger error-msg received_by_error"></span>
@@ -144,7 +144,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" id="date_received" name="date_received" value="" placeholder="Date Received">
                                         <span class="text-danger error-msg date_received_error"></span>
@@ -158,7 +158,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="inspect_by" name="inspect_by" value="" placeholder="Inspect By">
                                         <span class="text-danger error-msg inspect_by_error"></span>
@@ -167,7 +167,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="" placeholder="Inspect Date">
                                         <span class="text-danger error-msg inspect_date_error"></span>
@@ -181,7 +181,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived</label> 
+                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" name="date_arrived" id="date_arrived" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
@@ -190,7 +190,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="time_arrived" class="col-lg-4  col-form-label">Time Arrived</label>
+                                    <label for="time_arrived" class="col-lg-4  col-form-label">Time Arrived <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="time" class="form-control" name="time_arrived" id="time_arrived" placeholder="hh:mm" id="cleave-time">
                                         <span class="text-danger error-msg time_arrived_error"></span>
@@ -204,7 +204,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" name="date_departed" id="date_departed" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
@@ -213,7 +213,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="time_departed" class="col-lg-4  col-form-label">Time Departed</label>
+                                    <label for="time_departed" class="col-lg-4  col-form-label">Time Departed <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="time" class="form-control" name="time_departed" id="time_departed" placeholder="hh:mm" id="cleave-time">
                                         <span class="text-danger error-msg time_departed_error"></span>
@@ -227,7 +227,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" name="plate_no" id="plate_no" value="" placeholder="Plate Number">
                                         <span class="text-danger error-msg plate_no_error"></span>
@@ -236,7 +236,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Truck Type</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Truck Type <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="truck_type" name="truck_type">
                                             <option value="">Select Truck Type</option>                                                            
@@ -255,7 +255,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="warehouse" name="warehouse">
                                             <option value="">Select warehouse</option>                                                            
