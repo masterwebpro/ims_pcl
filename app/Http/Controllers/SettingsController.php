@@ -30,11 +30,6 @@ class SettingsController extends Controller
         return Datatables::of($products)->addIndexColumn()->make();
     }
 
-
-
-    public function getUom(Request $request) {
-        $uom_list = $products = \App\Models\Uom::all();
-
     function getPostedPo(Request $request) {
         $data = \App\Models\PoHdr::select('po_num')->where('status', 'posted')->get();
         return response()->json($data);
