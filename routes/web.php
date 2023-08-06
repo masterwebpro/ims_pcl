@@ -34,6 +34,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/brand', App\Http\Controllers\BrandController::class);
     Route::resource('/menu', App\Http\Controllers\MenuController::class);
     Route::resource('/maintenance/category', App\Http\Controllers\CategoryController::class);
+    Route::resource('/maintenance/product', App\Http\Controllers\ProductController::class);
+    Route::resource('/maintenance/attributes', App\Http\Controllers\AttributesController::class);
 
 });
 
@@ -43,6 +45,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/products/{supplier_id}/get', [App\Http\Controllers\SettingsController::class, 'getProductBySupplier']);
     Route::get('/products', [App\Http\Controllers\SettingsController::class, 'getProducts']);
     Route::get('/uom', [App\Http\Controllers\SettingsController::class, 'getUom']);
+    Route::get('/getBrand', [App\Http\Controllers\SettingsController::class, 'getBrandByCategory']);
 });
 
 
