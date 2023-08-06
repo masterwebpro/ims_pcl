@@ -20,23 +20,28 @@ $(document).on('change', '#client', function() {
 });
 
 $(document).on('click', '#find-items', function() {
-   $('#show-items').modal('show');
+   var supplier_id = $('#supplier').val();
 
-   if ($.fn.DataTable.isDataTable("#show-items-list")) {
-        $('#show-items-list').DataTable().clear().destroy();
-    }
-    new DataTable("#show-items-list",{
-        order: [[1, 'desc']],
-        paging: true,
-        ajax: BASEURL+"settings/products" ,
-        columns: [
-            { data: 'product_id',  visible: false },
-            { data: 'product_code' },
-            { data: 'product_sku' },
-            { data: 'product_name' }
-        ],
-    });
+   if(supplier_id) {   
 
+       $('#show-items').modal('show'); 
+       if ($.fn.DataTable.isDataTable("#show-items-list")) {
+           $('#show-items-list').DataTable().clear().destroy();
+       }
+       new DataTable("#show-items-list",{
+           order: [[1, 'desc']],
+           paging: true,
+           ajax: BASEURL+"settings/products/"+supplier_id+'/get',
+           columns: [
+               { data: 'product_id',  visible: false },
+               { data: 'product_code' },
+               { data: 'product_sku' },
+               { data: 'product_name' }
+           ],
+       });
+   } else {
+       showError("Please select supplier name.");
+   }
 });
 
 $(document).on('click', '#add-product', function() {
@@ -47,37 +52,42 @@ $(document).on('click', '#add-product', function() {
         //get UOM list
 
         var uom = getUom();
+        var rowCount = $('#product-list tr').length;
 
+        
         var btn = '<div class="text-center">';
-        btn += '<a href="javascript:void(0)" class="text-danger"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
+        btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+data.product_id+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
         btn += '</div>'
 
         $('#product-list tbody').append('<tr id="product_'+data.product_id+'"> \
         <td class="text-start"> \
-        <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
-            <input type="text" readonly class="form-control" name="product_code[]" data-id="'+data.product_id+'" id="product_code_'+data.product_id+'" value="'+data.product_code+'" placeholder="Code" /> \
+        '+rowCount+' \
         </td> \
-        <td class="text-start"> \
-            <input type="text" readonly class="form-control" name="product_name[]" data-id="'+data.product_id+'" id="product_name_'+data.product_id+'" value="'+data.product_name+'" placeholder="Sku" /> \
+        <td class="text-start  fs-14"> \
+            <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
+            '+data.product_name+'<br/><small>'+data.product_code+'</small> \
+            <input type="hidden" readonly class="form-control" name="product_code[]" data-id="'+data.product_id+'" id="product_code_'+data.product_id+'" value="'+data.product_code+'" placeholder="Code" /> \
+            <input type="hidden" readonly class="form-control" name="product_name[]" data-id="'+data.product_id+'" id="product_name_'+data.product_id+'" value="'+data.product_name+'" placeholder="Sku" /> \
         </td> \
-        <td class="text-end ps-1"> \
-            '+uom+' \
+        <td class="text-start ps-1">\
+          <select name="uom[]" class="uom uom_select form-select select2">  '+uom+' </select> \
+          <span class="text-danger error-msg uom'+(rowCount-1)+'_error"></span> \
         </td> \
         <td class="text-start"> \
             <input type="text" class="form-control qty" name="qty[]" data-id="'+data.product_id+'" id="qty_'+data.product_id+'" value="" placeholder="Qty" /> \
+            <span class="text-danger error-msg qty'+(rowCount-1)+'_error"></span> \
         </td> \
         <td class="text-start"> \
              <input type="text" name="unit_price[]" data-id="'+data.product_id+'" id="unit_price_'+data.product_id+'" value="" class="form-control unit_price text-end" placeholder="0.00" /> \
+             <span class="text-danger error-msg unit_price'+(rowCount-1)+'_error"></span> \
         </td> \
         <td class="text-start"> \
             <input type="text" name="discount[]" data-id="'+data.product_id+'" id="discount_'+data.product_id+'" value="" class="form-control discount text-end" placeholder="0.00" /> \
         </td> \
-        <td><input type="text" name="amount[]" readonly data-id="'+data.product_id+'" id="total_amount_'+data.product_id+'" data-id="'+data.id+'"  value="" class="form-control total_amount text-end" placeholder="0.00"/></td> \
+        <td><input type="text" name="amount[]" readonly data-id="'+data.product_id+'" id="total_amount_'+data.product_id+'" data-id="'+data.id+'"  value="" class="form-control total_amount text-end" placeholder="0.00"/><span class="text-danger error-msg amount'+(rowCount-1)+'_error"></span> \</td> \
         <td>'+btn+'</td> \
         </tr>');
     }
-
-    $('#show-items').modal('hide');
 
 });
 
@@ -98,12 +108,11 @@ $(document).on('click', '.submit-po', function (e) {
         dataType: 'json',
         contentType: false,
         beforeSend: function () {
-            $('#error-handling ul').html('');
-            $('#error-handling').addClass('d-none');
             $('#preloading').modal('show');
+            $('#form-po').find('span.error-msg').text('');
         },
         success: function (data) {
-            if($.isEmptyObject(data.error)) {
+            if($.isEmptyObject(data.errors)) {
                 if(data.success == true) {
                     if(status == 'posted') {
                         setTimeout(function(){
@@ -120,11 +129,11 @@ $(document).on('click', '.submit-po', function (e) {
                     toastr.error(data.message,'Error on saving');
                 }
             } else {
-                $('#error-handling').removeClass('d-none');
-
-                $.each(data.error, function(prefix, val) {
-                    $('#error-handling ul').append('<li>'+val+'</li>');
+                $.each(data.errors, function(prefix, val) {
+                    $('#errMsg').removeClass('d-none');
+                    $('#form-po').find('span.'+prefix.replace('.','')+'_error').text(val);
                 });
+                toastr.error('Some fields are required');
             }
         },
         complete: function() {
@@ -190,3 +199,7 @@ function computeAll() {
     $("#total_qty").val(qty);
 }
 
+$(document).on('click', '.remove-product', function() {
+    var id = $(this).data('id');
+    $('#product_'+id).remove();
+});

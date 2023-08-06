@@ -1,3 +1,5 @@
+// create a program for odd even number
+
 $(document).ready(function () {
     $(".select2").select2();
 
@@ -87,18 +89,23 @@ $(document).on('click', '#add-product', function() {
                 <option value="damage">Damage</option> \
                 <option value="repair">Repair</option> \
             </select> \
+            <span class="text-danger error-msg item_type'+(rowCount-1)+'_error"></span> \
         </td>  \
-        <td class="text-end ps-1"> \
+        <td class="text-start ps-1"> \
             <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+data.product_id+'" id="whse_qty_'+idx+'" value="" placeholder="Whse Qty" /> \
+            <span class="text-danger error-msg whse_qty'+(rowCount-1)+'_error"></span> \
         </td> \
-            <td class="text-end ps-1"><select name="whse_uom[]" id="whse_uom_'+idx+'" class="uom uom_select form-select select2"> \
+            <td class="text-start ps-1"><select name="whse_uom[]" id="uom_'+idx+'" class="uom uom_select form-select select2"> \
             '+uom+'</select> \
+            <span class="text-danger error-msg whse_uom'+(rowCount-1)+'_error"></span> \
         </td> \
-        <td class="text-end ps-1"> \
+        <td class="text-start ps-1"> \
             <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+data.product_id+'" id="inv_qty_'+idx+'" value="" placeholder="Inv Qty" /> \
-        <td class="text-end ps-1"> \
+            <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
+        <td class="text-start ps-1"> \
             <select name="inv_uom[]" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
             '+uom+'</select> \
+            <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
         </td> \
         <td class="text-start ps-1"> \
             <small>-</small> \
@@ -151,10 +158,78 @@ $(document).on('click', '.create-receiving', function (e) {
     $('#preloading').modal('show');
     setTimeout(function () {
         window.location = BASEURL+'receive/create';
-    }, 1000);
+    }, 300);
+});
+
+$(document).on('click', '.receive-po', function (e) {
+    e.preventDefault();
+    $('#po_num_holder').val('');
+    $('#show-po').modal('show');
+});
+
+$(document).on('click', '#receive-po-btn', function (e) {
+    e.preventDefault();
+    $('#preloading').modal('show');
+    var po_num = $('#po_num_holder').val();
+    setTimeout(function () {
+        window.location = BASEURL+'receive/'+escapeHtml(po_num)+'/create';
+    }, 300);
+    
 });
 
 
+
+// async
+const data = {
+    src: async (query) => {
+      try {
+        // Fetch Data from external Source
+        const source = await fetch(BASEURL + 'settings/getPostedPO');
+        const data = await source.json();
+        return data;
+      } catch (error) {
+        return error;
+      }
+    },
+    keys: ["po_num"],
+    cache: true
+}
+
+if($("#po_num_holder").length) {
+
+    var autoCompletePoNum = new autoComplete({
+        selector: "#po_num_holder",
+        placeHolder: "Search for PO number...",
+        data: data,
+        threshold: 2,
+        resultsList: {
+            element: function element(list, data) {
+                if (!data.results.length) {
+                    // Create "No Results" message element
+                    var message = document.createElement("div");
+                    // Add class to the created element
+                    message.setAttribute("class", "no_result");
+                    // Add message text content
+                    message.innerHTML = "<span>Found No Results for \"" + data.query + "\"</span>";
+                    // Append message element to the results list
+                    list.prepend(message);
+                }
+            },
+            noResults: true
+        },
+        resultItem: {
+            highlight: true
+        },
+        events: {
+            input: {
+                selection: function selection(event) {
+                    var selection = event.detail.selection.value;
+                    autoCompletePoNum.input.value = selection.po_num;
+                }
+            }
+        }
+    });
+}
 
 function _submitData(form_data) {
     $.ajax({
@@ -174,11 +249,14 @@ function _submitData(form_data) {
                 if(data.success == true) {
                     if(data.data.status == 'open') {
                         showSuccess(data.message);
+                        setTimeout(function () {
+							window.location = BASEURL+'receive/'+data.id+'/edit';
+						}, 300);
                     } else {
                         toastr.success(data.message); 
                         setTimeout(function () {
 							window.location = BASEURL+'receive';
-						}, 2000);
+						}, 300);
                     }
                 } else {
                     toastr.error(data.message,'Error on saving'); 
@@ -186,7 +264,7 @@ function _submitData(form_data) {
             } else {
                 $.each(data.errors, function(prefix, val) {
                     $('#errMsg').removeClass('d-none');
-                    $('#submit-receive').find('span.'+prefix+'_error').text(val);
+                    $('#submit-receive').find('span.'+prefix.replace('.','')+'_error').text(val);
                 });
                 toastr.error('Some fields are required');
             }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\UOM;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -34,6 +35,14 @@ class SettingsController extends Controller
     public function getUom(Request $request) {
         $uom_list = $products = \App\Models\Uom::all();
 
+    function getPostedPo(Request $request) {
+        $data = \App\Models\PoHdr::select('po_num')->where('status', 'posted')->get();
+        return response()->json($data);
+    }
+
+    public function getUom(Request $request) {
+
+        $uom_list = UOM::all();
         $rand_no = mt_rand(1000,9999)."A";
 
        // $html = '<select name="uom[]" data-id="'.$rand_no.'" id="uom_'.$rand_no.'" class="uom form-select select2">';

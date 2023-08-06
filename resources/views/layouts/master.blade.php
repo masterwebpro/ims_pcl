@@ -1,12 +1,12 @@
 <!doctype html >
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="vertical" data-topbar="dark" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 
 <head>
     <meta charset="utf-8" />
-    <title>@yield('title')| Velzon - Admin & Dashboard Template</title>
+    <title>@yield('title')| Inventory Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-    <meta content="Themesbrand" name="author" />
+    <meta content="Inventory Management System, powered by TersusNet" name="description" />
+    <meta content="TersusNet" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('assets/images/favicon.ico')}}">
     @include('layouts.head-css')

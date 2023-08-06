@@ -10,12 +10,14 @@ use App\Models\Client;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\UOM;
+use App\Models\AuditTrail;
 
 use DataTables;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Validator;
 use Throwable;
 
 class PurchaseOrderController extends Controller
@@ -89,6 +91,36 @@ class PurchaseOrderController extends Controller
     public function store(Request $request)
     {
 
+        $validator = Validator::make($request->all(), [
+            'supplier'=>'required',
+            'client'=>'required',
+            'store'=>'required',
+            'po_num'=>'required',
+            'po_date'=>'required',
+            'uom.*' => 'required',
+            'qty.*' => 'required',
+            'unit_price.*' => 'required',
+            'amount.*' => 'required',
+            'product_id.*' => 'required',
+            
+        ], [
+            'supplier'=>'Supplier is required',
+            'client'=>'Client  is required',
+            'store'=>'Store is required',
+            'po_num'=>'Po Number is required',
+            'po_date'=>'PO Date is required',
+            'qty.*' => 'Qty  is required',
+            'uom.*' => 'UOM  is required',
+            'unit_price.*' => 'Unit price  is required',
+            'amount.*' => 'Amount is required',
+            'product_id.*' => 'Product is required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+        
+        
         DB::connection()->beginTransaction();
 
         try {
@@ -120,6 +152,17 @@ class PurchaseOrderController extends Controller
 
             $result= PoDtl::where('po_num',$request->po_num)->delete();
             PoDtl::insert($dtl);
+
+            $audit_trail[] = [
+                'control_no' => $request->po_num,
+                'type' => 'PO',
+                'status' => $request->status,
+                'created_at' => date('y-m-d h:i:s'),
+                'updated_at' => date('y-m-d h:i:s'),
+                'user_id' => Auth::user()->id,
+            ];
+
+            AuditTrail::insert($audit_trail);
 
             DB::connection()->commit();
 

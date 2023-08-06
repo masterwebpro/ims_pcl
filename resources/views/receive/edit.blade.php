@@ -20,13 +20,18 @@
     <div class="col-xxl-11">
         <div class="card" id="tasksList">
             <div class="card-header border-0">
-                <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1"><?=$rcv->rcv_no?> <span class="badge  fs-16 <?=$rcv->status?> text-uppercase"><?=$rcv->status?></span></h5>
-                    <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                        <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+                <div class="row align-items-center">
+                    <div class="col-md-4 text-start">
+                        <h5 class="card-title mb-0 flex-grow-1"><?=$rcv->rcv_no?> </h5>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <span class="badge  fs-16 <?=$rcv->status?> text-uppercase"><?=$rcv->status?></span>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
                         <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
                         <a href="{{ URL::to('receive') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
-                    </div>
+                    </div>            
                 </div>
             </div>
         </div>
@@ -44,7 +49,7 @@
                         <div class="card-body p-4 ">
                             <div class="row g-3">
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span class="text-danger">*</span></h6>
                                     <input type="hidden" name="rcv_no" id="rcv_no" value="<?=$rcv->rcv_no?>" />
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="supplier" name="supplier">
@@ -61,7 +66,7 @@
                                 </div>
 
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
                                     <p class="fw-medium mb-2" id="billing-name">
                                         <input type="hidden" name="client_id" id="client_id" value="<?=$rcv->client_id?>" />
                                         <select class="form-select select2" required="required" id="client" name="client">
@@ -78,7 +83,7 @@
                                 </div>
                                 <!--end col-->
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Store Address</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Store Address <span class="text-danger">*</span></h6>
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$rcv->store_id?>" />
                                         <select class="form-select select2" required="required" id="store" name="store">
@@ -122,7 +127,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Sales Invoice</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Sales Invoice <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="sales_invoice" name="sales_invoice" value="<?=isset($rcv->sales_invoice) ? $rcv->sales_invoice : '' ?>" placeholder="Sales Invoice">
                                         <span class="text-danger error-msg sales_invoice_error"></span>
@@ -136,7 +141,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="received_by" name="received_by" value="<?=isset($rcv->received_by) ? $rcv->received_by : '' ?>" placeholder="Received By">
                                         <span class="text-danger error-msg received_by_error"></span>
@@ -145,7 +150,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" id="date_received" name="date_received" value="<?=isset($rcv->date_received) ? date("Y-m-d", strtotime($rcv->date_received)) : '' ?>" placeholder="Date Received">
                                         <span class="text-danger error-msg date_received_error"></span>
@@ -159,7 +164,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="inspect_by" name="inspect_by" value="<?=isset($rcv->inspect_by) ? $rcv->inspect_by : '' ?>" placeholder="Inspect By">
                                         <span class="text-danger error-msg inspect_by_error"></span>
@@ -168,7 +173,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="<?=isset($rcv->inspect_date) ? $rcv->inspect_date : '' ?>" placeholder="Inspect Date">
                                         <span class="text-danger error-msg inspect_date_error"></span>
@@ -182,7 +187,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived</label> 
+                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" name="date_arrived" id="date_arrived" value="<?=isset($rcv->date_arrived) ? date("Y-m-d", strtotime($rcv->date_arrived)) : '' ?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
@@ -191,7 +196,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="time_arrived" class="col-lg-4  col-form-label">Time Arrived</label>
+                                    <label for="time_arrived" class="col-lg-4  col-form-label">Time Arrived<span class="text-danger">*</span> </label>
                                     <div class="col-lg-8">
                                         <input type="time" class="form-control" name="time_arrived" id="time_arrived" value="<?=isset($rcv->date_arrived) ? date("H:i", strtotime($rcv->date_arrived)) : '' ?>" placeholder="hh:mm" id="cleave-time">
                                         <span class="text-danger error-msg time_arrived_error"></span>
@@ -205,7 +210,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" name="date_departed" id="date_departed" value="<?=isset($rcv->date_departed) ? date("Y-m-d", strtotime($rcv->date_departed)) : '' ?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
@@ -214,7 +219,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="time_departed" class="col-lg-4  col-form-label">Time Departed</label>
+                                    <label for="time_departed" class="col-lg-4  col-form-label">Time Departed <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="time" class="form-control" name="time_departed" id="time_departed" value="<?=isset($rcv->date_departed) ? date("H:i", strtotime($rcv->date_departed)) : '' ?>" placeholder="hh:mm" id="cleave-time">
                                         <span class="text-danger error-msg time_departed_error"></span>
@@ -228,7 +233,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" name="plate_no" id="plate_no" value="<?=isset($rcv->plate_no) ? $rcv->plate_no : '' ?>" placeholder="Plate Number">
                                         <span class="text-danger error-msg plate_no_error"></span>
@@ -237,7 +242,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Truck Type</label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Truck Type <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="truck_type" name="truck_type">
                                             <option value="">Select Truck Type</option>                                                            
@@ -256,7 +261,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <input type="hidden" name="warehouse_id" id='warehouse_id' value="<?=isset($rcv->warehouse_id) ? $rcv->warehouse_id : ''?>" />
                                         <select class="form-select select2" required="required" id="warehouse" name="warehouse">
@@ -270,7 +275,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" value="<?=isset($rcv->remarks) ? $rcv->remarks : '' ?>" placeholder="Remarks">
+                                        <input type="text" class="form-control" name="remarks" id="remarks" value="<?=isset($rcv->remarks) ? $rcv->remarks : '' ?>" placeholder="Remarks">
                                     </div>
                                 </div>
                             </div>

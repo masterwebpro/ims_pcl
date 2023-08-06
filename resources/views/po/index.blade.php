@@ -16,7 +16,7 @@
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1">All PO List</h5>
                     <div class="flex-shrink-0">
-                        <a href="{{ URL::to('po/create') }}"class="btn btn-danger add-po" ><i class="ri-add-line align-bottom me-1"></i> Create PO</a>
+                        <a href="{{ URL::to('po/create') }}"class="btn btn-info add-po" ><i class="ri-add-line align-bottom me-1"></i> Create PO</a>
                     </div>
                 </div>
             </div>

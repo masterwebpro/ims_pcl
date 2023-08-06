@@ -2,6 +2,8 @@
 @section('title') Receive Order @endsection
 @section('css')
 
+<link rel="stylesheet" href="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.css') }} ">
+
 @endsection
 @section('content')
 @component('components.breadcrumb')
@@ -17,7 +19,7 @@
                     <h5 class="card-title mb-0 flex-grow-1">Receiving List</h5>
                     <div class="flex-shrink-0">
                         <button data-status="open" class="create-receiving btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Receiving</button>
-                        <button data-status="posted" class="receive-po  btn btn-secondary btn-label rounded-pill"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Receive PO</button>
+                        <button data-status="posted" class="receive-po  btn btn-secondary btn-label rounded-pill"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Receive from PO</button>
                     </div>
                 </div>
             </div>
@@ -135,6 +137,32 @@
 </div>
 <!--end row-->
 
+<div class="modal fade" id="show-po" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-light p-3">
+                <h5 class="modal-title" id="exampleModalLabel">Search PO Number</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            </div>
+           
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-12 form-group">
+                        <input type="text" class="form-control" dir="ltr" spellcheck=false autocomplete="off" autocapitalize="off" name="po_num_holder" id="po_num_holder" value="" placeholder="Enter PO Number">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="hstack gap-2 justify-content-end">
+                    <button type="button" class="btn btn-success" id="receive-po-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 	@endsection
 @section('script')
 
@@ -142,6 +170,11 @@
 <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+ <!-- autocomplete js -->
+ <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
+
 <script src="{{ URL::asset('/assets/js/receive/receive.js') }}"></script>
+
+
 
 @endsection

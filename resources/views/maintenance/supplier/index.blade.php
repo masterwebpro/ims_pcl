@@ -16,7 +16,7 @@
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1">All Supplier List</h5>
                     <div class="flex-shrink-0">
-                        <a href="{{ URL::to('maintenance/supplier/create') }}"class="btn btn-danger add-po" ><i class="ri-add-line align-bottom me-1"></i> Create Supplier</a>
+                        <a href="{{ URL::to('maintenance/supplier/create') }}"class="btn btn-info add-po" ><i class="ri-add-line align-bottom me-1"></i> Create Supplier</a>
                     </div>
                 </div>
             </div>

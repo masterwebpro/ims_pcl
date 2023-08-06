@@ -44,7 +44,7 @@
                                     <label for="po_num" class="form-label">Po Number <span class="text-danger">*</span></label>
                                     <input type="hidden" class="form-control" name="po_id" id="po_id" value="">
                                     <input type="text" class="form-control" name="po_num" id="po_num" value="" placeholder="Enter Po Number">
-                                    <div class="invalid-feedback error-msg po_num_error">PO Number is Required</div>
+                                    <span class="text-danger error-msg po_num_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
@@ -55,13 +55,13 @@
                                             <option value="<?=$supplier->id?>" ><?=$supplier->supplier_name?></option>
                                         <? endforeach;?>
                                     </select>
-                                    <div class="invalid-feedback text-danger error-msg supplier_error">Supplier is Required</div>
+                                    <span class="text-danger error-msg supplier_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
                                     <label for="inputState" class="form-label">PO Date <span class="text-danger">*</span></label>
-                                    <input type="text" id="po_date" required="required"  name="po_date" class="form-control" value="<?=isset($po->po_date) ? date("m-d-Y",strtotime($po->po_date)) : ''?>">
-                                    <div class="invalid-feedback text-danger error-msg po_date_error">PO Date is Required</div>
+                                    <input type="date" id="po_date" required="required"  name="po_date" class="form-control" value="<?=isset($po->po_date) ? date("m-d-Y",strtotime($po->po_date)) : ''?>">
+                                    <span class="text-danger error-msg po_date_error"></span>
                                 </div>
                             </div>
 
@@ -75,7 +75,7 @@
                                             <option value="<?=$client->id?>" ><?=$client->client_name?></option>
                                         <? endforeach;?>
                                     </select>
-                                    <div class="invalid-feedback text-danger error-msg client_error">Client Name is Required</div>
+                                    <span class="text-danger error-msg client_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
@@ -87,7 +87,7 @@
                                         <option value="<?=$store->id?>" ><?=$store->store_name?></option>
                                         <? endforeach;?>
                                     </select>
-                                    <div class="invalid-feedback text-danger error-msg store_error">Store/Warehouse Name is Required</div>
+                                    <span class="text-danger error-msg store_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
@@ -115,14 +115,14 @@
                         <table class="table table-borderless table-nowrap" id="product-list">
                             <thead>
                                 <tr class="table-active">
-                                    <th scope="col" style="width: 100px;">Product Code</th>
-                                    <th scope="col" class="text-start">Particulars</th>
-                                    <th scope="col" style="width: 120px;">UOM</th>
-                                    <th scope="col" style="width: 50px;">Quantity</th>
-                                    <th scope="col" style="width: 110px;" class="text-start">Unit Price</th>
-                                    <th scope="col" style="width: 100px;">Discount</th>
-                                    <th scope="col" style="width: 100px;" class="text-start">Amount</th>
-                                    <th scope="col" style="width: 50px;"class="text-center">Action</th>
+                                    <th scope="col"  style="width: 20px;">#</th>
+                                    <th scope="col" >Product</th>
+                                    <th scope="col" >UOM</th>
+                                    <th scope="col" >Quantity</th>
+                                    <th scope="col" class="text-start">Unit Price</th>
+                                    <th scope="col" >Discount</th>
+                                    <th scope="col" class="text-start">Amount</th>
+                                    <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="newlink">
