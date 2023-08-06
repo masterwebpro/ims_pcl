@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\UOM;
+use App\Models\AuditTrail;
 
 use DataTables;
 
@@ -120,6 +121,17 @@ class PurchaseOrderController extends Controller
 
             $result= PoDtl::where('po_num',$request->po_num)->delete();
             PoDtl::insert($dtl);
+
+            $audit_trail[] = [
+                'control_no' => $request->po_num,
+                'type' => 'PO',
+                'status' => $request->status,
+                'created_at' => date('y-m-d h:i:s'),
+                'updated_at' => date('y-m-d h:i:s'),
+                'user_id' => Auth::user()->id,
+            ];
+
+            AuditTrail::insert($audit_trail);
 
             DB::connection()->commit();
 

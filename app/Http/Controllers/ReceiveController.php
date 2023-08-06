@@ -15,6 +15,7 @@ use App\Models\Warehouse;
 use App\Models\Supplier;
 use App\Models\UOM;
 use App\Models\TruckType;
+use App\Models\AuditTrail;
 
 use DataTables;
 
@@ -228,10 +229,33 @@ class ReceiveController extends Controller
             //update PO to closed
             PoHdr::where('po_num', '=', $request->po_num)->update(['status'=>'closed']);
 
+            $audit_trail[] = [
+                'control_no' => $rcv_no,
+                'type' => 'RCV',
+                'status' => $request->status,
+                'created_at' => date('y-m-d h:i:s'),
+                'updated_at' => date('y-m-d h:i:s'),
+                'user_id' => Auth::user()->id,
+                'data' => null
+            ];
+
+
             if($request->status == 'posted') {
                 //add on the masterfile
                 MasterfileModel::insert($masterfile);
+
+                $audit_trail[] = [
+                    'control_no' => $rcv_no,
+                    'type' => 'masterfile',
+                    'status' => $request->status,
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => json_encode(array('comment' => 'Location: floor'))
+                ];
             }
+
+            AuditTrail::insert($audit_trail);
 
             DB::connection()->commit();
 
