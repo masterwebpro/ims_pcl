@@ -275,7 +275,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" value="<?=isset($rcv->remarks) ? $rcv->remarks : '' ?>" placeholder="Remarks">
+                                        <input type="text" class="form-control" name="remarks" id="remarks" value="<?=isset($rcv->remarks) ? $rcv->remarks : '' ?>" placeholder="Remarks">
                                     </div>
                                 </div>
                             </div>

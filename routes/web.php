@@ -22,6 +22,7 @@ Route::get('/dashboard/2', [App\Http\Controllers\DashboardController::class, 'in
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('/po', App\Http\Controllers\PurchaseOrderController::class);
     Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
+    Route::get('/receive/{id}/create', [App\Http\Controllers\ReceiveController::class, 'receivePo']);
 
     Route::resource('/setting/suppliers', App\Http\Controllers\SuppliersController::class);
 
@@ -44,6 +45,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/products/{supplier_id}/get', [App\Http\Controllers\SettingsController::class, 'getProductBySupplier']);
     Route::get('/products', [App\Http\Controllers\SettingsController::class, 'getProducts']);
     Route::get('/uom', [App\Http\Controllers\SettingsController::class, 'getUom']);
+    Route::get('/getPostedPO', [App\Http\Controllers\SettingsController::class, 'getPostedPo']);
 });
 
 

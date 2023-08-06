@@ -153,10 +153,78 @@ $(document).on('click', '.create-receiving', function (e) {
     $('#preloading').modal('show');
     setTimeout(function () {
         window.location = BASEURL+'receive/create';
-    }, 1000);
+    }, 800);
+});
+
+$(document).on('click', '.receive-po', function (e) {
+    e.preventDefault();
+    $('#po_num_holder').val('');
+    $('#show-po').modal('show');
+});
+
+$(document).on('click', '#receive-po-btn', function (e) {
+    e.preventDefault();
+    $('#preloading').modal('show');
+    var po_num = $('#po_num_holder').val();
+    setTimeout(function () {
+        window.location = BASEURL+'receive/'+escapeHtml(po_num)+'/create';
+    }, 800);
+    
 });
 
 
+
+// async
+const data = {
+    src: async (query) => {
+      try {
+        // Fetch Data from external Source
+        const source = await fetch(BASEURL + 'settings/getPostedPO');
+        const data = await source.json();
+        return data;
+      } catch (error) {
+        return error;
+      }
+    },
+    keys: ["po_num"],
+    cache: true
+}
+
+if($("#po_num_holder").length) {
+
+    var autoCompletePoNum = new autoComplete({
+        selector: "#po_num_holder",
+        placeHolder: "Search for PO number...",
+        data: data,
+        threshold: 2,
+        resultsList: {
+            element: function element(list, data) {
+                if (!data.results.length) {
+                    // Create "No Results" message element
+                    var message = document.createElement("div");
+                    // Add class to the created element
+                    message.setAttribute("class", "no_result");
+                    // Add message text content
+                    message.innerHTML = "<span>Found No Results for \"" + data.query + "\"</span>";
+                    // Append message element to the results list
+                    list.prepend(message);
+                }
+            },
+            noResults: true
+        },
+        resultItem: {
+            highlight: true
+        },
+        events: {
+            input: {
+                selection: function selection(event) {
+                    var selection = event.detail.selection.value;
+                    autoCompletePoNum.input.value = selection.po_num;
+                }
+            }
+        }
+    });
+}
 
 function _submitData(form_data) {
     $.ajax({

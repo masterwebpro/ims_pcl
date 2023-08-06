@@ -268,7 +268,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" value="" placeholder="Remarks">
+                                        <input type="text" class="form-control" name="remarks" id="remarks" value="" placeholder="Remarks">
                                     </div>
                                 </div>
                             </div>

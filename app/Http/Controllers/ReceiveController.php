@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 
 use App\Models\RcvHdr;
 use App\Models\RcvDtl;
+use App\Models\PoHdr;
 use App\Models\SeriesModel;
 use App\Models\Client;
 use App\Models\Store;
@@ -182,6 +183,7 @@ class ReceiveController extends Controller
                 'truck_type'=>$request->truck_type,
                 'warehouse_id'=>$request->warehouse,
                 'status'=>$request->status,
+                'remarks'=>$request->remarks,
                 'created_by' =>Auth::user()->id,
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
@@ -222,6 +224,9 @@ class ReceiveController extends Controller
 
             $result= RcvDtl::where('rcv_no',$rcv_no)->delete();
             RcvDtl::insert($dtl);
+
+            //update PO to closed
+            PoHdr::where('po_num', '=', $request->po_num)->update(['status'=>'closed']);
 
             if($request->status == 'posted') {
                 //add on the masterfile
@@ -299,16 +304,29 @@ class ReceiveController extends Controller
             'uom_list'=>$uom_list]);
     }
 
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function receivePo($po_num)
     {
-        //
+        $po = PoHdr::where('po_num', html_entity_decode($po_num))->first();
+
+        if($po) {
+            $uom_list = UOM::all();
+            $truck_type_list = TruckType::all();
+            $store_list = Store::all();
+            $supplier_list = Supplier::all();
+            $client_list = Client::all();
+            $warehouse_list = Warehouse::all();
+    
+            return view('receive/po', [
+                'po'=>$po, 
+                'client_list'=>$client_list, 
+                'supplier_list'=>$supplier_list,
+                'truck_type_list'=>$truck_type_list,
+                'uom_list'=>$uom_list
+            ]);
+        } else {
+            return view('error/no-found');
+        }
+
     }
 
     public function generateRcvNo()
