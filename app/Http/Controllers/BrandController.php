@@ -94,7 +94,8 @@ class BrandController extends Controller
                 'updated_at'=>$this->current_datetime,
             ]);
 
-            if(!empty($category)){
+            if(count($category) > 0){
+                CategoryBrand::where('brand_id',$brand->brand_id)->whereNotIn('category_id',$category)->delete();
                 foreach($category as $category_id){
                     CategoryBrand::updateOrCreate([
                         'category_id' => $category_id,
@@ -105,6 +106,9 @@ class BrandController extends Controller
                         'brand_id' => $brand->brand_id,
                     ]);
                 }
+            }
+            else{
+                CategoryBrand::where('brand_id',$brand->brand_id)->delete();
             }
 
             DB::connection()->commit();
