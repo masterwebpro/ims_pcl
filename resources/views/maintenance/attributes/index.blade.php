@@ -73,7 +73,7 @@
                             <tr>
                                 <th class="sort" data-sort="attributes_code">Attributes Code</th>
                                 <th class="sort" data-sort="attribute_name">Attribute Name</th>
-                                <th class="sort" data-sort="attributes_name">Required</th>
+                                {{-- <th class="sort" data-sort="attributes_name">Required</th> --}}
                                 <th class="sort" data-sort="brand_name">Enabled</th>
                                 <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="updated_at">Updated Date</th>
@@ -88,10 +88,9 @@
                                     <tr>
                                         <td>{{ $attr->attribute_code}}</td>
                                         <td>{{ $attr->attribute_name}}</td>
-                                        <td>{{( $attr->is_required == 1) ? '<i class="ri-check-line text-success"></i>' : '<i class="ri-close-line text-danger"></i>'}}</td>
                                         <td>
-                                            <div class="form-check form-switch form-switch-custom form-switch-primary">
-                                                <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($attr->is_enabled == 1) ? "checked" : "") }} disabled>
+                                            <div class="form-check form-switch form-switch-success">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($attr->is_enabled == 1) ? "checked" : "") }} disabled/>
                                             </div>
                                         </td>
                                         <td>{{ date('M d, Y H:i:s',strtotime($attr->created_at)) }}</td>
@@ -99,8 +98,8 @@
                                         <td>{{ date('M d, Y H:i:s',strtotime($attr->updated_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('maintenance/attributes') }}/<?=_encode($attr->attributes_id)?>" data-id="{{$attr->attributes_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <a href="{{ URL::to('maintenance/attributes') }}/<?=_encode($attr->attributes_id);?>/edit" data-id="{{$attr->attributes_id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                <a href="{{ URL::to('maintenance/attributes') }}/<?=_encode($attr->attribute_id)?>" data-id="{{$attr->attribute_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <a href="{{ URL::to('maintenance/attributes') }}/<?=_encode($attr->attribute_id);?>/edit" data-id="{{$attr->attribute_id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                         </td>
                                     </tr>
                                 <? endforeach; ?>

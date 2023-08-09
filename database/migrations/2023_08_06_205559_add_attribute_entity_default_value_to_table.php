@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('category_attributes', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedInteger('category_id');
-            $table->unsignedInteger('attribute_id');
-            $table->unsignedInteger('sort')->default(0);
-            $table->timestamps();
+        Schema::table('attribute_entities', function (Blueprint $table) {
+            $table->string('attribute_entity_default_value')->nullable()->after('attribute_entity_description');
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_attributes');
+        Schema::table('attribute_entities', function (Blueprint $table) {
+            $table->string('attribute_entity_default_value')->nullable();
+        });
     }
 };

@@ -35,9 +35,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/brand', App\Http\Controllers\BrandController::class);
     Route::resource('/menu', App\Http\Controllers\MenuController::class);
     Route::resource('/maintenance/category', App\Http\Controllers\CategoryController::class);
+    Route::resource('/maintenance/location', App\Http\Controllers\StorageLocationController::class);
     Route::resource('/maintenance/product', App\Http\Controllers\ProductController::class);
     Route::resource('/maintenance/attributes', App\Http\Controllers\AttributesController::class);
-    Route::resource('/maintenance/location', App\Http\Controllers\StorageLocationController::class);
 
 });
 
@@ -47,8 +47,11 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/products/{supplier_id}/get', [App\Http\Controllers\SettingsController::class, 'getProductBySupplier']);
     Route::get('/products', [App\Http\Controllers\SettingsController::class, 'getProducts']);
     Route::get('/uom', [App\Http\Controllers\SettingsController::class, 'getUom']);
-    Route::get('/getBrand', [App\Http\Controllers\SettingsController::class, 'getBrandByCategory']);
     Route::get('/getPostedPO', [App\Http\Controllers\SettingsController::class, 'getPostedPo']);
+    Route::get('/getBrand', [App\Http\Controllers\SettingsController::class, 'getBrandByCategory']);
+    Route::get('/getEntity', [App\Http\Controllers\SettingsController::class, 'getAttributeEntity']);
+    Route::get('/getCategoryAttribute', [App\Http\Controllers\SettingsController::class, 'getCategoryAttribute']);
+    Route::get('/getProductAttribute', [App\Http\Controllers\SettingsController::class, 'getProductAttribute']);
 });
 
 
@@ -67,5 +70,3 @@ Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class,
 Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
 Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
-
-

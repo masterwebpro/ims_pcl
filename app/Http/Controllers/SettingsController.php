@@ -60,11 +60,39 @@ class SettingsController extends Controller
     }
 
     public function getBrandByCategory(Request $request) {
-        $data = \App\Models\CategoryBrand::select('brands.brand_name','category_brands.brand_id','category_brands.category_brand_id')->where('category_brands.category_id', $request->category_id)
+        $data = \App\Models\CategoryBrand::select('brands.brand_name','category_brands.brand_id','category_brands.category_brand_id')
+                ->where('category_brands.category_id', $request->category_id)
                 ->leftJoin('brands','brands.brand_id','category_brands.brand_id')
                 ->groupBy('category_brands.brand_id')
                 ->get();
         return response()->json($data);
+    }
+
+    public function getAttributeEntity(Request $request){
+        $data = \App\Models\AttributeEntity::where('attribute_id', $request->attribute_id)->get();
+        return response()->json([
+            'success'  => true,
+            'data'    => $data]);
+    }
+
+    public function getCategoryAttribute(Request $request){
+        $data =  \App\Models\CategoryAttribute::select('category_attributes.attribute_id','attributes.attribute_code','attributes.attribute_name','attributes.attribute_input_type')
+                    ->leftJoin('attributes','attributes.attribute_id','category_attributes.attribute_id')
+                    ->where('category_attributes.category_id',$request->category_id)
+                    ->get();
+        return response()->json([
+            'success'  => true,
+            'data'    => $data]);
+    }
+
+    public function getProductAttribute(Request $request){
+        $data =  \App\Models\ProductAttribute::select('product_attributes.product_attribute_id','product_attributes.attribute_id','product_attributes.attribute_value','attributes.attribute_code','attributes.attribute_name','attributes.attribute_input_type')
+                    ->leftJoin('attributes','attributes.attribute_id','product_attributes.attribute_id')
+                    ->where('product_attributes.product_id',$request->product_id)
+                    ->get();
+        return response()->json([
+            'success'  => true,
+            'data'    => $data]);
     }
 
 }

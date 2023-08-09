@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attributes;
+use App\Models\Brand;
 use App\Models\Category;
+use App\Models\CategoryAttribute;
 use App\Models\CategoryBrand;
+use App\Models\ProductAttribute;
+use App\Models\ProductPrice;
 use App\Models\Products;
+use App\Models\ProductUom;
 use App\Models\Supplier;
+use App\Models\UOM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +70,8 @@ class ProductController extends Controller
     {
         $supplier_list = Supplier::all();
         $category = Category::all();
-        return view('maintenance/product/create',['supplier_list' => $supplier_list, 'category' => $category]);
+        $uom = UOM::all();
+        return view('maintenance/product/create',['supplier_list' => $supplier_list, 'category' => $category, 'uom' => $uom]);
     }
 
     /**
@@ -106,6 +114,50 @@ class ProductController extends Controller
                 'updated_at'=>$this->current_datetime,
             ]);
 
+            ProductPrice::updateOrCreate(["product_price_id" => $request->product_price_id],[
+                'product_id'=> $product->product_id,
+                'msrp' => $request->msrp,
+                'supplier_price'=> $request->supplier_price,
+                'special_price'=> $request->special_price,
+                'srp'=> $request->product_srp,
+            ]);
+
+            $uom = json_decode($request->uom_id);
+
+            if(!empty($uom)){
+                foreach($uom as $key => $uom_id)
+                {
+                    ProductUom::updateOrCreate([
+                            'product_id' => $product->product_id,
+                            'uom_id' => $uom_id,
+                        ], [
+                        'product_id' => $product->product_id,
+                        'uom_id' => $uom_id,
+                    ]);
+                }
+            }
+            else{
+                ProductUom::where('product_id',$product->product_id)->delete();
+            }
+            $attribute_entity = json_decode($request->attribute_entity);
+            if(!empty($attribute_entity)){
+                foreach($attribute_entity as $key => $entity)
+                {
+                    ProductAttribute::updateOrCreate([
+                            'product_id' => $product->product_id,
+                            'attribute_id' => $entity->attribute_id,
+                        ], [
+                        'product_id' => $product->product_id,
+                        'attribute_id' => $entity->attribute_id,
+                        'attribute_value' => $product->attribute_code,
+                    ]);
+                }
+            }
+            else{
+                ProductAttribute::where('product_id',$product->product_id)->delete();
+            }
+
+
         DB::connection()->commit();
 
             return response()->json([
@@ -135,7 +187,26 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Products::find(_decode($id));
+        $supplier_list = Supplier::all();
+        $category = Category::all();
+        $brand = Brand::all();
+        $uom = UOM::all();
+        $prod_category = CategoryBrand::where('category_brand_id',$product->category_brand_id)->first();
+        $prod_uom = ProductUom::where('product_id',$product->product_id)->pluck('uom_id');
+        $price = ProductPrice::where('product_id',$product->product_id)->first();
+        return view('maintenance/product/view',
+        [
+            'product' => $product,
+            'supplier_list' => $supplier_list,
+            'category' => $category,
+            'brand' => $brand,
+            'uom' => $uom,
+            'category' => $category,
+            'price' => $price,
+            'prod_category' => $prod_category,
+            'prod_uom' => $prod_uom->toArray()
+        ]);
     }
 
     /**
@@ -146,7 +217,25 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Products::find(_decode($id));
+        $supplier_list = Supplier::all();
+        $category = Category::all();
+        $brand = Brand::all();
+        $prod_category = CategoryBrand::where('category_brand_id',$product->category_brand_id)->first();
+        $uom = UOM::all();
+        $prod_uom = ProductUom::where('product_id',$product->product_id)->pluck('uom_id');
+        $price = ProductPrice::where('product_id',$product->product_id)->first();
+        return view('maintenance/product/edit',
+        [
+            'product' => $product,
+            'supplier_list' => $supplier_list,
+            'category' => $category,
+            'brand' => $brand,
+            'uom' => $uom,
+            'price' => $price,
+            'prod_category' => $prod_category,
+            'prod_uom' => $prod_uom->toArray()
+        ]);
     }
 
     /**
