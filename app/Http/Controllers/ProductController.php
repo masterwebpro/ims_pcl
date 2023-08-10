@@ -82,11 +82,12 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
         DB::connection()->beginTransaction();
         $validator = Validator::make($request->all(), [
             'product_code' => 'required',
             'product_name' => 'required',
-            'supplier_id' => 'required',
+            'supplier_id' => 'required'
         ], [
             'supplier_id' => 'Supplier is required',
             'product_code' => 'Product code  is required',
@@ -125,6 +126,7 @@ class ProductController extends Controller
             $uom = json_decode($request->uom_id);
 
             if(!empty($uom)){
+                ProductUom::where('product_id',$product->product_id)->delete();
                 foreach($uom as $key => $uom_id)
                 {
                     ProductUom::updateOrCreate([
@@ -141,6 +143,7 @@ class ProductController extends Controller
             }
             $attribute_entity = json_decode($request->attribute_entity);
             if(!empty($attribute_entity)){
+                ProductAttribute::where('product_id',$product->product_id)->delete();
                 foreach($attribute_entity as $key => $entity)
                 {
                     ProductAttribute::updateOrCreate([
@@ -149,14 +152,13 @@ class ProductController extends Controller
                         ], [
                         'product_id' => $product->product_id,
                         'attribute_id' => $entity->attribute_id,
-                        'attribute_value' => $product->attribute_code,
+                        'attribute_value' => $entity->attribute_code,
                     ]);
                 }
             }
             else{
                 ProductAttribute::where('product_id',$product->product_id)->delete();
             }
-
 
         DB::connection()->commit();
 

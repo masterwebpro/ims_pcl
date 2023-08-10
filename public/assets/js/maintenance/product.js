@@ -2,16 +2,33 @@ $(document).ready(function () {
     var attribute_entity = [];
     var category_id = $("#category_id").val();
     var product_id = $("#product_id").val();
-    var entity = getProductAttribute(product_id);
-    attribute_entity = entity;
+    var productAttributes = getProductAttribute(product_id);
+    attribute_entity = productAttributes;
     if(product_id != '')
     {
         var brand_id = $("#brand").data('brand');
         populateBrand(category_id,brand_id);
-        attributes(entity);
-        console.log(brand_id);
+        var categoryAttribute = getCategoryAttribute(category_id);
+        if(attribute_entity.length)
+        {
+            var enabledMap = {};
+            attribute_entity.forEach(function(item) {
+                enabledMap[item.attribute_id] = 1;
+            });
+
+            var combinedArray = categoryAttribute.map(function(attribute) {
+                return {
+                    "attribute_id": attribute['attribute_id'],
+                    "attribute_code": attribute['attribute_code'],
+                    "attribute_name": attribute['attribute_name'],
+                    "attribute_input_type": attribute['attribute_input_type'],
+                    "is_enabled": enabledMap[attribute.attribute_id] || 0
+                };
+            });
+            attribute_entity = combinedArray;
+            attributes(combinedArray);
+        }
     }
-    $(".select2").select2();
     if ($("#brand").length) {
         var brand_id = $("#brand").data('brand');
         populateBrand(category_id, brand_id);
@@ -26,23 +43,33 @@ $(document).ready(function () {
         populateBrand(category_id,'');
         var entity = getCategoryAttribute(category_id);
         if(entity.length){
-            attribute_entity = entity;
-            attributes(entity);
+            $("#steparrow-pricing-info-tab").prop("disabled", false);
             $("#steparrow-pricing").prop("disabled", false);
+            attributes(entity);
         }
     });
 
     $(".submit-product").on('click', function (e) {
         e.preventDefault();
         var id = $('#product_id').val();
-        if($('#product_id').length)
-        {
-            var entity = getProductAttribute(id);
-            attribute_entity = entity;
-        }
-        else{
-            attribute_entity = getCategoryAttribute($('#category_id').val());
-        }
+
+        var listItems = $('.list-group-item');
+        var values = [];
+        attribute_entity = [];
+        listItems.each(function() {
+            var attribute_id = $(this).find('#attribute_id').val();
+            var attribute_code = $(this).find('#attribute_code').val();
+            var is_enabled = $(this).find('#is_enabled_attr').is(':checked');
+            if(is_enabled == true){
+                values.push({
+                    'attribute_id': attribute_id,
+                    'attribute_code': attribute_code,
+                    'is_enabled': 1
+                });
+            }
+        });
+        attribute_entity = values;
+
         var selecteduom = $('#uom_id').val();
 
         if(selecteduom.length == 0)
@@ -100,93 +127,99 @@ $(document).ready(function () {
             }
         });
     });
-});
 
-$(document).on('click','#steparrow-attributes',function(){
-    validate_general();
-});
+    $(document).on('click','#steparrow-attributes',function(){
+        validate_general();
+    });
 
-
-
-function attributes(entity){
-    $("#attributes").empty();
-    var list = `<div class="col-md-6"><ul class="list-group">`;
-    entity.forEach(function(val){
-        list += `<li class="list-group-item">
-            <div class="d-flex align-items-center">
-                <div class="flex-grow-1">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0 avatar-xs">
-                            <i class="ri-file-list-line"></i>
+    function attributes(entity){
+        $("#attributes").empty();
+        var list = `<div class="col-md-6"><ul class="list-group" id="attribute_list">`;
+        entity.forEach(function(val){
+            var ischecked = (val['is_enabled'] == 1) ? 'checked' : '';
+            list += `<li class="list-group-item">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 avatar-xs">
+                                <i class="ri-file-list-line"></i>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <h4 class="fs-14 mb-0">`+ ((val['attribute_name'])) +`</h4>
+                            </div>
                         </div>
-                        <div class="flex-shrink-0 ms-2">
-                            <h4 class="fs-14 mb-0">`+ ((val['attribute_name'])) +`</h4>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="form-check form-switch-md form-switch form-switch-success">
+                            <input type="hidden" id="attribute_id" name="attribute_id" value="` + val['attribute_id']+ `">
+                            <input type="hidden" id="attribute_code" name="attribute_code" value="` + val['attribute_code']+ `">
+                            <input class="form-check-input" type="checkbox" role="switch" id="is_enabled_attr" `+ ischecked +`>
+                            <label class="form-check-label" for="is_enabled_attr">Enable</label>
                         </div>
                     </div>
                 </div>
-                <div class="flex-shrink-0">
-                    <div class="form-check form-switch-md form-switch form-switch-success">
-                        <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck3" checked>
-                        <label class="form-check-label" for="SwitchCheck3">Enable</label>
-                    </div>
-                </div>
-            </div>
-        </li>`;
-    })
-    list += `</ul></div>`;
-    $("#attributes").append(list);
-}
-
-$(document).on('change', '#supplier_id', function() {
-    validate_general();
-});
-
-$(document).on('change', '#product_code', function() {
-    validate_general();
-});
-
-$(document).on('change', '#product_name', function() {
-    validate_general();
-});
-
-$(document).on('change', '#brand', function() {
-    var category_id = $(this).val();
-    validate_general();
-});
-
-$("#steparrow-pricing").on('click',function(){
-    $("#steparrow-pricing-info-tab").prop("disabled", false);
-});
-
-$("#steparrow-units").on('click',function(){
-    if ($("#msrp").val() && $("#supplier_price").val() && $("#product_srp").val() && $("#special_price").val()) {
-        $("#steparrow-units-info-tab").prop("disabled", false);
-    } else {
-        alert("Please fill in all required fields.");
+            </li>`;
+        })
+        list += `</ul></div>`;
+        $("#attributes").append(list);
     }
+
+    $(document).on('change', '#supplier_id', function() {
+        validate_general();
+    });
+
+    $(document).on('change', '#product_code', function() {
+        validate_general();
+    });
+
+    $(document).on('change', '#product_name', function() {
+        validate_general();
+    });
+
+    $(document).on('change', '#brand', function() {
+        var category_id = $(this).val();
+        validate_general();
+    });
+
+    $("#steparrow-pricing").on('click',function(){
+        $("#steparrow-pricing-info-tab").prop("disabled", false);
+    });
+
+    $(document).on('click','#steparrow-units',function(){
+        if ($("#msrp").val() && $("#supplier_price").val() && $("#product_srp").val() && $("#special_price").val()) {
+            $("#steparrow-unit-info-tab").prop('disabled',false);
+            const nextTab = $(this).data("nexttab");
+            $(`#${nextTab}`).click();
+        } else {
+            $("#steparrow-unit-info-tab").prop('disabled',true);
+            alert("Please fill in all required fields.");
+        }
+    });
+
+    function validate_general(){
+        if ($("#brand").val() !== "" && $("#category_id").val() !== "" && $("#brand").val() &&  $("#product_code").val() !== "" && $("#product_name").val() !== ""){
+            $("#steparrow-attributes").prop("disabled", false);
+            $("#steparrow-attributes-info-tab").prop("disabled", false);
+        }
+        else{
+            $("#steparrow-attributes").prop("disabled", true);
+            $("#steparrow-attributes-info-tab").prop("disabled", true);
+            $("#steparrow-pricing-info-tab").prop("disabled", true);
+            $("#steparrow-units-info-tab").prop("disabled", true);
+
+        }
+    }
+
+    $(document).on('change', '#uom_id', function() {
+        var uom_id = $(this).val();
+        if(uom_id != '')
+        {
+            $('.submit-product').prop("disabled",false);
+        }
+    });
+
 });
 
-function validate_general(){
-    if ($("#brand").val() !== "" && $("#category_id").val() !== "" && $("#brand").val() &&  $("#product_code").val() !== "" && $("#product_name").val() !== ""){
-        $("#steparrow-attributes").prop("disabled", false);
-        $("#steparrow-attributes-info-tab").prop("disabled", false);
-    }
-    else{
-        $("#steparrow-attributes").prop("disabled", true);
-        $("#steparrow-attributes-info-tab").prop("disabled", true);
-        $("#steparrow-pricing-info-tab").prop("disabled", true);
-        $("#steparrow-units-info-tab").prop("disabled", true);
-
-    }
-}
-
-$(document).on('change', '#uom_id', function() {
-    var uom_id = $(this).val();
-    if(uom_id != '')
-    {
-        $('.submit-product').prop("disabled",false);
-    }
-});
 
 
 
