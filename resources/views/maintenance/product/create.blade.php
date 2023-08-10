@@ -58,9 +58,9 @@
                                         aria-controls="steparrow-pricing-info" aria-selected="false">Pricing</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="steparrow-units-info-tab" data-bs-toggle="pill" disabled
-                                        data-bs-target="#steparrow-units-info" type="button" role="tab"
-                                        aria-controls="steparrow-units-info" aria-selected="false">Unit of Measure</button>
+                                    <button class="nav-link" id="steparrow-unit-info-tab" data-bs-toggle="pill" disabled
+                                        data-bs-target="#steparrow-unit-info" type="button" role="tab"
+                                        aria-controls="steparrow-unit-info" aria-selected="false">Unit of Measure</button>
                                 </li>
                             </ul>
                         </div>
@@ -218,7 +218,7 @@
                                         data-previous="steparrow-gen-info-tab"><i
                                             class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Back to
                                         General</button>
-                                    <button type="button" class="btn btn-info btn-label right ms-auto nexttab nexttab" id="steparrow-pricing" disabled
+                                    <button type="button" class="btn btn-info btn-label right ms-auto nexttab nexttab"
                                         data-nexttab="steparrow-pricing-info-tab"><i
                                             class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Next</button>
                                 </div>
@@ -288,13 +288,13 @@
                                             class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Back to
                                         Attributes</button>
                                     <button type="button" class="btn btn-info btn-label right ms-auto nexttab nexttab" id="steparrow-units"
-                                        data-nexttab="steparrow-units-info-tab"><i
+                                        data-nexttab="steparrow-unit-info-tab" id="steparrow-unit"><i
                                             class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Next</button>
                                 </div>
                             </div>
                             <!-- end tab pane -->
-                            <div class="tab-pane fade" id="steparrow-units-info" role="tabpanel"
-                                aria-labelledby="steparrow-units-info-tab">
+                            <div class="tab-pane fade" id="steparrow-unit-info" role="tabpanel"
+                                aria-labelledby="steparrow-unit-info-tab">
                                 <div>
                                     <div class="row">
                                         <div class="col-12">

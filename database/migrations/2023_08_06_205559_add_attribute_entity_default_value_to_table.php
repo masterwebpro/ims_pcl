@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('attribute_entities', function (Blueprint $table) {
-            $table->string('attribute_entity_default_value')->nullable();
+            $table->dropColumn('attribute_entity_default_value')->nullable();
         });
     }
 };
