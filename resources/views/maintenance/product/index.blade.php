@@ -82,6 +82,7 @@
                                 <th class="sort" data-sort="brand_name">Brand</th>
                                 <th class="sort" data-sort="created_by">Update By</th>
                                 <th class="sort" data-sort="updated_at">Update Date</th>
+                                <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
@@ -99,6 +100,7 @@
                                         <td>{{ $prod->category_brand['brand_name'] }}</td>
                                         <td>{{ $prod->updated_by }}</td>
                                         <td>{{ date('M d, Y H:i:s',strtotime($prod->updated_at)) }}</td>
+                                        <td class="created_at">{{ date('M d, Y', strtotime($prod->created_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('maintenance/product') }}/<?=_encode($prod->product_id)?>" data-id="{{$prod->product_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
