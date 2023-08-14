@@ -76,6 +76,7 @@
                                 <th class="sort" data-sort="code">Code</th>
                                 <th class="sort" data-sort="uom_desc">Description</th>
                                 <th class="sort" data-sort="convertion_pc">Conversion</th>
+                                <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
@@ -87,6 +88,7 @@
                                         <td class="id">{{ $uom->code }}</td>
                                         <td class="project_name">{{ $uom->uom_desc}}</td>
                                         <td>{{ $uom->convertion_pc}}</td>
+                                        <td class="created_at">{{ date('M d, Y', strtotime($uom->created_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('maintenance/unit') }}/<?=_encode($uom->uom_id)?>" data-id="{{$uom->uom_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>

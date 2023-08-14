@@ -88,6 +88,7 @@
                                 <th class="sort" data-sort="phone_no">Phone Number</th>
                                 <th class="sort" data-sort="is_vatable">Vatable</th>
                                 <th class="sort" data-sort="is_enable">Enable</th>
+                                <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
@@ -119,6 +120,7 @@
                                                 <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($str->is_enabled == 1) ? "checked" : "") }} disabled>
                                             </div>
                                         </td>
+                                        <td class="created_at">{{ date('M d, Y', strtotime($str->created_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('maintenance/store') }}/<?=_encode($str->id)?>" data-id="{{$str->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>

@@ -80,6 +80,7 @@
                                 <th class="sort" data-sort="rack">Rack</th>
                                 <th class="sort" data-sort="level">Level</th>
                                 <th class="sort" data-sort="is_enabled">Enable</th>
+                                <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
@@ -88,7 +89,7 @@
                             <? if($locations->total() > 0 ) : ?>
                                 <? foreach($locations as $location) :?>
                                     <tr>
-                                        
+
                                         <td class="client_name">{{ $location->client_name}}</td>
                                         <td class="store_name">{{ $location->store_name}}</td>
                                         <td class="warehouse_name">{{ $location->warehouse_name}}</td>
@@ -100,6 +101,7 @@
                                                 <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($location->is_enabled == 1) ? "checked" : "") }} disabled>
                                             </div>
                                         </td>
+                                        <td class="created_at">{{ date('M d, Y', strtotime($location->created_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('maintenance/location') }}/<?=_encode($location->storage_location_id)?>" data-id="{{$location->storage_location_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>

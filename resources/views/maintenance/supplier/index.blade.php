@@ -77,6 +77,7 @@
                                 <th class="sort" data-sort="supplier_code">Code</th>
                                 <th class="sort" data-sort="contact_no">Contact No.</th>
                                 <th class="sort" data-sort="supplier_address">Address</th>
+                                <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
@@ -89,6 +90,7 @@
                                         <td class="project_name">{{ $sup->supplier_code}}</td>
                                         <td>{{ $sup->contact_no}}</td>
                                         <td>{{ $sup->supplier_address}}</td>
+                                        <td class="created_at">{{ date('M d, Y', strtotime($sup->created_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('maintenance/supplier') }}/<?=_encode($sup->id)?>" data-id="{{$sup->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>

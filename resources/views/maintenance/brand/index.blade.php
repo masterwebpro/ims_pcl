@@ -76,6 +76,7 @@
                                 <th class="sort" data-sort="brand_name">Brand Name</th>
                                 <th class="sort" data-sort="sort_by">Sort By</th>
                                 <th class="sort" data-sort="is_enabled">Enable</th>
+                                <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
@@ -91,6 +92,7 @@
                                                 <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($brand->is_enabled == 1) ? "checked" : "") }} disabled>
                                             </div>
                                         </td>
+                                        <td class="created_at">{{ date('M d, Y', strtotime($brand->created_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('maintenance/brand') }}/<?=_encode($brand->brand_id)?>" data-id="{{$brand->brand_id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
