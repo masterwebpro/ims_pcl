@@ -91,7 +91,7 @@
                             </div>
                             <!--end col-->
                             <div class="col-6">
-                                <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address</h6>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address</h6>
                                 <p class="fw-medium mb-2" id="shipping-name">{{ $po->store->store_name}}</p>
                                 <p class="text-muted mb-1" id="shipping-address-line-1">{{ $po->store->address_1}}</p>
                                 <p class="text-muted mb-1">{{ $po->store->address_2}}</p>

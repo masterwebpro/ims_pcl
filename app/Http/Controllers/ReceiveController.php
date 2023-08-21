@@ -78,7 +78,7 @@ class ReceiveController extends Controller
         $truck_type_list = TruckType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
 
         $uom = UOM::all();
@@ -286,7 +286,7 @@ class ReceiveController extends Controller
         $truck_type_list = TruckType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
 
         return view('receive/view', [
@@ -315,7 +315,7 @@ class ReceiveController extends Controller
         $truck_type_list = TruckType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
 
         return view('receive/edit', [
@@ -337,7 +337,7 @@ class ReceiveController extends Controller
             $truck_type_list = TruckType::all();
             $store_list = Store::all();
             $supplier_list = Supplier::all();
-            $client_list = Client::all();
+            $client_list = Client::where('is_enabled', '1')->get();
             $warehouse_list = Warehouse::all();
     
             return view('receive/po', [

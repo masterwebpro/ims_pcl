@@ -81,7 +81,7 @@
                                 <th class="sort" data-sort="po_date">PO Date</th>
                                 <th class="sort" data-sort="supplier_name">Supplier Name</th>
                                 <th class="sort" data-sort="client_name">Client Name</th>
-                                <th class="sort" data-sort="store">Store/Warehouse</th>
+                                <th class="sort" data-sort="store">Site</th>
                                 <th class="sort" data-sort="net_total">Net Total</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>

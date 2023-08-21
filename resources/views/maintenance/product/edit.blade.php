@@ -246,8 +246,8 @@
                                                         <span class="text-danger">*</span></label>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    <input type="hidden" name="product_price_id" id="product_price_id" value="{{ $price->product_price_id }}">
-                                                    <input type="text" class="form-control numeric" id="msrp"  value="{{ $price->msrp }}"
+                                                    <input type="hidden" name="product_price_id" id="product_price_id" value="{{ isset($price->product_price_id) ? $price->product_price_id : '' }}">
+                                                    <input type="text" class="form-control numeric" id="msrp"  value="{{ isset($price->msrp) ? $price->msrp : '' }}"
                                                         name="msrp" placeholder="Enter Product MSRP">
                                                 </div>
                                             </div>
@@ -259,7 +259,7 @@
                                                         Price <span class="text-danger">*</span></label></label>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    <input type="url" class="form-control numeric" id="supplier_price"  value="{{ $price->supplier_price }}"
+                                                    <input type="url" class="form-control numeric" id="supplier_price"  value="{{ isset($price->supplier_price) ? $price->supplier_price : '' }}"
                                                         name="supplier_price" placeholder="Enter Supplier Price">
                                                 </div>
                                             </div>
@@ -272,7 +272,7 @@
                                                         <span class="text-danger">*</span></label>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    <input type="url" class="form-control numeric" id="product_srp"  value="{{ $price->srp }}"
+                                                    <input type="url" class="form-control numeric" id="product_srp"  value="{{ isset($price->srp) ? $price->srp : '' }}"
                                                         name="product_srp" placeholder="Enter Product SRP">
                                                 </div>
                                             </div>
@@ -285,7 +285,7 @@
                                                         <span class="text-danger">*</span></label>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    <input type="url" class="form-control numeric" id="special_price"  value="{{ $price->special_price }}"
+                                                    <input type="url" class="form-control numeric" id="special_price"  value="{{ isset($price->special_price) ? $price->special_price : '' }}"
                                                         name="special_price" placeholder="Enter Special Price">
                                                 </div>
                                             </div>

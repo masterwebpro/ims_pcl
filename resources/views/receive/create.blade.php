@@ -78,7 +78,7 @@
                                 </div>
                                 <!--end col-->
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address <span class="text-danger">*</span></h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address <span class="text-danger">*</span></h6>
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="store" name="store">
                                             <option value="">Select Store/Warehouse</option>                                                            

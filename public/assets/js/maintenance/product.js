@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    $(".select2").select2();
+
     var attribute_entity = [];
     var category_id = $("#category_id").val();
     var product_id = $("#product_id").val();

@@ -26,4 +26,10 @@ class MasterfileModel extends Model
         'updated_at',
         'created_at'
     ];
+
+    public function product() 
+    {
+        return $this->hasOne(Products::class, 'id', 'product_id');
+    }
+
 }
