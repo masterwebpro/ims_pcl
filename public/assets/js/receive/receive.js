@@ -35,18 +35,21 @@ $(document).on('change', '#store', function() {
 
 $(document).on('click', '#find-items', function() {
    
-    var supplier_id = $('#supplier').val();
+    var sup_id = $('#supplier').val();
 
-    if(supplier_id) {   
+    var supplier_id = (sup_id != '') ? sup_id : 0;
+
+    //if(supplier_id) {   
 
         $('#show-items').modal('show'); 
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
         new DataTable("#show-items-list",{
-            order: [[1, 'desc']],
+            order: [[3, 'asc']],
             paging: true,
-            ajax: BASEURL+"settings/products/"+supplier_id+'/get',
+            //ajax: BASEURL+"settings/products/"+supplier_id+'/get',
+            ajax: BASEURL+"settings/products",
             columns: [
                 { data: 'product_id',  visible: false },
                 { data: 'product_code' },
@@ -54,9 +57,9 @@ $(document).on('click', '#find-items', function() {
                 { data: 'product_name' }
             ],
         });
-    } else {
-        alert("Supplier Name required");
-    }
+    // } else {
+    //     alert("Supplier Name required");
+    // }
 });
 
 $(document).on('click', '.remove-product', function() {
