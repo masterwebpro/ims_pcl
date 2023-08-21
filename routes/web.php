@@ -24,6 +24,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
     Route::get('/receive/{id}/create', [App\Http\Controllers\ReceiveController::class, 'receivePo']);
 
+    Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
+
     Route::resource('/setting/suppliers', App\Http\Controllers\SuppliersController::class);
 
     //Maintenance
