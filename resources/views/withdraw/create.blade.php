@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Delivery Order
+    Withdrawal
 @endsection
 @section('css')
     <!--datatable css-->
@@ -15,7 +15,7 @@
             Outbound
         @endslot
         @slot('title')
-            Delivery Order
+        Withdrawal
         @endslot
     @endcomponent
 
@@ -24,12 +24,12 @@
             <div class="card" id="tasksList">
                 <div class="card-header border-0">
                     <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">Create Delivery Order</h5>
+                        <h5 class="card-title mb-0 flex-grow-1">Create Withdrawal</h5>
                         <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                             <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i
                                     class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                 Save</button>
-                            <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i
+                            <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill d-none"><i
                                     class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
                             <a href="{{ URL::to('do') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -43,7 +43,7 @@
         <!--end col-->
     </div>
     <!--end row-->
-    <form name="submit-do" id="submit-do">
+    <form name="submit-withdrawal" id="submit-withdrawal">
         <div class="row justify-content-center">
 
             <div class="col-xxl-11">
@@ -160,6 +160,31 @@
                             <div class="row ms-3 mt-3 mx-3">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
+                                        <label for="colFormLabel" class="col-lg-4 col-form-label">AR Number</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="ar_no" name="ar_no"
+                                                value="" placeholder="AR Number">
+                                            <span class="text-danger error-msg ar_no_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Withdrawal Date <span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-8">
+                                            <input type="date" class="form-control" id="withdraw_date"
+                                            name="withdraw_date" placeholder="Withdraw Date">
+                                            <span class="text-danger error-msg withdraw_date_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row ms-3 mt-3 mx-3">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="po_num" name="po_num"
@@ -187,14 +212,14 @@
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">DO Type <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
-                                            <select class="form-select select2" required="required" id="do_type"
-                                            name="do_type">
+                                            <select class="form-select select2" required="required" id="wd_type"
+                                            name="wd_type">
                                             <option value="">Select DO Type</option>
-                                            <? foreach($do_type as $type) : ?>
+                                            <? foreach($wd_type as $type) : ?>
                                             <option value="<?= $type['code'] ?>" <?=($type['code'] == 'delivery' ? 'selected' : '')?>><?= $type['name'] ?></option>
                                             <? endforeach;?>
                                             </select>
-                                            <span class="text-danger error-msg do_type_error"></span>
+                                            <span class="text-danger error-msg wd_type_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -298,7 +323,7 @@
                             <div class="">
                                 <div class="card-header card-title mb-0 flex-grow-1">
                                     <div class="d-flex align-items-center">
-                                        <h5>Delivery Order Details</h5>
+                                        <h5>Withdrawal Details</h5>
                                     </div>
                                 </div>
                                 <div class="card-body p-4">
@@ -401,5 +426,5 @@
     <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/do/do.js') }}"></script>
+    <script src="{{ URL::asset('/assets/js/withdraw/withdraw.js') }}"></script>
 @endsection

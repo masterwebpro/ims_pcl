@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Delivery Order
+    Withdrawal
 @endsection
 @section('css')
     <!--datatable css-->
@@ -15,7 +15,7 @@
             Outbound
         @endslot
         @slot('title')
-            Delivery Order
+        Withdrawal
         @endslot
     @endcomponent
 
@@ -25,10 +25,10 @@
                 <div class="card-header border-0">
                     <div class="d-flex align-items-center">
                         <div class="col-md-4 text-start">
-                            <h5 class="card-title mb-0 flex-grow-1">{{ $do->do_no }}</h5>
+                            <h5 class="card-title mb-0 flex-grow-1">{{ $wd->wd_no }}</h5>
                         </div>
                         <div class="col-md-2 text-center">
-                            <span class="badge  fs-16 <?=$do->status?> text-uppercase"><?=$do->status?></span>
+                            <span class="badge  fs-16 <?=$wd->status?> text-uppercase"><?=$wd->status?></span>
                         </div>
                         <div class="col-md-6 text-end">
                             <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i
@@ -48,7 +48,7 @@
         <!--end col-->
     </div>
     <!--end row-->
-    <form name="submit-do" id="submit-do">
+    <form name="submit-withdrawal" id="submit-withdrawal">
         <div class="row justify-content-center">
 
             <div class="col-xxl-11">
@@ -60,13 +60,13 @@
                                     <div class="col-4">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span
                                                 class="text-danger">*</span></h6>
-                                        <input type="hidden" name="do_no" id="do_no" value="{{ $do->do_no }}" />
+                                        <input type="hidden" name="wd_no" id="wd_no" value="{{ $wd->wd_no }}" />
                                         <p class="fw-medium mb-2" id="shipping-name">
                                             <select class="form-select select2" required="required" id="supplier"
                                                 name="supplier">
                                                 <option value="">Select Supplier</option>
                                                 <? foreach($supplier_list as $supplier) : ?>
-                                                <option value="<?= $supplier->id ?>" <?=($supplier->id == $do->supplier_id) ? 'selected' : '' ?>><?= $supplier->supplier_name ?>
+                                                <option value="<?= $supplier->id ?>" <?=($supplier->id == $wd->supplier_id) ? 'selected' : '' ?>><?= $supplier->supplier_name ?>
                                                 </option>
                                                 <? endforeach;?>
                                             </select>
@@ -85,7 +85,7 @@
                                                 name="client">
                                                 <option value="">Select Client</option>
                                                 <? foreach($client_list as $client) : ?>
-                                                <option value="<?= $client->id ?>" <?=($client->id == $do->client_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
+                                                <option value="<?= $client->id ?>" <?=($client->id == $wd->client_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg client_error"></span>
@@ -104,7 +104,7 @@
                                                 name="store">
                                                 <option value="">Select Store/Warehouse</option>
                                                 <? foreach($store_list as $store) : ?>
-                                                <option value="<?= $store->id ?>" <?=($store->id == $do->store_id) ? 'selected' : '' ?>><?= $store->store_name ?></option>
+                                                <option value="<?= $store->id ?>" <?=($store->id == $wd->store_id) ? 'selected' : '' ?>><?= $store->store_name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg store_error"></span>
@@ -144,7 +144,7 @@
                                                 name="order_type">
                                                 <option value="">Select Order Type</option>
                                                 <? foreach($order_type as $type) : ?>
-                                                <option value="<?= $type->code ?>" <?=($type->code == $do->order_type ? 'selected' : '')?>><?= $type->name ?></option>
+                                                <option value="<?= $type->code ?>" <?=($type->code == $wd->order_type ? 'selected' : '')?>><?= $type->name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg order_type_error"></span>
@@ -157,8 +157,33 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="order_no"
-                                                name="order_no" value="{{ $do->order_no }}" placeholder="Order no">
+                                                name="order_no" value="{{ $wd->order_no }}" placeholder="Order no">
                                             <span class="text-danger error-msg order_no_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row ms-3 mt-3 mx-3">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                        <label for="colFormLabel" class="col-lg-4 col-form-label">AR Number</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="ar_no" name="ar_no"
+                                                value="{{ $wd->ar_no }}" placeholder="AR Number">
+                                            <span class="text-danger error-msg ar_no_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Withdrawal Date <span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-8">
+                                            <input type="date" class="form-control" id="withdraw_date"
+                                            name="withdraw_date" placeholder="Withdraw Date" value="{{ $wd->withdraw_date }}">
+                                            <span class="text-danger error-msg withdraw_date_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +196,7 @@
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="po_num" name="po_num"
-                                                value="{{ $do->po_num }}" placeholder="PO Number">
+                                                value="{{ $wd->po_num }}" placeholder="PO Number">
                                             <span class="text-danger error-msg po_num_error"></span>
                                         </div>
                                     </div>
@@ -181,7 +206,7 @@
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Sales Invoice </label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="sales_invoice"
-                                                name="sales_invoice" value="{{ $do->sales_invoice }}" placeholder="Sales Invoice">
+                                                name="sales_invoice" value="{{ $wd->sales_invoice }}" placeholder="Sales Invoice">
                                         </div>
                                     </div>
                                 </div>
@@ -198,8 +223,8 @@
                                             <select class="form-select select2" required="required" id="do_type"
                                             name="do_type">
                                             <option value="">Select DO Type</option>
-                                            <? foreach($do_type as $type) : ?>
-                                            <option value="<?= $type['code'] ?>" <?=($type['code'] == $do->do_type ? 'selected' : '')?>><?= $type['name'] ?></option>
+                                            <? foreach($wd_type as $type) : ?>
+                                            <option value="<?= $type['code'] ?>" <?=($type['code'] == $wd->do_type ? 'selected' : '')?>><?= $type['name'] ?></option>
                                             <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg do_type_error"></span>
@@ -212,7 +237,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="order_date"
-                                            name="order_date" value="{{ $do->order_date }}" placeholder="Order Date">
+                                            name="order_date" value="{{ $wd->order_date }}" placeholder="Order Date">
                                             <span class="text-danger error-msg order_date_error"></span>
                                         </div>
                                     </div>
@@ -228,7 +253,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="pickup_date"
-                                                name="pickup_date" value="{{ $do->pickup_date }}" placeholder="Pickup Date">
+                                                name="pickup_date" value="{{ $wd->pickup_date }}" placeholder="Pickup Date">
                                             <span class="text-danger error-msg pickup_date_error"></span>
                                         </div>
                                     </div>
@@ -239,7 +264,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="trgt_dlv_date"
-                                                name="trgt_dlv_date" value="{{ $do->target_dlv_date }}" placeholder="Date Received">
+                                                name="trgt_dlv_date" value="{{ $wd->target_dlv_date }}" placeholder="Date Received">
                                             <span class="text-danger error-msg trgt_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -256,7 +281,7 @@
                                         <div class="col-lg-8">
 
                                             <input type="text" class="form-control" id="created_by" name="created_by" disabled
-                                                value="{{ $do->name }}" placeholder="Created By">
+                                                value="{{ $wd->name }}" placeholder="Created By">
                                             <span class="text-danger error-msg created_by_error"></span>
                                         </div>
                                     </div>
@@ -267,7 +292,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="actual_dlv_date"
-                                                name="actual_dlv_date" value="{{ $do->actual_dlv_date }}" placeholder="Inspect Date">
+                                                name="actual_dlv_date" value="{{ $wd->actual_dlv_date }}" placeholder="Inspect Date">
                                             <span class="text-danger error-msg actual_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -286,7 +311,7 @@
                                                 name="warehouse">
                                                 <option value="">Select warehouse</option>
                                                 <? foreach ($warehouse_list as $key => $wh):?>
-                                                    <option value="<?=$wh->id?>" <?=($wh->id == $do->warehouse_id) ? 'selected' : ''?>>{{ $wh->warehouse_name }}</option>
+                                                    <option value="<?=$wh->id?>" <?=($wh->id == $wd->warehouse_id) ? 'selected' : ''?>>{{ $wh->warehouse_name }}</option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg warehouse_error"></span>
@@ -298,7 +323,7 @@
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" name="remarks" id="remarks"
-                                                value="{{ $do->remarks }}" placeholder="Remarks">
+                                                value="{{ $wd->remarks }}" placeholder="Remarks">
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +335,7 @@
                             <div class="">
                                 <div class="card-header card-title mb-0 flex-grow-1">
                                     <div class="d-flex align-items-center">
-                                        <h5>Delivery Order Details</h5>
+                                        <h5>Withdrawal Details</h5>
                                     </div>
                                 </div>
                                 <div class="card-body p-4">
@@ -346,11 +371,11 @@
                                             </thead>
                                             <tbody id="newlink">
                                                 <?
-                                                $rowCount = count($do->items);
+                                                $rowCount = count($wd->items);
                                                 $x=1;
                                                  ?>
-                                                @if(isset($do->items))
-                                                    @foreach($do->items as $item)
+                                                @if(isset($wd->items))
+                                                    @foreach($wd->items as $item)
                                                     <tr id="product_{{$item->product_id}}">
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
@@ -462,5 +487,5 @@
     <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/do/do.js') }}"></script>
+    <script src="{{ URL::asset('/assets/js/withdraw/withdraw.js') }}"></script>
 @endsection
