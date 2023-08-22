@@ -62,3 +62,16 @@
 .has_error {
     border:#f06548 solid 1px !important;
 }
+
+.movement_item {
+    width: 30px !important;
+}
+
+table.movement {
+    padding: 0.3rem 0.6rem !important;
+}
+
+.movement>:not(caption)>*>* {
+    padding: 0.30rem 0.6rem !important;
+    
+}

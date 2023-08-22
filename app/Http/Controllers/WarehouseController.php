@@ -56,7 +56,7 @@ class WarehouseController extends Controller
      */
     public function create()
     {
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $store_list = Store::all();
         $warehouse = Warehouse::all();
 
@@ -131,7 +131,7 @@ class WarehouseController extends Controller
     public function show($id)
     {
         $warehouse = Warehouse::find(_decode($id));
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $store_list = Store::all();
 
         return view('maintenance/warehouse/view', [
@@ -150,7 +150,7 @@ class WarehouseController extends Controller
     public function edit($id)
     {
         $warehouse = Warehouse::find(_decode($id));
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $store_list = Store::all();
         return view('maintenance/warehouse/edit', [
             'warehouse'=>$warehouse,

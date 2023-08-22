@@ -75,7 +75,7 @@ class PurchaseOrderController extends Controller
 
     public function create()
     {
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
         $uom = UOM::all();
@@ -206,7 +206,7 @@ class PurchaseOrderController extends Controller
         ->leftJoin('users as u', 'u.id', '=', 'po_hdr.created_by')
         ->where('po_hdr.id', _decode($id))->first();
 
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
         $uom = UOM::all();

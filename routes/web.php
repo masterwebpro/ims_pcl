@@ -55,6 +55,21 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/getEntity', [App\Http\Controllers\SettingsController::class, 'getAttributeEntity']);
     Route::get('/getCategoryAttribute', [App\Http\Controllers\SettingsController::class, 'getCategoryAttribute']);
     Route::get('/getProductAttribute', [App\Http\Controllers\SettingsController::class, 'getProductAttribute']);
+    Route::get('/getLevel', [App\Http\Controllers\SettingsController::class, 'getLevel']);
+    Route::get('/getStorageLocationId', [App\Http\Controllers\SettingsController::class, 'getStorageLocation']);
+    
+    Route::get('/masterfile', [App\Http\Controllers\SettingsController::class, 'getMasterfileData']);
+    Route::get('/newLocation/{warehouse_id}', [App\Http\Controllers\SettingsController::class, 'getNewLocation']);
+    
+
+    
+});
+
+Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
+    Route::resource('/movement', App\Http\Controllers\StockMovementController::class);
+    Route::post('/movement/validate', [App\Http\Controllers\StockMovementController::class, 'getValidate']);
+    Route::resource('/adjustment', App\Http\Controllers\StockAdjustmentController::class);
+    Route::resource('/count-sheet', App\Http\Controllers\CountSheetController::class);
 });
 
 

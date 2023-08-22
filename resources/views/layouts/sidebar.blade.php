@@ -1,4 +1,10 @@
 @inject('components', 'App\Http\Controllers\ComponentsController')
+<?php
+//    use App\Http\Controllers\ComponentsController;
+//    $component = new ComponentsController;
+   // $all_user_permissions = $component->getPermissionModuleName(Auth::id())->toArray();
+?>
+
 <!-- ========== App Menu ========== -->
 <div class="app-menu navbar-menu">
     <!-- LOGO -->

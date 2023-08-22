@@ -56,7 +56,7 @@ class StorageLocationController extends Controller
     }
     public function create()
     {
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         return view('maintenance/location/create', [
             'client_list'=> $client_list,
         ]);
@@ -140,7 +140,7 @@ class StorageLocationController extends Controller
     public function show($id)
     {
         $location = StorageLocationModel::where('storage_location_id', _decode($id))->first();
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         return view('maintenance/location/view', [
             'location'=>$location,
             'client_list' => $client_list,
@@ -150,7 +150,7 @@ class StorageLocationController extends Controller
     public function edit($id)
     {
         $location = StorageLocationModel::where('storage_location_id', _decode($id))->first();
-        $client_list = Client::all();
+        $client_list = Client::where('is_enabled', '1')->get();
         return view('maintenance/location/edit', [
             'location'=>$location,
             'client_list' => $client_list,

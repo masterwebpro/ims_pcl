@@ -86,7 +86,7 @@
                                 </div>
                                 <!--end col-->
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Store Address</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address</h6>
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$rcv->store_id?>" />
                                         <select class="form-select select2" disabled required="required" id="store" name="store">

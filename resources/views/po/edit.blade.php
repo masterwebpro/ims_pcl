@@ -82,7 +82,6 @@
                                 </div>
 
                                 <div class="col-md-4 form-group">
-                                    <label for="store_id" class="form-label">Warehouse/Store Name</label>
                                     <input type="hidden" value="{{ $po->store_id }}" class="store_id" name="store_id" id="store_id" />
                                     <select class="form-select select2" required="required" id="store" name="store">
                                         <option value="">Select Store/Warehouse</option>                                                            
