@@ -314,8 +314,6 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
-                                                <th scope="col" >Lot/Batch #</th>
-                                                <th scope="col" >Expiry Date</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -360,12 +358,6 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
-                                                    </td>
-                                                    <td class="text-center ps-1">
-                                                        <small>-</small>
-                                                    </td>
-                                                    <td class="text-center ps-1">
-                                                        <small>-</small>
                                                     </td>
                                                 </tr>
                                                 @endforeach

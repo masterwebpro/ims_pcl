@@ -76,10 +76,10 @@ $(document).on('click', '#add-product', function() {
         var rowCount = $('#product-list tr').length;
         var idx = rowCount - 1;
         var btn = '<div class="text-center">';
-        btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+data.product_id+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
+        btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+rowCount+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
         btn += '</div>'
 
-        $('#product-list tbody').append('<tr id="product_'+data.product_id+'"> \
+        $('#product-list tbody').append('<tr id="product_'+rowCount+'"> \
         <td class="text-start"> \
             <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
         '+rowCount+' </td> \
@@ -87,7 +87,7 @@ $(document).on('click', '#add-product', function() {
             '+data.product_name+'<br/><small>'+data.product_code+'</small> \
         </td> \
         <td class="text-start"> \
-            <select name="item_type[]" id="item_type_{{$x}}" class="uom uom_select form-select">  \
+            <select name="item_type[]" id="item_type_'+rowCount+'" class="uom uom_select form-select">  \
                 <option value="good">Good</option>  \
                 <option value="damage">Damage</option> \
                 <option value="repair">Repair</option> \
@@ -95,29 +95,25 @@ $(document).on('click', '#add-product', function() {
             <span class="text-danger error-msg item_type'+(rowCount-1)+'_error"></span> \
         </td>  \
         <td class="text-start ps-1"> \
-            <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+data.product_id+'" id="whse_qty_'+idx+'" value="" placeholder="Whse Qty" /> \
+            <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+idx+'" id="whse_qty_'+idx+'" value="" placeholder="Whse Qty" /> \
             <span class="text-danger error-msg whse_qty'+(rowCount-1)+'_error"></span> \
         </td> \
-            <td class="text-start ps-1"><select name="whse_uom[]" id="uom_'+idx+'" class="uom uom_select form-select select2"> \
+            <td class="text-start ps-1"><select name="whse_uom[]" data-id="'+idx+'" id="uom_'+idx+'" class="uom  whse_uom uom_select form-select select2"> \
             '+uom+'</select> \
             <span class="text-danger error-msg whse_uom'+(rowCount-1)+'_error"></span> \
         </td> \
         <td class="text-start ps-1"> \
-            <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+data.product_id+'" id="inv_qty_'+idx+'" value="" placeholder="Inv Qty" /> \
+            <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+idx+'" id="inv_qty_'+idx+'" value="" placeholder="Inv Qty" /> \
             <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
         <td class="text-start ps-1"> \
-            <select name="inv_uom[]" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
+            <select name="inv_uom[]" data-id="'+idx+'" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
             '+uom+'</select> \
             <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
         </td> \
-        <td class="text-start ps-1"> \
-            <small>-</small> \
-        </td> \
-        <td class="text-start ps-1"> \
-            <small>-</small> \
-        </td> \
         <td>'+btn+'</td> \
         </tr>');
+
+        $('#show-items-list tbody tr').removeClass('selected')
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
@@ -278,3 +274,104 @@ function _submitData(form_data) {
     });
 }
 
+$(document).on('blur keyup', '#item_code', function(e) {
+    if (e.type === 'blur' || e.keyCode === 13)  {
+
+        var item_code = $(this).val();
+      
+        $.ajax({
+            url: BASEURL + 'settings/product',
+            method: "get",
+            data: {
+                'item_code': item_code
+            },
+            beforeSend: function () {
+                $('#preloading').modal('show');
+                $('#form-po').find('span.error-msg').text('');
+            },
+            success: function (data) {
+                if($.isEmptyObject(data.errors)) {
+                    if(data.success == true) {
+                        if(data.data) {
+                            var uom = getUom();
+                            var rowCount = $('#product-list tr').length;
+                            var idx = rowCount - 1;
+                            var btn = '<div class="text-center">';
+                            btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+rowCount+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
+                            btn += '</div>'
+
+                            $('#product-list tbody').append('<tr id="product_'+rowCount+'"> \
+                            <td class="text-start"> \
+                                <input type="hidden" name="product_id[]" readonly id="product_id_'+data.data.product_id+'" value="'+data.data.product_id+'" /> \
+                            '+rowCount+' </td> \
+                            <td class="text-start  fs-14"> \
+                                '+data.data.product_name+'<br/><small>'+data.data.product_code+'</small> \
+                            </td> \
+                            <td class="text-start"> \
+                                <select name="item_type[]" id="item_type_'+rowCount+'" class="uom uom_select form-select">  \
+                                    <option value="good">Good</option>  \
+                                    <option value="damage">Damage</option> \
+                                    <option value="repair">Repair</option> \
+                                </select> \
+                                <span class="text-danger error-msg item_type'+(rowCount-1)+'_error"></span> \
+                            </td>  \
+                            <td class="text-start ps-1"> \
+                                <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+idx+'" id="whse_qty_'+idx+'" value="" placeholder="Whse Qty" /> \
+                                <span class="text-danger error-msg whse_qty'+(rowCount-1)+'_error"></span> \
+                            </td> \
+                                <td class="text-start ps-1"><select name="whse_uom[]" data-id="'+idx+'" id="uom_'+idx+'" class="uom  whse_uom uom_select form-select select2"> \
+                                '+uom+'</select> \
+                                <span class="text-danger error-msg whse_uom'+(rowCount-1)+'_error"></span> \
+                            </td> \
+                            <td class="text-start ps-1"> \
+                                <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+idx+'" id="inv_qty_'+idx+'" value="" placeholder="Inv Qty" /> \
+                                <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
+                            <td class="text-start ps-1"> \
+                                <select name="inv_uom[]" data-id="'+idx+'" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
+                                '+uom+'</select> \
+                                <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
+                            </td> \
+                            <td>'+btn+'</td> \
+                            </tr>');
+
+
+                            toastr.success(data.data.product_name,'Added successfully');
+                          
+
+                        } else {
+                            toastr.error(item_code,'No Record found!');
+                        }
+                    } else {
+                        toastr.error(data.message,'Error on saving');
+                    }
+                } else {
+                    $.each(data.errors, function(prefix, val) {
+                        $('#errMsg').removeClass('d-none');
+                        $('#form-po').find('span.'+prefix.replace('.','')+'_error').text(val);
+                    });
+                    toastr.error('Some fields are required');
+                }
+            },
+            complete: function() {
+                $('#preloading').modal('hide');
+                $('#item_code').val('');
+            }
+        });
+    }
+});
+
+$(document).on('keyup', '.whse_qty', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    var val = $(this).val();
+
+    $('#inv_qty_'+id).val(val);
+});
+
+$(document).on('change', '.whse_uom', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    var val = $(this).val();
+
+    $('#inv_uom_'+id).val(val);
+});

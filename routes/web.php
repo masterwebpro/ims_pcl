@@ -59,8 +59,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     
     Route::get('/masterfile', [App\Http\Controllers\SettingsController::class, 'getMasterfileData']);
     Route::get('/newLocation/{warehouse_id}', [App\Http\Controllers\SettingsController::class, 'getNewLocation']);
-    
-
+    Route::get('/product', [App\Http\Controllers\SettingsController::class, 'getProduct']);
     
 });
 
@@ -69,6 +68,10 @@ Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
     Route::post('/movement/validate', [App\Http\Controllers\StockMovementController::class, 'getValidate']);
     Route::resource('/adjustment', App\Http\Controllers\StockAdjustmentController::class);
     Route::resource('/count-sheet', App\Http\Controllers\CountSheetController::class);
+});
+
+Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
+    Route::get('/stock-ledger', [App\Http\Controllers\ReportController::class, 'getStockLedger']);
 });
 
 

@@ -63,7 +63,7 @@
 
                                 <div class="col-md-4 form-group">
                                     <label for="inputState" class="form-label">PO Date <span class="text-danger">*</span></label>
-                                    <input type="text" id="po_date" required="required"  name="po_date" class="form-control" value="<?=isset($po->po_date) ? date("m-d-Y",strtotime($po->po_date)) : ''?>">
+                                    <input type="date" id="po_date" required="required"  name="po_date" class="form-control" value="<?=isset($po->po_date) ? $po->po_date : ''?>">
                                     <div class="invalid-feedback text-danger error-msg po_date_error">PO Date is Required</div>
                                 </div>
                             </div>
@@ -104,7 +104,7 @@
                     <div class="col-md-12 mb-2">
                         <div class="input-group">
                             <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
-                            <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
+                            <input type="text" class="form-control" name="item_code" id="item_code">
                             <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                         </div>
                     </div> 
@@ -156,11 +156,11 @@
                                             <span class="text-danger error-msg uom{{($x-1)}}_error"></span>
                                         </td>
                                         <td>
-                                            <input type="number" class="form-control text-end qty" name="qty[]" id="qty_{{ $item->id }}" value="{{ $item->requested_qty }}" placeholder="Qty" required />
+                                            <input type="number" data-id="{{ $item->id }}" class="form-control text-end qty" name="qty[]" id="qty_{{ $item->id }}" value="{{ $item->requested_qty }}" placeholder="Qty" required />
                                             <span class="text-danger error-msg qty{{($x-1)}}_error"></span>
                                         </td>
                                         <td>
-                                            <input type="number" class="form-control unit_price text-end" name="unit_price[]" id="unit_price_{{ $item->id }}" value="{{ $item->unit_amount }}" placeholder="Unit price" required />
+                                            <input type="number" data-id="{{ $item->id }}" class="form-control unit_price text-end" name="unit_price[]" id="unit_price_{{ $item->id }}" value="{{ $item->unit_amount }}" placeholder="Unit price" required />
                                             <span class="text-danger error-msg unit_price{{($x-1)}}_error"></span>
                                         </td>
                                         <td>

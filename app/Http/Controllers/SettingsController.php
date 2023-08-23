@@ -206,4 +206,19 @@ class SettingsController extends Controller
         ]);
     }
 
+    function getProduct(Request $request) {
+        $item_code = $request->item_code;
+        $products = \App\Models\Products::select('*')
+            ->orWhere('product_code', $item_code)
+            ->orWhere('product_sku', $item_code)
+            ->orWhere('product_upc', $item_code)
+            ->first();
+        return response()->json([
+            'success'  => true,
+            'id'=>rand(100,1000),
+            'data'    => $products
+        ]);
+       
+    }
+
 }
