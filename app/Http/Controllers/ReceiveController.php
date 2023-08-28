@@ -208,6 +208,7 @@ class ReceiveController extends Controller
                 //add on the masterfile
                 $masterfile[] = array(
                     'ref_no'=>$rcv_no,
+                    'status'=>'X',
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
                     'inv_qty'=>$request->inv_qty[$x],

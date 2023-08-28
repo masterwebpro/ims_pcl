@@ -203,7 +203,7 @@
                                                         </td>
                                                         <td class="text-center ps-1 fs-13">
                                                             <input type="hidden" readonly class="form-control" name="old_location[]" data-id="<?=($x)?>" id="old_location_<?=($x)?>" value="{{$dtl->old_storage_location_id}}">
-                                                            {{$dtl->old_location->location}}
+                                                            {{isset($dtl->old_location->location) ? $dtl->old_location->location : 'RCA' }}
                                                         </td>
                                                         <td>
                                                             <div class="input-group">
@@ -248,9 +248,6 @@
                                                 </tr>
                                             
                                             <? endif;?>
-
-
-
                                         </tbody>
                                     </table>
                                         
@@ -292,7 +289,7 @@
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Rack </h6>
                             <p class="fw-medium" id="billing-name">
-                                <select class="form-select" required="required" id="rack" name="rack">
+                                <select class="form-select" id="rack" name="rack">
                                     <option value="">Select Rack</option>  
                                     <? foreach($location as $location_id=>$racks) : ?>
                                         <? foreach($racks as $rack=>$layers) : ?>
@@ -307,7 +304,7 @@
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Layer</h6>
                             <p class="fw-medium" id="billing-name">
-                                <select class="form-select" required="required" id="layer" name="layer">
+                                <select class="form-select"  id="layer" name="layer">
                                     <option value="">Select layer</option>   
                                 </select>
                             </p>

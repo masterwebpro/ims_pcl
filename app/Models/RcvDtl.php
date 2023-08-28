@@ -33,8 +33,12 @@ class RcvDtl extends Model
         return $this->belongsTo(Products::class, 'product_id', 'product_id');
     }
 
-    public function uom()
+    public function whse()
     {
-        return $this->belongsTo(UOM::class, 'uom_id', 'uom_id');
+        return $this->hasOne(UOM::class, 'uom_id', 'whse_uom');
+    }
+    public function inv()
+    {
+        return $this->hasOne(UOM::class, 'uom_id', 'whse_uom');
     }
 }
