@@ -22,7 +22,7 @@
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-xxl-10">
+    <div class="col-xxl-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">PO Creation</h4>
@@ -111,17 +111,17 @@
 
                     <!-- ITEMS -->
                     <div class="table-responsive">
-                        <table class="table table-borderless table-nowrap" id="product-list">
+                        <table class="table table-borderless " id="product-list">
                             <thead>
                                 <tr class="table-active">
-                                    <th scope="col" style="width: 20px;">#</th>
-                                    <th scope="col" class="text-start">Particulars</th>
-                                    <th scope="col" >UOM</th>
-                                    <th scope="col" >Quantity</th>
-                                    <th scope="col" class="text-start">Unit Price</th>
-                                    <th scope="col" >Discount</th>
-                                    <th scope="col" class="text-start">Amount</th>
-                                    <th scope="col" class="text-center">Action</th>
+                                    <th style="width: 20px;">#</th>
+                                    <th class="text-start" style="width: 350px;">Particulars</th>
+                                    <th style="width: 100px;">UOM</th>
+                                    <th style="width: 80px;">Quantity</th>
+                                    <th class="text-start" style="width: 110px;">Unit Price</th>
+                                    <th style="width: 110px;">Discount</th>
+                                    <th class="text-start" style="width: 110px;">Amount</th>
+                                    <th class="text-center" style="width: 20px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="newlink">
@@ -134,20 +134,20 @@
                                         $total_discount += $item->discount ;
                                         $subtotal += $item->total_amount;
                                     ?>
-                                    <tr id="product_{{$x}}" class="product">
+                                    <tr id="product_{{$x}}" class="product fs-12">
                                         <td class="text-start">
                                         <?=$x?>
                                         </td>
-                                        <td class="text-start fs-14">
-                                            <div class="mb-0">
-                                                {{ $item->product->product_name }}<br/><small>{{ $item->product->product_code }}</small>
-                                                <input type="hidden" class="form-control" name="product_code[]" readonly id="product_code_{{ $item->id }}" value="{{ $item->product->product_code }}"/>
-                                                <input type="hidden" class="form-control" name="product_id[]" readonly id="product_id_{{ $item->id }}" value="{{ $item->product->product_id }}" />
-                                                <input type="hidden" class="form-control" name="product_name[]" readonly id="product_name_{{ $item->id }}" value="{{ $item->product->product_name }}" placeholder="Product Desc" required />
-                                            </div>
-                                        </td>
                                         <td>
-                                            <select class="form-select uom uom-select " required="required" name="uom[]" id="uom_{{ $item->id }}" required>
+                                          
+                                            {{ $item->product->product_name }}<br/><small class="fw-medium">{{ $item->product->product_code }}</small>
+                                            <input type="hidden" class="form-control" name="product_code[]" readonly id="product_code_{{ $item->id }}" value="{{ $item->product->product_code }}"/>
+                                            <input type="hidden" class="form-control" name="product_id[]" readonly id="product_id_{{ $item->id }}" value="{{ $item->product->product_id }}" />
+                                            <input type="hidden" class="form-control" name="product_name[]" readonly id="product_name_{{ $item->id }}" value="{{ $item->product->product_name }}" placeholder="Product Desc" required />
+                                           
+                                        </td>
+                                        <td class=" fs-12">
+                                            <select class="form-select uom uom-select "name="uom[]" id="uom_{{ $item->id }}" required>
                                                 <option value="">UOM</option>                                                            
                                                 <? foreach($uom as $u) : ?>
                                                     <option value="<?=$u->uom_id?>" <?=($u->uom_id == $item->uom_id) ? 'selected' : ''?> ><?=$u->code?></option>
@@ -155,7 +155,7 @@
                                             </select>
                                             <span class="text-danger error-msg uom{{($x-1)}}_error"></span>
                                         </td>
-                                        <td>
+                                        <td class=" fs-12">
                                             <input type="number" data-id="{{ $item->id }}" class="form-control text-end qty" name="qty[]" id="qty_{{ $item->id }}" value="{{ $item->requested_qty }}" placeholder="Qty" required />
                                             <span class="text-danger error-msg qty{{($x-1)}}_error"></span>
                                         </td>

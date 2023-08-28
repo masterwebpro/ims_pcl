@@ -209,6 +209,8 @@ class ReceiveController extends Controller
                 $masterfile[] = array(
                     'ref_no'=>$rcv_no,
                     'status'=>'X',
+                    'trans_type'=>'RV',
+                    'date_received'=>date("Y-m-d H:i:s", strtotime($request->date_received)),
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
                     'inv_qty'=>$request->inv_qty[$x],

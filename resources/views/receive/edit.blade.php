@@ -301,17 +301,17 @@
                                 </div> 
                                 
                                 <div class="table-responsive">
-                                    <table class="table table-nowrap" id="product-list">
+                                    <table class="table" id="product-list">
                                         <thead>
                                             <tr class="table-active">
-                                                <th scope="col"  style="width: 10px;">#</th>
-                                                <th scope="col" >Product</th>
-                                                <th scope="col" >Classfication</th>
-                                                <th scope="col" >WHSE Qty</th>
-                                                <th scope="col" >WHSE UOM</th>
-                                                <th scope="col" >Inv Qty</th>
-                                                <th scope="col" >Inv UOM</th>
-                                                <th scope="col" class="text-center">Action</th>
+                                                <th style="width: 10px;">#</th>
+                                                <th style="width: 300px;">Product</th>
+                                                <th >Classfication</th>
+                                                <th >WHSE Qty</th>
+                                                <th tyle="width: 50px;">WHSE UOM</th>
+                                                <th >Inv Qty</th>
+                                                <th style="width: 50px;">Inv UOM</th>
+                                                <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -322,17 +322,17 @@
                                             @if(isset($rcv->items))
                                                 @foreach($rcv->items as $item)
                                                 <tr id="product_{{$item->product_id}}">
-                                                    <td class="text-start">
+                                                    <td class="text-start fs-12">
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                     {{$x++}} </td>
-                                                    <td class="text-start fs-14"> 
+                                                    <td class="text-start fs-12"> 
                                                         {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                     </td>
                                                     <td class="text-start"> 
                                                         <select name="item_type[]" id="item_type_{{$x}}" class="uom uom_select form-select">
-                                                            <option value="good">Good</option> 
-                                                            <option value="damage">Damage</option>  
-                                                            <option value="repair">Repair</option>                                                            
+                                                            <option class="fs-8" value="good"    <?=($item->item_type == 'good')? 'selected':''?>>Good</option> 
+                                                            <option class="fs-8" value="damage" <?=($item->item_type == 'damage')? 'selected':''?>>Damage</option>  
+                                                            <option class="fs-8" value="repair" <?=($item->item_type == 'repair')? 'selected':''?>>Repair</option>                                                            
                                                         </select>
                                                     </td>
                                                     <td class=" ps-1">

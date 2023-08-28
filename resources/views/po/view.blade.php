@@ -134,17 +134,17 @@
                                         $total_discount += $item->discount;
                                     ?>
                                     <tr>
-                                        <th scope="row"><?=$x++;?></th>
-                                        <th scope="row">{{ $item->product->product_code}}</th>
-                                        <td class="text-start">
-                                            <span class="fw-medium">{{ $item->product->product_name}}</span>
+                                        <td class="text-start fs-12"><?=$x++;?></td>
+                                        <td class="text-start fs-12">{{ $item->product->product_code}}</td>
+                                        <td class="text-start fs-12">
+                                            <span class="">{{ $item->product->product_name}}</span>
                                             <p class="text-muted mb-0"></p>
                                         </td>
-                                        <td>{{ $item->uom->uom_desc}}</td>
-                                        <td>{{ $item->requested_qty}}</td>
-                                        <td class="text-end">{{ number_format($item->unit_amount,2)}}</td>
-                                        <td>{{ number_format($item->discount,2)}}</td>
-                                        <td class="text-end">{{ $item->currency}} {{ number_format($item->total_amount,2)}}</td>
+                                        <td class="text-start fs-12">{{ $item->uom->uom_desc}}</td>
+                                        <td class="text-end fs-12">{{ $item->requested_qty}}</td>
+                                        <td class="text-end fs-12" class="text-end">{{ number_format($item->unit_amount,2)}}</td>
+                                        <td class="text-end fs-12">{{ number_format($item->discount,2)}}</td>
+                                        <td class="text-end fs-12">{{ $item->currency}} {{ number_format($item->total_amount,2)}}</td>
                                     </tr>
                                     <? endforeach;?>
                                 </tbody>

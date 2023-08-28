@@ -164,7 +164,7 @@
                                 </div> 
                                 
                                 <div class="table-responsive">
-                                    <table class="table table-nowrap table-bordered movement" id="product-list">
+                                    <table class="table table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>

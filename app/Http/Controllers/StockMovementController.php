@@ -166,10 +166,10 @@ class StockMovementController extends Controller
                     'storage_location_id'=>$request->new_location[$x],
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
-
+                    'trans_type'=>'SM',
+                    'trans_type'=>'X',
                     'inv_qty'=>$request->new_inv_qty[$x],
                     'inv_uom'=>$request->new_inv_uom[$x],
-                    
                     'whse_qty'=>$request->new_inv_qty[$x],
                     'whse_uom'=>$request->new_inv_uom[$x],
                     'created_at'=>$this->current_datetime,
@@ -183,6 +183,8 @@ class StockMovementController extends Controller
                     'client_id'=>$request->client_id,
                     'warehouse_id'=>$request->warehouse_id,
                     'storage_location_id'=>$request->old_location[$x],
+                    'trans_type'=>'SM',
+                    'trans_type'=>'X',
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
                     'inv_qty'=>($request->new_inv_qty[$x] * -1),

@@ -110,13 +110,15 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                         if(transfer_qty == 0)
                             transfer_qty = '';
                         if(withdraw_qty == 0)
-                            withdraw_qty = '';    
+                            withdraw_qty = '';
+                            
+                        var location = (item.location != null) ? item.location : 'RA';
                           
                         table += '<tr>';
                             table += "<td width='120px;'>"+moment(new Date(item.created_at)).format("DD MMM YYYY")+"</td>";
                             table += "<td width='120px;'>"+item.ref_no+"</td>";
                             table += "<td width='120px;'></td>";
-                            table += "<td class='text-center' width='80px;'>"+item.location+"</td>";
+                            table += "<td class='text-center' width='80px;'>"+location+"</td>";
                             table += "<td class='text-center' width='120px;'>"+item.item_type+"</td>";
 
                             table += "<td class='text-center'>"+rcv_qty+"</td>";
