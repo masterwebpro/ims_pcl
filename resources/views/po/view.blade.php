@@ -10,7 +10,7 @@
 @endcomponent
 
 <div class="row justify-content-center">
-    <div class="col-lg-9">
+    <div class="col-lg-12">
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
@@ -34,7 +34,7 @@
 
 
 <div class="row justify-content-center">
-    <div class="col-xxl-9">
+    <div class="col-xxl-12">
         <div class="card" id="demo">
             <div class="row">
                 <div class="col-lg-12">

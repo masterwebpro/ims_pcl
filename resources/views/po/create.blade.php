@@ -115,7 +115,7 @@
                         <table class="table table-borderless table-nowrap" id="product-list">
                             <thead>
                                 <tr class="table-active">
-                                    <th scope="col"  style="width: 20px;">#</th>
+                                    <th scope="col" style="width: 20px;">#</th>
                                     <th scope="col" >Product</th>
                                     <th scope="col" >UOM</th>
                                     <th scope="col" >Quantity</th>

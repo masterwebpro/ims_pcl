@@ -29,6 +29,7 @@ class ComponentsController extends Controller
         )
             ->leftJoin('submenus', 'menus.id', '=', 'submenus.menu_id')
             ->where('menus.is_enabled', '1')
+            ->where('submenus.is_enabled', '1')
             ->groupBy('menus.id')
             ->orderBy('menus.sort', 'ASC')
             ->get();
