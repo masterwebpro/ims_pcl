@@ -33,6 +33,9 @@
                             <a href="{{ URL::to('withdraw/'._encode($wd->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                     Edit</a>
+                            @else
+                            <button type="button" class="generate-withdrawal-slip  btn btn-danger btn-label rounded-pill"><i
+                                class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Withdrawal Slip</button>
                             @endif
                             <a href="{{ URL::to('withdraw') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -208,7 +211,7 @@
                             <div class="row ms-3 mx-3">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4 col-form-label">DO Type <span
+                                        <label for="colFormLabel" class="col-lg-4 col-form-label">Withdrawal Type <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <select class="form-select select2" required="required" id="wd_type" disabled
@@ -227,7 +230,7 @@
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Order Date <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
-                                            <input type="date" class="form-control" id="order_date"
+                                            <input type="date" class="form-control" id="order_date" disabled
                                             name="order_date" value="{{ $wd->order_date }}" placeholder="Order Date">
                                             <span class="text-danger error-msg order_date_error"></span>
                                         </div>

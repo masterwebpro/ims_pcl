@@ -245,7 +245,7 @@ class WithdrawalController extends Controller
                     );
                     $wddtl = WdDtl::create($dtl);
 
-                    
+
                     if($request->is_serialize[$x] == 1)
                     {
                         if(!empty($serial_data))
@@ -287,6 +287,7 @@ class WithdrawalController extends Controller
                         MasterfileModel::create([
                             'ref_no'=> $twd_no,
                             'status' => 'X',
+                            'trans_type' => 'WD',
                             'item_type' => $masterData->item_type,
                             'product_id'=>$request->product_id[$x],
                             'storage_location_id'=> $masterData->storage_location_id,
@@ -301,6 +302,7 @@ class WithdrawalController extends Controller
                         MasterfileModel::create([
                             'ref_no'=> $twd_no,
                             'status' => 'R',
+                            'trans_type' => 'WD',
                             'item_type' => $masterData->item_type,
                             'product_id'=>$request->product_id[$x],
                             'storage_location_id'=>$masterData->storage_location_id,
