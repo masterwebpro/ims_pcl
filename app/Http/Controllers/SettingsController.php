@@ -195,4 +195,9 @@ class SettingsController extends Controller
             'data'    => $products
         ]);
     }
+
+    function getAllProduct(Request $request) {
+        $data = \App\Models\Products::select('product_id', DB::raw("CONCAT(product_code,' - ',product_name) AS product"))->get();
+        return response()->json($data);
+    }
 }

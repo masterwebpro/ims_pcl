@@ -60,6 +60,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/masterfile', [App\Http\Controllers\SettingsController::class, 'getMasterfileData']);
     Route::get('/newLocation/{warehouse_id}', [App\Http\Controllers\SettingsController::class, 'getNewLocation']);
     Route::get('/product', [App\Http\Controllers\SettingsController::class, 'getProduct']);
+    Route::get('/allProducts', [App\Http\Controllers\SettingsController::class, 'getAllProduct']);
     
 });
 
@@ -77,6 +78,9 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-receiving-detailed',[App\Http\Controllers\ReportController::class,'exportReceivingDetailed'])->name('export-receiving-detailed');
     Route::get('/print-receiving-detailed',[App\Http\Controllers\ReportController::class,'printPdfReceivingDetailed'])->name('print-receiving-detailed');
     Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
+    Route::get('/inventory',[App\Http\Controllers\ReportController::class,'inventory'])->name('report.inventory');
+    Route::get('/getInventoryReport',[App\Http\Controllers\ReportController::class,'getInventoryReport'])->name('report.getInventoryReport');
+    
     
 });
 

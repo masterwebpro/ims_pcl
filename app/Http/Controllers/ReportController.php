@@ -32,13 +32,11 @@ class ReportController extends Controller
     {
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
-        $product_list = Products::all();
-
+        
         return view('report/stock_ledger', [
             'request'=>$request,
             'supplier_list'=>$supplier_list,
             'client_list'=>$client_list,
-            'product_list'=>$product_list
         ]);
     }
 
@@ -46,8 +44,7 @@ class ReportController extends Controller
     {
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
-        $product_list = Products::all();
-
+        
         $validator = Validator::make($request->all(), [
             'client'=>'required',
             'store'=>'required',
@@ -255,6 +252,58 @@ class ReportController extends Controller
         $result = $rcv->get();
 
         return $result;
+    }
+
+    public function inventory(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->get();
+        return view('report/inventory', [
+            'client_list'=>$client_list,
+            'request'=>$request,
+        ]);
+    }
+
+    public function getInventoryReport(Request $request) {
+        $rcv = MasterfileModel::select('client_name', 'store_name', 'w.warehouse_name', 'product_code', 'product_name', 'sl.location',  'masterfiles.whse_uom', 'masterfiles.inv_uom', 'masterfiles.item_type', 'masterfiles.status', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(inv_qty) as inv_qty"), DB::raw("SUM(whse_qty) as whse_qty"))
+            ->leftJoin('products as p', 'p.product_id', '=', 'masterfiles.product_id')
+            ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterfiles.storage_location_id')
+            ->leftJoin('client_list as cl', 'cl.id', '=', 'masterfiles.client_id')
+            ->leftJoin('store_list as s', 's.id', '=', 'masterfiles.store_id')
+            ->leftJoin('warehouses as w', 'w.id', '=', 'masterfiles.warehouse_id')
+            ->leftJoin('uom as uw', 'uw.uom_id', '=', 'masterfiles.whse_uom')
+            ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterfiles.inv_uom')
+            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterfiles.item_type','masterfiles.status', 'masterfiles.whse_uom', 'masterfiles.inv_uom')
+            ->having('inv_qty',  '>', 0)
+            ->orderBy('product_name')
+            ->orderBy('sl.location');
+        
+        if($request->has('client')  && $request->client !='')
+            $rcv->where('masterfiles.client_id', $request->client);
+        
+        if($request->has('store')  && $request->store !='')
+            $rcv->where('masterfiles.store_id', $request->store);
+        
+        if($request->has('warehouse')  && $request->warehouse !='')
+            $rcv->where('masterfiles.warehouse_id', $request->warehouse);
+
+        if($request->has('product_id')  && $request->product_id !='')
+            $rcv->where('p.product_id', $request->product_id);
+        
+        if($request->has('item_type')  && $request->item_type !='')
+            $rcv->where('masterfiles.item_type', $request->item_type);
+
+        if($request->has('location')  && $request->location !='')
+            $rcv->where('masterfiles.storage_location_id', $request->location);
+  
+        $result = $rcv->get();
+
+
+        return response()->json([
+            'success'  => true,
+            'message' => 'Saved successfully!',
+            'result'    => $result,
+        ]);
+
     }
 
 }

@@ -1,21 +1,14 @@
 @extends('layouts.master')
-@section('title') Report @endsection
+@section('title') Inventory Report @endsection
 @section('css')
 
-<!--datatable css-->
-<link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
-<!--datatable responsive css-->
-<link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-
 <link rel="stylesheet" href="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.css') }} ">
-
 
 @endsection
 @section('content')
 @component('components.breadcrumb')
 @slot('li_1') Report @endslot
-@slot('title') Stock Ledger @endslot
+@slot('title') Inventory @endslot
 @endcomponent
 
 <!--end row-->
@@ -72,7 +65,7 @@
                                  <!--end col-->
                             </div>
                             <div class="row mt-1">
-                                
+                                 
                                  <div class="col-lg-4 col-md-4">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Products</h6>
                                     <p class=" mb-2">
@@ -82,6 +75,7 @@
                                      </p>
                                 </div>
                                  <!--end col-->
+
                                  <div class="col-lg-2 col-md-2">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Item Type</h6>
                                     <p class=" mb-2">
@@ -97,9 +91,9 @@
 
                                 <div class="col-lg-6 col-md-6">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">&nbsp;</h6>
-                                    <a href="#" class="submit-stock-ledger btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</a>
-                                    <a href="#" class="submit-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
-                                    <a href="#" class="submit-print btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
+                                    <a href="#" class="submit-inventory btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</a>
+                                    <a href="#" class="submit-xls-inventory  d-none btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
+                                    <a href="#" class="submit-print-inventory d-none btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
                                 </div>
                                  <!--end col-->
                             </div>
@@ -121,18 +115,20 @@
             <div class="card" id="demo">
                 <div class="card-body p-4 ">
                     <div class="row ">
-                        <table id="masterfile_list" style="font-size: 11px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
+                        <table id="inventory_list" style="font-size: 11px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
                             <thead  class="table-light">
                                 <tr>
-                                    <th class="fw-medium text-center">Date</th>
-                                    <th class="fw-medium text-center">Transaction</th>
-                                    <th class="fw-medium text-center">Reference No</th>
+                                    <!-- <th class="fw-medium text-center">Client</th>
+                                    <th class="fw-medium text-center">Site</th>
+                                    <th class="fw-medium text-center">Warehouse</th> -->
+                                    <th class="fw-medium text-center">Product Code</th>
+                                    <th class="fw-medium text-center">Product Name</th>
+                                    <th class="fw-medium text-center">Item Type</th>
                                     <th class="fw-medium text-center">Location</th>
-                                    <th class="fw-medium text-center">Type</th>
-                                    <th class="fw-medium text-center">Deliveries QTY</th>
-                                    <th class="fw-medium text-center">Transfer QTY</th>
-                                    <th class="fw-medium text-center">Withdraw QTY</th>
-                                    <th class="fw-medium text-center">Balance</th>
+                                    <th class="fw-medium text-center">Whse QTY</th>
+                                    <th class="fw-medium text-center">Whse UOM</th>
+                                    <th class="fw-medium text-center">Inv QTY</th>
+                                    <th class="fw-medium text-center">Inv UOM</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -167,6 +163,6 @@
 <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-<script src="{{ URL::asset('/assets/js/report/stock-ledger.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/report/inventory.js') }}"></script>
 
 @endsection
