@@ -102,7 +102,7 @@ class PurchaseOrderController extends Controller
             'unit_price.*' => 'required',
             'amount.*' => 'required',
             'product_id.*' => 'required',
-            'po_num' =>  'required|unique:po_hdr,po_num,'.$request->supplier_id, 
+            'po_num' =>  'required|unique:po_hdr,po_num,'.$request->po_id, 
                 
         ], [
             'supplier'=>'Supplier is required',
