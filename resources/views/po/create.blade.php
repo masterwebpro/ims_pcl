@@ -60,7 +60,7 @@
 
                                 <div class="col-md-4 form-group">
                                     <label for="inputState" class="form-label">PO Date <span class="text-danger">*</span></label>
-                                    <input type="date" id="po_date" required="required"  name="po_date" class="form-control" value="<?=isset($po->po_date) ? date("m-d-Y",strtotime($po->po_date)) : ''?>">
+                                    <input type="date" id="po_date" required="required"  name="po_date" class="form-control" value="<?=isset($po->po_date) ? $po->po_date : ''?>">
                                     <span class="text-danger error-msg po_date_error"></span>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                     <div class="col-md-12 mb-2">
                         <div class="input-group">
                             <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
-                            <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
+                            <input type="text" class="form-control" name="item_code" id="item_code">
                             <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                         </div>
                     </div>

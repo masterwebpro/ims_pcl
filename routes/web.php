@@ -68,6 +68,8 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
 
 
+    Route::get('/product', [App\Http\Controllers\SettingsController::class, 'getProduct']);
+    
 });
 
 Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
@@ -75,6 +77,16 @@ Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
     Route::post('/movement/validate', [App\Http\Controllers\StockMovementController::class, 'getValidate']);
     Route::resource('/adjustment', App\Http\Controllers\StockAdjustmentController::class);
     Route::resource('/count-sheet', App\Http\Controllers\CountSheetController::class);
+});
+
+Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
+    Route::get('/stock-ledger', [App\Http\Controllers\ReportController::class, 'getStockLedgerIndex']);
+    Route::get('/receiving-detailed', [App\Http\Controllers\ReportController::class, 'getReceivingDetailedIndex']);
+    Route::get('/get-receiving-detailed', [App\Http\Controllers\ReportController::class, 'getReceivingDetailed']);
+    Route::get('/export-receiving-detailed',[App\Http\Controllers\ReportController::class,'exportReceivingDetailed'])->name('export-receiving-detailed');
+    Route::get('/print-receiving-detailed',[App\Http\Controllers\ReportController::class,'printPdfReceivingDetailed'])->name('print-receiving-detailed');
+    Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
+    
 });
 
 

@@ -314,8 +314,6 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
-                                                <th scope="col" >Lot/Batch #</th>
-                                                <th scope="col" >Expiry Date</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -326,23 +324,23 @@
                                             @if(isset($rcv->items))
                                                 @foreach($rcv->items as $item)
                                                 <tr id="product_{{$item->product_id}}">
-                                                    <td class="text-start">
+                                                    <td class="text-start fs-12">
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                     {{$x++}} </td>
-                                                    <td class="text-start fs-14"> 
+                                                    <td class="text-start fs-12"> 
                                                         {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                     </td>
-                                                    <td class="text-start"> 
+                                                    <td class="text-start fs-12"> 
                                                         <select name="item_type[]"  disabled  id="item_type_{{$x}}" class="uom uom_select form-select">
                                                             <option value="good">Good</option> 
                                                             <option value="damage">Damage</option>  
                                                             <option value="repair">Repair</option>                                                            
                                                         </select>
                                                     </td>
-                                                    <td class=" ps-1">
-                                                        <input type="text"  disabled  class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                    <td class="fs-12">
+                                                        <input type="text"  disabled  class="form-control numeric whse_qty uom_select fs-12" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
                                                     </td>
-                                                    <td class=" ps-1">
+                                                    <td class="fs-12">
                                                        <select name="whse_uom[]"  disabled id="whse_uom_{{$x}}" class="uom uom_select form-select">
                                                             <option value="">Select UOM</option>                                                            
                                                             @foreach($uom_list as $uom_whse)
@@ -350,7 +348,7 @@
                                                             @endforeach
                                                         </select>
                                                     </td>
-                                                    <td class="ps-1">
+                                                    <td class="fs-12">
                                                         <input type="text" disabled class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                     </td>
                                                     <td class=" ps-1">
@@ -360,12 +358,6 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
-                                                    </td>
-                                                    <td class="text-center ps-1">
-                                                        <small>-</small>
-                                                    </td>
-                                                    <td class="text-center ps-1">
-                                                        <small>-</small>
                                                     </td>
                                                 </tr>
                                                 @endforeach

@@ -17,9 +17,11 @@
                     <h5 class="card-title mb-0 flex-grow-1">PO Number : {{ $po->po_num}}</h5>
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                         <? if( $po->status != 'posted') : ?>
-                        <a href="{{ URL::to('po') }}/<?=_encode($po->id)?>/edit" class="btn btn-success btn-label rounded-pill"><i class="ri-edit-line label-icon align-middle rounded-pill fs-16 me-2"></i> Edit</a>
+                            <a href="{{ URL::to('po') }}/<?=_encode($po->id)?>/edit" class="btn btn-success btn-label rounded-pill"><i class="ri-edit-line label-icon align-middle rounded-pill fs-16 me-2"></i> Edit</a>
+                        <? else : ?>
+                            <a href="javascript:window.print()" class="btn btn-warning btn-label d-print-none rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
                         <? endif;?>
-                        <a href="{{ URL::to('po') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
+                        <a href="{{ URL::to('po') }}" class="btn btn-primary btn-label rounded-pill d-print-none"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
                 </div>
             </div>
@@ -132,17 +134,17 @@
                                         $total_discount += $item->discount;
                                     ?>
                                     <tr>
-                                        <th scope="row"><?=$x++;?></th>
-                                        <th scope="row">{{ $item->product->product_code}}</th>
-                                        <td class="text-start">
-                                            <span class="fw-medium">{{ $item->product->product_name}}</span>
+                                        <td class="text-start fs-12"><?=$x++;?></td>
+                                        <td class="text-start fs-12">{{ $item->product->product_code}}</td>
+                                        <td class="text-start fs-12">
+                                            <span class="">{{ $item->product->product_name}}</span>
                                             <p class="text-muted mb-0"></p>
                                         </td>
-                                        <td>{{ $item->uom->uom_desc}}</td>
-                                        <td>{{ $item->requested_qty}}</td>
-                                        <td class="text-end">{{ number_format($item->unit_amount,2)}}</td>
-                                        <td>{{ number_format($item->discount,2)}}</td>
-                                        <td class="text-end">{{ $item->currency}} {{ number_format($item->total_amount,2)}}</td>
+                                        <td class="text-start fs-12">{{ $item->uom->uom_desc}}</td>
+                                        <td class="text-end fs-12">{{ $item->requested_qty}}</td>
+                                        <td class="text-end fs-12" class="text-end">{{ number_format($item->unit_amount,2)}}</td>
+                                        <td class="text-end fs-12">{{ number_format($item->discount,2)}}</td>
+                                        <td class="text-end fs-12">{{ $item->currency}} {{ number_format($item->total_amount,2)}}</td>
                                     </tr>
                                     <? endforeach;?>
                                 </tbody>

@@ -105,6 +105,8 @@ $(document).on('click', '.search-item', function() {
     if(warehouse_id) {   
 
         $('#show-items').modal('show'); 
+        $('#show-items-list').DataTable().clear().destroy();
+        
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }

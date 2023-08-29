@@ -75,3 +75,7 @@ table.movement {
     padding: 0.30rem 0.6rem !important;
     
 }
+
+.flatpickr-calendar {
+    background-color: #fff !important;
+}

@@ -164,7 +164,7 @@
                                 </div> 
                                 
                                 <div class="table-responsive">
-                                    <table class="table table-nowrap table-bordered movement" id="product-list">
+                                    <table class="table table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>
@@ -223,7 +223,7 @@
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Rack </h6>
                             <p class="fw-medium" id="billing-name">
-                                <select class="form-select" required="required" id="rack" name="rack">
+                                <select class="form-select" id="rack" name="rack">
                                     <option value="">Select Rack</option>  
                                     <? foreach($location as $location_id=>$racks) : ?>
                                         <? foreach($racks as $rack=>$layers) : ?>
@@ -238,7 +238,7 @@
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Layer</h6>
                             <p class="fw-medium" id="billing-name">
-                                <select class="form-select" required="required" id="layer" name="layer">
+                                <select class="form-select" id="layer" name="layer">
                                     <option value="">Select layer</option>   
                                 </select>
                             </p>

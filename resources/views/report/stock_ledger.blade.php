@@ -1,0 +1,170 @@
+@extends('layouts.master')
+@section('title') Report @endsection
+@section('css')
+
+<!--datatable css-->
+<link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<!--datatable responsive css-->
+<link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+
+
+@endsection
+@section('content')
+@component('components.breadcrumb')
+@slot('li_1') Report @endslot
+@slot('title') Stock Leger @endslot
+@endcomponent
+
+<!--end row-->
+<form name="submit-receive" id="submit-ledger">
+    <div class="row justify-content-center">
+        <div class="col-xxl-11">
+            <div class="card">
+                <div class="row mb-3">
+                    <div class="col-lg-12">
+                        <div class="card-body p-4 ">
+                            <div class="row g-3">
+                                <div class="col-lg-3 col-md-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
+                                    <p class=" mb-2">
+                                        <select class="form-select select2" id="client" name="client">
+                                            <option value="">Select Client</option>                                                            
+                                            <? foreach($client_list as $client) : ?>
+                                                <option value="<?=$client->id?>" ><?=$client->client_name?></option>
+                                            <? endforeach;?>
+                                        </select>
+                                        <span class="text-danger error-msg client_error"></span>
+                                    </p>
+                                </div>
+                                <!--end col-->
+                                <div class="col-lg-3 col-md-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address</h6>
+                                    <p class=" mb-2">
+                                        <select class="form-select select2" id="store" name="store">
+                                            <option value="">Select Store/Warehouse</option>                                                            
+                                        </select>
+                                        <span class="text-danger error-msg store_error"></span>
+                                    </p>
+                                </div>
+                                <!--end col-->
+                                <div class="col-lg-3 col-md-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse</h6>
+                                    <p class="mb-2">
+                                        <select class="form-select select2" id="warehouse" name="warehouse">
+                                            <option value="">Select warehouse</option>                                                            
+                                        </select>
+                                        <span class="text-danger error-msg warehouse_error"></span>
+                                    </p>
+                                </div>
+                                 <!--end col-->
+                                <div class="col-lg-3 col-md-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Location</h6>
+                                    <p class="mb-2" >
+                                        <select class="form-select select2" id="location" name="location">
+                                            <option value="">Select Location</option>                                                            
+                                        </select>
+                                        <span class="text-danger error-msg location_error"></span>
+                                    </p>
+                                </div>
+                                 <!--end col-->
+                            </div>
+                            <div class="row mt-1">
+                                 <div class="col-lg-3 col-md-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Item Type</h6>
+                                    <p class=" mb-2">
+                                        <select class="form-select select2" id="item_type" name="item_type">
+                                            <option value="good">Good</option>   
+                                            <option value="damage">Damage</option>   
+                                            <option value="repair">Repair</option>                                                            
+                                        </select>
+                                        <span class="text-danger error-msg item_type_error"></span>
+                                    </p>
+                                </div>
+                                 <!--end col-->
+                                 <div class="col-lg-3 col-md-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Products</h6>
+                                    <p class=" mb-2">
+                                        <select class="form-select select2" id="product_id" name="product_id">
+                                            <option value=''>Select Product</option>
+                                            <? foreach($product_list as $product) :  ?>
+                                                <option value="<?=$product->product_id?>"><?=$product->product_code?>-<?=$product->product_name?></option>  
+                                            <? endforeach;?> 
+                                        </select>
+                                        <span class="text-danger error-msg product_id_error"></span>
+                                     </p>
+                                </div>
+                                 <!--end col-->
+
+                                <div class="col-lg-6 col-md-6">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">&nbsp;</h6>
+                                    <a href="#" class="submit-stock-ledger btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</a>
+                                    <a href="#" class="submit-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
+                                    <a href="#" class="submit-print btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
+                                </div>
+                                 <!--end col-->
+                            </div>
+                            <!--end row-->
+                        </div>
+                        <!--end card-body-->
+                    </div>
+
+                </div>
+            </div>
+            <!--end card-->
+        </div>
+        <!--end col-->
+    </div>
+    <!--end row-->
+
+    <div class="row justify-content-center">
+        <div class="col-xxl-11">
+            <div class="card" id="demo">
+                <div class="card-body p-4 ">
+                    <div class="row ">
+                        <table id="masterfile_list" style="font-size: 11px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
+                            <thead  class="table-light">
+                                <tr>
+                                    <th class="fw-medium text-center">Date</th>
+                                    <th class="fw-medium text-center">Transaction</th>
+                                    <th class="fw-medium text-center">Reference No</th>
+                                    <th class="fw-medium text-center">Location</th>
+                                    <th class="fw-medium text-center">Type</th>
+                                    <th class="fw-medium text-center">Deliveries QTY</th>
+                                    <th class="fw-medium text-center">Transfer QTY</th>
+                                    <th class="fw-medium text-center">Withdraw QTY</th>
+                                    <th class="fw-medium text-center">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                           
+                        </table>
+                    </div>
+                </div>
+                <!--end row-->
+            </div>
+            <!--end card-->
+        </div>
+        <!--end col-->
+    </div>
+</form>
+
+	@endsection
+@section('script')
+
+<script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/cleave.js/cleave.js.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/masks/jquery.mask.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/moment/moment.min.js') }}"></script>
+
+<script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
+
+<script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/report/stock-ledger.js') }}"></script>
+
+@endsection

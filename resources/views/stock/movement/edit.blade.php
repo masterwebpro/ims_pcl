@@ -171,7 +171,7 @@
                                 </div> 
                                 
                                 <div class="table-responsive">
-                                    <table class="table table-nowrap table-bordered movement" id="product-list">
+                                    <table class="table table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>
@@ -196,14 +196,14 @@
                                                             <?=$x+1?>
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_<?=$dtl->product_id?>" value="<?=$dtl->product_id?>" />
                                                         </td>
-                                                        <td class="text-start  fs-13">{{$dtl->item->product_name}}<br/><small>{{$dtl->item->product_code}}</small></td>
-                                                        <td class="text-center ps-1 fs-13">
+                                                        <td class="text-start  fs-12">{{$dtl->item->product_name}}<br/><small>{{$dtl->item->product_code}}</small></td>
+                                                        <td class="text-center ps-1 fs-12">
                                                             {{$dtl->old_item_type}}
                                                             <input type="hidden" readonly class="form-control" name="item_type[]" data-id="<?=($x)?>" id="item_type_<?=($x)?>" value="{{$dtl->old_item_type}}">
                                                         </td>
-                                                        <td class="text-center ps-1 fs-13">
+                                                        <td class="text-center ps-1 fs-12">
                                                             <input type="hidden" readonly class="form-control" name="old_location[]" data-id="<?=($x)?>" id="old_location_<?=($x)?>" value="{{$dtl->old_storage_location_id}}">
-                                                            {{$dtl->old_location->location}}
+                                                            {{isset($dtl->old_location->location) ? $dtl->old_location->location : 'RA' }}
                                                         </td>
                                                         <td>
                                                             <div class="input-group">
@@ -248,9 +248,6 @@
                                                 </tr>
                                             
                                             <? endif;?>
-
-
-
                                         </tbody>
                                     </table>
                                         
@@ -292,7 +289,7 @@
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Rack </h6>
                             <p class="fw-medium" id="billing-name">
-                                <select class="form-select" required="required" id="rack" name="rack">
+                                <select class="form-select" id="rack" name="rack">
                                     <option value="">Select Rack</option>  
                                     <? foreach($location as $location_id=>$racks) : ?>
                                         <? foreach($racks as $rack=>$layers) : ?>
@@ -307,7 +304,7 @@
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Layer</h6>
                             <p class="fw-medium" id="billing-name">
-                                <select class="form-select" required="required" id="layer" name="layer">
+                                <select class="form-select"  id="layer" name="layer">
                                     <option value="">Select layer</option>   
                                 </select>
                             </p>

@@ -288,7 +288,7 @@
                                 <div class="col-md-12 mb-2">
                                     <div class="input-group">
                                         <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
-                                        <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
+                                        <input type="text" class="form-control" name="item_code" id="item_code">
                                         <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                                     </div>
                                 </div> 
@@ -304,8 +304,6 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
-                                                <th scope="col" >Lot/Batch #</th>
-                                                <th scope="col" >Expiry Date</th>
                                                 <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>
