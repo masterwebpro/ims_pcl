@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class PurchaseOrderController extends Controller
@@ -95,14 +96,14 @@ class PurchaseOrderController extends Controller
             'supplier'=>'required',
             'client'=>'required',
             'store'=>'required',
-            'po_num'=>'required',
             'po_date'=>'required',
             'uom.*' => 'required',
             'qty.*' => 'required',
             'unit_price.*' => 'required',
             'amount.*' => 'required',
             'product_id.*' => 'required',
-            
+            'po_num' =>  'required|unique:po_hdr,po_num,'.$request->supplier_id, 
+                
         ], [
             'supplier'=>'Supplier is required',
             'client'=>'Client  is required',
@@ -113,7 +114,8 @@ class PurchaseOrderController extends Controller
             'uom.*' => 'UOM  is required',
             'unit_price.*' => 'Unit price  is required',
             'amount.*' => 'Amount is required',
-            'product_id.*' => 'Product is required'
+            'product_id.*' => 'Product is required',
+            'po_num.unique' => 'PO number is already exists.',
         ]);
 
         if ($validator->fails()) {

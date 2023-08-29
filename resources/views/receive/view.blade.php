@@ -332,9 +332,9 @@
                                                     </td>
                                                     <td class="text-start fs-12"> 
                                                         <select name="item_type[]"  disabled  id="item_type_{{$x}}" class="uom uom_select form-select">
-                                                            <option value="good">Good</option> 
-                                                            <option value="damage">Damage</option>  
-                                                            <option value="repair">Repair</option>                                                            
+                                                            <option class="fs-8" value="good"   <?=($item->item_type == 'good')? 'selected':''?>>Good</option> 
+                                                            <option class="fs-8" value="damage" <?=($item->item_type == 'damage')? 'selected':''?>>Damage</option>  
+                                                            <option class="fs-8" value="repair" <?=($item->item_type == 'repair')? 'selected':''?>>Repair</option>                                                                                                                    
                                                         </select>
                                                     </td>
                                                     <td class="fs-12">

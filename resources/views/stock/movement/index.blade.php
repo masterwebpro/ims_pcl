@@ -40,11 +40,6 @@
                             Posted
                         </a>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" data-bs-toggle="tab" href="#nav-border-top-messages" role="tab" aria-selected="false" tabindex="-1">
-                            All
-                        </a>
-                    </li>
                 </ul>
                 <div class="tab-content text-muted">
                     <div class="tab-pane active" id="nav-border-top-home" role="tabpanel">
@@ -158,19 +153,6 @@
                                 </div>
                                 <!-- Pagination -->
                                 {!! $posted_list->withQueryString()->links('pagination::bootstrap-5') !!}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="nav-border-top-messages" role="tabpanel">
-                        <div class="d-flex">
-                            <div class="flex-shrink-0">
-                                <i class="ri-checkbox-circle-line text-success"></i>
-                            </div>
-                            <div class="flex-grow-1 ms-2">
-                                Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony.
-                                <div class="mt-2">
-                                    <a href="javascript:void(0);" class="btn btn-link">Read More <i class="ri-arrow-right-line ms-1 align-middle"></i></a>
-                                </div>
                             </div>
                         </div>
                     </div>

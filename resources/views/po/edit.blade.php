@@ -47,7 +47,7 @@
                                     <label for="po_num" class="form-label">Po Number <span class="text-danger">*</span></label>
                                     <input type="hidden" class="form-control" name="po_id" id="po_id" value="{{ $po->id }}">
                                     <input type="text" class="form-control" name="po_num" id="po_num" value="{{ $po->po_num }}" placeholder="Enter Po Number">
-                                    <div class="invalid-feedback error-msg po_num_error">PO Number is Required</div>
+                                    <span class="text-danger error-msg po_num_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
@@ -58,13 +58,13 @@
                                             <option value="<?=$supplier->id?>" <?=($supplier->id == $po->supplier_id) ? 'selected' : ''?> ><?=$supplier->supplier_name?></option>
                                         <? endforeach;?>
                                     </select>
-                                    <div class="invalid-feedback text-danger error-msg supplier_error">Supplier is Required</div>
+                                    <span class="text-danger error-msg supplier_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
                                     <label for="inputState" class="form-label">PO Date <span class="text-danger">*</span></label>
                                     <input type="date" id="po_date" required="required"  name="po_date" class="form-control" value="<?=isset($po->po_date) ? $po->po_date : ''?>">
-                                    <div class="invalid-feedback text-danger error-msg po_date_error">PO Date is Required</div>
+                                    <span class="text-danger error-msg po_date_error"></span>
                                 </div>
                             </div>
 
@@ -78,15 +78,16 @@
                                             <option value="<?=$client->id?>" <?=($client->id == $po->client_id) ? 'selected' : ''?> ><?=$client->client_name?></option>
                                         <? endforeach;?>
                                     </select>
-                                    <div class="invalid-feedback text-danger error-msg client_error">Client Name is Required</div>
+                                    <span class="text-danger error-msg client_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
+                                    <label for="client_id" class="form-label">Site Name</label>
                                     <input type="hidden" value="{{ $po->store_id }}" class="store_id" name="store_id" id="store_id" />
                                     <select class="form-select select2" required="required" id="store" name="store">
                                         <option value="">Select Store/Warehouse</option>                                                            
                                     </select>
-                                    <div class="invalid-feedback text-danger error-msg store_error">Store/Warehouse Name is Required</div>
+                                    <span class="text-danger error-msg store_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
