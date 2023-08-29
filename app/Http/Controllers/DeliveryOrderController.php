@@ -39,19 +39,19 @@ class DeliveryOrderController extends Controller
     );
     public function index(Request $request)
     {
-        $do_list = DoHdr::select('do_hdr.*', 'sp.supplier_name', 's.store_name','c.client_name', 'u.name')
-        ->leftJoin('suppliers as sp', 'sp.id', '=', 'do_hdr.supplier_id')
+        $do_list = DoHdr::select('do_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name', 'u.name')
+        ->leftJoin('client_list as cl', 'cl.id', '=', 'do_hdr.deliver_to_id')
         ->leftJoin('store_list as s', 's.id', '=', 'do_hdr.store_id')
         ->leftJoin('client_list as c', 'c.id', '=', 'do_hdr.client_id')
         ->leftJoin('users as u', 'u.id', '=', 'do_hdr.created_by')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->q)) {
-                    $query->leftJoin('suppliers as sp', 'sp.id', '=', 'do_hdr.supplier_id');
+                    $query->leftJoin('client_list as cl', 'cl.id', '=', 'do_hdr.deliver_to_id');
                     $query->leftJoin('store_list as s', 's.id', '=', 'do_hdr.store_id');
                     $query->leftJoin('client_list as c', 'c.id', '=', 'do_hdr.client_id');
                     // $query->orWhere('do_hdr.po_num','like', '%'.$s.'%');
-                    $query->orWhere('sp.supplier_name', 'like', '%' . $s . '%');
+                    $query->orWhere('cl.client_name', 'like', '%' . $s . '%');
                     $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
                     $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
                     $query->orWhere('do_hdr.do_no', 'LIKE', '%' . $s . '%');
@@ -94,7 +94,8 @@ class DeliveryOrderController extends Controller
         $order_type = OrderType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('client_type','C')->get();
+        $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
 
@@ -102,6 +103,7 @@ class DeliveryOrderController extends Controller
             'client_list'=>$client_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
+            'deliver_list'=>$deliver_list,
             'order_type'=>$order_type,
             'warehouse_list'=>$warehouse_list,
             'uom'=>$uom,
@@ -119,8 +121,8 @@ class DeliveryOrderController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'supplier'=>'required',
             'client'=>'required',
+            'deliver_to'=>'required',
             'store'=>'required',
             'order_type'=>'required',
             'order_no'=>'required',
@@ -136,8 +138,8 @@ class DeliveryOrderController extends Controller
             'inv_uom.*' => 'required',
             'item_type.*' => 'required',
         ], [
-            'supplier'=>'Supplier is required',
             'client'=>'Client  is required',
+            'deliver_to'=>'Deliver to is required',
             'store'=>'Store is required',
             'order_type'=>'Order type is required',
             'order_no'=>'Order number is required',
@@ -179,7 +181,7 @@ class DeliveryOrderController extends Controller
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
                 'client_id'=>$request->client,
-                'supplier_id'=>$request->supplier,
+                'deliver_to_id'=>$request->deliver_to,
                 'sales_invoice'=>$request->sales_invoice,
                 'order_no'=>$request->order_no,
                 'order_type'=>$request->order_type,
@@ -260,13 +262,15 @@ class DeliveryOrderController extends Controller
         $order_type = OrderType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('client_type','C')->get();
+        $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
 
         return view('do/view', [
             'do' => $do,
             'client_list'=>$client_list,
+            'deliver_list'=>$deliver_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'order_type'=>$order_type,
@@ -291,13 +295,15 @@ class DeliveryOrderController extends Controller
         $order_type = OrderType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('client_type','C')->get();
+        $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
 
         return view('do/edit', [
             'do' => $do,
             'client_list'=>$client_list,
+            'deliver_list' => $deliver_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'order_type'=>$order_type,

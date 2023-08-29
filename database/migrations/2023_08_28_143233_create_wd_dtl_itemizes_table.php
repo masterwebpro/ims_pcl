@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('wd_dtl', function (Blueprint $table) {
-            $table->id();
-            $table->string('wd_no',15)->index();
-            $table->unsignedInteger('masterfile_id')->index();
-            $table->unsignedInteger('product_id')->index();
-            $table->decimal('inv_qty',12,2)->default(0);
-            $table->bigInteger('inv_uom');
+        Schema::create('wd_dtl_itemize', function (Blueprint $table) {
+            $table->bigIncrements('wd_dtl_itemize_id');
+            $table->bigInteger('wd_dtl_id')->index();
+            $table->string('serial_no',50)->index();
+            $table->string('warranty_no',50)->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wd_dtl');
+        Schema::dropIfExists('wd_dtl_itemize');
     }
 };

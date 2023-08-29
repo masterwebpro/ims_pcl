@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
     Route::resource('/withdraw', App\Http\Controllers\WithdrawalController::class);
+    Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
+
 
     Route::resource('/setting/suppliers', App\Http\Controllers\SuppliersController::class);
 
@@ -57,12 +59,15 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/getProductAttribute', [App\Http\Controllers\SettingsController::class, 'getProductAttribute']);
     Route::get('/getLevel', [App\Http\Controllers\SettingsController::class, 'getLevel']);
     Route::get('/getStorageLocationId', [App\Http\Controllers\SettingsController::class, 'getStorageLocation']);
-    
+
     Route::get('/masterfile', [App\Http\Controllers\SettingsController::class, 'getMasterfileData']);
     Route::get('/newLocation/{warehouse_id}', [App\Http\Controllers\SettingsController::class, 'getNewLocation']);
-    
 
-    
+    Route::get('/available_item', [App\Http\Controllers\SettingsController::class, 'getAvailableItem']);
+
+
+
+
 });
 
 Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {

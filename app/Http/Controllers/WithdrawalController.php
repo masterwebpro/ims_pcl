@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AuditTrail;
 use App\Models\Client;
+use App\Models\MasterfileModel;
 use App\Models\OrderType;
 use App\Models\SeriesModel;
 use App\Models\Store;
@@ -12,7 +13,10 @@ use App\Models\Supplier;
 use App\Models\UOM;
 use App\Models\Warehouse;
 use App\Models\WdDtl;
+use App\Models\WdDtlItemize;
 use App\Models\WdHdr;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,19 +42,19 @@ class WithdrawalController extends Controller
 
     public function index(Request $request)
     {
-        $wd_list = WdHdr::select('wd_hdr.*', 'sp.supplier_name', 's.store_name','c.client_name', 'u.name')
-        ->leftJoin('suppliers as sp', 'sp.id', '=', 'wd_hdr.supplier_id')
+        $wd_list = WdHdr::select('wd_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name', 'u.name')
+        ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id')
         ->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id')
         ->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.client_id')
         ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->q)) {
-                    $query->leftJoin('suppliers as sp', 'sp.id', '=', 'wd_hdr.supplier_id');
+                    $query->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id');
                     $query->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id');
                     $query->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.client_id');
                     $query->orWhere('wd_hdr.order_no','like', '%'.$s.'%');
-                    $query->orWhere('sp.supplier_name', 'like', '%' . $s . '%');
+                    $query->orWhere('cl.client_name', 'like', '%' . $s . '%');
                     $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
                     $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
                     $query->orWhere('wd_hdr.wd_no', 'LIKE', '%' . $s . '%');
@@ -92,21 +96,29 @@ class WithdrawalController extends Controller
     {
         $order_type = OrderType::all();
         $store_list = Store::all();
-        $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('client_type','C')->get();
+        $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
+        // $location = [
+        //     "rack" => "",
+        //     "layer"=> ""
+        // ];
+
+        // $location = (new SettingsController)->getLocationPerWarehouse($warehouse);
+
 
         return view('withdraw/create', [
             'client_list'=>$client_list,
             'store_list'=>$store_list,
-            'supplier_list'=>$supplier_list,
+            'deliver_list'=>$deliver_list,
             'order_type'=>$order_type,
             'warehouse_list'=>$warehouse_list,
             'uom'=>$uom,
             'wd_type' => $this->wd_type,
             'created_by' => Auth::user()->name,
-            'today' => date('m/d/Y')
+            'today' => date('m/d/Y'),
+            // 'location' => $location,
         ]);
     }
 
@@ -119,8 +131,8 @@ class WithdrawalController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'supplier'=>'required',
             'client'=>'required',
+            'deliver_to'=>'required',
             'store'=>'required',
             'order_type'=>'required',
             'order_no'=>'required',
@@ -130,15 +142,15 @@ class WithdrawalController extends Controller
             'pickup_date'=>'required',
             'trgt_dlv_date'=>'required',
             'actual_dlv_date'=>'required',
-            'warehouse'=>'required',
-            'whse_qty.*' => 'required',
-            'whse_uom.*' => 'required',
-            'inv_qty.*' => 'required',
-            'inv_uom.*' => 'required',
-            'item_type.*' => 'required',
+            // 'warehouse'=>'required',
+            // 'whse_qty.*' => 'required',
+            // 'whse_uom.*' => 'required',
+            'inv_qty.*' => 'required|gt:0',
+            // 'inv_uom.*' => 'required',
+            // 'item_type.*' => 'required',
         ], [
-            'supplier'=>'Supplier is required',
             'client'=>'Client  is required',
+            'deliver_to'=>'Deliver to is required',
             'store'=>'Store is required',
             'order_type'=>'Order type is required',
             'order_no'=>'Order number is required',
@@ -148,24 +160,23 @@ class WithdrawalController extends Controller
             'pickup_date'=>'Pickup date is required',
             'trgt_dlv_date'=>'Target delivery date is required',
             'actual_dlv_date'=>'Actual delivery date is required',
-            'warehouse'=>'Warehouse  is required',
-            'whse_qty.*' => 'Qty  is required',
-            'whse_uom.*' => 'UOM  is required',
-            'inv_qty.*' => 'Qty  is required',
-            'inv_uom.*' => 'UOM  is required',
-            'item_type.*' => 'This is required'
+            // 'warehouse'=>'Warehouse  is required',
+            // 'whse_qty.*' => 'Qty  is required',
+            // 'whse_uom.*' => 'UOM  is required',
+            'inv_qty.*' => 'Withdraw Qty is required',
+            // 'inv_uom.*' => 'UOM  is required',
+            // 'item_type.*' => 'This is required'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
         }
-
         DB::beginTransaction();
 
         try {
             $wd_no = $request->wd_no;
             if($wd_no=='') {
-                $wd_no = $this->generateWdNo();
+                $wd_no = $this->generateWdNo("WD","W");
 
                 $series[] = [
                     'series' => $wd_no,
@@ -181,9 +192,9 @@ class WithdrawalController extends Controller
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
                 'client_id'=>$request->client,
-                'supplier_id'=>$request->supplier,
+                'deliver_to_id'=>$request->deliver_to,
                 'sales_invoice'=>$request->sales_invoice,
-                'ar_no'=>$request->ar_no,
+                'dr_no'=>$request->dr_no,
                 'withdraw_date'=> date("Y-m-d", strtotime($request->withdraw_date)),
                 'order_no'=>$request->order_no,
                 'order_type'=>$request->order_type,
@@ -201,24 +212,107 @@ class WithdrawalController extends Controller
             ]);
 
             //save on dtl
+            $serialist = json_decode($request->serial_list);
             if(isset($request->product_id)){
-                $dtl = array();
+                $wd_dtl_ids = WdDtl::where('wd_no',$wd_no)->pluck('id');
+                WdDtl::where('wd_no',$wd_no)->delete();
+                WdDtlItemize::whereIn('wd_dtl_id',$wd_dtl_ids)->delete();
                 for($x=0; $x < count($request->product_id); $x++ ) {
-                    $dtl[] = array(
+                    $serial_data = array();
+                    if($request->is_serialize[$x] == 1)
+                    {
+                        $targetMasterfileId = $request->masterfile_id[$x];
+                        $targetProductId = $request->product_id[$x];
+
+                        foreach ($serialist as $innerArray) {
+                            $filteredItems = array_filter($innerArray, function ($item) use ($targetMasterfileId, $targetProductId) {
+                                return $item->masterfile_id == $targetMasterfileId && $item->product_id == $targetProductId;
+                            });
+
+                            if (!empty($filteredItems)) {
+                                $serial_data = $filteredItems;
+                            }
+                        }
+                    }
+                    $dtl = array(
                         'wd_no'=>$wd_no,
                         'product_id'=>$request->product_id[$x],
-                        'inv_qty'=>$request->inv_qty[$x],
+                        'masterfile_id'=>$request->masterfile_id[$x],
+                        'inv_qty'=> ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x],
                         'inv_uom'=>$request->inv_uom[$x],
-                        'whse_qty'=>$request->whse_qty[$x],
-                        'whse_uom'=>$request->whse_uom[$x],
-                        'pick_qty'=>$request->pick_qty[$x],
                         'created_at'=>$this->current_datetime,
                         'updated_at'=>$this->current_datetime,
                     );
-                }
-                if(count($dtl) > 0){
-                    WdDtl::where('wd_no',$wd_no)->delete();
-                    WdDtl::insert($dtl);
+                    $wddtl = WdDtl::create($dtl);
+
+                    
+                    if($request->is_serialize[$x] == 1)
+                    {
+                        if(!empty($serial_data))
+                        {
+                            $serial = array();
+                            foreach($serial_data as $sr){
+                                $serial[] = array(
+                                    'wd_dtl_id' => $wddtl->id,
+                                    'serial_no' => $sr->serial_no,
+                                    'warranty_no' => $sr->warranty_no,
+                                );
+                            }
+                            WdDtlItemize::insert($serial);
+                        }
+                        else{
+                            if($request->status == 'posted'){
+                                DB::rollBack();
+                                return response()->json([
+                                    'success'  => false,
+                                    'message' => 'Line no '.($x + 1).' serial is required',
+                                    'data' => "Error on posting data"
+                                ]);
+                            }
+                        }
+                    }
+
+                    if($request->status == 'posted'){
+                        $masterData = MasterfileModel::find($request->masterfile_id[$x]);
+                        $inv_qty = ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x];
+                        $twd_no = $this->generateWdNo("TWD","TWD");
+                        $series[] = [
+                            'series' => $twd_no,
+                            'trans_type' => 'TWD',
+                            'created_at' => $this->current_datetime,
+                            'updated_at' => $this->current_datetime,
+                            'user_id' => Auth::user()->id,
+                        ];
+                        SeriesModel::insert($series);
+                        MasterfileModel::create([
+                            'ref_no'=> $twd_no,
+                            'status' => 'X',
+                            'item_type' => $masterData->item_type,
+                            'product_id'=>$request->product_id[$x],
+                            'storage_location_id'=> $masterData->storage_location_id,
+                            'inv_qty'=> -$inv_qty,
+                            'inv_uom'=> $masterData->inv_uom,
+                            'whse_qty'=> -$inv_qty,
+                            'whse_uom'=> $masterData->whse_uom,
+                            'warehouse_id' => $masterData->warehouse_id,
+                            'client_id' => $masterData->client_id,
+                            'store_id' => $masterData->store_id
+                        ]);
+                        MasterfileModel::create([
+                            'ref_no'=> $twd_no,
+                            'status' => 'R',
+                            'item_type' => $masterData->item_type,
+                            'product_id'=>$request->product_id[$x],
+                            'storage_location_id'=>$masterData->storage_location_id,
+                            'inv_qty'=> $inv_qty,
+                            'inv_uom'=> $masterData->inv_uom,
+                            'whse_qty'=> $inv_qty,
+                            'whse_uom'=> $masterData->whse_uom,
+                            'warehouse_id' => $masterData->warehouse_id,
+                            'client_id' => $masterData->client_id,
+                            'store_id' => $masterData->store_id
+                        ]);
+                    }
                 }
             }
 
@@ -248,7 +342,7 @@ class WithdrawalController extends Controller
             return response()->json([
                 'success'  => false,
                 'message' => 'Unable to process request. Please try again.',
-                'data'    => $e->getMessage()
+                'data'    => throw new Exception($e)//$e->getMessage()
             ]);
         }
     }
@@ -266,8 +360,8 @@ class WithdrawalController extends Controller
                 ->where('wd_hdr.id', _decode($id))->first();
         $order_type = OrderType::all();
         $store_list = Store::all();
-        $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('client_type','C')->get();
+        $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
 
@@ -275,7 +369,7 @@ class WithdrawalController extends Controller
             'wd' => $wd,
             'client_list'=>$client_list,
             'store_list'=>$store_list,
-            'supplier_list'=>$supplier_list,
+            'deliver_list'=>$deliver_list,
             'order_type'=>$order_type,
             'warehouse_list'=>$warehouse_list,
             'uom_list'=>$uom,
@@ -297,8 +391,8 @@ class WithdrawalController extends Controller
                 ->where('wd_hdr.id', _decode($id))->first();
         $order_type = OrderType::all();
         $store_list = Store::all();
-        $supplier_list = Supplier::all();
-        $client_list = Client::all();
+        $client_list = Client::where('client_type','C')->get();
+        $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
 
@@ -306,7 +400,7 @@ class WithdrawalController extends Controller
             'wd' => $wd,
             'client_list'=>$client_list,
             'store_list'=>$store_list,
-            'supplier_list'=>$supplier_list,
+            'deliver_list'=>$deliver_list,
             'order_type'=>$order_type,
             'warehouse_list'=>$warehouse_list,
             'uom_list'=>$uom,
@@ -338,17 +432,36 @@ class WithdrawalController extends Controller
         //
     }
 
-    public function generateWdNo()
+    public function generateWdNo($type,$prefix)
     {
-        $data = SeriesModel::where('trans_type', '=', 'WD')->where('created_at', '>=', date('Y-m-01 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'));
+        $data = SeriesModel::where('trans_type', '=', $type)->where('created_at', '>=', date('Y-m-01 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'));
         $count = $data->count();
         $count = $count + 1;
         $date = date('ym');
 
         $num = str_pad((int)$count, 5, "0", STR_PAD_LEFT);
 
-        $series = "W-" . $date . "-" . $num;
+        $series = "$prefix-" . $date . "-" . $num;
 
         return $series;
+    }
+
+    public function picklist($id)
+    {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $wd = WdHdr::select('wd_hdr.*', 'cl.client_name', 'del.client_name as deliver_to', 'u.name')
+                ->selectRaw('CONCAT(del.address_1, " ", del.city, " " , del.province, " ", del.country, " ", del.zipcode) as address')
+                ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.client_id')
+                ->leftJoin('client_list as del', 'del.id', '=', 'wd_hdr.deliver_to_id')
+                ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
+                ->where('wd_hdr.id', _decode($id))->first();
+        $pdf = PDF::loadView('withdraw.picklist', [
+            'wd' => $wd,
+            'created_by' => Auth::user()->name
+        ]);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->download($wd->order_no.'.pdf');
     }
 }

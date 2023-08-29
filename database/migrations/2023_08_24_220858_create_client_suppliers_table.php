@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('wd_dtl', function (Blueprint $table) {
-            $table->id();
-            $table->string('wd_no',15)->index();
-            $table->unsignedInteger('masterfile_id')->index();
-            $table->unsignedInteger('product_id')->index();
-            $table->decimal('inv_qty',12,2)->default(0);
-            $table->bigInteger('inv_uom');
+        Schema::create('client_supplier', function (Blueprint $table) {
+            $table->bigIncrements('client_supplier_id');
+            $table->unsignedInteger('supplier_id')->index();
+            $table->unsignedInteger('client_id')->index();
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wd_dtl');
+        Schema::dropIfExists('client_supplier');
     }
 };

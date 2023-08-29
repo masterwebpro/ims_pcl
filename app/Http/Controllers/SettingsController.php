@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AvailableItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UOM;
@@ -135,7 +136,7 @@ class SettingsController extends Controller
             $data->where('rack', $request->rack);
         if($request->layer > 0)
             $data->where('level', $request->layer);
-    
+
         $data = $data->get();
         return response()->json($data);
     }
@@ -150,7 +151,7 @@ class SettingsController extends Controller
                 ->leftJoin('uom as wu','wu.uom_id','masterfiles.whse_uom')
                 ->leftJoin('uom as iu','iu.uom_id','masterfiles.inv_uom')
                 ->groupBy('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level');
-        
+
         if(isset($request->storage_id))
             $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
 
@@ -159,11 +160,11 @@ class SettingsController extends Controller
 
         if($request->store_id > 0)
             $result->where('store_id', $request->store_id);
-        
+
         if($request->rcv_no > 0)
             $result->where('ref_no', $request->rcv_no);
-    
-        $record = $result->get();        
+
+        $record = $result->get();
         return response()->json($record);
     }
 
@@ -174,7 +175,7 @@ class SettingsController extends Controller
     //             ->leftJoin('storage_locations as sl','sl.storage_location_id','masterfiles.storage_location_id')
     //             ->leftJoin('uom as wu','wu.uom_id','masterfiles.whse_uom')
     //             ->leftJoin('uom as iu','iu.uom_id','masterfiles.inv_uom');
-        
+
     //     if(isset($request->storage_id))
     //         $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
 
@@ -183,18 +184,18 @@ class SettingsController extends Controller
 
     //     if($request->store_id > 0)
     //         $result->where('store_id', $request->store_id);
-        
+
     //     if($request->rcv_no > 0)
     //         $result->where('ref_no', $request->rcv_no);
-    
-    //     $record = $result->get();        
+
+    //     $record = $result->get();
     //     return response()->json($record);
     // }
 
     public function getNewLocation(Request $request, $warehouse_id) {
 
         $location_list = \App\Models\StorageLocationModel::select('storage_location_id','location')->where('warehouse_id', $warehouse_id)->get();
-        
+
         $html = '<option value="">New Loc</option>';
         foreach ($location_list as $loc) {
             $html .= "<option value='".$loc->storage_location_id."'>".$loc->location."</option>";
@@ -204,6 +205,46 @@ class SettingsController extends Controller
             'message' => 'Saved successfully!',
             'data'    => $html
         ]);
+    }
+
+
+    public function getAvailableItem(Request $request) {
+        $result = AvailableItem::where('status','X')
+                    ->orderBy('product_name','ASC')
+                    ->orderBy('date_received','ASC');
+
+        if(isset($request->master_id))
+            $result->whereNotIN('masterfile_id', json_decode($request->master_id));
+
+        if(isset($request->warehouse_id))
+            $result->where('warehouse_id', $request->warehouse_id);
+
+        if($request->client_id > 0)
+            $result->where('client_id', $request->client_id);
+
+        if($request->store_id > 0)
+            $result->where('store_id', $request->store_id);
+
+        if($request->item_type)
+            $result->where('item_type', $request->item_type);
+
+        if($request->product){
+            $keyword = '%'.$request->product.'%';
+            $result->where(function($cond)use($keyword){
+                $cond->where('product_code','like',$keyword)
+                ->orwhere('product_name','like',$keyword)
+                ->orwhere('product_sku','like',$keyword);
+            });
+        }
+
+
+        $record = $result->get();
+        $record = collect($record)
+                    ->map(function($val){
+                    $val['date_received'] = date('M d, Y',strtotime($val['date_received']));
+                    return $val;
+                    })->values()->all();
+        return response()->json($record);
     }
 
 }

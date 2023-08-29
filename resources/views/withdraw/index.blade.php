@@ -19,7 +19,7 @@
                     <h5 class="card-title mb-0 flex-grow-1">Withdrawal List</h5>
                     <div class="flex-shrink-0">
                         <button data-status="open" class="create-withdrawal btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Withdrawal</button>
-                        <button data-status="open" class="create-withdrawal btn btn-secondary btn-label rounded-pill"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Withdraw from DO</button>
+                        <button data-status="open" class="create-withdrawal btn btn-secondary btn-label rounded-pill d-none"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Withdraw from DO</button>
                     </div>
                 </div>
             </div>
@@ -81,13 +81,13 @@
                         <thead class="table-light text-muted">
                             <tr>
                                 <th class="sort" data-sort="id">WD #</th>
-                                <th class="sort" data-sort="order_no">AR NO</th>
+                                <th class="sort" data-sort="order_no">DR Number</th>
                                 <th class="sort" data-sort="order_no">Order Number</th>
                                 <th class="sort" data-sort="order_type">Order Type</th>
                                 <th class="sort" data-sort="id">PO Number</th>
                                 <th class="sort" data-sort="id">Sales Invoice</th>
-                                <th class="sort" data-sort="supplier_name">Supplier Name</th>
                                 <th class="sort" data-sort="client_name">Client Name</th>
+                                <th class="sort" data-sort="supplier_name">Deliver To</th>
                                 <th class="sort" data-sort="store">Store/Warehouse</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="status">Withdrawal Date</th>
@@ -100,13 +100,13 @@
                                 <? foreach($wd_list as $withdraw) :?>
                                     <tr>
                                         <td class="rcv_no">{{ $withdraw->wd_no}}</td>
-                                        <td class="order_no">{{ $withdraw->ar_no}}</td>
+                                        <td class="order_no">{{ $withdraw->dr_no}}</td>
                                         <td class="order_no">{{ $withdraw->order_no}}</td>
                                         <td class="order_type">{{ $withdraw->order_type}}</td>
                                         <td class="po_num">{{ $withdraw->po_num}}</td>
                                         <td class="sales_invoice">{{ $withdraw->sales_invoice}}</td>
-                                        <td>{{ $withdraw->supplier_name}}</td>
                                         <td class="client_name">{{ $withdraw->client_name}}</td>
+                                        <td>{{ $withdraw->deliver_to}}</td>
                                         <td class="store">{{ $withdraw->store_name}}</td>
                                         <td class="status"><span class="badge {{ $withdraw->status }} text-uppercase fs-11">{{ $withdraw->status }}</span></td>
                                         <td class="order_date">{{ date('M d, Y',strtotime($withdraw->order_date)) }}</td>

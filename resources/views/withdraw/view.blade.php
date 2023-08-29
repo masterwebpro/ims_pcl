@@ -33,12 +33,8 @@
                             <a href="{{ URL::to('withdraw/'._encode($wd->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                     Edit</a>
-                            @else
-                            <button data-status="posted" class="submit-withdrawal btn btn-warning btn-label rounded-pill"><i
-                                class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                            Withdraw</button>
                             @endif
-                            <a href="{{ URL::to('do') }}" class="btn btn-primary btn-label rounded-pill"><i
+                            <a href="{{ URL::to('withdraw') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                 Back</a>
                         </div>
@@ -60,26 +56,6 @@
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
                                     <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span
-                                                class="text-danger">*</span></h6>
-                                        <input type="hidden" name="wd_no" id="wd_no" />
-                                        <p class="fw-medium mb-2" id="shipping-name">
-                                            <select class="form-select select2" required="required" id="supplier" disabled
-                                                name="supplier">
-                                                <option value="">Select Supplier</option>
-                                                <? foreach($supplier_list as $supplier) : ?>
-                                                <option value="<?= $supplier->id ?>" <?=($supplier->id == $wd->supplier_id) ? 'selected' : '' ?>><?= $supplier->supplier_name ?>
-                                                </option>
-                                                <? endforeach;?>
-                                            </select>
-                                            <span class="text-danger error-msg supplier_error"></span>
-                                        </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                            <p class="text-muted mb-1">supp_add2 here</p>
-                                            <p class="text-muted mb-0">supp_city province, country here</p> -->
-                                    </div>
-
-                                    <div class="col-4">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
@@ -95,6 +71,22 @@
                                         <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
                                             <p class="text-muted mb-1">client_add2 here</p>
                                             <p class="text-muted mb-0">client_city province, country here</p> -->
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
+                                                class="text-danger">*</span></h6>
+                                        <input type="hidden" name="wd_no" id="wd_no" value="{{ $wd->wd_no }}" />
+                                        <p class="fw-medium mb-2" id="shipping-name">
+                                            <select class="form-select select2" required="required" id="deliver_to" disabled
+                                                name="deliver_to">
+                                                <option value="">Select Deliver To</option>
+                                                <? foreach($deliver_list as $deliver) : ?>
+                                                <option value="<?= $deliver->id ?>" <?=($deliver->id == $wd->deliver_to_id) ? 'selected' : '' ?>><?= $deliver->client_name ?>
+                                                </option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg supplier_error"></span>
+                                        </p>
                                     </div>
                                     <!--end col-->
                                     <div class="col-4">
@@ -167,11 +159,11 @@
                             <div class="row ms-3 mt-3 mx-3">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4 col-form-label">AR Number</label>
+                                        <label for="colFormLabel" class="col-lg-4 col-form-label">DR Number</label>
                                         <div class="col-lg-8">
-                                            <input type="text" class="form-control" id="ar_no" name="ar_no" disabled
-                                                value="{{ $wd->ar_no }}" placeholder="AR Number">
-                                            <span class="text-danger error-msg ar_no_error"></span>
+                                            <input type="text" class="form-control" id="ar_no" name="dr_no" disabled
+                                                value="{{ $wd->dr_no }}" placeholder="DR Number">
+                                            <span class="text-danger error-msg dr_no_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -219,14 +211,14 @@
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">DO Type <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
-                                            <select class="form-select select2" required="required" id="do_type" disabled
-                                            name="do_type">
+                                            <select class="form-select select2" required="required" id="wd_type" disabled
+                                            name="wd_type">
                                             <option value="">Select DO Type</option>
                                             <? foreach($wd_type as $type) : ?>
-                                            <option value="<?= $type['code'] ?>" <?=($type['code'] == $wd->do_type ? 'selected' : '')?>><?= $type['name'] ?></option>
+                                            <option value="<?= $type['code'] ?>" <?=($type['code'] == $wd->wd_type ? 'selected' : '')?>><?= $type['name'] ?></option>
                                             <? endforeach;?>
                                             </select>
-                                            <span class="text-danger error-msg do_type_error"></span>
+                                            <span class="text-danger error-msg wd_type_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -300,7 +292,7 @@
 
                         <div class="col-lg-12 mt-3">
                             <div class="row ms-3 mx-3">
-                                <div class="col-lg-6 col-md-6">
+                                {{-- <div class="col-lg-6 col-md-6">
                                     <div class="row">
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span
                                                 class="text-danger">*</span></label>
@@ -315,7 +307,7 @@
                                             <span class="text-danger error-msg warehouse_error"></span>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
@@ -343,11 +335,16 @@
                                                 <tr class="table-active">
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
-                                                    <th scope="col">WHSE Qty</th>
-                                                    <th scope="col">WHSE UOM</th>
-                                                    <th scope="col">Inv Qty</th>
-                                                    <th scope="col">Inv UOM</th>
-                                                    <th scope="col">Unserve Qty</th>
+                                                    <th scope="col">Item Type</th>
+                                                    <th scope="col">Date Received</th>
+                                                    @if ($wd->status == 'open')
+                                                    <th scope="col">Available Stocks</th>
+                                                    @endif
+                                                    <th scope="col">Withdraw Quantity</th>
+                                                    <th scope="col">Unit</th>
+                                                    <th scope="col">Warehouse</th>
+                                                    <th scope="col">Location</th>
+                                                    <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="newlink">
@@ -365,29 +362,35 @@
                                                             {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                         </td>
                                                         <td class=" ps-1">
-                                                            <input type="text"  disabled  class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                            <span class="badge bg-success text-capitalize">{{ isset($item->master) ? $item->master->item_type : ''}} </span>
                                                         </td>
                                                         <td class=" ps-1">
-                                                           <select name="whse_uom[]"  disabled id="whse_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom_whse)
-                                                                <option value="{{$uom_whse->uom_id}}" <?=($uom_whse->uom_id == $item->whse_uom) ? 'selected': ''; ?> >{{$uom_whse->code}}</option>
-                                                                @endforeach
-                                                            </select>
+                                                            {{ isset($item->master->receiving) ? date('M d, Y', strtotime($item->master->receiving->date_received)) : '' }}
                                                         </td>
-                                                        <td class="ps-1">
-                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                        @if ($wd->status == 'open')
+                                                        <td class="ps-1 text-center">
+                                                            {{ number_format($item->master->inv_qty,2) }}
+                                                        </td>
+                                                        @endif
+                                                        <td class="ps-1 text-center">
+                                                            {{ number_format($item->inv_qty,2) }}
+                                                            <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]" data-qty="{{ $item->master->inv_qty }}" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                         </td>
                                                         <td class=" ps-1">
-                                                            <select name="inv_uom[]"  disabled  id="inv_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom)
-                                                                <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
-                                                                @endforeach
-                                                            </select>
+                                                            {{ $item->master->uom->code }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ $item->master->warehouse->warehouse_name }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ $item->master->location->location }}
                                                         </td>
                                                         <td class="ps-1">
-                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select" name="unserve_qty[]" data-id="{{$item->product_id}}" id="unserve_qty_{{$x}}" value="{{$item->unserve_qty}}" placeholder="Unserve Qty" />
+                                                            @if ($item->product->is_serialize == 1)
+                                                                <button type="button" class="add-serial btn btn-icon btn-success waves-effect waves-light" data-type="view" data-itemize="{{ $item->itemize }}" id="row_{{$x}}" data-rowid="{{$x}}" data-productname="{{ $item->product->product_name }}" data-productcode="{{ $item->product->product_code }}" data-productid="{{$item->product_id}}" data-masterfileid="{{$item->masterfile_id}}">
+                                                                    <i class="ri-barcode-line"></i>
+                                                                </button>
+                                                                @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -447,6 +450,51 @@
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-success" id="add-product"><i
                                 class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="show-serial" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="exampleModalLabel">View Serial</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="close-modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Product</label>
+                            <input type="text" class="form-control" id="product_code" disabled>
+                            <input type="hidden" class="form-control" id="productid">
+                            <input type="hidden" class="form-control" id="masterfileid">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Quantity</label>
+                            <input type="text" class="form-control" id="product_qty" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-serial-list">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th colspan="3"  class="text-center text-danger">Serial Count : <span id="counter">0</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Serial No</th>
+                                            <th>Warranty No</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="serial-list">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

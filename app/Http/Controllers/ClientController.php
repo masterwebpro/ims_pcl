@@ -52,7 +52,7 @@ class ClientController extends Controller
                 ])
                 ->orderByDesc('created_at')
                 ->paginate(20);
-        return view('maintenance/client/index', ['client' => $client, 'type' => ['S' => "Supplier", 'C' => "Customer"]]);
+        return view('maintenance/client/index', ['client' => $client, 'type' => ['T' => "Third-Party", 'C' => "Customer"]]);
     }
 
     /**
@@ -66,7 +66,7 @@ class ClientController extends Controller
 
         return view('maintenance/client/create', [
             'client'=> $client,
-            'client_type'=> ['S' => "Supplier", 'C' => "Customer"],
+            'client_type'=> ['T' => "Third-Party", 'C' => "Customer"],
         ]);
     }
 
@@ -80,37 +80,35 @@ class ClientController extends Controller
     {
         DB::connection()->beginTransaction();
         $validator = Validator::make($request->all(), [
-            'client_code' => 'required',
             'client_name' => 'required',
+            'client_code' => 'required',
             'client_type' => 'required',
-            'tin' => 'required',
+            // 'tin' => 'required',
             'address_1' => 'required',
             'city' => 'required',
             'province' => 'required',
             'country' => 'required',
             'zipcode' => 'required',
-            'phone_no' => 'required',
-            'email_address' => 'required',
-            'contact_person' => 'required',
+            // 'phone_no' => 'required',
+            // 'email_address' => 'required',
+            // 'contact_person' => 'required',
         ], [
-            'client_code' => 'Client code is required',
             'client_name' => 'Client name is required',
+            'client_code' => 'Client code is required',
             'client_type' => 'Client type is required',
-            'tin' => 'Tin is required',
-            'address_1' => 'Address_1 is required',
+            // 'tin' => 'Tin is required',
+            'address_1' => 'Address1 is required',
             'city' => 'City is required',
             'province' => 'Province is required',
             'country' => 'Country is required',
             'zipcode' => 'Zipcode is required',
-            'phone_no' => 'phone no is required',
-            'email_address' => 'Email address is required',
-            'contact_person' => 'Contact person is required',
+            // 'phone_no' => 'phone no is required',
+            // 'email_address' => 'Email address is required',
+            // 'contact_person' => 'Contact person is required',
         ]);
 
         if ($validator->fails()) {
-            foreach($validator->errors()->toArray() as $error){
-                return response()->json(["status" => false, "message" => $error[0]],200);
-            }
+            return response()->json(['errors' => $validator->errors()]);
         }
 
         try {
@@ -168,7 +166,7 @@ class ClientController extends Controller
 
         return view('maintenance/client/view', [
             'client'=>$client,
-            'client_type'=> ['S' => "Supplier", 'C' => "Customer"],
+            'client_type'=> ['T' => "Third-Party", 'C' => "Customer"],
         ]);
     }
 
@@ -183,7 +181,7 @@ class ClientController extends Controller
         $client = Client::find(_decode($id));
         return view('maintenance/client/edit', [
             'client'=>$client,
-            'client_type'=> ['S' => "Supplier", 'C' => "Customer"],
+            'client_type'=> ['T' => "Third-Party", 'C' => "Customer"],
         ]);
     }
 

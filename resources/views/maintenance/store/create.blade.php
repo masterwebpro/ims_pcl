@@ -118,7 +118,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3 form-group">
-                                            <label for="phone_no" class="form-label">Phone</label>
+                                            <label for="phone_no" class="form-label">Phone<span
+                                                class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="phone_no" name="phone_no" placeholder="(xxx)xxx-xxxx">
                                         </div>
                                     </div>

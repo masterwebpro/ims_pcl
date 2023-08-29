@@ -16,7 +16,7 @@
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">Delivery List</h5>
+                    <h5 class="card-title mb-0 flex-grow-1">Delivery Order List</h5>
                     <div class="flex-shrink-0">
                         <button data-status="open" class="create-do btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Delivery Order</button>
                     </div>
@@ -84,8 +84,8 @@
                                 <th class="sort" data-sort="order_type">Order Type</th>
                                 <th class="sort" data-sort="id">PO Number</th>
                                 <th class="sort" data-sort="id">Sales Invoice</th>
-                                <th class="sort" data-sort="supplier_name">Supplier Name</th>
                                 <th class="sort" data-sort="client_name">Client Name</th>
+                                <th class="sort" data-sort="supplier_name">Deliver To</th>
                                 <th class="sort" data-sort="store">Store/Warehouse</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="status">Order Date</th>
@@ -102,8 +102,8 @@
                                         <td class="order_type">{{ $do->order_type}}</td>
                                         <td class="po_num">{{ $do->po_num}}</td>
                                         <td class="sales_invoice">{{ $do->sales_invoice}}</td>
-                                        <td>{{ $do->supplier_name}}</td>
                                         <td class="client_name">{{ $do->client_name}}</td>
+                                        <td>{{ $do->deliver_to}}</td>
                                         <td class="store">{{ $do->store_name}}</td>
                                         <td class="status"><span class="badge {{ $do->status }} text-uppercase fs-11">{{ $do->status }}</span></td>
                                         <td class="order_date">{{ date('M d, Y',strtotime($do->order_date)) }}</td>

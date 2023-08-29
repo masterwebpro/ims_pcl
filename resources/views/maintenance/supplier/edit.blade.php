@@ -86,6 +86,17 @@
                                                 <textarea class="form-control" id="address" rows="3" placeholder="Enter address...">{{ $supplier->supplier_address }}</textarea>
                                             </div>
                                         </div>
+                                        <div class="col-md-4 form-group">
+                                            <label for="client" class="form-label">Client<span
+                                                class="text-danger">*</span></label>
+                                            <select class="form-control category_id" id="client" name="client" data-choices
+                                                data-choices-removeItem multiple>
+                                                <option value="">Select Client</option>
+                                                <? foreach ($client_list as $client) :?>
+                                                <option value="<?=$client->id?>" <?=(in_array($client->id, $client_supplier)) ? 'selected' : ''?>>{{ $client->client_name }}
+                                                <? endforeach;?>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -1,7 +1,7 @@
 // create a program for odd even number
 
 $(document).ready(function () {
-    $(".select2").select2();
+    $(".select").select2();
 
     if ( $( "#store_id" ).length ) {
         client_id = $("#client_id" ).val();
@@ -17,8 +17,13 @@ $(document).ready(function () {
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
-        $('#show-items-list tbody tr').removeClass('selected')
-        $(this).addClass('selected');
+       // $('#show-items-list tbody tr').removeClass('selected')
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected')
+        }
+        else{
+            $(this).addClass('selected');
+        }
     });
 });
 
@@ -33,79 +38,162 @@ $(document).on('change', '#store', function() {
 });
 
 $(document).on('click', '#find-items', function() {
-
-    var supplier_id = $('#supplier').val();
-
-    if(supplier_id) {
-
+    var client_id = $('#client').val();
+    var store_id = $('#store').val();
+    var warehouse_id = $('#warehouse').val();
+    var product = $('#product').val();
+    var item_type = $('#item_type').val();
+    populateWarehouse(store_id, '');
+    if(client_id && store_id) {
         $('#show-items').modal('show');
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
-        new DataTable("#show-items-list",{
-            order: [[1, 'desc']],
-            paging: true,
-            ajax: BASEURL+"settings/products/"+supplier_id+'/get',
-            columns: [
-                { data: 'product_id',  visible: false },
-                { data: 'product_code' },
-                { data: 'product_sku' },
-                { data: 'product_name' }
-            ],
-        });
+        masterfile();
     } else {
-        alert("Supplier Name required");
+        if(client_id == ''){
+            alert("Client Name required");
+        }
+        else{
+            alert("Store Name required");
+        }
     }
 });
 
-$(document).on('click', '.remove-product', function() {
-    var id = $(this).data('id');
-    $('#product_'+id).remove();
+$(document).on('click', '.search-item', function() {
+    $('#show-items').modal('show');
+    if ($.fn.DataTable.isDataTable("#show-items-list")) {
+        $('#show-items-list').DataTable().clear().destroy();
+    }
+    masterfile();
 });
+
+function masterfile(){
+    var client_id = $('#client').val();
+    var store_id = $('#store').val();
+    var warehouse_id = $('#warehouse').val();
+    var product = $('#product').val();
+    var item_type = $('#item_type').val();
+    master = document.querySelectorAll('input[name="masterfile_id[]"]');
+    var master_id = [];
+    master.forEach(input => {
+        master_id.push(input.value);
+    });
+
+    new DataTable("#show-items-list",{
+        order: [[1, 'asc'],[4,'asc']],
+        paging: true,
+        columnDefs : [
+            { targets: [6], className: 'dt-body-right' },
+        ],
+        ajax: {
+            url : BASEURL+"settings/available_item",
+            data : {
+                client_id : client_id,
+                store_id : store_id,
+                warehouse_id : warehouse_id,
+                product : product,
+                item_type : item_type,
+                master_id : JSON.stringify(master_id)
+            },
+            dataSrc:""
+        },
+        columns: [
+            { data: 'product_id',  visible: false },
+            { data: 'product_code' },
+            { data: 'product_name' },
+            { data: 'product_sku' },
+            { data: 'date_received' },
+            { data: 'item_type' },
+            { data: 'inv_qty' , render: $.fn.dataTable.render.number( ',', '.', 2)},
+            { data: 'inv_uom_code' },
+            { data: 'warehouse_name' },
+            { data: 'location' },
+        ],
+    });
+}
+
+function removeProduct() {
+    $(this).closest("tr").remove();
+    toastr.error('Product removed');
+  }
+
+  $(document).on("click", ".remove-product", function () {
+    removeProduct.call(this);
+  });
 
 $(document).on('click', '#add-product', function() {
     var table = $('#show-items-list').DataTable();
-    var data = ( table.rows('.selected').data()[0] );
+    var data = ( table.rows('.selected').data());
 
-    if (table.rows('.selected').data().length > 0) {
-        var uom = getUom();
-        var rowCount = $('#product-list tr').length;
-        var idx = rowCount - 1;
-        var btn = '<div class="text-center">';
-        btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+data.product_id+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
-        btn += '</div>'
+    //if (table.rows('.selected').data().length > 0) {
+    if(data.length > 0) {
+        for(x=0; x<data.length; x++) {
+            var uom = getUom();
+            var rowCount = $('#product-list tr').length;
+            var idx = rowCount - 3;
+            var itemType = (data[x].item_type == 'good') ? "bg-success" : "bg-danger";
+            var btn = '<div class="text-center text-align-justify">';
+            btn += '<button type="button" class="btn btn-danger mx-2 btn-icon waves-effect waves-light remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill"></i></button>';
+            if(data[x].is_serialize == 1){
+                btn += '<button type="button" class="add-serial btn btn-success btn-icon waves-effect waves-light" id="row_'+(rowCount-1)+'" data-rowid="'+(rowCount-1)+'" data-productid="'+ data[x].product_id +'" data-masterfileid="'+ data[x].masterfile_id +'" data-productcode="'+ data[x].product_code +'" data-productname="'+ data[x].product_name +'"><i class="ri-barcode-line"></i></button>';
+            }
+            btn += '</div>'
 
-        $('#product-list tbody').append('<tr id="product_'+data.product_id+'"> \
-        <td class="text-start"> \
-            <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
-        '+rowCount+' </td> \
-        <td class="text-start  fs-14"> \
-            '+data.product_name+'<br/><small>'+data.product_code+'</small> \
-        </td> \
-        <td class="text-start ps-1"> \
-            <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+data.product_id+'" id="whse_qty_'+idx+'" value="" placeholder="Whse Qty" /> \
-            <span class="text-danger error-msg whse_qty'+(rowCount-1)+'_error"></span> \
-        </td> \
-            <td class="text-start ps-1"><select name="whse_uom[]" id="uom_'+idx+'" class="uom uom_select form-select select2"> \
-            '+uom+'</select> \
-            <span class="text-danger error-msg whse_uom'+(rowCount-1)+'_error"></span> \
-        </td> \
-        <td class="text-start ps-1"> \
-            <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+data.product_id+'" id="inv_qty_'+idx+'" value="" placeholder="Inv Qty" /> \
-            <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
-        </td> \
-        <td class="text-start ps-1"> \
-            <select name="inv_uom[]" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
-            '+uom+'</select> \
-            <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
-        </td> \
-        <td>'+btn+'</td> \
-        </tr>');
+            $('#product-list tbody').append('<tr id="rows_'+(rowCount-1)+'"> \
+            <td class="text-start"> \
+                <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
+                <input type="hidden" name="masterfile_id[]" readonly id="masterfile_id_'+data[x].masterfile_id+'" value="'+data[x].masterfile_id+'" /> \
+                <input type="hidden" name="available_qty[]" readonly id="available_qty_'+data[x].inv_qty+'" value="'+data[x].inv_qty+'" /> \
+                <input type="hidden" name="is_serialize[]" readonly value="'+data[x].is_serialize+'" />\
+            '+rowCount+' </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].product_name+'<br/><small>'+data[x].product_code+'</small> \
+            </td> \
+            <td class="text-center ps-1 fs-13"> \
+                <span class="badge '+ itemType +' text-capitalize">'+data[x].item_type+'</span> \
+            </td> \
+            <td class="text-start fs-14"> \
+                '+data[x].date_received+'\
+            </td> \
+            <td class="text-center  fs-14"> \
+                '+data[x].inv_qty.toFixed(2)+'\
+            </td> \
+            <td class="text-start fs-14"> \
+                <input type="text" class="form-control inv_qty numeric" name="inv_qty[]" data-qty="'+data[x].inv_qty+'" data-id="'+ idx +'" id="inv_qty_'+(rowCount-1)+'" value="1" placeholder="Enter Qty" /> \
+                <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].inv_uom_code+'\
+                <input type="hidden" readonly class="form-control" name="inv_uom[]" data-id="'+data[x].inv_uom+'" id="inv_uom_'+(rowCount-1)+'" value="'+data[x].inv_uom+'"> \
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].warehouse_name+'\
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].location+'\
+            </td> \
+            <td>'+btn+'</td> \
+            </tr>');
+            toastr.success(data[x].product_name + ' successfully added');
+        }
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
-    toastr.success(data.product_name + ' successfully added');
-    //$('#show-items').modal('hide');
+    $('#show-items').modal('hide');
+});
+
+$(document).on('blur', '.inv_qty', function() {
+    var id = $(this).data('id');
+    var stocks = $(this).data('qty');
+    var new_inv = $(this).val();
+
+    if(stocks < new_inv) {
+        prefix = 'inv_qty'+id;
+        $(this).val(stocks);
+        $('#submit-withdrawal').find('span.'+prefix.replace('.','')+'_error').text('Insufficient Qty');
+        $('.'+prefix+'_error').text('');
+    }
 });
 
 $(document).on('click', '.submit-open', function (e) {
@@ -115,6 +203,14 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'open');
 
+    var serial_list = [];
+    for (var i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        var serial = localStorage.getItem(key);
+        serial_list.push(JSON.parse(serial));
+    }
+
+    form_data.append("serial_list", JSON.stringify(serial_list));
     _submitData(form_data);
 });
 
@@ -124,7 +220,14 @@ $(document).on('click', '.submit-posted', function (e) {
     var form_data = new FormData(document.getElementById("submit-withdrawal"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'posted');
-
+    var serial_list = [];
+    for (var i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        var serial = localStorage.getItem(key);
+        serial_list.push(JSON.parse(serial));
+    }
+    console.log(JSON.stringify(serial_list));
+    form_data.append("serial_list", JSON.stringify(serial_list));
     Swal.fire({
         title: 'Are you sure?',
         text: "You want to POST this transaction?",
@@ -147,22 +250,15 @@ $(document).on('click', '.create-withdrawal', function (e) {
     }, 300);
 });
 
-$(document).on('click', '.receive-po', function (e) {
-    e.preventDefault();
-    $('#po_num_holder').val('');
-    $('#show-po').modal('show');
-});
-
-$(document).on('click', '#receive-po-btn', function (e) {
+$(document).on('click', '.generate-picklist', function (e) {
     e.preventDefault();
     $('#preloading').modal('show');
-    var po_num = $('#po_num_holder').val();
+    var id = $('#wd_id').val();
     setTimeout(function () {
-        window.location = BASEURL+'receive/'+escapeHtml(po_num)+'/create';
+        window.location = BASEURL+'picklist/'+ id;
+        $('#preloading').modal('hide');
     }, 300);
-
 });
-
 
 $(document).on('click', '.submit-withdrawal', function (e) {
     e.preventDefault();
@@ -200,7 +296,6 @@ function _submitData(form_data) {
         },
         success: function (data) {
             if($.isEmptyObject(data.errors)) {
-                console.log(data.data);
                 if(data.success == true) {
                     if(data.data.status == 'open') {
                         showSuccess(data.message);
@@ -208,6 +303,7 @@ function _submitData(form_data) {
 							window.location = BASEURL+'withdraw/'+data.id+'/edit';
 						}, 300);
                     } else {
+                        localStorage.clear();
                         toastr.success(data.message);
                         setTimeout(function () {
 							window.location = BASEURL+'withdraw';
@@ -229,4 +325,203 @@ function _submitData(form_data) {
 		}
     });
 }
+
+$(document).on('click', '.add-serial', function (e) {
+    $("#serial-list").empty();
+    $("#counter").text(0);
+    $("#show-serial").modal('show');
+
+    var productid = $(this).data('productid');
+    var masterfileid = $(this).data('masterfileid');
+    var rowid = $(this).data('rowid');  
+    var itemize = $(this).data('itemize');  
+    var item = itemize;
+   
+
+    var productname = $(this).data('productname');
+    var productcode = $(this).data('productcode');
+    var qty = $('#inv_qty_'+rowid).val();
+
+    $("#product_code").val(productcode + " - "+ productname);
+    $("#product_qty").val(qty);
+    $("#productid").val(productid);
+    $("#masterfileid").val(masterfileid);
+
+    var type = $(this).data('type');
+
+    $("#serial_no").focus();
+    var store = "serial_" + masterfileid + "_" + productid;
+    var serial_list = localStorage.getItem(store);
+    var storedSerialList = JSON.parse(serial_list);
+    if(storedSerialList != null){
+        storedSerialList.forEach(function(val){
+            addRow(val.serial_no,val.warranty_no,type);
+        });
+    }
+    else{
+         if(item != null){
+            item.forEach(function(val){
+                addRow(val.serial_no,val.warranty_no,type);
+            });
+        }
+    }
+});
+
+$(document).on('change','#toggle',function(e){
+    $("#serial_no").focus();
+});
+$(document).on('change','#serial_no',function(e){
+    var serial_no = $(this).val().trim();
+    var checkbox = document.getElementById("toggle");
+    var toggle = (checkbox.checked) ? 1 : 0;
+
+    if(toggle == 1){
+        $("#warranty_no").focus();
+    }
+    else{
+        if (serial_no !== "") {
+            const existingSerials = $("#serial-list td:nth-child(1)").map(function() {
+                return $(this).find("input[name=serial_no]").val().trim();
+            }).get();
+    
+            if (existingSerials.includes(serial_no)) {
+                toastr.error('Serial No. already exists');
+                return;
+            }
+            addRow(serial_no,"");
+            $(this).focus();
+            $(this).val('');
+        }
+    }
+});
+
+$(document).on('change','#warranty_no',function(e){
+    var warranty_no = $(this).val().trim();
+    var serial_no = $("#serial_no").val().trim();
+    if($("#serial_no").length)
+    if (serial_no !== "" && warranty_no != "") {
+        const existingSerials = $("#serial-list td:nth-child(1)").map(function() {
+            return $(this).find("input[name=serial_no]").val().trim();
+        }).get();
+        if (existingSerials.includes(serial_no)) {
+            toastr.error('Serial No. already exists');
+            return;
+        }
+
+        addRow(serial_no,warranty_no);
+        $("#serial_no").focus();
+        $("#serial_no").val('');
+        $(this).val('');
+    }
+});
+
+function addRow(s,w, type="edit") {
+    const tbody = document.querySelector('#serial-list');
+    const rows = tbody.querySelectorAll('tr');;
+    const rowCount = rows.length;
+    $("#counter").text(rowCount + 1);
+    var newRow = `<tr>
+        <td>
+            <input type="text" class="form-control" placeholder="Serial No" name="serial_no" value="`+ s +`">
+        </td>
+        <td>
+            <input type="text" class="form-control" placeholder="Warranty No" name="warranty_no" value="`+ w +`">
+        </td>
+        <td class="`+ ((type == 'view') ? 'd-none' : '')+`">
+            <button type="submit" class="btn btn-icon btn-danger remove-row mx-2 waves-effect waves-light"><i class="ri-delete-bin-5-fill label-icon align-middle"></i>
+                </button>
+        </td>
+    </tr>`;
+    $("#show-serial-list tbody").prepend(newRow);
+  }
+
+  function removeRow() {
+    $(this).closest("tr").remove();
+    const tbody = document.querySelector('#serial-list');
+    const rows = tbody.querySelectorAll('tr');;
+    const rowCount = rows.length;
+    $("#counter").text(rowCount);
+    toastr.error('serial deleted');
+  }
+
+  $(document).on("click", ".remove-row", function () {
+    removeRow.call(this);
+  });
+
+$(document).on("click","#save-serial",function(){
+    var serial_list = [];
+    var master_id = $("#masterfileid").val();
+    var prod_id = $("#productid").val();
+    var store = "serial_" + master_id + "_" + prod_id;
+    localStorage.removeItem(store);
+    $("#show-serial-list tbody tr").each(function () {
+        serial_list.push({
+          serial_no: $(this).find("input[name=serial_no]").val(),
+          warranty_no: $(this).find("input[name=warranty_no]").val(),
+          masterfile_id: master_id,
+          product_id: prod_id
+        });
+    });
+
+    const uniqueCombinations = {};
+    const filteredArray = serial_list.filter(function(obj){
+        const combination = `${obj.masterfile_id}-${obj.product_id}-${obj.serial_no}`;
+        if (!uniqueCombinations[combination]) {
+            uniqueCombinations[combination] = true;
+            return true;
+        }
+        return false;
+    });
+    localStorage.setItem(store, JSON.stringify(filteredArray));
+    $("#serial-list").empty();
+    $("#serial_no").val('');
+    $("#warranty_no").val('');
+    toastr.success('Serial added');
+    $("#show-serial").modal('hide');
+});
+
+$(document).on("click","#upload-serial",function(){
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    if (file) {
+        // Check if the selected file type is supported (CSV)
+        if (file.type === 'text/csv') {
+            uploadFile(file);
+        } else {
+            alert('Please select a valid CSV file.');
+        }
+    } else {
+        alert('Please select a file to upload.');
+    }
+});
+
+function uploadFile(file) {
+    if (file) {
+        Papa.parse(file, {
+            complete: function(results) {
+                const serial = results.data.filter(row => row.length > 0 && row.every(cell => cell !== ""));
+                serial.forEach(function(val,index){
+                    if(index > 0 ){
+                        addRow(val[0],val[1]);
+                    }
+                });
+            }
+        });
+    }
+}
+
+$(document).on("click","#download-template",function(){
+    const csvData = [
+        ['SERIAL', 'WARRANTY']
+    ];
+    const csvContent = csvData.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'serial-template.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
 

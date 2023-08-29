@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
+use App\Models\ClientSupplier;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,9 +54,10 @@ class SupplierController extends Controller
     public function create()
     {
         $supplier = Supplier::all();
-
+        $client_list = Client::where('client_type','C')->get();
         return view('maintenance/supplier/create', [
             'supplier'=> $supplier,
+            'client_list'=> $client_list,
         ]);
     }
 
@@ -71,12 +74,14 @@ class SupplierController extends Controller
             'supplier_name' => 'required',
             'supplier_code' => 'required',
             'contact_no' => 'required',
-            'supplier_address' => 'required'
+            'supplier_address' => 'required',
+            'client' => 'required'
         ], [
             'supplier_name' => 'Supplier name is required',
             'supplier_code' => 'Supplier code is required',
             'contact_no' => 'Supplier contact is required',
-            'supplier_address' => 'Supplier address is required'
+            'supplier_address' => 'Supplier address is required',
+            'client' => 'client is required'
         ]);
 
         if ($validator->fails()) {
@@ -94,6 +99,20 @@ class SupplierController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
+
+            $client = json_decode($request->client);
+            ClientSupplier::where('supplier_id',$supplier->id)->delete();
+            foreach($client as $client_id)
+            {
+                ClientSupplier::updateOrCreate([
+                        'supplier_id' => $supplier->id,
+                        'client_id' => $client_id
+                    ],
+                    [
+                        'supplier_id' => $supplier->id,
+                        'client_id' => $client_id
+                    ]);
+            }
 
             DB::connection()->commit();
 
@@ -125,9 +144,12 @@ class SupplierController extends Controller
     public function show($id)
     {
         $supplier = Supplier::find(_decode($id));
-
+        $client_list = Client::where('client_type','C')->get();
+        $client_supplier = ClientSupplier::where('supplier_id',_decode($id))->pluck('client_id')->toArray();
         return view('maintenance/supplier/view', [
-            'supplier'=>$supplier
+            'supplier'=>$supplier,
+            'client_list'=> $client_list,
+            'client_supplier' => $client_supplier
         ]);
     }
 
@@ -140,8 +162,12 @@ class SupplierController extends Controller
     public function edit($id)
     {
         $supplier = Supplier::find(_decode($id));
+        $client_list = Client::where('client_type','C')->get();
+        $client_supplier = ClientSupplier::where('supplier_id',_decode($id))->pluck('client_id')->toArray();
         return view('maintenance/supplier/edit', [
             'supplier'=>$supplier,
+            'client_list'=> $client_list,
+            'client_supplier' => $client_supplier
         ]);
     }
 

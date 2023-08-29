@@ -22,12 +22,11 @@ $(document).on('click', '.submit-client', function (e) {
         dataType: 'json',
         contentType: false,
         beforeSend: function () {
-            $('#error-handling ul').html('');
-            $('#error-handling').addClass('d-none');
             $('#preloading').modal('show');
+            $('#form-client').find('span.error-msg').text('');
         },
         success: function (data) {
-            if($.isEmptyObject(data.error)) {
+            if($.isEmptyObject(data.errors)) {
                 if(data.success == true) {
                     console.log(data.data)
                     setTimeout(function(){
@@ -39,11 +38,11 @@ $(document).on('click', '.submit-client', function (e) {
                     toastr.error(data.message,'Error on saving');
                 }
             } else {
-                $('#error-handling').removeClass('d-none');
-
-                $.each(data.error, function(prefix, val) {
-                    $('#error-handling ul').append('<li>'+val+'</li>');
+                $.each(data.errors, function(prefix, val) {
+                    $('#errMsg').removeClass('d-none');
+                    $('#form-client').find('span.'+prefix.replace('.','')+'_error').text(val);
                 });
+                toastr.error('Some fields are required');
             }
         },
         complete: function() {

@@ -56,24 +56,19 @@
                                             <input type="hidden" class="form-control" name="id" id="id" value="{{ $client->id }}">
                                             <input type="text" class="form-control" required="required"
                                                 name="client_name" id="client_name" value="{{ $client->client_name }}" placeholder="Enter Name">
-                                            <div class="invalid-feedback error-msg">Name is Required
-                                            </div>
+                                                <span class="text-danger error-msg client_name_error"></span>
                                         </div>
                                         <div class="col-md-4 form-group">
                                             <label for="client_code" class="form-label">Code <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" class="form-control" required="required"
                                                 name="client_code" id="client_code" value="{{ $client->client_code }}" placeholder="Enter Code">
-                                            <div class="invalid-feedback error-msg">Code is Required
-                                            </div>
+                                                <span class="text-danger error-msg client_code_error"></span>
                                         </div>
                                         <div class="col-md-2">
-                                            <label for="tin" class="form-label">Tin <span
-                                                class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" required="required"
+                                            <label for="tin" class="form-label">Tin</label>
+                                                <input type="text" class="form-control"
                                                     name="tin" id="tin" value="{{ $client->tin }}" placeholder="Enter Tin">
-                                                <div class="invalid-feedback error-msg">Tin is Required
-                                            </div>
                                         </div>
                                         <div class="col-md-2 mt-4">
                                             <div class="form-check form-switch form-switch-custom form-switch-primary">
@@ -94,30 +89,22 @@
                                                 name="client_type">
                                                 <option value="">Select Type</option>
                                                 <? foreach($client_type as $k => $type) : ?>
-                                                <option value="<?= $k ?>"><?= $type ?></option>
                                                 <option value="<?=$k?>" <?=($k == $client->client_type) ? 'selected' : ''?> ><?=$type?></option>
                                                 <? endforeach;?>
                                             </select>
-                                            <div class="invalid-feedback text-danger error-msg">Client Type is
-                                                Required</div>
+                                            <span class="text-danger error-msg client_type_error"></span>
                                         </div>
                                         <div class="col-md-3 form-group">
-                                            <label for="contact_person" class="form-label">Contact Person <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" required="required"
+                                            <label for="contact_person" class="form-label">Contact Person</label>
+                                            <input type="text" class="form-control"
                                                 name="contact_person" id="contact_person" value="{{ $client->contact_person }}"
                                                 placeholder="Enter Contact Person">
-                                            <div class="invalid-feedback error-msg">Contact Person is Required
-                                            </div>
                                         </div>
                                         <div class="col-md-3 form-group">
-                                            <label for="email_address" class="form-label">Email Address <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" required="required"
+                                            <label for="email_address" class="form-label">Email Address</label>
+                                            <input type="text" class="form-control"
                                                 name="email_address" id="email_address" value="{{ $client->email_address }}"
                                                 placeholder="Enter Email Address">
-                                            <div class="invalid-feedback error-msg">Email Address is Required
-                                            </div>
                                         </div>
                                         <div class="col-md-3 form-group">
                                             <label for="phone_no" class="form-label">Phone <span
@@ -127,11 +114,10 @@
                                     </div>
                                     <div class="row mb-4">
                                         <div class="col-md-6 form-group">
-                                            <div>
-                                                <label for="address_1" class="form-label">Address 1<span
-                                                        class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="address_1" name="address_1" value="{{ $client->address_1 }}" placeholder="Enter address...">
-                                            </div>
+                                            <label for="address_1" class="form-label">Address 1<span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="address_1" name="address_1" value="{{ $client->address_1 }}" placeholder="Enter address...">
+                                                <span class="text-danger error-msg address_1_error"></span>
                                         </div>
                                         <div class="col-md-3 form-group">
                                             <label for="city" class="form-label">City<span
@@ -139,8 +125,7 @@
                                             <input type="text" class="form-control" required="required"
                                                 name="city" id="city" value="{{ $client->city }}"
                                                 placeholder="Enter City">
-                                            <div class="invalid-feedback error-msg">City is Required
-                                            </div>
+                                            <span class="text-danger error-msg city_error"></span>
                                         </div>
                                         <div class="col-md-3 form-group">
                                             <label for="province" class="form-label">Province<span
@@ -148,8 +133,7 @@
                                             <input type="text" class="form-control" required="required"
                                                 name="province" id="province" value="{{ $client->province }}"
                                                 placeholder="Enter Province">
-                                            <div class="invalid-feedback error-msg">Province is Required
-                                            </div>
+                                            <span class="text-danger error-msg province_error"></span>
                                         </div>
 
                                     </div>
@@ -166,8 +150,7 @@
                                             <input type="text" class="form-control" required="required"
                                                 name="country" id="country" value="{{ $client->country }}"
                                                 placeholder="Enter Country">
-                                            <div class="invalid-feedback error-msg">Country is Required
-                                            </div>
+                                            <span class="text-danger error-msg country_error"></span>
                                         </div>
                                         <div class="col-md-3 form-group">
                                             <label for="zipcode" class="form-label">Zip Code<span
@@ -175,8 +158,7 @@
                                             <input type="text" class="form-control" required="required"
                                                 name="zipcode" id="zipcode" value="{{ $client->zipcode }}"
                                                 placeholder="Enter Zip Code">
-                                            <div class="invalid-feedback error-msg">Zip Code is Required
-                                            </div>
+                                            <span class="text-danger error-msg zipcode_error"></span>
                                         </div>
                                     </div>
                                 </div>
