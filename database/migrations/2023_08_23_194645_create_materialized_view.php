@@ -35,7 +35,7 @@ return new class extends Migration
         masterfiles.status,
         sum(inv_qty) as inv_qty,
         masterfiles.inv_uom,
-        u.code as inv_uom_code,
+        u.code as inv_uom_code
         FROM `masterfiles`
         left join products on products.product_id = masterfiles.product_id
         left join storage_locations sl on sl.storage_location_id = masterfiles.storage_location_id
