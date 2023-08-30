@@ -207,10 +207,11 @@ $(document).on('click', '.submit-open', function (e) {
     console.log(localStorage);
     if(localStorage.length > 0){
         for (var i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            var serial = localStorage.getItem(key);
-            console.log(serial,key);
-            if(serial !== undefined){
+            var key = localStorage.key(i);
+            var k = key.slice(0, 6);
+            console.log(k);
+            if(k !== undefined && k == 'serial'){
+                var serial = localStorage.getItem(key);
                 serial_list.push(JSON.parse(serial));
             }
         }
@@ -229,9 +230,10 @@ $(document).on('click', '.submit-posted', function (e) {
     var serial_list = [];
     if(localStorage.length > 0){
         for (var i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            var serial = localStorage.getItem(key);
-            if(serial !== undefined){
+            var key = localStorage.key(i);
+            var k = key.slice(0, 6);
+            if(k !== undefined && k == 'serial'){
+                var serial = localStorage.getItem(key);
                 serial_list.push(JSON.parse(serial));
             }
         }
