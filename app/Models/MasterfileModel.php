@@ -22,6 +22,7 @@ class MasterfileModel extends Model
         'inv_uom',
         'whse_qty',
         'whse_uom',
+        'warehouse_id',
         'client_id',
         'store_id',
         'rack',
