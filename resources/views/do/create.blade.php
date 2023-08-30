@@ -53,26 +53,6 @@
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
                                     <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span
-                                                class="text-danger">*</span></h6>
-                                        <input type="hidden" name="do_no" id="do_no" />
-                                        <p class="fw-medium mb-2" id="shipping-name">
-                                            <select class="form-select select2" required="required" id="supplier"
-                                                name="supplier">
-                                                <option value="">Select Supplier</option>
-                                                <? foreach($supplier_list as $supplier) : ?>
-                                                <option value="<?= $supplier->id ?>"><?= $supplier->supplier_name ?>
-                                                </option>
-                                                <? endforeach;?>
-                                            </select>
-                                            <span class="text-danger error-msg supplier_error"></span>
-                                        </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                            <p class="text-muted mb-1">supp_add2 here</p>
-                                            <p class="text-muted mb-0">supp_city province, country here</p> -->
-                                    </div>
-
-                                    <div class="col-4">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
@@ -85,9 +65,22 @@
                                             </select>
                                             <span class="text-danger error-msg client_error"></span>
                                         </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
-                                            <p class="text-muted mb-1">client_add2 here</p>
-                                            <p class="text-muted mb-0">client_city province, country here</p> -->
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
+                                                class="text-danger">*</span></h6>
+                                        <input type="hidden" name="do_no" id="do_no" />
+                                        <p class="fw-medium mb-2" id="shipping-name">
+                                            <select class="form-select select2" required="required" id="deliver_to"
+                                                name="deliver_to">
+                                                <option value="">Select Deliver To</option>
+                                                <? foreach($deliver_list as $deliver) : ?>
+                                                <option value="<?= $deliver->id ?>"><?= $deliver->client_name ?>
+                                                </option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg deliver_to_error"></span>
+                                        </p>
                                     </div>
                                     <!--end col-->
                                     <div class="col-4">
@@ -101,9 +94,6 @@
                                             </select>
                                             <span class="text-danger error-msg store_error"></span>
                                         </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                            <p class="text-muted mb-1">supp_add2 here</p>
-                                            <p class="text-muted mb-0">supp_city province, country here</p> -->
                                     </div>
                                     <!--end col-->
                                 </div>
@@ -371,8 +361,9 @@
                             <tr>
                                 <th>&nbsp;</th>
                                 <th>Product Code</th>
-                                <th>Product SKU</th>
                                 <th>Product Name</th>
+                                <th>Product SKU</th>
+                                <th>Available Stocks</th>
                             </tr>
                         </thead>
                         <tbody>

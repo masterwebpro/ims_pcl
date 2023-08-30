@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Delivery Order
+    Withdrawal
 @endsection
 @section('css')
     <!--datatable css-->
@@ -15,7 +15,7 @@
             Outbound
         @endslot
         @slot('title')
-            Delivery Order
+        Withdrawal
         @endslot
     @endcomponent
 
@@ -24,21 +24,20 @@
             <div class="card" id="tasksList">
                 <div class="card-header border-0">
                     <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">{{ $do->do_no }}</h5>
+                        <h5 class="card-title mb-0 flex-grow-1">{{ $wd->wd_no }}</h5>
                         <div class="col-md-2 text-center">
-                            <span class="badge  fs-16 <?=$do->status?> text-uppercase"><?=$do->status?></span>
+                            <span class="badge  fs-16 <?=$wd->status?> text-uppercase"><?=$wd->status?></span>
                         </div>
                         <div class="col-md-6 text-end">
-                            @if ($do->status == 'open')
-                            <a href="{{ URL::to('do/'._encode($do->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
+                            @if ($wd->status == 'open')
+                            <a href="{{ URL::to('withdraw/'._encode($wd->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                     Edit</a>
-                            @else
-                            <button data-status="posted" class="submit-withdrawal btn btn-warning btn-label rounded-pill"><i
-                                class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                            Withdraw</button>
+                            {{-- @else
+                            <button type="button" class="generate-withdrawal-slip  btn btn-danger btn-label rounded-pill"><i
+                                class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Withdrawal Slip</button> --}}
                             @endif
-                            <a href="{{ URL::to('do') }}" class="btn btn-primary btn-label rounded-pill"><i
+                            <a href="{{ URL::to('withdraw') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                 Back</a>
                         </div>
@@ -60,26 +59,6 @@
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
                                     <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span
-                                                class="text-danger">*</span></h6>
-                                        <input type="hidden" name="do_no" id="do_no" />
-                                        <p class="fw-medium mb-2" id="shipping-name">
-                                            <select class="form-select select2" required="required" id="supplier" disabled
-                                                name="supplier">
-                                                <option value="">Select Supplier</option>
-                                                <? foreach($supplier_list as $supplier) : ?>
-                                                <option value="<?= $supplier->id ?>" <?=($supplier->id == $do->supplier_id) ? 'selected' : '' ?>><?= $supplier->supplier_name ?>
-                                                </option>
-                                                <? endforeach;?>
-                                            </select>
-                                            <span class="text-danger error-msg supplier_error"></span>
-                                        </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                            <p class="text-muted mb-1">supp_add2 here</p>
-                                            <p class="text-muted mb-0">supp_city province, country here</p> -->
-                                    </div>
-
-                                    <div class="col-4">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
@@ -87,7 +66,7 @@
                                                 name="client">
                                                 <option value="">Select Client</option>
                                                 <? foreach($client_list as $client) : ?>
-                                                <option value="<?= $client->id ?>" <?=($client->id == $do->client_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
+                                                <option value="<?= $client->id ?>" <?=($client->id == $wd->client_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg client_error"></span>
@@ -95,6 +74,22 @@
                                         <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
                                             <p class="text-muted mb-1">client_add2 here</p>
                                             <p class="text-muted mb-0">client_city province, country here</p> -->
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
+                                                class="text-danger">*</span></h6>
+                                        <input type="hidden" name="wd_no" id="wd_no" value="{{ $wd->wd_no }}" />
+                                        <p class="fw-medium mb-2" id="shipping-name">
+                                            <select class="form-select select2" required="required" id="deliver_to" disabled
+                                                name="deliver_to">
+                                                <option value="">Select Deliver To</option>
+                                                <? foreach($deliver_list as $deliver) : ?>
+                                                <option value="<?= $deliver->id ?>" <?=($deliver->id == $wd->deliver_to_id) ? 'selected' : '' ?>><?= $deliver->client_name ?>
+                                                </option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg supplier_error"></span>
+                                        </p>
                                     </div>
                                     <!--end col-->
                                     <div class="col-4">
@@ -106,7 +101,7 @@
                                                 name="store">
                                                 <option value="">Select Store/Warehouse</option>
                                                 <? foreach($store_list as $store) : ?>
-                                                <option value="<?= $store->id ?>" <?=($store->id == $do->store_id) ? 'selected' : '' ?>><?= $store->store_name ?></option>
+                                                <option value="<?= $store->id ?>" <?=($store->id == $wd->store_id) ? 'selected' : '' ?>><?= $store->store_name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg store_error"></span>
@@ -143,7 +138,7 @@
                                                 name="order_type">
                                                 <option value="">Select Order Type</option>
                                                 <? foreach($order_type as $type) : ?>
-                                                <option value="<?= $type->code ?>" <?=($type->code == $do->order_type ? 'selected' : '')?>><?= $type->name ?></option>
+                                                <option value="<?= $type->code ?>" <?=($type->code == $wd->order_type ? 'selected' : '')?>><?= $type->name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg order_type_error"></span>
@@ -156,8 +151,33 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="order_no" disabled
-                                                name="order_no" value="{{ $do->order_no }}" placeholder="Order no">
+                                                name="order_no" value="{{ $wd->order_no }}" placeholder="Order no">
                                             <span class="text-danger error-msg order_no_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row ms-3 mt-3 mx-3">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                        <label for="colFormLabel" class="col-lg-4 col-form-label">DR Number</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control" id="ar_no" name="dr_no" disabled
+                                                value="{{ $wd->dr_no }}" placeholder="DR Number">
+                                            <span class="text-danger error-msg dr_no_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Withdrawal Date <span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-8">
+                                            <input type="date" class="form-control" id="withdraw_date" disabled
+                                            name="withdraw_date" placeholder="Withdraw Date" value="{{ $wd->withdraw_date }}">
+                                            <span class="text-danger error-msg withdraw_date_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -170,7 +190,7 @@
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="po_num" name="po_num" disabled
-                                                value="{{ $do->po_num }}" placeholder="PO Number">
+                                                value="{{ $wd->po_num }}" placeholder="PO Number">
                                             <span class="text-danger error-msg po_num_error"></span>
                                         </div>
                                     </div>
@@ -180,7 +200,7 @@
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Sales Invoice </label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="sales_invoice" disabled
-                                                name="sales_invoice" value="{{ $do->sales_invoice }}" placeholder="Sales Invoice">
+                                                name="sales_invoice" value="{{ $wd->sales_invoice }}" placeholder="Sales Invoice">
                                         </div>
                                     </div>
                                 </div>
@@ -191,17 +211,17 @@
                             <div class="row ms-3 mx-3">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4 col-form-label">DO Type <span
+                                        <label for="colFormLabel" class="col-lg-4 col-form-label">Withdrawal Type <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
-                                            <select class="form-select select2" required="required" id="do_type" disabled
-                                            name="do_type">
+                                            <select class="form-select select2" required="required" id="wd_type" disabled
+                                            name="wd_type">
                                             <option value="">Select DO Type</option>
-                                            <? foreach($do_type as $type) : ?>
-                                            <option value="<?= $type['code'] ?>" <?=($type['code'] == $do->do_type ? 'selected' : '')?>><?= $type['name'] ?></option>
+                                            <? foreach($wd_type as $type) : ?>
+                                            <option value="<?= $type['code'] ?>" <?=($type['code'] == $wd->wd_type ? 'selected' : '')?>><?= $type['name'] ?></option>
                                             <? endforeach;?>
                                             </select>
-                                            <span class="text-danger error-msg do_type_error"></span>
+                                            <span class="text-danger error-msg wd_type_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -210,8 +230,8 @@
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Order Date <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
-                                            <input type="date" class="form-control" id="order_date"
-                                            name="order_date" value="{{ $do->order_date }}" placeholder="Order Date">
+                                            <input type="date" class="form-control" id="order_date" disabled
+                                            name="order_date" value="{{ $wd->order_date }}" placeholder="Order Date">
                                             <span class="text-danger error-msg order_date_error"></span>
                                         </div>
                                     </div>
@@ -227,7 +247,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="pickup_date" disabled
-                                                name="pickup_date" value="{{ $do->pickup_date }}" placeholder="Pickup Date">
+                                                name="pickup_date" value="{{ $wd->pickup_date }}" placeholder="Pickup Date">
                                             <span class="text-danger error-msg pickup_date_error"></span>
                                         </div>
                                     </div>
@@ -238,7 +258,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="trgt_dlv_date" disabled
-                                                name="trgt_dlv_date" value="{{ $do->target_dlv_date }}" placeholder="Date Received">
+                                                name="trgt_dlv_date" value="{{ $wd->target_dlv_date }}" placeholder="Date Received">
                                             <span class="text-danger error-msg trgt_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -254,7 +274,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" id="created_by" name="created_by" disabled
-                                                value="<?=$do->name?>" placeholder="Created By">
+                                                value="<?=$wd->name?>" placeholder="Created By">
                                             <span class="text-danger error-msg created_by_error"></span>
                                         </div>
                                     </div>
@@ -265,7 +285,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="actual_dlv_date" disabled
-                                                name="actual_dlv_date" value="{{ $do->actual_dlv_date }}" placeholder="Inspect Date">
+                                                name="actual_dlv_date" value="{{ $wd->actual_dlv_date }}" placeholder="Inspect Date">
                                             <span class="text-danger error-msg actual_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -275,7 +295,7 @@
 
                         <div class="col-lg-12 mt-3">
                             <div class="row ms-3 mx-3">
-                                <div class="col-lg-6 col-md-6">
+                                {{-- <div class="col-lg-6 col-md-6">
                                     <div class="row">
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span
                                                 class="text-danger">*</span></label>
@@ -284,19 +304,19 @@
                                                 name="warehouse">
                                                 <option value="">Select warehouse</option>
                                                 <? foreach ($warehouse_list as $key => $wh):?>
-                                                <option value="<?=$wh->id?>" <?=($wh->id == $do->warehouse_id) ? 'selected' : ''?>>{{ $wh->warehouse_name }}</option>
+                                                <option value="<?=$wh->id?>" <?=($wh->id == $wd->warehouse_id) ? 'selected' : ''?>>{{ $wh->warehouse_name }}</option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg warehouse_error"></span>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" name="remarks" id="remarks" disabled
-                                                value="{{ $do->remarks }}" placeholder="Remarks">
+                                                value="{{ $wd->remarks }}" placeholder="Remarks">
                                         </div>
                                     </div>
                                 </div>
@@ -308,7 +328,7 @@
                             <div class="">
                                 <div class="card-header card-title mb-0 flex-grow-1">
                                     <div class="d-flex align-items-center">
-                                        <h5>Delivery Order Details</h5>
+                                        <h5>Withdrawal Details</h5>
                                     </div>
                                 </div>
                                 <div class="card-body p-4">
@@ -318,20 +338,25 @@
                                                 <tr class="table-active">
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
-                                                    <th scope="col">WHSE Qty</th>
-                                                    <th scope="col">WHSE UOM</th>
-                                                    <th scope="col">Inv Qty</th>
-                                                    <th scope="col">Inv UOM</th>
-                                                    <th scope="col">Unserve Qty</th>
+                                                    <th scope="col">Item Type</th>
+                                                    <th scope="col">Date Received</th>
+                                                    @if ($wd->status == 'open')
+                                                    <th scope="col">Available Stocks</th>
+                                                    @endif
+                                                    <th scope="col">Withdraw Quantity</th>
+                                                    <th scope="col">Unit</th>
+                                                    <th scope="col">Warehouse</th>
+                                                    <th scope="col">Location</th>
+                                                    <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="newlink">
                                                 <?
-                                                $rowCount = count($do->items);
+                                                $rowCount = count($wd->items);
                                                 $x=1;
                                                  ?>
-                                                @if(isset($do->items))
-                                                    @foreach($do->items as $item)
+                                                @if(isset($wd->items))
+                                                    @foreach($wd->items as $item)
                                                     <tr id="product_{{$item->product_id}}">
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
@@ -340,29 +365,35 @@
                                                             {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                         </td>
                                                         <td class=" ps-1">
-                                                            <input type="text"  disabled  class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                            <span class="badge bg-success text-capitalize">{{ isset($item->master) ? $item->master->item_type : ''}} </span>
                                                         </td>
                                                         <td class=" ps-1">
-                                                           <select name="whse_uom[]"  disabled id="whse_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom_whse)
-                                                                <option value="{{$uom_whse->uom_id}}" <?=($uom_whse->uom_id == $item->whse_uom) ? 'selected': ''; ?> >{{$uom_whse->code}}</option>
-                                                                @endforeach
-                                                            </select>
+                                                            {{ isset($item->master->receiving) ? date('M d, Y', strtotime($item->master->receiving->date_received)) : '' }}
                                                         </td>
-                                                        <td class="ps-1">
-                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                        @if ($wd->status == 'open')
+                                                        <td class="ps-1 text-center">
+                                                            {{ number_format($item->master->inv_qty,2) }}
+                                                        </td>
+                                                        @endif
+                                                        <td class="ps-1 text-center">
+                                                            {{ number_format($item->inv_qty,2) }}
+                                                            <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]" data-qty="{{ $item->master->inv_qty }}" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                         </td>
                                                         <td class=" ps-1">
-                                                            <select name="inv_uom[]"  disabled  id="inv_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom)
-                                                                <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
-                                                                @endforeach
-                                                            </select>
+                                                            {{ $item->master->uom->code }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ $item->master->warehouse->warehouse_name }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ $item->master->location->location }}
                                                         </td>
                                                         <td class="ps-1">
-                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select" name="unserve_qty[]" data-id="{{$item->product_id}}" id="unserve_qty_{{$x}}" value="{{$item->unserve_qty}}" placeholder="Unserve Qty" />
+                                                            @if ($item->product->is_serialize == 1)
+                                                                <button type="button" class="add-serial btn btn-icon btn-success waves-effect waves-light" data-type="view" data-itemize="{{ $item->itemize }}" id="row_{{$x}}" data-rowid="{{$x}}" data-productname="{{ $item->product->product_name }}" data-productcode="{{ $item->product->product_code }}" data-productid="{{$item->product_id}}" data-masterfileid="{{$item->masterfile_id}}">
+                                                                    <i class="ri-barcode-line"></i>
+                                                                </button>
+                                                                @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -427,6 +458,51 @@
             </div>
         </div>
     </div>
+    <div class="modal" id="show-serial" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="exampleModalLabel">View Serial</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="close-modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Product</label>
+                            <input type="text" class="form-control" id="product_code" disabled>
+                            <input type="hidden" class="form-control" id="productid">
+                            <input type="hidden" class="form-control" id="masterfileid">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Quantity</label>
+                            <input type="text" class="form-control" id="product_qty" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-serial-list">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th colspan="3"  class="text-center text-danger">Serial Count : <span id="counter">0</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Serial No</th>
+                                            <th>Warranty No</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="serial-list">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
@@ -439,5 +515,5 @@
     <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/do/do.js') }}"></script>
+    <script src="{{ URL::asset('/assets/js/withdraw/withdraw.js') }}"></script>
 @endsection

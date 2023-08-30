@@ -35,9 +35,11 @@ $(document).on('change', '#store', function() {
 
 $(document).on('click', '#find-items', function() {
 
-    var supplier_id = $('#supplier').val();
+    var client_id = $('#client').val();
+    var store_id = $('#store').val();
+    var warehouse_id = $('#warehouse').val();
 
-    if(supplier_id) {
+    if(client_id) {
 
         $('#show-items').modal('show');
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
@@ -46,16 +48,25 @@ $(document).on('click', '#find-items', function() {
         new DataTable("#show-items-list",{
             order: [[1, 'desc']],
             paging: true,
-            ajax: BASEURL+"settings/products/"+supplier_id+'/get',
+            ajax: {
+                url : BASEURL+"settings/available_item",
+                data : {
+                    client_id : client_id,
+                    store_id : store_id,
+                    warehouse_id : warehouse_id,
+                },
+                dataSrc:""
+            },
             columns: [
                 { data: 'product_id',  visible: false },
                 { data: 'product_code' },
+                { data: 'product_name' },
                 { data: 'product_sku' },
-                { data: 'product_name' }
+                { data: 'inv_qty' },
             ],
         });
     } else {
-        alert("Supplier Name required");
+        alert("Client Name required");
     }
 });
 

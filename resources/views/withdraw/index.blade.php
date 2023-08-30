@@ -18,7 +18,8 @@
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1">Withdrawal List</h5>
                     <div class="flex-shrink-0">
-                        <button data-status="open" class="create-do btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Delivery Order</button>
+                        <button data-status="open" class="create-withdrawal btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Withdrawal</button>
+                        <button data-status="open" class="create-withdrawal btn btn-secondary btn-label rounded-pill d-none"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Withdraw from DO</button>
                     </div>
                 </div>
             </div>
@@ -37,7 +38,7 @@
                         <div class="col-xxl-2 col-sm-4">
                             <div class="input-light">
                                 <select class="form-control" name="filter_date" id="filter_date">
-                                    <option value="po_date">Order Date</option>
+                                    <option value="po_date">Withdraw Date</option>
                                     <option value="created_at">Created Date</option>
                                 </select>
                             </div>
@@ -79,39 +80,41 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="id">DO #</th>
+                                <th class="sort" data-sort="id">WD #</th>
+                                <th class="sort" data-sort="order_no">DR Number</th>
                                 <th class="sort" data-sort="order_no">Order Number</th>
                                 <th class="sort" data-sort="order_type">Order Type</th>
                                 <th class="sort" data-sort="id">PO Number</th>
                                 <th class="sort" data-sort="id">Sales Invoice</th>
-                                <th class="sort" data-sort="supplier_name">Supplier Name</th>
                                 <th class="sort" data-sort="client_name">Client Name</th>
+                                <th class="sort" data-sort="supplier_name">Deliver To</th>
                                 <th class="sort" data-sort="store">Store/Warehouse</th>
                                 <th class="sort" data-sort="status">Status</th>
-                                <th class="sort" data-sort="status">Order Date</th>
+                                <th class="sort" data-sort="status">Withdrawal Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
 
                         <tbody class="list form-check-all">
-                            <? if($do_list->total() > 0 ) : ?>
-                                <? foreach($do_list as $do) :?>
+                            <? if($wd_list->total() > 0 ) : ?>
+                                <? foreach($wd_list as $withdraw) :?>
                                     <tr>
-                                        <td class="rcv_no">{{ $do->do_no}}</td>
-                                        <td class="order_no">{{ $do->order_no}}</td>
-                                        <td class="order_type">{{ $do->order_type}}</td>
-                                        <td class="po_num">{{ $do->po_num}}</td>
-                                        <td class="sales_invoice">{{ $do->sales_invoice}}</td>
-                                        <td>{{ $do->supplier_name}}</td>
-                                        <td class="client_name">{{ $do->client_name}}</td>
-                                        <td class="store">{{ $do->store_name}}</td>
-                                        <td class="status"><span class="badge {{ $do->status }} text-uppercase fs-11">{{ $do->status }}</span></td>
-                                        <td class="order_date">{{ date('M d, Y',strtotime($do->order_date)) }}</td>
+                                        <td class="rcv_no">{{ $withdraw->wd_no}}</td>
+                                        <td class="order_no">{{ $withdraw->dr_no}}</td>
+                                        <td class="order_no">{{ $withdraw->order_no}}</td>
+                                        <td class="order_type">{{ $withdraw->order_type}}</td>
+                                        <td class="po_num">{{ $withdraw->po_num}}</td>
+                                        <td class="sales_invoice">{{ $withdraw->sales_invoice}}</td>
+                                        <td class="client_name">{{ $withdraw->client_name}}</td>
+                                        <td>{{ $withdraw->deliver_to}}</td>
+                                        <td class="store">{{ $withdraw->store_name}}</td>
+                                        <td class="status"><span class="badge {{ $withdraw->status }} text-uppercase fs-11">{{ $withdraw->status }}</span></td>
+                                        <td class="order_date">{{ date('M d, Y',strtotime($withdraw->order_date)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('do') }}/<?=_encode($do->id)?>" data-id="{{$do->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <? if($do->status != 'posted') : ?>
-                                                    <a href="{{ URL::to('do') }}/<?=_encode($do->id);?>/edit" data-id="{{$do->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                <a href="{{ URL::to('withdraw') }}/<?=_encode($withdraw->id)?>" data-id="{{$withdraw->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <? if($withdraw->status != 'posted') : ?>
+                                                    <a href="{{ URL::to('withdraw') }}/<?=_encode($withdraw->id);?>/edit" data-id="{{$withdraw->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                                 <? endif; ?>
                                         </td>
                                     </tr>
@@ -132,7 +135,7 @@
                     <!--end table-->
                 </div>
                 <!-- Pagination -->
-                {!! $do_list->withQueryString()->links('pagination::bootstrap-5') !!}
+                {!! $wd_list->withQueryString()->links('pagination::bootstrap-5') !!}
             </div>
             <!--end card-body-->
         </div>
@@ -178,7 +181,7 @@
  <!-- autocomplete js -->
  <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
 
-<script src="{{ URL::asset('/assets/js/do/do.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/withdraw/withdraw.js') }}"></script>
 
 
 

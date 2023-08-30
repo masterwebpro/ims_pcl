@@ -1,12 +1,13 @@
 $(document).on('click', '.submit-supplier', function (e) {
     e.preventDefault();
     var id = $('#id').val();
-
+    var client = $('#client').val();
     var address = document.getElementById("address").value;
 
     var form_data = new FormData(document.getElementById("form-supplier"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("supplier_address", address);
+    form_data.append("client", JSON.stringify(client));
 
     $.ajax({
         url: BASEURL + 'maintenance/supplier',
