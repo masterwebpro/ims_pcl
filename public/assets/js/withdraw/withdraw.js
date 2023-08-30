@@ -204,7 +204,7 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("status", 'open');
 
     var serial_list = [];
-    if(localStorage.length){
+    if(localStorage.length > 0){
         for (var i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             var serial = localStorage.getItem(key);
@@ -225,7 +225,7 @@ $(document).on('click', '.submit-posted', function (e) {
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'posted');
     var serial_list = [];
-    if(localStorage.length){
+    if(localStorage.length > 0){
         for (var i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             var serial = localStorage.getItem(key);
