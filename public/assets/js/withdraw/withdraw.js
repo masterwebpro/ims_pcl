@@ -204,11 +204,15 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("status", 'open');
 
     var serial_list = [];
-    for (var i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        var serial = localStorage.getItem(key);
-        serial_list.push(JSON.parse(serial));
-    }
+    if(localStorage.length){
+        for (var i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            var serial = localStorage.getItem(key);
+            if(serial != undefined || serial != null || serial != ''){
+                serial_list.push(JSON.parse(serial));
+            }
+        }
+   }
 
     form_data.append("serial_list", JSON.stringify(serial_list));
     _submitData(form_data);
@@ -221,12 +225,15 @@ $(document).on('click', '.submit-posted', function (e) {
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'posted');
     var serial_list = [];
-    for (var i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        var serial = localStorage.getItem(key);
-        serial_list.push(JSON.parse(serial));
+    if(localStorage.length){
+        for (var i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            var serial = localStorage.getItem(key);
+            if(serial != undefined || serial != null || serial != ''){
+                serial_list.push(JSON.parse(serial));
+            }
+        }
     }
-    console.log(JSON.stringify(serial_list));
     form_data.append("serial_list", JSON.stringify(serial_list));
     Swal.fire({
         title: 'Are you sure?',
@@ -333,10 +340,10 @@ $(document).on('click', '.add-serial', function (e) {
 
     var productid = $(this).data('productid');
     var masterfileid = $(this).data('masterfileid');
-    var rowid = $(this).data('rowid');  
-    var itemize = $(this).data('itemize');  
+    var rowid = $(this).data('rowid');
+    var itemize = $(this).data('itemize');
     var item = itemize;
-   
+
 
     var productname = $(this).data('productname');
     var productcode = $(this).data('productcode');
@@ -383,7 +390,7 @@ $(document).on('change','#serial_no',function(e){
             const existingSerials = $("#serial-list td:nth-child(1)").map(function() {
                 return $(this).find("input[name=serial_no]").val().trim();
             }).get();
-    
+
             if (existingSerials.includes(serial_no)) {
                 toastr.error('Serial No. already exists');
                 return;
