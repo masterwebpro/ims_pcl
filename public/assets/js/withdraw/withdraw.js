@@ -210,13 +210,8 @@ $(document).on('click', '.submit-open', function (e) {
             const key = localStorage.key(i);
             var serial = localStorage.getItem(key);
             console.log(serial,key);
-            if(typeof serial === "string" && serial.trim() !== ""){
-                if(typeof serial === 'object'){
-                    serial_list.push(serial);
-                }
-                else{
-                    serial_list.push(JSON.parse(serial));
-                }
+            if(serial !== undefined){
+                serial_list.push(JSON.parse(serial));
             }
         }
    }
@@ -236,15 +231,8 @@ $(document).on('click', '.submit-posted', function (e) {
         for (var i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             var serial = localStorage.getItem(key);
-            if(serial !== null){
-                if(typeof serial === "string" && serial.trim() !== ""){
-                    if(typeof serial === 'object'){
-                        serial_list.push(serial);
-                    }
-                    else{
-                        serial_list.push(JSON.parse(serial));
-                    }
-                }
+            if(serial !== undefined){
+                serial_list.push(JSON.parse(serial));
             }
         }
     }
