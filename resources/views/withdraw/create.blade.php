@@ -464,7 +464,6 @@
                             <label>Quantity</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="product_qty" disabled>
-                                <input type="text" class="form-control" id="inv_uom" disabled value="PC">
                             </div>
                         </div>
                     </div>

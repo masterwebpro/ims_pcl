@@ -33,9 +33,9 @@
                             <a href="{{ URL::to('withdraw/'._encode($wd->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                     Edit</a>
-                            @else
+                            {{-- @else
                             <button type="button" class="generate-withdrawal-slip  btn btn-danger btn-label rounded-pill"><i
-                                class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Withdrawal Slip</button>
+                                class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Withdrawal Slip</button> --}}
                             @endif
                             <a href="{{ URL::to('withdraw') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
