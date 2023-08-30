@@ -204,16 +204,23 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("status", 'open');
 
     var serial_list = [];
+    console.log(localStorage);
     if(localStorage.length > 0){
         for (var i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             var serial = localStorage.getItem(key);
+            console.log(serial,key);
             if(typeof serial === "string" && serial.trim() !== ""){
-                serial_list.push(JSON.parse(serial));
+                if(typeof serial === 'object'){
+                    serial_list.push(serial);
+                }
+                else{
+                    serial_list.push(JSON.parse(serial));
+                }
             }
         }
    }
-
+   console.log(localStorage)
     form_data.append("serial_list", JSON.stringify(serial_list));
     _submitData(form_data);
 });
@@ -231,7 +238,12 @@ $(document).on('click', '.submit-posted', function (e) {
             var serial = localStorage.getItem(key);
             if(serial !== null){
                 if(typeof serial === "string" && serial.trim() !== ""){
-                    serial_list.push(JSON.parse(serial));
+                    if(typeof serial === 'object'){
+                        serial_list.push(serial);
+                    }
+                    else{
+                        serial_list.push(JSON.parse(serial));
+                    }
                 }
             }
         }
