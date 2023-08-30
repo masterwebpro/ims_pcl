@@ -208,7 +208,7 @@ $(document).on('click', '.submit-open', function (e) {
         for (var i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             var serial = localStorage.getItem(key);
-            if(serial != undefined || serial != null || serial != ''){
+            if(typeof serial === "string" && serial.trim() !== ""){
                 serial_list.push(JSON.parse(serial));
             }
         }
@@ -229,8 +229,10 @@ $(document).on('click', '.submit-posted', function (e) {
         for (var i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             var serial = localStorage.getItem(key);
-            if(serial != undefined || serial != null || serial != ''){
-                serial_list.push(JSON.parse(serial));
+            if(serial !== null){
+                if(typeof serial === "string" && serial.trim() !== ""){
+                    serial_list.push(JSON.parse(serial));
+                }
             }
         }
     }
