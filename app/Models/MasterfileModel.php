@@ -18,6 +18,7 @@ class MasterfileModel extends Model
         'storage_location_id',
         'status',
         'item_type',
+        'trans_type',
         'inv_qty',
         'inv_uom',
         'whse_qty',
