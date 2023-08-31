@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
     Route::resource('/withdraw', App\Http\Controllers\WithdrawalController::class);
     Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
+    Route::get('/withdrawalSlip/{id}', [App\Http\Controllers\WithdrawalController::class, 'withdrawalslip']);
 
 
     Route::resource('/setting/suppliers', App\Http\Controllers\SuppliersController::class);
@@ -70,7 +71,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/product', [App\Http\Controllers\SettingsController::class, 'getProduct']);
     Route::get('/allProducts', [App\Http\Controllers\SettingsController::class, 'getAllProduct']);
-    
+
 });
 
 Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
@@ -89,8 +90,8 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
     Route::get('/inventory',[App\Http\Controllers\ReportController::class,'inventory'])->name('report.inventory');
     Route::get('/getInventoryReport',[App\Http\Controllers\ReportController::class,'getInventoryReport'])->name('report.getInventoryReport');
-    
-    
+
+
 });
 
 

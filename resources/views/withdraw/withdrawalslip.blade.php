@@ -32,8 +32,6 @@
         }
         footer {
             color: black;
-            text-align: center;
-            padding: 10px;
             position: absolute;
             bottom: 0;
             width: 100%;
@@ -72,7 +70,7 @@
                 <td scope="col">:</td>
                 <td scope="col" class="text-capitalize">{{ $wd->wd_type }}</td>
                 <td scope="col"></td>
-                <td scope="col" class="text-end">Order Number</td>
+                <td scope="col" class="text-end border border-bottom-solid">Order Number</td>
                 <td scope="col">:</td>
                 <td scope="col" class="text-end">{{ $wd->order_no }}</td>
             </tr>
@@ -95,8 +93,8 @@
                 <th scope="col">Item Description</th>
                 <th scope="col" class="text-center">Quantity</th>
                 <th scope="col">Unit</th>
-                <th scope="col">Serial</th>
-                <th scope="col">Warranty</th>
+                <th scope="col" class="text-center">Serial No</th>
+                <th scope="col" class="text-center">Warranty No</th>
             </tr>
         </thead>
         <tbody>
@@ -107,26 +105,35 @@
             @if(isset($wd->items))
                 @foreach($wd->items as $item)
                 <tr id="product_{{$item->product_id}}">
-                    <td class="text-start">
+                    <td class="align-top">
                     {{$x++}} </td>
-                    <td class="text-start fs-14">
+                    <td class="align-top fs-14">
                         {{$item->product->product_code}}
                     </td>
-                    <td class="text-start fs-14">
+                    <td class="align-top fs-14">
                         {{$item->product->product_name}}
                     </td>
-                    <td class="ps-1 text-end">
+                    <td class="align-top ps-1 text-end">
                         {{ number_format($item->inv_qty,2) }}
                     </td>
-                    <td class=" ps-1">
+                    <td class="align-top ps-1">
                         {{ $item->master->uom->code }}
                     </td>
+                    @if ($item->product->is_serialize == 1)
                     <td class=" ps-1">
-                        {{ $item->master->warehouse->warehouse_name }}
+                        @foreach ($item->itemize as $sr)
+                        {{ $sr->serial_no }} <br/>
+                        @endforeach
                     </td>
                     <td class=" ps-1">
-                        {{ $item->master->location->location }}
+                        @foreach ($item->itemize as $wr)
+                        {{ $wr->warranty_no }} <br/>
+                        @endforeach
                     </td>
+                    @else
+                        <td></td>
+                        <td></td>
+                    @endif
                 </tr>
                 @endforeach
                 <tr id="product_{{$item->product_id}}">
@@ -152,24 +159,66 @@
             @endif
         </tbody>
     </table>
-    <br/>
-    <br/>
-    <div class="row">
-        <div class="col-4">
-            <label for="">Remarks:</label>
-            <br/>
-            <div class="horizontal-line mb-3"></div>
-            <div class="horizontal-line"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <label for="" class="mb-4">Picked by:</label>
-            <div class="signature-line mb-1"></div>
-            <label for="">Printed Name and Signature</label>
-        </div>
-    </div>
     <footer>
+        <div class="row">
+            <div class="col-4">
+                <h5>Remarks</h5>
+                <div class="horizontal-line mb-3"></div>
+                <div class="horizontal-line"></div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <table>
+                <tr>
+                    <th>Encoded By</th>
+                    <th>Pick and Pack By</th>
+                    <th>Issued By</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr class="mb-5">
+                    <th class="align-top text-center">
+                        {{ $created_by }}
+                        <hr style="width: 90%; border: 1px solid #000;"/>
+                        CUSTOMER RELATION ASSISTANT</th>
+                    <th class="align-top text-center">
+                        <br/>
+                        <hr style="width: 90%; border: 1px solid #000;"/>
+                        WAREHOUSE ASSISTANT <p>Print Name / Date / Time
+                    </p>
+                    </th>
+                    <th class="align-top text-center">
+                        <br/>
+                        <hr style="width: 90%; border: 1px solid #000;"/>
+                        WAREHOUSE ASSISTANT <p>Print Name / Date / Time</p></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="border border-top">
+                        <br/>
+                        RECEIVED THE ABOVE IN GOOD CONDITION AND COMPLETE.
+                        <br/>
+                        <br/>
+                    </th>
+                </tr>
+                <tr>
+                    <th style="border-bottom: 1px solid #000;"><br/></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th class="text-center" style="border-top: 1px solid #000;">
+                        <br/>
+                        RECIPIENT
+                        <p>Print Name / Date / Time</p>
+                    </th>
+                </tr>
+            </table>
+        </div>
+        <br/>
         <div style="text-align: center;">
             <em>Page <span class="page-number"></span> of <span class="page-number"></span></em>
         </div>

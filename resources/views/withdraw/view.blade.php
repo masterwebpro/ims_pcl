@@ -33,9 +33,9 @@
                             <a href="{{ URL::to('withdraw/'._encode($wd->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                     Edit</a>
-                            {{-- @else
+                            @else
                             <button type="button" class="generate-withdrawal-slip  btn btn-danger btn-label rounded-pill"><i
-                                class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Withdrawal Slip</button> --}}
+                                class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Withdrawal Slip</button>
                             @endif
                             <a href="{{ URL::to('withdraw') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -79,6 +79,7 @@
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
                                                 class="text-danger">*</span></h6>
                                         <input type="hidden" name="wd_no" id="wd_no" value="{{ $wd->wd_no }}" />
+                                        <input type="hidden" name="wd_id" id="wd_id" value="{{ _encode($wd->id) }}" />
                                         <p class="fw-medium mb-2" id="shipping-name">
                                             <select class="form-select select2" required="required" id="deliver_to" disabled
                                                 name="deliver_to">

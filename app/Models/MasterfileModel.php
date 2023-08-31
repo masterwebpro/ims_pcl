@@ -11,26 +11,7 @@ class MasterfileModel extends Model
 
     protected $table = 'masterfiles';
     protected $primaryKey = 'masterfile_id';
-
-    protected $fillable = [
-        'ref_no',
-        'product_id',
-        'storage_location_id',
-        'status',
-        'item_type',
-        'trans_type',
-        'inv_qty',
-        'inv_uom',
-        'whse_qty',
-        'whse_uom',
-        'warehouse_id',
-        'client_id',
-        'store_id',
-        'rack',
-        'level',
-        'updated_at',
-        'created_at'
-    ];
+    protected $guarded = ['masterfile_id','updated_at','created_at'];
 
     public function product()
     {

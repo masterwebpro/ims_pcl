@@ -271,6 +271,16 @@ $(document).on('click', '.generate-picklist', function (e) {
     }, 300);
 });
 
+$(document).on('click', '.generate-withdrawal-slip', function (e) {
+    e.preventDefault();
+    $('#preloading').modal('show');
+    var id = $('#wd_id').val();
+    setTimeout(function () {
+        window.location = BASEURL+'withdrawalSlip/'+ id;
+        $('#preloading').modal('hide');
+    }, 300);
+});
+
 $(document).on('click', '.submit-withdrawal', function (e) {
     e.preventDefault();
 
