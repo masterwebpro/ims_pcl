@@ -466,4 +466,23 @@ class WithdrawalController extends Controller
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download($wd->order_no.'.pdf');
     }
+
+    public function withdrawalslip($id)
+    {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $wd = WdHdr::select('wd_hdr.*', 'cl.client_name', 'del.client_name as deliver_to', 'u.name')
+                ->selectRaw('CONCAT(del.address_1, " ", del.city, " " , del.province, " ", del.country, " ", del.zipcode) as address')
+                ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.client_id')
+                ->leftJoin('client_list as del', 'del.id', '=', 'wd_hdr.deliver_to_id')
+                ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
+                ->where('wd_hdr.id', _decode($id))->first();
+        $pdf = PDF::loadView('withdraw.withdrawalslip', [
+            'wd' => $wd,
+            'created_by' => Auth::user()->name
+        ]);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream($wd->wd_no.'.pdf');
+    }
 }
