@@ -40,4 +40,9 @@ class WdHdr extends Model
     {
         return $this->hasOne(Store::class, 'id', 'store_id');
     }
+
+    public function deliver_to()
+    {
+        return $this->hasOne(Client::class, 'id', 'deliver_to_id');
+    }
 }
