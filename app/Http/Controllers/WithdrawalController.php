@@ -288,6 +288,7 @@ class WithdrawalController extends Controller
                             'ref_no'=> $twd_no,
                             'status' => 'X',
                             'trans_type' => 'WD',
+                            'date_received' => $masterData->date_received,
                             'item_type' => $masterData->item_type,
                             'product_id'=>$request->product_id[$x],
                             'storage_location_id'=> $masterData->storage_location_id,
@@ -304,6 +305,7 @@ class WithdrawalController extends Controller
                             'status' => 'R',
                             'trans_type' => 'WD',
                             'item_type' => $masterData->item_type,
+                            'date_received' => $masterData->date_received,
                             'product_id'=>$request->product_id[$x],
                             'storage_location_id'=>$masterData->storage_location_id,
                             'inv_qty'=> $inv_qty,
@@ -344,7 +346,7 @@ class WithdrawalController extends Controller
             return response()->json([
                 'success'  => false,
                 'message' => 'Unable to process request. Please try again.',
-                'data'    => throw new Exception($e)//$e->getMessage()
+                'data'    => $e->getMessage()
             ]);
         }
     }

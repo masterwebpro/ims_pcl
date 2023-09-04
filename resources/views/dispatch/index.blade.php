@@ -82,6 +82,7 @@
                                 <th class="sort" data-sort="dispatch_no">Dispatch #</th>
                                 <th class="sort" data-sort="dispatch_date">Dispatch Date</th>
                                 <th class="sort" data-sort="wd_count">No. of Withdrawal</th>
+                                <th class="sort" data-sort="wd_count">No. of Truck</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
@@ -92,9 +93,10 @@
                                 <? foreach($dispatch_list as $dispatch) :?>
                                     <tr>
                                         <td class="dispatch_no">{{ $dispatch->dispatch_no}}</td>
-                                        <td class="dipatch_date">{{ date('M d, Y',strtotime($dispatch->dipatch_date)) }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y',strtotime($dispatch->dispatch_date)) }}</td>
+                                        <td class="">{{ $dispatch->items_count }}</td>
+                                        <td class="">{{ $dispatch->truck_count }}</td>
                                         <td class="status"><span class="badge {{ $dispatch->status }} text-uppercase fs-11">{{ $dispatch->status }}</span></td>
-                                        <td class="">-</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('dispatch') }}/<?=_encode($dispatch->id)?>" data-id="{{$dispatch->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>

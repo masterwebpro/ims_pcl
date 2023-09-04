@@ -257,6 +257,7 @@ class SettingsController extends Controller
                     )
                     ->leftJoin('client_list as cl','cl.id','wd_hdr.client_id')
                     ->leftJoin('client_list as del','del.id','wd_hdr.deliver_to_id')
+                    ->whereNull('dispatch_no')
                     ->orderBy('wd_hdr.order_date','ASC');
                     if(isset($request->keyword)){
                         $search = "%".$request->keyword."%";
@@ -272,7 +273,13 @@ class SettingsController extends Controller
                         $result->where('wd_hdr.status', $request->status);
                     if(isset($request->wd_no))
                         $result->whereNotIN('wd_hdr.wd_no', json_decode($request->wd_no));
+                    
         $data = $result->get();
+        return response()->json($data);
+    }
+
+    function getTruckType(Request $request) {
+        $data = \App\Models\TruckType::select('vehicle_code','vehicle_desc')->get();
         return response()->json($data);
     }
 }

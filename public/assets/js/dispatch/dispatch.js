@@ -19,9 +19,10 @@ $(document).on('click', '.create-dispatch', function (e) {
 });
 
 function addRow(val = "") {
+    populateTruckType();
     var newRow = `<tr>
         <td>
-            <select class="form-select select2" required="required" id="truck_type" name="truck_type[]">
+            <select class="form-select select2 truck_type" required="required" id="truck_type" name="truck_type[]">
                 <option value="">Select Truck Type</option>
             </select>
             <span class="text-danger error-msg truck_type_error"></span>
@@ -132,9 +133,7 @@ $(document).on('click', '#add-withdrawal', function() {
     var data = ( table.rows('.selected').data());
 
     if(data.length > 0) {
-        var total = 0;
         for(x=0; x<data.length; x++) {
-            total += +data[x].no_of_package;
             var rowCount = $('#withdrawal-list tr').length;
             var idx = rowCount - 3;
             var btn = '<div class="text-center text-align-justify">';
@@ -144,6 +143,7 @@ $(document).on('click', '#add-withdrawal', function() {
             $('#withdrawal-list tbody').append('<tr id="rows_'+(rowCount-1)+'"> \
             <td class="text-start"> \
                 <input type="hidden" name="wd_no[]" value="'+data[x].wd_no+'" /> \
+                <input type="hidden" name="wd_qty[]" value="'+data[x].no_of_package+'" /> \
             '+(rowCount-1)+' </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].wd_no+'\
@@ -176,10 +176,91 @@ $(document).on('click', '#add-withdrawal', function() {
             </tr>');
             toastr.success(data[x].wd_no + ' successfully added');
         }
-
-        $("#total").text(total.toFixed(2));
+        totalPackage();
     }
 
     $('#show-withdrawal-list tbody tr').removeClass('selected')
     $('#show-withdrawal').modal('hide');
 });
+
+function totalPackage(){
+    var total = 0;
+    $("#withdrawal-list tbody tr").each(function () {
+        total += parseFloat($(this).find("input[name='wd_qty[]']").val());
+    });
+    $("#total").text(total.toFixed(2));
+}
+
+$(document).on('click', '.submit-open', function (e) {
+    e.preventDefault();
+
+    var form_data = new FormData(document.getElementById("submit-dispatch"));
+    form_data.append("_token", $('input[name=_token]').val());
+    form_data.append("status", 'open');
+     _submitData(form_data);
+});
+
+$(document).on('click', '.submit-posted', function (e) {
+    e.preventDefault();
+
+    var form_data = new FormData(document.getElementById("submit-dispatch"));
+    form_data.append("_token", $('input[name=_token]').val());
+    form_data.append("status", 'posted');
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to POST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Post it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            _submitData(form_data);
+        }
+    });
+});
+
+function _submitData(form_data) {
+    $.ajax({
+        url: BASEURL + 'dispatch',
+        method: "POST",
+        data: form_data,
+        processData: false,
+        dataType: 'json',
+        contentType: false,
+        beforeSend: function () {
+            $('#preloading').modal('show');
+            $('#submit-withdrawal').find('span.error-msg').text('');
+        },
+        success: function (data) {
+            if($.isEmptyObject(data.errors)) {
+                if(data.success == true) {
+                    if(data.data.status == 'open') {
+                        showSuccess(data.message);
+                        setTimeout(function () {
+							window.location = BASEURL+'dispatch/'+data.id+'/edit';
+						}, 300);
+                    } else {
+                        localStorage.clear();
+                        toastr.success(data.message);
+                        setTimeout(function () {
+							window.location = BASEURL+'dispatch';
+						}, 300);
+                    }
+                } else {
+                    toastr.error(data.message,'Error on saving');
+                }
+            } else {
+                $.each(data.errors, function(prefix, val) {
+                    $('#errMsg').removeClass('d-none');
+                    $('#submit-dispatch').find('span.'+prefix.replace('.','')+'_error').text(val);
+                });
+                toastr.error('Some fields are required');
+            }
+        },
+        complete: function() {
+           $('#preloading').modal('hide');
+		}
+    });
+}

@@ -10,5 +10,6 @@ class DispatchDtl extends Model
     use HasFactory;
 
     protected $table = "dispatch_dtl";
-    protected $primaryKey = ['id','created_at','updated_at'];
+    protected $primaryKey = 'id';
+    protected $guarded = ['id','created_at','updated_at'];
 }

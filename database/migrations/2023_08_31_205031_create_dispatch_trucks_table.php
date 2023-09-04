@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('dispatch_no',15)->index();
             $table->string('truck_type')->index();
+            $table->decimal('no_of_package',12,2)->default(0);
             $table->string('plate_no')->nullable();
             $table->string('driver')->nullable();
             $table->string('contact')->nullable();

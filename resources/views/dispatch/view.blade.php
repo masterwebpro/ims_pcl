@@ -24,13 +24,16 @@
             <div class="card" id="tasksList">
                 <div class="card-header border-0">
                     <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">Create Dispatch</h5>
-                        <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                            <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i
-                                    class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                                Save</button>
-                            <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill d-none"><i
-                                    class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                        <h5 class="card-title mb-0 flex-grow-1"><?=$dispatch->dispatch_no?></h5>
+                        <div class="col-md-2 text-center">
+                            <span class="badge  fs-16 <?=$dispatch->status?> text-uppercase"><?=$dispatch->status?></span>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            @if ($dispatch->status == 'open')
+                            <a href="{{ URL::to('dispatch/'._encode($dispatch->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
+                                        class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
+                                    Edit</a>
+                            @endif
                             <a href="{{ URL::to('dispatch') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                 Back</a>
@@ -49,16 +52,6 @@
                 <div class="card" id="demo">
                     <div class="row ">
                         <div class=" col-lg-12">
-                            <div class="card-header card-title mb-0 flex-grow-1">
-                                <div class="d-flex align-items-center">
-                                    <h5 class="card-title mb-0 flex-grow-1">Withdrawal</h5>
-                                    <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                                        <button type="button" id="find-withdrawal" class="btn btn-warning btn-label rounded-pill"><i
-                                                class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                                            Find Withdrawal</button>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="card-body p-4">
                                 <div class="table-responsive">
                                     <table class="table table-nowrap" id="withdrawal-list">
@@ -74,15 +67,63 @@
                                                 <th scope="col">DR Number</th>
                                                 <th scope="col">PO Number</th>
                                                 <th scope="col">Sales Invoice</th>
-                                                <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
+                                            <?
+                                            $rowCount = count($dispatch->items);
+                                            $x=1;
+                                            $total = 0;
+                                             ?>
+                                            @if(isset($dispatch->items))
+                                                @foreach($dispatch->items as $item)
+                                                @php
+                                                    $total += $item->qty;
+                                                @endphp
+                                                <tr id="product_{{$item->product_id}}">
+                                                    <td class="text-start">
+                                                        <input type="hidden" name="wd_no[]" readonly id="wd_no{{$item->wd_no}}" value="{{$item->wd_no}}" />
+                                                        <input type="hidden" name="wd_qty[]" readonly id="wd_no{{$item->qty}}" value="{{$item->qty}}" />
+                                                    {{$x++}} </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->wd_no}}
+                                                    </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->client_name}}
+                                                    </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->deliver_to}}
+                                                    </td>
+                                                    <td class="ps-1 text-center">
+                                                        {{ number_format($item->qty,2) }}
+                                                    </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->order_no}}
+                                                    </td>
+                                                    <td class="text-start fs-14">
+                                                        {{ date('M d, Y', strtotime($item->order_date)) }}
+                                                    </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->dr_no}}
+                                                    </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->po_num}}
+                                                    </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->sales_invoice}}
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                                @else
+                                                <tr class="">
+                                                    <td colspan="9" class="text-danger text-center">No Record Found!</td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <td colspan="4" class="text-end">Total</td>
-                                                <td class="text-center" id="total">0.00</td>
+                                                <td class="text-center" id="total"><?=number_format($total,2)?></td>
                                                 <td colspan="6"></td>
                                             </tr>
                                         </tfoot>
@@ -103,16 +144,6 @@
                 <div class="card" id="demo">
                     <div class="row ">
                         <div class=" col-lg-12">
-                            <div class="card-header card-title mb-0 flex-grow-1">
-                                <div class="d-flex align-items-center">
-                                    <h5 class="card-title mb-0 flex-grow-1">Vehicle</h5>
-                                    <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                                        <button type="button" id="add-row" class="btn btn-info btn-label rounded-pill"><i
-                                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                                            Add Truck</button>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="card-body p-4">
                                 <div class="table-responsive">
                                     <table class="table table-nowrap" id="truck-list">
@@ -123,46 +154,48 @@
                                                 <th scope="col">Plate No.</th>
                                                 <th scope="col">Driver</th>
                                                 <th scope="col">Contact</th>
-                                                <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
-                                            <tr>
-                                                <td>
-                                                    <select class="form-select select2 truck_type" required="required" id="truck_type" name="truck_type[]">
-                                                        <option value="">Select Truck Type</option>
-                                                        <? foreach($truck_type_list as $truck) : ?>
-                                                            <option value="<?=$truck->vehicle_code?>" ><?="(".$truck->vehicle_code.") ".$truck->vehicle_desc?></option>
-                                                        <? endforeach;?>
-                                                    </select>
-                                                    <span class="text-danger error-msg truck_type0_error"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control numeric" id="no_of_package"
-                                                        name="no_of_package[]" placeholder="Enter Quantity">
-                                                    <span class="text-danger error-msg no_of_package0_error"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="plate_no"
-                                                        name="plate_no[]" placeholder="Enter Plate No.">
-                                                    <span class="text-danger error-msg plate_no0_error"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="driver"
-                                                        name="driver[]" placeholder="Enter Driver">
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="contact"
-                                                        name="contact[]" placeholder="Enter Contact">
-                                                </td>
-                                                <td>
-                                                    <div class="text-center">
-                                                        <button type="button" class="remove-row btn btn-icon btn-danger remove-truck mx-2 waves-effect waves-light">
-                                                            <i class="ri-delete-bin-5-fill"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            <?
+                                            $rowCount = count($dispatch->truck);
+                                            $x=1;
+                                            $total = 0;
+                                             ?>
+                                            @if(isset($dispatch->truck))
+                                                @foreach($dispatch->truck as $truck)
+                                                <tr>
+                                                    <td>
+                                                        <select class="form-select select2 truck_type" required="required" id="truck_type" name="truck_type[]" disabled>
+                                                            <option value="">Select Truck Type</option>
+                                                            <? foreach($truck_type_list as $tr) : ?>
+                                                                <option value="<?=$tr->vehicle_code?>" <?=($tr->vehicle_code == $truck->truck_type) ? 'selected' : ''?>><?="(".$tr->vehicle_code.") ".$tr->vehicle_desc?></option>
+                                                            <? endforeach;?>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control numeric" id="no_of_package" disabled
+                                                            name="no_of_package[]" placeholder="Enter Quantity" value="{{ $truck->no_of_package }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" id="plate_no" disabled
+                                                            name="plate_no[]" placeholder="Enter Plate No." value="{{ $truck->plate_no }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" id="driver" disabled
+                                                            name="driver[]" placeholder="Enter Driver" value="{{ $truck->driver }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" id="contact" disabled
+                                                            name="contact[]" placeholder="Enter Contact" value="{{ $truck->contact }}">
+                                                    </td>
+                                                </tr>
+                                                @endforeach 
+                                            @else
+                                                <tr class="">
+                                                    <td colspan="5" class="text-danger text-center">No Record Found!</td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                     <!--end table-->

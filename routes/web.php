@@ -68,6 +68,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/available_item', [App\Http\Controllers\SettingsController::class, 'getAvailableItem']);
     Route::get('/withdrawal_list', [App\Http\Controllers\SettingsController::class, 'getWithdrawalList']);
+    Route::get('/getTruckType', [App\Http\Controllers\SettingsController::class, 'getTruckType']);
 
 
 
