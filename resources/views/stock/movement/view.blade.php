@@ -196,7 +196,7 @@
                                                         </td>
                                                         <td class="text-center ps-1 fs-13">
                                                             <input type="hidden" readonly class="form-control" name="old_location[]" data-id="<?=($x)?>" id="old_location_<?=($x)?>" value="{{$dtl->old_storage_location_id}}">
-                                                            {{$dtl->old_location->location}}
+                                                            {{isset($dtl->old_location->location) ? $dtl->old_location->location : 'RA'}}
                                                         </td>
                                                         <td>
                                                             <div class="input-group">
