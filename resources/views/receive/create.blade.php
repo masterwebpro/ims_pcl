@@ -144,9 +144,9 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received <span class="text-danger">*</span></label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received<span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" id="date_received" name="date_received" value="" placeholder="Date Received">
+                                        <input type="date" class="form-control" id="date_received" name="date_received" value="<?=date("Y-m-d")?>" placeholder="Date Received">
                                         <span class="text-danger error-msg date_received_error"></span>
                                     </div>
                                 </div>
@@ -169,7 +169,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="" placeholder="Inspect Date">
+                                        <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="<?=date("Y-m-d")?>" placeholder="Inspect Date">
                                         <span class="text-danger error-msg inspect_date_error"></span>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@
                                 <div class="row">
                                     <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" name="date_arrived" id="date_arrived" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_arrived" id="date_arrived" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
                                     </div>
                                 </div>
@@ -206,7 +206,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" name="date_departed" id="date_departed" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_departed" id="date_departed" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
                                     </div>
                                 </div>
@@ -304,6 +304,9 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
+                                                <th scope="col" >Lot/Batch</th>
+                                                <th scope="col" >Expiry Date</th>
+                                                <th scope="col" >Remarks</th>
                                                 <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>

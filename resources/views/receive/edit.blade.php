@@ -301,7 +301,7 @@
                                 </div> 
                                 
                                 <div class="table-responsive">
-                                    <table class="table" id="product-list">
+                                    <table class="table table-nowrap" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th style="width: 10px;">#</th>
@@ -311,6 +311,9 @@
                                                 <th tyle="width: 50px;">WHSE UOM</th>
                                                 <th >Inv Qty</th>
                                                 <th style="width: 50px;">Inv UOM</th>
+                                                <th scope="col" >Lot/Batch</th>
+                                                <th scope="col" >Expiry Date</th>
+                                                <th scope="col" >Remarks</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -336,7 +339,7 @@
                                                         </select>
                                                     </td>
                                                     <td class=" ps-1">
-                                                        <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                        <input type="text" style="width: 70px;"  class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
                                                     </td>
                                                     <td class=" ps-1">
                                                        <select name="whse_uom[]" id="whse_uom_{{$x}}" class="uom uom_select form-select">
@@ -347,7 +350,7 @@
                                                         </select>
                                                     </td>
                                                     <td class="ps-1">
-                                                        <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                        <input type="text" style="width: 70px;"  class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                     </td>
                                                     <td class=" ps-1">
                                                         <select name="inv_uom[]" id="inv_uom_{{$x}}" class="uom uom_select form-select">
@@ -356,6 +359,15 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="date" class="form-control " name="expiry_date[]"  value="{{$item->expiry_date}}" placeholder="Expiry Date" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  value="{{$item->remarks}}" placeholder="Remarks" />
                                                     </td>
                                                     <td>
                                                         <div class="text-center">

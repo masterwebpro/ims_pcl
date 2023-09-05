@@ -163,6 +163,7 @@ class ReceiveController extends Controller
 
                 SeriesModel::insert($series);
             }
+
            
             $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
@@ -189,6 +190,7 @@ class ReceiveController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
+
             //save on dtl
             $dtl = array();
             $masterfile = [];
@@ -201,6 +203,9 @@ class ReceiveController extends Controller
                     'inv_uom'=>$request->inv_uom[$x],
                     'whse_qty'=>$request->whse_qty[$x],
                     'whse_uom'=>$request->whse_uom[$x],
+                    'lot_no'=>$request->lot_no[$x],
+                    'expiry_date'=>$request->expiry_date[$x],
+                    'remarks'=>$request->item_remarks[$x],
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
@@ -333,6 +338,8 @@ class ReceiveController extends Controller
 
     public function receivePo($po_id)
     {
+        $po_id = _decode($po_id);
+
         $po = PoHdr::where('id', $po_id)->first();
 
         if($po) {

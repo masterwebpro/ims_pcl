@@ -150,7 +150,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received</label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" id="date_received" name="date_received" value="" placeholder="Date Received">
+                                        <input type="date" class="form-control" id="date_received" name="date_received" value="<?=date("Y-m-d")?>" placeholder="Date Received">
                                         <span class="text-danger error-msg date_received_error"></span>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date</label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="" placeholder="Inspect Date">
+                                        <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="<?=date("Y-m-d")?>" placeholder="Inspect Date">
                                         <span class="text-danger error-msg inspect_date_error"></span>
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@
                                 <div class="row">
                                     <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived</label> 
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" name="date_arrived" id="date_arrived" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_arrived" id="date_arrived" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label> 
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" name="date_departed" id="date_departed" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_departed" id="date_departed" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
                                     </div>
                                 </div>
@@ -308,6 +308,9 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
+                                                <th scope="col" >Lot/Batch</th>
+                                                <th scope="col" >Expiry Date</th>
+                                                <th scope="col" >Remarks</th>
                                                 <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -322,7 +325,7 @@
                                                     <td class="text-start">
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                     {{$x++}} </td>
-                                                    <td class="text-start fs-13"> 
+                                                    <td class="text-start fs-13" > 
                                                         {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                     </td>
                                                     <td class="text-start"> 
@@ -333,7 +336,7 @@
                                                         </select>
                                                     </td>
                                                     <td class=" ps-1">
-                                                        <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->requested_qty}}" placeholder="Whse Qty" />
+                                                        <input type="text" style="width: 70px;" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->requested_qty}}" placeholder="Whse Qty" />
                                                     </td>
                                                     <td class=" ps-1">
                                                        <select name="whse_uom[]" id="whse_uom_{{$x}}" class="uom uom_select form-select">
@@ -344,7 +347,7 @@
                                                         </select>
                                                     </td>
                                                     <td class="ps-1">
-                                                        <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->requested_qty}}" placeholder="Inv Qty" />
+                                                        <input type="text" style="width: 70px;" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->requested_qty}}" placeholder="Inv Qty" />
                                                     </td>
                                                     <td class=" ps-1">
                                                         <select name="inv_uom[]" id="inv_uom_{{$x}}" class="uom uom_select form-select">
@@ -353,6 +356,15 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->uom_id) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="date" class="form-control " name="expiry_date[]"  value="{{$item->expiry_date}}" placeholder="Expiry Date" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  value="{{$item->remarks}}" placeholder="Remarks" />
                                                     </td>
                                                     <td>
                                                         <div class="text-center">

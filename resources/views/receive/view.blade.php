@@ -314,6 +314,9 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
+                                                <th scope="col" >Lot/Batch</th>
+                                                <th scope="col" >Expiry Date</th>
+                                                <th scope="col" >Remarks</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -358,6 +361,15 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" disabled style="width: 150px;" name="lot_no[]" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="date" class="form-control " disabled name="expiry_date[]"  value="{{$item->expiry_date}}" placeholder="Expiry Date" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" disabled style="width: 150px;" name="item_remarks[]"  value="{{$item->remarks}}" placeholder="Remarks" />
                                                     </td>
                                                 </tr>
                                                 @endforeach

@@ -3,6 +3,12 @@
 @section('css')
 
 <link rel="stylesheet" href="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.css') }} ">
+<!--datatable css-->
+<link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<!--datatable responsive css-->
+<link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+
 
 @endsection
 @section('content')
@@ -138,26 +144,39 @@
 <!--end row-->
 
 <div class="modal fade" id="show-po" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabel">Search PO Number</h5>
+                <h5 class="modal-title" id="exampleModalLabel">List of PO Number</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
            
             <div class="modal-body">
-                <div class="row g-3">
+                <!-- <div class="row g-3">
                     <div class="col-md-12 form-group">
                         <input type="text" class="form-control" dir="ltr" spellcheck=false autocomplete="off" autocapitalize="off" name="po_num_holder" id="po_num_holder" value="" placeholder="Enter PO Number">
 
                         <input type="hidden" class="form-control" name="po_id" id="po_id" />
                         
                     </div>
-                </div>
+                </div> -->
+                <table class="table align-middle table-nowrap" id="po-table" width="100%">
+                    <thead class="table-light text-muted">
+                        <tr>
+                            <th class="sort" data-sort="po_date">PO Date</th>    
+                            <th class="sort" data-sort="po_num">PO Number</th>
+                            <th class="sort" data-sort="supplier_name">Supplier Name</th>
+                            <th class="sort" data-sort="created_by">Created By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="list form-check-all">
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
-                    <button type="button" class="btn btn-success" id="receive-po-btn">Submit</button>
+                    <button type="button"  id="receive-po-btn" class=" btn btn-warning btn-label rounded-pill"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Select</button>
                 </div>
             </div>
         </div>
@@ -171,10 +190,15 @@
 
 <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/moment/moment.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
  <!-- autocomplete js -->
  <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
+
+<script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/receive/receive.js') }}"></script>
 
