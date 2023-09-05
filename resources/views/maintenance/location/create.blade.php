@@ -34,7 +34,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row mb-4 mx-3">
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <input type="hidden" name="storage_location_id" id="storage_location_id"/>
                                     <label for="client_id" class="form-label">Client Name <span class="text-danger">*</span></label>
                                     <select class="form-select select2" required="required" id="client" name="client">
@@ -47,7 +47,7 @@
                                     <div class="invalid-feedback text-danger error-msg client_error">Client Name is Required</div>
                                 </div>
 
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <label for="store_id" class="form-label">Store Name <span class="text-danger">*</span></label>
                                     <select class="form-select select2" required="required" id="store" name="store">
                                         <option value="">Select Store/Warehouse</option>                                                            
@@ -55,29 +55,14 @@
                                     <span class="text-danger error-msg store_error"></span>
                                 </div>
 
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <label for="warehouse_id" class="form-label">Warehouse Location <span class="text-danger">*</span></label>
                                     <select class="form-select select2" required="required" id="warehouse" name="warehouse">
                                         <option value="">Select warehouse location</option>                                                            
                                     </select>
                                     <span class="text-danger error-msg warehouse_error"></span>
                                 </div>
-                            </div>
-
-                            <div class="row mb-4 mx-3">
-                                <div class="col-md-4 form-group">
-                                    <label for="client_id" class="form-label">Rack <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" required="required" name="rack" id="rack" value="" placeholder="Enter Rack Name">
-                                    <span class="text-danger error-msg rack_error"></span>
-                                </div>
-
-                                <div class="col-md-4 form-group">
-                                    <label for="client_id" class="form-label">Level <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" required="level" name="level" id="level" value="" placeholder="Enter Level Name">
-                                    <span class="text-danger error-msg level_error"></span>
-                                </div>
-
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <label for="client_id" class="form-label">&nbsp;</label>
                                     <div class="form-check form-switch form-switch-custom form-switch-primary">
                                     
@@ -86,6 +71,45 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row mb-4 mx-3">
+                                <table class="table align-middle table-nowrap mb-0" id="location-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">Rack</th>
+                                            <th scope="col">Layer</th>
+                                            <th scope="col">Row</th>
+                                            </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" name="rack[]" id="rack" value="" placeholder="Enter Rack">
+                                                <span class="text-danger error-msg rack0_error"></span>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="level[]" id="level" value="" placeholder="Enter Level">
+                                                <span class="text-danger error-msg level0_error"></span>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" name="row[]" id="row" value="" placeholder="Enter Row No.">
+                                                <span class="text-danger error-msg row0_error"></span>
+                                            </td>
+                                           
+                                        </tr>   
+                                    </tbody>
+                                </table>
+                                <div class="mt-2">
+                                   
+                                    <button type="button" id="add-row" class="btn btn-primary btn-small"><i class="ri-add-line align-middle"></i></button>
+                                    <button type="button" id="remove-row" class="btn btn-danger btn-small"><i class="bx bx-trash align-middle"></i></button>
+                                   
+                                </div>
+
+
+                                
+                            </div>
+
                         </div>
 
                     </div>

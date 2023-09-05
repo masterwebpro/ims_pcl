@@ -331,9 +331,9 @@ class ReceiveController extends Controller
             'uom_list'=>$uom_list]);
     }
 
-    public function receivePo($po_num)
+    public function receivePo($po_id)
     {
-        $po = PoHdr::where('po_num', html_entity_decode($po_num))->first();
+        $po = PoHdr::where('id', $po_id)->first();
 
         if($po) {
             $uom_list = UOM::all();

@@ -34,7 +34,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row mb-4 mx-3">
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <input type="hidden" name="storage_location_id" id="storage_location_id" value="{{ $location->storage_location_id}}"/>
                                     <input type="hidden" name="client_id" id="client_id" value="{{ $location->warehouse->client->id}}"/>
                                     <label for="client_id" class="form-label">Client Name <span class="text-danger">*</span></label>
@@ -48,7 +48,7 @@
                                     <div class="invalid-feedback text-danger error-msg client_error">Client Name is Required</div>
                                 </div>
 
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <label for="store_id" class="form-label">Store Name <span class="text-danger">*</span></label>
                                     <input type="hidden" name="store_id" id="store_id" value="{{ $location->warehouse->store->id}}"/>
                                     <select class="form-select select2" required="required" id="store" name="store">
@@ -57,7 +57,7 @@
                                     <span class="text-danger error-msg store_error"></span>
                                 </div>
 
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-6 form-group">
                                     <label for="warehouse_id" class="form-label">Warehouse Location <span class="text-danger">*</span></label>
                                     <input type="hidden" name="warehouse_id" id="warehouse_id" value="{{ $location->warehouse->id}}"/>
                                     <select class="form-select select2" required="required" id="warehouse" name="warehouse">
@@ -68,19 +68,25 @@
                             </div>
 
                             <div class="row mb-4 mx-3">
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <label for="client_id" class="form-label">Rack <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" required="required" name="rack" id="rack" value="{{$location->rack}}" placeholder="Enter Rack Name">
                                     <span class="text-danger error-msg rack_error"></span>
                                 </div>
 
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
                                     <label for="client_id" class="form-label">Level <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" required="level" name="level" id="level" value="{{$location->level}}" placeholder="Enter Level Name">
                                     <span class="text-danger error-msg level_error"></span>
                                 </div>
 
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-3 form-group">
+                                    <label for="row" class="form-label">Row <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="row" id="row" value="{{$location->row}}" placeholder="Enter Row No.">
+                                    <span class="text-danger error-msg row_error"></span>
+                                </div>
+
+                                <div class="col-md-3 form-group">
                                     <label for="client_id" class="form-label">&nbsp;</label>
                                     <div class="form-check form-switch form-switch-custom form-switch-primary">
                                     

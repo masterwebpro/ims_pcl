@@ -30,4 +30,9 @@ class Menu extends Model
     {
         return $this->hasMany(Menu::class, 'parent_id', 'id')->with('children');
     }
+
+    public function submenus()
+    {
+        return $this->hasMany(Submenu::class, 'menu_id', 'id');
+    }
 }

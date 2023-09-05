@@ -52,7 +52,7 @@ class ClientController extends Controller
                 ])
                 ->orderByDesc('created_at')
                 ->paginate(20);
-        return view('maintenance/client/index', ['client' => $client, 'type' => ['T' => "Third-Party", 'C' => "Customer"]]);
+        return view('maintenance/client/index', ['client' => $client, 'type' => ['T' => "Third-Party", 'C' => "Customer", 'S' => "Supplier"]]);
     }
 
     /**

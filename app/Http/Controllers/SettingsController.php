@@ -33,7 +33,7 @@ class SettingsController extends Controller
     }
 
     function getPostedPo(Request $request) {
-        $data = \App\Models\PoHdr::select('po_num')->where('status', 'posted')->get();
+        $data = \App\Models\PoHdr::select('po_num', 'id')->where('status', 'posted')->get();
         return response()->json($data);
     }
 

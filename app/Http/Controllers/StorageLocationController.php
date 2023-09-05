@@ -68,14 +68,16 @@ class StorageLocationController extends Controller
             'warehouse' => 'required',
             'client' => 'required',
             'store' => 'required',
-            'rack' => 'required',
-            'level' => 'required',
+            'rack.*' => 'required',
+            'level.*' => 'required',
+            'row.*' => 'required',
         ], [
             'store' => 'Store is required',
             'client' => 'Client is required',
             'warehouse' => 'Warehouse is required',
-            'rack' => 'Rack is required',
-            'level' => 'Level is required',
+            'rack.*' => 'Rack is required',
+            'level.*' => 'Level is required',
+            'row.*' => 'Row is required',
         ]);
 
         if ($validator->fails()) {
@@ -88,25 +90,36 @@ class StorageLocationController extends Controller
 
             if($request->storage_location_id) {
                 $location = StorageLocationModel::where('storage_location_id', $request->storage_location_id);
+                $row = ($request->row) ? str_pad((int)$request->row, 2, "0", STR_PAD_LEFT) : '00';
                 $location->update([
                     'warehouse_id'=>$request->warehouse,
                     'rack'=>$request->rack,
                     'level'=>$request->level,
-                    'location'=>$request->rack."-".$request->level,
+                    'row'=>$$request->row,
+                    'location'=>$request->rack.$request->level.$row,
                     'is_enabled'=>($request->is_enabled == 'on') ? 1 : 0,
                     'updated_at'=>$this->current_datetime
                 ]);
             }
             else {
-                $location = StorageLocationModel::updateOrCreate(['storage_location_id' => $request->storage_location_id], [
-                    'warehouse_id'=>$request->warehouse,
-                    'rack'=>$request->rack,
-                    'level'=>$request->level,
-                    'location'=>$request->rack."-".$request->level,
-                    'is_enabled'=>($request->is_enabled == 'on') ? 1 : 0,
-                    'created_at'=>$this->current_datetime,
-                    'updated_at'=>$this->current_datetime,
-                ]);
+                //save on storage
+                $storage_item = array();
+                for($x=0; $x < count($request->rack); $x++ ) {
+                    
+                    $row = ($request->row[$x]) ? str_pad((int)$request->row[$x], 2, "0", STR_PAD_LEFT) : '00';
+
+                    $storage_item[] = array(
+                        'warehouse_id'=>$request->warehouse,
+                        'rack'=>$request->rack[$x],
+                        'level'=>$request->level[$x],
+                        'row'=>$request->row[$x],
+                        'location'=>$request->rack[$x].$request->level[$x].$row,
+                        'is_enabled'=>($request->is_enabled == 'on') ? 1 : 0,
+                        'created_at'=>$this->current_datetime,
+                        'updated_at'=>$this->current_datetime,
+                    );
+                }
+                $location = StorageLocationModel::insert($storage_item);
             }
             
 

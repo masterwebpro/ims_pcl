@@ -47,7 +47,7 @@
                         </div>
                         <!--end col-->
 
-                        <div class="col-xxl-3 col-sm-4">
+                        <div class="col-xxl-2 col-sm-4">
                             <div class="input-light">
                                 <select class="form-control" data-choices data-choices-search-false
                                     name="status" id="status">
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <!--end col-->
-                        <div class="col-xxl-1 col-sm-4">
+                        <div class="col-xxl-2 col-sm-4">
                             <button type="submit" class="btn btn-primary w-100"> <i
                                     class="ri-equalizer-fill me-1 align-bottom"></i>
                                 Filters
@@ -79,6 +79,7 @@
                                 <th class="sort" data-sort="location">Location</th>
                                 <th class="sort" data-sort="rack">Rack</th>
                                 <th class="sort" data-sort="level">Level</th>
+                                <th class="sort" data-sort="row">Row</th>
                                 <th class="sort" data-sort="is_enabled">Enable</th>
                                 <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
@@ -96,6 +97,7 @@
                                         <td class="store_name">{{ $location->location}}</td>
                                         <td class="store_name">{{ $location->rack}}</td>
                                         <td class="store_name">{{ $location->level}}</td>
+                                        <td class="store_name">{{ $location->row}}</td>
                                         <td>
                                             <div class="form-check form-switch {{ (($location->is_enabled == 1) ? 'form-switch-success' : 'form-switch-primary') }} ">
                                                 <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="is_enabled"  {{ (($location->is_enabled == 1) ? "checked" : "") }} disabled>
