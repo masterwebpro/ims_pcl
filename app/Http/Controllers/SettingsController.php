@@ -6,6 +6,7 @@ use App\Models\AvailableItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UOM;
+use App\Models\WdHdr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -151,7 +152,7 @@ class SettingsController extends Controller
                 ->leftJoin('uom as wu','wu.uom_id','masterfiles.whse_uom')
                 ->leftJoin('uom as iu','iu.uom_id','masterfiles.inv_uom')
                 ->groupBy('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level');
-        
+
         // if(isset($request->storage_id))
         //     $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
 
@@ -171,7 +172,7 @@ class SettingsController extends Controller
     public function getNewLocation(Request $request, $warehouse_id) {
 
         $location_list = \App\Models\StorageLocationModel::select('storage_location_id','location')->where('warehouse_id', $warehouse_id)->get();
-        
+
         $html = '<option value="">Select Location</option>';
         foreach ($location_list as $loc) {
             $html .= "<option value='".$loc->storage_location_id."'>".$loc->location."</option>";
@@ -239,6 +240,46 @@ class SettingsController extends Controller
 
     function getAllProduct(Request $request) {
         $data = \App\Models\Products::select('product_id', DB::raw("CONCAT(product_code,' - ',product_name) AS product"))->get();
+        return response()->json($data);
+    }
+
+    function getWithdrawalList(Request $request){
+        $result = WdHdr::select('wd_hdr.id',
+                    'wd_hdr.wd_no',
+                    'cl.client_name',
+                    'del.client_name as deliver_to',
+                    DB::raw('(select sum(inv_qty) from wd_dtl where wd_no = wd_hdr.wd_no) as no_of_package'),
+                    'wd_hdr.order_no',
+                    'wd_hdr.order_date',
+                    'wd_hdr.po_num',
+                    'wd_hdr.sales_invoice',
+                    'wd_hdr.dr_no'
+                    )
+                    ->leftJoin('client_list as cl','cl.id','wd_hdr.client_id')
+                    ->leftJoin('client_list as del','del.id','wd_hdr.deliver_to_id')
+                    ->whereNull('dispatch_no')
+                    ->orderBy('wd_hdr.order_date','ASC');
+                    if(isset($request->keyword)){
+                        $search = "%".$request->keyword."%";
+                        $result->where(function($cond)use($search){
+                            $cond->where('wd_hdr.wd_no',$search)
+                            ->orwhere('wd_hdr.order_no','like',$search)
+                            ->orwhere('wd_hdr.po_num','like',$search)
+                            ->orwhere('wd_hdr.sales_invoice','like',$search)
+                            ->orwhere('wd_hdr.dr_no','like',$search);
+                        });
+                    }
+                    if($request->status)
+                        $result->where('wd_hdr.status', $request->status);
+                    if(isset($request->wd_no))
+                        $result->whereNotIN('wd_hdr.wd_no', json_decode($request->wd_no));
+                    
+        $data = $result->get();
+        return response()->json($data);
+    }
+
+    function getTruckType(Request $request) {
+        $data = \App\Models\TruckType::select('vehicle_code','vehicle_desc')->get();
         return response()->json($data);
     }
 }

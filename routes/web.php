@@ -28,6 +28,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/withdraw', App\Http\Controllers\WithdrawalController::class);
     Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
     Route::get('/withdrawalSlip/{id}', [App\Http\Controllers\WithdrawalController::class, 'withdrawalslip']);
+    Route::resource('/dispatch', App\Http\Controllers\DispatchController::class);
+
 
 
     Route::resource('/setting/suppliers', App\Http\Controllers\SuppliersController::class);
@@ -65,6 +67,8 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/newLocation/{warehouse_id}', [App\Http\Controllers\SettingsController::class, 'getNewLocation']);
 
     Route::get('/available_item', [App\Http\Controllers\SettingsController::class, 'getAvailableItem']);
+    Route::get('/withdrawal_list', [App\Http\Controllers\SettingsController::class, 'getWithdrawalList']);
+    Route::get('/getTruckType', [App\Http\Controllers\SettingsController::class, 'getTruckType']);
 
 
 
