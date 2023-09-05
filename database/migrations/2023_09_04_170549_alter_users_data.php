@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string("mobile_no", 100)->nullable()->after('designation');
             $table->string("position", 100)->nullable()->after('designation');
             $table->integer("role_id")->nullable()->after('mobile_no');
-            $table->boolen("is_active")->default(0)->after('role_id');
+            $table->boolean("is_active")->default(0)->after('role_id');
             
         });
         
