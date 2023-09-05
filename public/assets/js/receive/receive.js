@@ -170,8 +170,9 @@ $(document).on('click', '#receive-po-btn', function (e) {
     e.preventDefault();
     $('#preloading').modal('show');
     var po_num = $('#po_num_holder').val();
+    var po_id = $('#po_id').val();
     setTimeout(function () {
-        window.location = BASEURL+'receive/'+escapeHtml(po_num)+'/create';
+        window.location = BASEURL+'receive/'+escapeHtml(po_id)+'/create';
     }, 300);
     
 });
@@ -190,7 +191,7 @@ const data = {
         return error;
       }
     },
-    keys: ["po_num"],
+    keys: ["po_num","id"],
     cache: true
 }
 
@@ -200,7 +201,7 @@ if($("#po_num_holder").length) {
         selector: "#po_num_holder",
         placeHolder: "Search for PO number...",
         data: data,
-        threshold: 2,
+        threshold: 3,
         resultsList: {
             element: function element(list, data) {
                 if (!data.results.length) {
@@ -222,8 +223,10 @@ if($("#po_num_holder").length) {
         events: {
             input: {
                 selection: function selection(event) {
+                    console.log(event);
                     var selection = event.detail.selection.value;
                     autoCompletePoNum.input.value = selection.po_num;
+                    $('#po_id').val(selection.id);
                 }
             }
         }

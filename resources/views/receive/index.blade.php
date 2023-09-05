@@ -149,6 +149,9 @@
                 <div class="row g-3">
                     <div class="col-md-12 form-group">
                         <input type="text" class="form-control" dir="ltr" spellcheck=false autocomplete="off" autocapitalize="off" name="po_num_holder" id="po_num_holder" value="" placeholder="Enter PO Number">
+
+                        <input type="hidden" class="form-control" name="po_id" id="po_id" />
+                        
                     </div>
                 </div>
             </div>

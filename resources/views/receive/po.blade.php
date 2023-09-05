@@ -308,8 +308,6 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
-                                                <th scope="col" >Lot/Batch #</th>
-                                                <th scope="col" >Expiry Date</th>
                                                 <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -324,7 +322,7 @@
                                                     <td class="text-start">
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                     {{$x++}} </td>
-                                                    <td class="text-start fs-14"> 
+                                                    <td class="text-start fs-13"> 
                                                         {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                     </td>
                                                     <td class="text-start"> 
@@ -355,12 +353,6 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->uom_id) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
-                                                    </td>
-                                                    <td class="text-start ps-1">
-                                                        <small>-</small>
-                                                    </td>
-                                                    <td class="text-start ps-1">
-                                                        <small>-</small>
                                                     </td>
                                                     <td>
                                                         <div class="text-center">
