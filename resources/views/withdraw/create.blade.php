@@ -174,7 +174,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="withdraw_date"
-                                            name="withdraw_date" placeholder="Withdraw Date">
+                                            name="withdraw_date" placeholder="Withdraw Date" value="<?=date('Y-m-d');?>">
                                             <span class="text-danger error-msg withdraw_date_error"></span>
                                         </div>
                                     </div>
@@ -229,7 +229,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="order_date"
-                                            name="order_date" value="" placeholder="Order Date">
+                                            name="order_date" value="<?=date('Y-m-d');?>" placeholder="Order Date">
                                             <span class="text-danger error-msg order_date_error"></span>
                                         </div>
                                     </div>
@@ -245,7 +245,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="pickup_date"
-                                                name="pickup_date" value="" placeholder="Pickup Date">
+                                                name="pickup_date" value="<?=date('Y-m-d');?>" placeholder="Pickup Date">
                                             <span class="text-danger error-msg pickup_date_error"></span>
                                         </div>
                                     </div>
@@ -256,7 +256,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="trgt_dlv_date"
-                                                name="trgt_dlv_date" value="" placeholder="Date Received">
+                                                name="trgt_dlv_date" value="<?=date('Y-m-d');?>" placeholder="Date Received">
                                             <span class="text-danger error-msg trgt_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -283,7 +283,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="actual_dlv_date"
-                                                name="actual_dlv_date" value="" placeholder="Inspect Date">
+                                                name="actual_dlv_date" value="<?=date('Y-m-d');?>" placeholder="Inspect Date">
                                             <span class="text-danger error-msg actual_dlv_date_error"></span>
                                         </div>
                                     </div>

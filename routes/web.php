@@ -29,6 +29,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
     Route::get('/withdrawalSlip/{id}', [App\Http\Controllers\WithdrawalController::class, 'withdrawalslip']);
     Route::resource('/dispatch', App\Http\Controllers\DispatchController::class);
+    Route::get('/deliverySlip/{id}', [App\Http\Controllers\DispatchController::class, 'deliveryslip']);
+    Route::resource('/pod', App\Http\Controllers\PodController::class);
+
 
 
 

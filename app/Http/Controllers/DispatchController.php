@@ -12,6 +12,8 @@ use App\Models\MasterfileModel;
 use App\Models\SeriesModel;
 use App\Models\TruckType;
 use App\Models\AuditTrail;
+use App\Models\Pod;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,15 +87,35 @@ class DispatchController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'wd_no.*' => 'required|present',
+            'dispatch_by' => 'required',
+            'dispatch_date' => 'required',
+            'start_date' => 'required',
+            'start_time' => 'required',
+            'finish_date' => 'required',
+            'finish_time' => 'required',
+            'date_departed' => 'required',
+            'time_departed' => 'required',
+            'wd_no.*' => 'required',
+            'trucker_name.*' => 'required',
             'truck_type.*' => 'required',
-            'no_of_package.*' => 'required|gt:0',
+            'qty.*' => 'required|gt:0',
             'plate_no.*' => 'required',
+            'seal_no.*' => 'required',
         ], [
-            'wd_no.*'=>'WD type is required',
+            'dispatch_by'=>'Dispatch by is required',
+            'dispatch_date'=>'Dispatch date is required',
+            'start_date'=>'Start date is required',
+            'start_time'=>'Start time is required',
+            'finish_date'=>'Finish date is required',
+            'finish_time'=>'Finish time is required',
+            'date_departed'=>'Depart date is required',
+            'time_departed'=>'Depart time is required',
+            'wd_no.*'=>'Withdrawal is required',
+            'trucker_name.*'=>'Trucker name is required',
             'truck_type.*'=>'Truck type is required',
-            'no_of_package.*' => 'No of Package is required',
-            'plate_no.*' => 'Plate No is required'
+            'qty.*' => 'Quantity is required',
+            'plate_no.*' => 'Plate no is required',
+            'seal_no.*' => 'Seal no is required'
         ]);
 
         if ($validator->fails()) {
@@ -115,9 +137,17 @@ class DispatchController extends Controller
                 ];
                 SeriesModel::insert($series);
             }
+            $start = date("Y-m-d", strtotime($request->start_date))." ".date("H:i:s", strtotime($request->start_time));
+            $finish = date("Y-m-d", strtotime($request->finish_date))." ".date("H:i:s", strtotime($request->finish_time));
+            $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
+            $dispatch_date = isset($request->dispatch_date) ? $request->dispatch_date : date("Y-m-d");
             $dispatch = DispatchHdr::updateOrCreate(['dispatch_no' => $dispatch_no], [
                 'dispatch_no'=>$dispatch_no,
-                'dispatch_date'=> isset($request->dispatch_date) ? $request->dispatch_date : date("Y-m-d"),
+                'dispatch_date'=> $dispatch_date,
+                'dispatch_by'=> $request->dispatch_by,
+                'start_datetime'=> $start,
+                'finish_datetime'=> $finish,
+                'depart_datetime'=> $date_departed,
                 'status'=>$request->status,
                 'created_by' =>Auth::user()->id,
                 'created_at'=>$this->current_datetime,
@@ -157,13 +187,26 @@ class DispatchController extends Controller
                                 'store_id' => $masterData->store_id
                             ]);
                         }
+
+                        Pod::create([
+                            'batch_no' => $request->wd_no[$x],
+                            'status' => 'dispatch',
+                            'dispatch_by' => $request->dispatch_by,
+                            'dispatch_date' => $dispatch_date,
+                            'created_by' =>Auth::user()->id
+                        ]);
                     }
                 }
-                DispatchTruck::where('dispatch_no',$dispatch_no)->delete();
+
+            }
+            DispatchTruck::where('dispatch_no',$dispatch_no)->delete();
+            if(isset($request->truck_type)){
                 for($x=0; $x < count($request->truck_type); $x++ ) {
                     $truck = array(
+                        'trucker_name' => $request->trucker_name[$x],
+                        'seal_no' => $request->seal_no[$x],
                         'truck_type' => $request->truck_type[$x],
-                        'no_of_package' => $request->no_of_package[$x],
+                        'qty' => $request->qty[$x],
                         'plate_no' => $request->plate_no[$x],
                         'driver' => $request->driver[$x],
                         'contact' => $request->contact[$x],
@@ -172,6 +215,7 @@ class DispatchController extends Controller
                     DispatchTruck::create($truck);
                 }
             }
+
             $audit_trail[] = [
                 'control_no' => $dispatch_no,
                 'type' => 'DP',
@@ -218,7 +262,8 @@ class DispatchController extends Controller
         $truck_type_list = TruckType::all();
         return view('dispatch/view', [
             'dispatch' => $dispatch,
-            'truck_type_list' => $truck_type_list
+            'truck_type_list' => $truck_type_list,
+            'created_by' => Auth::user()->name,
         ]);
     }
 
@@ -276,5 +321,21 @@ class DispatchController extends Controller
         $series = "$prefix-" . $date . "-" . $num;
 
         return $series;
+    }
+
+    public function deliveryslip($id)
+    {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $dispatch = DispatchHdr::select('dispatch_hdr.*', 'u.name')
+                ->leftJoin('users as u', 'u.id', '=', 'dispatch_hdr.created_by')
+                ->where('dispatch_hdr.id', _decode($id))->first();
+        $pdf = PDF::loadView('dispatch.deliveryslip', [
+            'dispatch' => $dispatch,
+            'created_by' => Auth::user()->name
+        ]);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream($dispatch->dispatch_no.'.pdf');
     }
 }

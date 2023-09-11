@@ -485,6 +485,6 @@ class WithdrawalController extends Controller
             'created_by' => Auth::user()->name
         ]);
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream($wd->wd_no.'.pdf');
+        return $pdf->download($wd->wd_no.'.pdf');
     }
 }

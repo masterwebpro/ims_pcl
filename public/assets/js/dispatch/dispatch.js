@@ -20,20 +20,35 @@ $(document).on('click', '.create-dispatch', function (e) {
 
 function addRow(val = "") {
     populateTruckType();
+    var rows = $("#truck").find("tr").length;
+    rowCount = (rows == 0) ? 0 : rows - 1;
     var newRow = `<tr>
+        <td>
+            <input type="text" class="form-control" id="trucker_name"
+                name="trucker_name[]" placeholder="Enter Trucker Name">
+            <span class="text-danger error-msg trucker_name`+(rowCount)+`_error"></span>
+        </td>
         <td>
             <select class="form-select select2 truck_type" required="required" id="truck_type" name="truck_type[]">
                 <option value="">Select Truck Type</option>
             </select>
-            <span class="text-danger error-msg truck_type_error"></span>
+            <span class="text-danger error-msg truck_type`+(rowCount)+`_error"></span>
         </td>
         <td>
-            <input type="text" class="form-control numeric" id="no_of_package"
-                name="no_of_package[]" placeholder="Enter Quantity">
+            <input type="text" class="form-control numeric" id="qty"
+                name="qty[]" placeholder="Enter Quantity">
+            <span class="text-danger error-msg qty`+(rowCount)+`_error"></span>
         </td>
         <td>
             <input type="text" class="form-control" id="plate_no"
                 name="plate_no[]" placeholder="Enter Plate No.">
+            <span class="text-danger error-msg plate_no`+(rowCount)+`_error"></span>
+
+        </td>
+        <td>
+            <input type="text" class="form-control" id="seal_no"
+                name="seal_no[]" placeholder="Enter Seal No.">
+            <span class="text-danger error-msg seal_no`+(rowCount)+`_error"></span>
         </td>
         <td>
             <input type="text" class="form-control" id="driver"
@@ -52,6 +67,7 @@ function addRow(val = "") {
         </td>
     </tr>`;
     $("#truck-list tbody").append(newRow);
+    totalPackage();
   }
 
   function removeRow() {
@@ -148,9 +164,6 @@ $(document).on('click', '#add-withdrawal', function() {
             <td class="text-start  fs-14"> \
                 '+data[x].wd_no+'\
             </td> \
-            <td class="text-center ps-1 fs-13"> \
-                '+ data[x].client_name +' \
-            </td> \
             <td class="text-start fs-14"> \
                 '+ data[x].deliver_to +' \
             </td> \
@@ -189,6 +202,7 @@ function totalPackage(){
         total += parseFloat($(this).find("input[name='wd_qty[]']").val());
     });
     $("#total").text(total.toFixed(2));
+    $("#qty").val(total.toFixed(2));
 }
 
 $(document).on('click', '.submit-open', function (e) {
@@ -198,6 +212,17 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'open');
      _submitData(form_data);
+});
+
+$(document).on('click', '.generate-deliveryslip', function (e) {
+    e.preventDefault();
+    $('#preloading').modal('show');
+    var id = $('#dispatch_id').val();
+    console.log(id)
+    setTimeout(function () {
+        window.location = BASEURL+'deliverySlip/'+ id;
+        $('#preloading').modal('hide');
+    }, 300);
 });
 
 $(document).on('click', '.submit-posted', function (e) {
