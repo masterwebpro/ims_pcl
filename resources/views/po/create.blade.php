@@ -24,7 +24,7 @@
     <div class="col-xxl-11">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">PO Creation</h4>
+                <h4 class="card-title mb-0 flex-grow-1">PO Creation <span class="badge badge-soft-primary fs-16 text-uppercase open" id="po-status">New</span></h4>
                 <div class="flex-shrink-0">
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                         <button type="button" data-status="open" class="btn btn-success btn-label rounded-pill submit-po"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
@@ -67,32 +67,43 @@
 
                             <div class="row">
                                 <div class="col-md-4 form-group">
-                                    <label for="client_id" class="form-label">Client Name</label>
-                                    <input type="hidden" value="" class="client_id" name="client_id" id="client_id" />
-                                    <select class="form-select select2" required="required" id="client" name="client">
-                                        <option value="">Select Client</option>
-                                        <? foreach($client_list as $client) : ?>
-                                            <option value="<?=$client->id?>" ><?=$client->client_name?></option>
+                                    <label for="client_id" class="form-label">Customer Name</label>
+                                    <input type="hidden" value="" class="customer_id" name="customer_id" id="customer_id" />
+                                    <select class="form-select select2" required="required" id="customer" name="customer">
+                                        <option value="">Select Customer</option>
+                                        <? foreach($client_list as $customer) : ?>
+                                            <? if($customer->client_type == 'C') : ?>
+                                                <option value="<?=$customer->id?>" ><?=$customer->client_name?></option>
+                                            <? endif;?>
                                         <? endforeach;?>
                                     </select>
-                                    <span class="text-danger error-msg client_error"></span>
+                                    <span class="text-danger error-msg customer_error"></span>
                                 </div>
 
                                 <div class="col-md-4 form-group">
+                                    <label for="client_id" class="form-label">Company Name</label>
+                                    <input type="hidden" value="" class="company_id" name="company_id" id="company_id" />
+                                    <select class="form-select select2" required="required" id="company" name="company">
+                                        <option value="">Select Company</option>
+                                        <? foreach($client_list as $company) : ?>
+                                            <? if($company->client_type == 'O') : ?>
+                                                <option value="<?=$company->id?>" ><?=$company->client_name?></option>
+                                            <? endif;?>
+                                        <? endforeach;?>
+                                    </select>
+                                    <span class="text-danger error-msg company_error"></span>
+                                </div>
+
+                                <div class="col-md-4 form-group store_cont">
                                     <label for="store_id" class="form-label">Site Name</label>
                                     <input type="hidden" value="" class="store_id" name="store_id" id="store_id" />
                                     <select class="form-select select2" required="required" id="store" name="store">
-                                        <option value="">Select Store/Warehouse</option>
+                                        <option value="">Select Site</option>
                                         <? foreach($store_list as $store) : ?>
-                                        <option value="<?=$store->id?>" ><?=$store->store_name?></option>
+                                            <option value="<?=$store->id?>" ><?=$store->store_name?></option>
                                         <? endforeach;?>
                                     </select>
                                     <span class="text-danger error-msg store_error"></span>
-                                </div>
-
-                                <div class="col-md-4 form-group">
-                                    <label for="inputState" class="form-label">Status</label>
-                                    <div><span class="badge badge-soft-primary fs-16 text-uppercase open" id="po-status">New</span></div>
                                 </div>
                             </div>
                         </div>
@@ -118,10 +129,10 @@
                                     <th scope="col" style="width: 20px;">#</th>
                                     <th scope="col" >Product</th>
                                     <th scope="col" >UOM</th>
-                                    <th scope="col" >Quantity</th>
-                                    <th scope="col" class="text-start">Unit Price</th>
-                                    <th scope="col" >Discount</th>
-                                    <th scope="col" class="text-start">Amount</th>
+                                    <th scope="col" class="text-center" >Quantity</th>
+                                    <th scope="col" class="text-start d-none">Unit Price</th>
+                                    <th scope="col" class="text-start d-none">Discount</th>
+                                    <th scope="col" class="text-start d-none">Amount</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -129,15 +140,22 @@
                                 <?
                                     $total_discount = 0;
                                     $subtotal =0;
-
+                                    $total_qty =0;
                                 ?>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="fw-medium"> Total </td>
+                                    <td class="fw-medium"><input type="text" class="form-control border-0 text-end" id="total_qty" value="{{ number_format($total_qty,2) }}" placeholder="0.00" readonly /></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
                             </table>
                             <table class="invoice-table table table-borderless table-nowrap mb-0 mt-4">
                             <tbody>
                                 <tr class="border-top border-top-dashed mt-2">
                                     <td class="p-0">
-                                        <table class="table table-borderless table-sm text-end">
+                                        <table class="table table-borderless table-sm text-end d-none">
                                             <tbody>
                                                 <tr>
                                                     <th scope="row">Sub Total</th>

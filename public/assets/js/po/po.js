@@ -2,9 +2,9 @@ $(document).ready(function () {
     $(".select2").select2();
 
     if ( $( "#store_id" ).length ) {
-        client_id = $("#client_id" ).val();
+        company_id = $("#company" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(client_id, store_id);
+        populateStore(company_id, store_id);
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
@@ -14,9 +14,9 @@ $(document).ready(function () {
 
 });
 
-$(document).on('change', '#client', function() {
-    var client_id = $(this).val();
-    populateStore(client_id, '');
+$(document).on('change', '#company', function() {
+    var company_id = $(this).val();
+    populateStore(company_id, '');
 });
 
 $(document).on('click', '#find-items', function() {
@@ -53,8 +53,7 @@ $(document).on('click', '#add-product', function() {
         //get UOM list
 
         var uom = getUom();
-        var rowCount = $('#product-list tr').length;
-
+        var rowCount = $('#product-list tr').length - 1;
         
         var btn = '<div class="text-center">';
         btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+data.product_id+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
@@ -74,18 +73,18 @@ $(document).on('click', '#add-product', function() {
           <select name="uom[]" class="uom uom_select form-select select2">  '+uom+' </select> \
           <span class="text-danger error-msg uom'+(rowCount-1)+'_error"></span> \
         </td> \
-        <td class="text-start"> \
-            <input type="text" class="form-control qty" name="qty[]" data-id="'+data.product_id+'" id="qty_'+data.product_id+'" value="" placeholder="Qty" /> \
+        <td class="text-right"> \
+            <input type="text" style="text-align: right !important" class="form-control qty text-right" name="qty[]" data-id="'+data.product_id+'" id="qty_'+data.product_id+'" value="" placeholder="Qty" /> \
             <span class="text-danger error-msg qty'+(rowCount-1)+'_error"></span> \
         </td> \
-        <td class="text-start"> \
-             <input type="text" name="unit_price[]" data-id="'+data.product_id+'" id="unit_price_'+data.product_id+'" value="" class="form-control unit_price text-end" placeholder="0.00" /> \
+        <td class="text-start d-none"> \
+             <input type="text" name="unit_price[]" value="0" data-id="'+data.product_id+'" id="unit_price_'+data.product_id+'" class="form-control unit_price text-end" placeholder="0.00" /> \
              <span class="text-danger error-msg unit_price'+(rowCount-1)+'_error"></span> \
         </td> \
-        <td class="text-start"> \
-            <input type="text" name="discount[]" data-id="'+data.product_id+'" id="discount_'+data.product_id+'" value="" class="form-control discount text-end" placeholder="0.00" /> \
+        <td class="text-start d-none"> \
+            <input type="text" name="discount[]" data-id="'+data.product_id+'" id="discount_'+data.product_id+'" value="0" class="form-control discount text-end" placeholder="0.00" /> \
         </td> \
-        <td><input type="text" name="amount[]" readonly data-id="'+data.product_id+'" id="total_amount_'+data.product_id+'" data-id="'+data.id+'"  value="" class="form-control total_amount text-end" placeholder="0.00"/><span class="text-danger error-msg amount'+(rowCount-1)+'_error"></span> \</td> \
+        <td class="d-none"><input type="text" name="amount[]" readonly data-id="'+data.product_id+'" id="total_amount_'+data.product_id+'" data-id="'+data.id+'"  value="0" class="form-control total_amount text-end" placeholder="0.00"/><span class="text-danger error-msg amount'+(rowCount-1)+'_error"></span> \</td> \
         <td>'+btn+'</td> \
         </tr>');
 
@@ -170,6 +169,10 @@ $(document).on('blur', '.unit_price', function () {
 
 });
 
+$(document).on('blur', '.qty', function () {
+    computeAll();
+});
+
 $(document).on('blur', '.discount', function () {
     computeAll();
 });
@@ -249,17 +252,17 @@ $(document).on('blur keyup', '#item_code', function(e) {
                               <span class="text-danger error-msg uom'+(rowCount-1)+'_error"></span> \
                             </td> \
                             <td class="text-start"> \
-                                <input type="text" class="form-control qty" name="qty[]" data-id="'+data.data.product_id+'" id="qty_'+data.data.product_id+'" value="" placeholder="Qty" /> \
+                                <input type="text" style="text-align: right !important" class="form-control qty" name="qty[]" data-id="'+data.data.product_id+'" id="qty_'+data.data.product_id+'" value="0" placeholder="Qty" /> \
                                 <span class="text-danger error-msg qty'+(rowCount-1)+'_error"></span> \
                             </td> \
-                            <td class="text-start"> \
-                                 <input type="text" name="unit_price[]" data-id="'+data.data.product_id+'" id="unit_price_'+data.data.product_id+'" value="" class="form-control unit_price text-end" placeholder="0.00" /> \
+                            <td class="text-start d-none"> \
+                                 <input type="text" name="unit_price[]" data-id="'+data.data.product_id+'" id="unit_price_'+data.data.product_id+'" value="0" class="form-control unit_price text-end" placeholder="0.00" /> \
                                  <span class="text-danger error-msg unit_price'+(rowCount-1)+'_error"></span> \
                             </td> \
-                            <td class="text-start"> \
-                                <input type="text" name="discount[]" data-id="'+data.data.product_id+'" id="discount_'+data.data.product_id+'" value="" class="form-control discount text-end" placeholder="0.00" /> \
+                            <td class="text-start d-none"> \
+                                <input type="text" name="discount[]" data-id="'+data.data.product_id+'" id="discount_'+data.data.product_id+'" value="0" class="form-control discount text-end" placeholder="0.00" /> \
                             </td> \
-                            <td><input type="text" name="amount[]" readonly data-id="'+data.data.product_id+'" id="total_amount_'+data.data.product_id+'"  value="" class="form-control total_amount text-end" placeholder="0.00"/><span class="text-danger error-msg amount'+(rowCount-1)+'_error"></span> \</td> \
+                            <td class="d-none"><input type="text" name="amount[]" readonly data-id="'+data.data.product_id+'" id="total_amount_'+data.data.product_id+'"  value="" class="form-control total_amount text-end" placeholder="0.00"/><span class="text-danger error-msg amount'+(rowCount-1)+'_error"></span> \</td> \
                             <td>'+btn+'</td> \
                             </tr>');
                             toastr.success(data.data.product_name,'Added successfully');

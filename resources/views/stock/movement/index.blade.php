@@ -43,118 +43,102 @@
                 </ul>
                 <div class="tab-content text-muted">
                     <div class="tab-pane active" id="nav-border-top-home" role="tabpanel">
-                        <div class="d-flex">
-                            <div class="flex-grow-1 ms-2">
-                                <div class="table-responsive table-card mb-4">
-                                    <table class="table align-middle table-nowrap mb-0" id="tasksTable">
-                                        <thead class="table-light text-muted">
+                        <div class="table-responsive table-card mb-4">
+                            <table class="table align-middle table-nowrap mb-0" id="tasksTable">
+                                <thead class="table-light text-muted">
+                                    <tr>
+                                        <th class="sort" data-sort="id">Reference #</th>
+                                        <th class="sort" data-sort="client_name">Company Name</th>
+                                        <th class="sort" data-sort="site">Site</th>
+                                        <th class="sort" data-sort="warehouse">Warehouse</th>
+                                        <th class="sort" data-sort="status">Status</th>
+                                        <th class="sort" data-sort="created_by">Created By</th>
+                                        <th class="sort" data-sort="action">Action</th>
+                                    </tr>
+                                </thead>
+            
+                                <tbody class="list form-check-all">
+                                    <? if($active_list->total() > 0 ) : ?>
+                                        <? foreach($active_list as $active) :?>
                                             <tr>
-                                                <th class="sort" data-sort="id">Reference #</th>
-                                                <th class="sort" data-sort="client_name">Client Name</th>
-                                                <th class="sort" data-sort="site">Site</th>
-                                                <th class="sort" data-sort="warehouse">Warehouse</th>
-                                                <th class="sort" data-sort="status">Status</th>
-                                                <th class="sort" data-sort="created_by">Created By</th>
-                                                <th class="sort" data-sort="action">Action</th>
+                                                <td class="rcv_no">{{ $active->ref_no}}</td>
+                                                <td class="po_num">{{ $active->client->client_name}}</td>
+                                                <td class="sales_invoice">{{ $active->store->store_name}}</td>
+                                                <td>{{ $active->warehouse->warehouse_name}}</td>
+                                                
+                                                <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
+                                                <td>{{ $active->user_create->name}}</td>
+                                                <td class="action">
+                                                    <div class="hstack gap-3 fs-12">
+                                                        <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                        <? if($active->status != 'posted') : ?>
+                                                            <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                        <? endif; ?>
+                                                </td>
                                             </tr>
-                                        </thead>
-                    
-                                        <tbody class="list form-check-all">
-                                            <? if($active_list->total() > 0 ) : ?>
-                                                <? foreach($active_list as $active) :?>
-                                                    <tr>
-                                                        <td class="rcv_no">{{ $active->ref_no}}</td>
-                                                        <td class="po_num">{{ $active->client->client_name}}</td>
-                                                        <td class="sales_invoice">{{ $active->store->store_name}}</td>
-                                                        <td>{{ $active->warehouse->warehouse_name}}</td>
-                                                        
-                                                        <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
-                                                        <td>{{ $active->user_create->name}}</td>
-                                                        <td class="action">
-                                                            <div class="hstack gap-3 fs-12">
-                                                                <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                                <? if($active->status != 'posted') : ?>
-                                                                    <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
-                                                                <? endif; ?>
-                                                        </td>
-                                                    </tr>
-                                                <? endforeach; ?>
-                                            <? else :?>
-                                                <div class="noresult" style="display: none">
-                                                    <div class="text-center">
-                                                        <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
-                                                            colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
-                                                        <h5 class="mt-2">Sorry! No Result Found</h5>
-                                                        <p class="text-muted mb-0">We've searched more than 200k+ tasks We did not find any tasks
-                                                            for you search.</p>
-                                                    </div>
-                                                </div>
-                                            <? endif; ?>
-                                        </tbody>
-                                    </table>
-                                    <!--end table-->
-                                </div>
-                                <!-- Pagination -->
-                                {!! $active_list->withQueryString()->links('pagination::bootstrap-5') !!}
-                            </div>
+                                        <? endforeach; ?>
+                                    <? else :?>
+                                        <div class="noresult" style="display: none">
+                                            <div class="text-center">
+                                                <h5 class="mt-2">Sorry! No Result Found</h5>
+                                            </div>
+                                        </div>
+                                    <? endif; ?>
+                                </tbody>
+                            </table>
+                            <!--end table-->
                         </div>
+                        <!-- Pagination -->
+                        {!! $active_list->withQueryString()->links('pagination::bootstrap-5') !!}
                     </div>
-                    <div class="tab-pane" id="nav-border-top-profile" role="tabpanel">
-                        <div class="d-flex">
-                            <div class="flex-grow-1 ms-2">
-                                <div class="table-responsive table-card mb-4">
-                                    <table class="table align-middle table-nowrap mb-0" id="tasksTable">
-                                        <thead class="table-light text-muted">
+                    <div class="tab-pane" id="nav-border-top-profile" role="tabpanel">     
+                        <div class="table-responsive table-card mb-4">
+                            <table class="table align-middle table-nowrap mb-0" id="tasksTable">
+                                <thead class="table-light text-muted">
+                                    <tr>
+                                        <th class="sort" data-sort="id">Reference #</th>
+                                        <th class="sort" data-sort="client_name">Company Name</th>
+                                        <th class="sort" data-sort="site">Site</th>
+                                        <th class="sort" data-sort="warehouse">Warehouse</th>
+                                        <th class="sort" data-sort="status">Status</th>
+                                        <th class="sort" data-sort="created_by">Created By</th>
+                                        <th class="sort" data-sort="action">Action</th>
+                                    </tr>
+                                </thead>
+            
+                                <tbody class="list form-check-all">
+                                    <? if($posted_list->total() > 0 ) : ?>
+                                        <? foreach($posted_list as $active) :?>
                                             <tr>
-                                                <th class="sort" data-sort="id">Reference #</th>
-                                                <th class="sort" data-sort="client_name">Client Name</th>
-                                                <th class="sort" data-sort="site">Site</th>
-                                                <th class="sort" data-sort="warehouse">Warehouse</th>
-                                                <th class="sort" data-sort="status">Status</th>
-                                                <th class="sort" data-sort="created_by">Created By</th>
-                                                <th class="sort" data-sort="action">Action</th>
+                                                <td class="rcv_no">{{ $active->ref_no}}</td>
+                                                <td class="po_num">{{ $active->client->client_name}}</td>
+                                                <td class="sales_invoice">{{ $active->store->store_name}}</td>
+                                                <td>{{ $active->warehouse->warehouse_name}}</td>
+                                                
+                                                <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
+                                                <td>{{ $active->user_create->name}}</td>
+                                                <td class="action">
+                                                    <div class="hstack gap-3 fs-12">
+                                                        <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                        <? if($active->status != 'posted') : ?>
+                                                            <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                        <? endif; ?>
+                                                </td>
                                             </tr>
-                                        </thead>
-                    
-                                        <tbody class="list form-check-all">
-                                            <? if($posted_list->total() > 0 ) : ?>
-                                                <? foreach($posted_list as $active) :?>
-                                                    <tr>
-                                                        <td class="rcv_no">{{ $active->ref_no}}</td>
-                                                        <td class="po_num">{{ $active->client->client_name}}</td>
-                                                        <td class="sales_invoice">{{ $active->store->store_name}}</td>
-                                                        <td>{{ $active->warehouse->warehouse_name}}</td>
-                                                        
-                                                        <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
-                                                        <td>{{ $active->user_create->name}}</td>
-                                                        <td class="action">
-                                                            <div class="hstack gap-3 fs-12">
-                                                                <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                                <? if($active->status != 'posted') : ?>
-                                                                    <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
-                                                                <? endif; ?>
-                                                        </td>
-                                                    </tr>
-                                                <? endforeach; ?>
-                                            <? else :?>
-                                                <div class="noresult" style="display: none">
-                                                    <div class="text-center">
-                                                        <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
-                                                            colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
-                                                        <h5 class="mt-2">Sorry! No Result Found</h5>
-                                                        <p class="text-muted mb-0">We've searched more than 200k+ tasks We did not find any tasks
-                                                            for you search.</p>
-                                                    </div>
-                                                </div>
-                                            <? endif; ?>
-                                        </tbody>
-                                    </table>
-                                    <!--end table-->
-                                </div>
-                                <!-- Pagination -->
-                                {!! $posted_list->withQueryString()->links('pagination::bootstrap-5') !!}
-                            </div>
+                                        <? endforeach; ?>
+                                    <? else :?>
+                                        <div class="noresult" style="display: none">
+                                            <div class="text-center">
+                                                <h5 class="mt-2">Sorry! No Result Found</h5>
+                                            </div>
+                                        </div>
+                                    <? endif; ?>
+                                </tbody>
+                            </table>
+                            <!--end table-->
                         </div>
+                        <!-- Pagination -->
+                        {!! $posted_list->withQueryString()->links('pagination::bootstrap-5') !!}
                     </div>
                 </div>
             </div><!-- end card-body -->
@@ -174,43 +158,45 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
             <div class="modal-body">
-            <form class="row g-3 needs-validation" novalidate>
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12 mb-3">
-                            <label for="position" class="form-label">Client <span class="text-danger">*</span> </label>
-                            <select class="form-select select2" required="required" id="client" name="client">
-                                <option value="">Select Client</option>                                                            
-                                <? foreach($client_list as $client) : ?>
-                                    <option value="<?=$client->id?>" ><?=$client->client_name?></option>
-                                <? endforeach;?>
-                            </select>
-                            <span class="text-danger error-msg client_error"></span>
+                <form class="row g-3 needs-validation" novalidate>
+                    @csrf
+                    <div class="modal-body" id="movement-form">
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <label for="position" class="form-label">Company <span class="text-danger">*</span> </label>
+                                <select class="form-select" required="required" id="company" name="company">
+                                    <option value="">Select company</option>                                                            
+                                    <? foreach($client_list as $company) : ?>
+                                        <? if(strtoupper($company->client_type) == 'O') : ?>
+                                            <option value="<?=$company->id?>" ><?=$company->client_name?></option>
+                                        <? endif;?>
+                                    <? endforeach;?>
+                                </select>
+                                <span class="text-danger error-msg company_error"></span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-12  mb-3">
-                            <label for="customer_id" class="form-label">Site Name <span class="text-danger">*</span> </label>
-                            <select class="form-select select2" required="required" id="store" name="store">
-                                <option value="">Select Store/Warehouse</option>                                                            
-                            </select>
-                            <span class="text-danger error-msg store_error"></span>
+                        <div class="row">
+                            <div class="col-lg-12  mb-3">
+                                <label for="customer_id" class="form-label">Site Name <span class="text-danger">*</span> </label>
+                                <select class="form-select" required="required" id="store" name="store">
+                                    <option value="">Select Site/Warehouse</option>                                                            
+                                </select>
+                                <span class="text-danger error-msg store_error"></span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <label for="customer_id" class="form-label">Warehouse Name <span class="text-danger">*</span> </label>
-                            <select class="form-select select2" required="required" id="warehouse" name="warehouse">
-                                <option value="">Select warehouse</option>                                                            
-                            </select>
-                            <span class="text-danger error-msg warehouse_error"></span>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label for="customer_id" class="form-label">Warehouse Name <span class="text-danger">*</span> </label>
+                                <select class="form-select" required="required" id="warehouse" name="warehouse">
+                                    <option value="">Select warehouse</option>                                                            
+                                </select>
+                                <span class="text-danger error-msg warehouse_error"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
@@ -224,12 +210,10 @@
 	@endsection
 @section('script')
 
-<script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
-
+<script src="{{ URL::asset('/assets/js/stock/movement.js') }}"></script>
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
  
-<script src="{{ URL::asset('/assets/js/stock/movement.js') }}"></script>
 
 
 

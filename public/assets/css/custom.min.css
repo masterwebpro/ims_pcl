@@ -55,6 +55,12 @@
     background-color: rgba(10,179,156,.1);
 }
 
+.closed {
+    color: #f06548;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
 .uom_select {
     width: 100px;
 }

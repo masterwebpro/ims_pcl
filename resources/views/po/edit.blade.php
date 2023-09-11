@@ -25,7 +25,7 @@
     <div class="col-xxl-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">PO Creation</h4>
+                <h4 class="card-title mb-0 flex-grow-1">PO Creation <span class="badge badge-soft-primary fs-16 text-uppercase {{ $po->status }}" id="po-status">{{ $po->status}}</span></h4>
                 <div class="flex-shrink-0">
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                         <? if($po->status != 'posted') : ?>
@@ -69,18 +69,35 @@
                             </div>
 
                             <div class="row">
+
                                 <div class="col-md-4 form-group">
-                                    <label for="client_id" class="form-label">Client Name</label>
-                                    <input type="hidden" value="{{ $po->client_id}}" class="client_id" name="client_id" id="client_id" />
-                                    <select class="form-select select2" required="required" id="client" name="client">
-                                        <option value="">Select Client</option>                                                            
-                                        <? foreach($client_list as $client) : ?>
-                                            <option value="<?=$client->id?>" <?=($client->id == $po->client_id) ? 'selected' : ''?> ><?=$client->client_name?></option>
+                                    <label for="client_id" class="form-label">Customer Name</label>
+                                    <input type="hidden" value="" class="customer_id" name="customer_id" id="customer_id" />
+                                    <select class="form-select select2" required="required" id="customer" name="customer">
+                                        <option value="">Select Customer</option>
+                                        <? foreach($client_list as $customer) : ?>
+                                            <? if($customer->client_type == 'C') : ?>
+                                                <option value="<?=$customer->id?>" <?=($customer->id == $po->customer_id) ? 'selected' : ''?>  ><?=$customer->client_name?></option>
+                                            <? endif;?>
                                         <? endforeach;?>
                                     </select>
-                                    <span class="text-danger error-msg client_error"></span>
+                                    <span class="text-danger error-msg customer_error"></span>
                                 </div>
 
+                                <div class="col-md-4 form-group">
+                                    <label for="client_id" class="form-label">Company Name</label>
+                                    <input type="hidden" value="" class="company_id" name="company_id" id="company_id" />
+                                    <select class="form-select select2" required="required" id="company" name="company">
+                                        <option value="">Select Company</option>
+                                        <? foreach($client_list as $company) : ?>
+                                            <? if($company->client_type == 'O') : ?>
+                                                <option value="<?=$company->id?>" <?=($company->id == $po->company_id) ? 'selected' : ''?> ><?=$company->client_name?></option>
+                                            <? endif;?>
+                                        <? endforeach;?>
+                                    </select>
+                                    <span class="text-danger error-msg company_error"></span>
+                                </div>
+                               
                                 <div class="col-md-4 form-group">
                                     <label for="client_id" class="form-label">Site Name</label>
                                     <input type="hidden" value="{{ $po->store_id }}" class="store_id" name="store_id" id="store_id" />
@@ -88,11 +105,6 @@
                                         <option value="">Select Store/Warehouse</option>                                                            
                                     </select>
                                     <span class="text-danger error-msg store_error"></span>
-                                </div>
-
-                                <div class="col-md-4 form-group">
-                                    <label for="inputState" class="form-label">Status</label>
-                                    <div><span class="badge badge-soft-primary fs-16 text-uppercase {{ $po->status }}" id="po-status">{{ $po->status}}</span></div>
                                 </div>
                             </div>
                         </div>
@@ -119,9 +131,9 @@
                                     <th class="text-start" style="width: 350px;">Particulars</th>
                                     <th style="width: 100px;">UOM</th>
                                     <th style="width: 80px;">Quantity</th>
-                                    <th class="text-start" style="width: 110px;">Unit Price</th>
-                                    <th style="width: 110px;">Discount</th>
-                                    <th class="text-start" style="width: 110px;">Amount</th>
+                                    <th class="text-start d-none" style="width: 110px;">Unit Price</th>
+                                    <th class="text-start d-none" style="width: 110px;">Discount</th>
+                                    <th class="text-start d-none" style="width: 110px;">Amount</th>
                                     <th class="text-center" style="width: 20px;">Action</th>
                                 </tr>
                             </thead>
@@ -129,11 +141,13 @@
                                 <? 
                                     $total_discount = 0;
                                     $subtotal =0;
+                                    $total_qty =0;
                                     $x=1;
                                     foreach($po->items as $item) :
                                     
                                         $total_discount += $item->discount ;
                                         $subtotal += $item->total_amount;
+                                        $total_qty += $item->requested_qty;
                                     ?>
                                     <tr id="product_{{$x}}" class="product fs-12">
                                         <td class="text-start">
@@ -160,14 +174,14 @@
                                             <input type="number" data-id="{{ $item->id }}" class="form-control text-end qty" name="qty[]" id="qty_{{ $item->id }}" value="{{ $item->requested_qty }}" placeholder="Qty" required />
                                             <span class="text-danger error-msg qty{{($x-1)}}_error"></span>
                                         </td>
-                                        <td>
+                                        <td class="d-none">
                                             <input type="number" data-id="{{ $item->id }}" class="form-control unit_price text-end" name="unit_price[]" id="unit_price_{{ $item->id }}" value="{{ $item->unit_amount }}" placeholder="Unit price" required />
                                             <span class="text-danger error-msg unit_price{{($x-1)}}_error"></span>
                                         </td>
-                                        <td>
+                                        <td class="d-none">
                                             <input type="number" class="form-control discount text-end" name="discount[]" id="discount_{{ $item->id }}" value="{{ number_format($item->discount,2) }}" placeholder="Discount" required />
                                         </td>
-                                        <td class="text-start">
+                                        <td class="text-start  d-none">
                                             <div>
                                                 <input type="text" class="form-control total_amount text-end" name="amount[]" id="total_amount_{{ $item->id }}" value="{{ number_format($item->total_amount,2) }}" placeholder="0.00" readonly />
                                                 <span class="text-danger error-msg amount{{($x-1)}}_error"></span>
@@ -180,12 +194,19 @@
                                     <?$x++;?>
                                 <? endforeach;?>
                             </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="fw-medium"> Total </td>
+                                        <td class="fw-medium"><input type="text" class="form-control border-0 text-end" id="total_qty" value="{{ number_format($total_qty,0) }}" placeholder="0.00" readonly /></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                             <table class="invoice-table table table-borderless table-nowrap mb-0 mt-4">
                             <tbody>
                                 <tr class="border-top border-top-dashed mt-2">
                                     <td class="p-0">
-                                        <table class="table table-borderless table-sm text-end">
+                                        <table class="table table-borderless table-sm text-end d-none">
                                             <tbody>
                                                 <tr>
                                                     <th scope="row">Sub Total</th>

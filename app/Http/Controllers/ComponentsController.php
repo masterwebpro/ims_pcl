@@ -36,4 +36,12 @@ class ComponentsController extends Controller
 
         return $submenus;
     }
+
+    public function client_type() {
+       return [
+            'T' => "Third-Party", 
+            'C' => "Customer" , 
+            'O' => "Company"
+        ];
+    }
 }

@@ -4,9 +4,9 @@ $(document).ready(function () {
     $(".select2").select2();
 
     if ( $( "#store_id" ).length ) {
-        client_id = $("#client_id" ).val();
+        company_id = $("#company_id" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(client_id, store_id);
+        populateStore(company_id, store_id);
         populateWarehouse(store_id, '');
     }
 
@@ -28,9 +28,9 @@ $(document).ready(function () {
 
 });
 
-$(document).on('change', '#client', function() {
-    var client_id = $(this).val();
-    populateStore(client_id, '');
+$(document).on('change', '#company', function() {
+    var company_id = $(this).val();
+    populateStore(company_id, '');
 });
 
 $(document).on('change', '#store', function() {
@@ -42,7 +42,7 @@ $(document).on('click', '#find-items', function() {
    
     var sup_id = $('#supplier').val();
 
-    var supplier_id = (sup_id != '') ? sup_id : 0;
+    // var supplier_id = (sup_id != '') ? sup_id : 0;
 
     //if(supplier_id) {   
 
@@ -179,8 +179,6 @@ $(document).on('click', '.receive-po', function (e) {
     $('#po_num_holder').val('');
     $('#show-po').modal('show');
 
-    //
-
     if ($.fn.DataTable.isDataTable("#unit-allocation")) {
         $('#po-table').DataTable().clear().destroy();
     }
@@ -191,6 +189,7 @@ $(document).on('click', '.receive-po', function (e) {
             { data: 'po_num' },
             { data: 'po_date' },
             { data: 'supplier_name' },
+            { data: 'customer_name'},
             { data: 'created_by' }
         ],
     });
@@ -211,62 +210,6 @@ $(document).on('click', '#receive-po-btn', function (e) {
         alert("Please select a PO Number");
     }    
 });
-
-
-
-// async
-// const data = {
-//     src: async (query) => {
-//       try {
-//         // Fetch Data from external Source
-//         const source = await fetch(BASEURL + 'settings/getPostedPO');
-//         const data = await source.json();
-//         return data;
-//       } catch (error) {
-//         return error;
-//       }
-//     },
-//     keys: ["po_num","id"],
-//     cache: true
-// }
-
-// if($("#po_num_holder").length) {
-
-//     var autoCompletePoNum = new autoComplete({
-//         selector: "#po_num_holder",
-//         placeHolder: "Search for PO number...",
-//         data: data,
-//         threshold: 3,
-//         resultsList: {
-//             element: function element(list, data) {
-//                 if (!data.results.length) {
-//                     // Create "No Results" message element
-//                     var message = document.createElement("div");
-//                     // Add class to the created element
-//                     message.setAttribute("class", "no_result");
-//                     // Add message text content
-//                     message.innerHTML = "<span>Found No Results for \"" + data.query + "\"</span>";
-//                     // Append message element to the results list
-//                     list.prepend(message);
-//                 }
-//             },
-//             noResults: true
-//         },
-//         resultItem: {
-//             highlight: true
-//         },
-//         events: {
-//             input: {
-//                 selection: function selection(event) {
-//                     console.log(event);
-//                     var selection = event.detail.selection.value;
-//                     autoCompletePoNum.input.value = selection.po_num;
-//                     $('#po_id').val(selection.id);
-//                 }
-//             }
-//         }
-//     });
-// }
 
 function _submitData(form_data) {
     $.ajax({

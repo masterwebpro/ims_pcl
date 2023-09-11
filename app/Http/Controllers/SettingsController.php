@@ -284,10 +284,11 @@ class SettingsController extends Controller
     }
 
     function getAllPostedPo(Request $request) {
-        $data = \App\Models\PoHdr::select('po_hdr.id','po_num', 'po_date', 's.supplier_name as supplier_name', 'cl.client_name as client_name', 'u.first_name as created_by', 'po_hdr.created_at' )
+        $data = \App\Models\PoHdr::select('po_hdr.id','po_num', 'po_date', 's.supplier_name as supplier_name', 'cx.client_name as customer_name', 'cm.client_name as company_name', 'u.first_name as created_by', 'po_hdr.created_at' )
         ->where('po_hdr.status', 'posted')
         ->leftJoin('suppliers as s','s.id','po_hdr.supplier_id')
-        ->leftJoin('client_list as cl','cl.id','po_hdr.client_id')
+        ->leftJoin('client_list as cx','cx.id','po_hdr.customer_id')
+        ->leftJoin('client_list as cm','cm.id','po_hdr.company_id')
         ->leftJoin('store_list as sl','sl.id','po_hdr.store_id')
         ->leftJoin('users as u','u.id','po_hdr.created_by')
         ->get();

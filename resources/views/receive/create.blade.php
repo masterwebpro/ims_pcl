@@ -44,11 +44,11 @@
                     <div class="col-lg-12">
                         <div class="card-body p-4 ">
                             <div class="row g-3">
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span class="text-danger">*</span></h6>
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Supplier Name <span class="text-danger">*</span></h6>
                                     <input type="hidden" name="rcv_no" id="rcv_no" />
-                                    <p class="fw-medium mb-2" id="shipping-name">
-                                        <select class="form-select select2" required="required" id="supplier" name="supplier">
+                                    <p class="mb-2">
+                                        <select class="form-select select2" id="supplier" name="supplier">
                                             <option value="">Select Supplier</option>                                                            
                                             <? foreach($supplier_list as $supplier) : ?>
                                                 <option value="<?=$supplier->id?>" ><?=$supplier->supplier_name?></option>
@@ -56,38 +56,46 @@
                                         </select> 
                                         <span class="text-danger error-msg supplier_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                    <p class="text-muted mb-1">supp_add2 here</p>
-                                    <p class="text-muted mb-0">supp_city province, country here</p> -->
                                 </div>
 
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
-                                    <p class="fw-medium mb-2" id="billing-name">
-                                        <select class="form-select select2" required="required" id="client" name="client">
-                                            <option value="">Select Client</option>                                                            
-                                            <? foreach($client_list as $client) : ?>
-                                                <option value="<?=$client->id?>" ><?=$client->client_name?></option>
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Customer Name <span class="text-danger">*</span></h6>
+                                    <p class="mb-2">
+                                        <select class="form-select select2" id="customer" name="customer">
+                                            <option value="">Select Customer</option>                                                            
+                                            <? foreach($client_list as $customer) : ?>
+                                                <? if(strtoupper($customer->client_type) == 'C') : ?>
+                                                    <option value="<?=$customer->id?>" ><?=$customer->client_name?></option>
+                                                <? endif;?>
                                             <? endforeach;?>
                                         </select>
-                                        <span class="text-danger error-msg client_error"></span>
+                                        <span class="text-danger error-msg  customer_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
-                                    <p class="text-muted mb-1">client_add2 here</p>
-                                    <p class="text-muted mb-0">client_city province, country here</p> -->
+                                </div>
+
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Company <span class="text-danger">*</span></h6>
+                                    <p class="mb-2" id="billing-name">
+                                        <select class="form-select select2" required="required" id="company" name="company">
+                                            <option value="">Select company</option>                                                            
+                                            <? foreach($client_list as $company) : ?>
+                                                <? if(strtoupper($company->client_type) == 'O') : ?>
+                                                    <option value="<?=$company->id?>" ><?=$company->client_name?></option>
+                                                <? endif;?>
+                                            <? endforeach;?>
+                                        </select>
+                                        <span class="text-danger error-msg company_error"></span>
+                                    </p>
                                 </div>
                                 <!--end col-->
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address <span class="text-danger">*</span></h6>
-                                    <p class="fw-medium mb-2" id="shipping-name">
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Site Name <span class="text-danger">*</span></h6>
+                                    <p class=" mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>                                                            
+                                            <option value="">Select Site/Warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                    <p class="text-muted mb-1">supp_add2 here</p>
-                                    <p class="text-muted mb-0">supp_city province, country here</p> -->
                                 </div>
                                 <!--end col-->
                             </div>
@@ -313,6 +321,13 @@
                                         <tbody id="newlink">
                                             
                                         </tbody>
+                                            <tfoot>
+                                                <td colspan='3' class="fw-semibold">Total</td>
+                                                <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_whse_qty" value="0" placeholder="0.00" readonly /></td>
+                                                <td class="text-end">&nbsp;</td>
+                                                <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_inv_qty" value="0" placeholder="0.00" readonly /></td>
+                                                <td colspan='4'>&nbsp;</td>
+                                            </tfoot>
                                         </table>
                                         
                                     <!--end table-->

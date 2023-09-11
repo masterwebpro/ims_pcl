@@ -19,7 +19,7 @@
                         <? if( $po->status != 'posted') : ?>
                             <a href="{{ URL::to('po') }}/<?=_encode($po->id)?>/edit" class="btn btn-success btn-label rounded-pill"><i class="ri-edit-line label-icon align-middle rounded-pill fs-16 me-2"></i> Edit</a>
                         <? else : ?>
-                            <a href="javascript:window.print()" class="btn btn-warning btn-label d-print-none rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
+                            <a href="javascript:window.print()" class="btn btn-warning btn-label d-print-none d-none rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
                         <? endif;?>
                         <a href="{{ URL::to('po') }}" class="btn btn-primary btn-label rounded-pill d-print-none"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
@@ -85,11 +85,11 @@
                     <div class="card-body p-4 border-top border-top-dashed">
                         <div class="row g-3">
                             <div class="col-6">
-                                <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
-                                <p class="fw-medium mb-2" id="billing-name">{{ $po->client->client_name}}</p>
-                                <p class="text-muted mb-1" id="billing-address-line-1">{{ $po->client->address_1}} </p>
-                                <p class="text-muted mb-1">{{ $po->client->address_2 }} </p>
-                                <p class="text-muted mb-0">{{ $po->client->city }}, {{ $po->client->province}}  </p>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-3">Customer Name</h6>
+                                <p class="fw-medium mb-2" id="billing-name">{{ $po->customer->client_name}}</p>
+                                <p class="text-muted mb-1" id="billing-address-line-1">{{ $po->customer->address_1}} </p>
+                                <p class="text-muted mb-1">{{ $po->customer->address_2 }} </p>
+                                <p class="text-muted mb-0">{{ $po->customer->city }}, {{ $po->customer->province}}  </p>
                             </div>
                             <!--end col-->
                             <div class="col-6">
@@ -114,13 +114,13 @@
                                 <thead>
                                     <tr class="table-active">
                                         <th scope="col" style="width: 50px;">#</th>
-                                        <th scope="col">Product Code</th>
+                                        <th scope="col" class="text-start">Product Code</th>
                                         <th scope="col" class="text-start">Particulars</th>
-                                        <th scope="col">UOM</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col" class="text-end">Unit Price</th>
-                                        <th scope="col">Discount</th>
-                                        <th scope="col" class="text-end">Amount</th>
+                                        <th scope="col" class="text-start">UOM</th>
+                                        <th scope="col" class="text-start">Quantity</th>
+                                        <th scope="col" class="text-end  d-none">Unit Price</th>
+                                        <th scope="col"  class="text-end  d-none">Discount</th>
+                                        <th scope="col" class="text-end d-none">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody id="products-list">
@@ -128,10 +128,12 @@
                                     $x=1;
                                     $total_amount = 0;
                                     $total_discount = 0;
+                                    $total_qty = 0;
                                     foreach($po->items as $item) : 
 
                                         $total_amount += $item->total_amount;
                                         $total_discount += $item->discount;
+                                        $total_qty += $item->requested_qty;
                                     ?>
                                     <tr>
                                         <td class="text-start fs-12"><?=$x++;?></td>
@@ -142,17 +144,23 @@
                                         </td>
                                         <td class="text-start fs-12">{{ $item->uom->uom_desc}}</td>
                                         <td class="text-end fs-12">{{ $item->requested_qty}}</td>
-                                        <td class="text-end fs-12" class="text-end">{{ number_format($item->unit_amount,2)}}</td>
-                                        <td class="text-end fs-12">{{ number_format($item->discount,2)}}</td>
-                                        <td class="text-end fs-12">{{ $item->currency}} {{ number_format($item->total_amount,2)}}</td>
+                                        <td class="text-end fs-12 d-none" class="text-end">{{ number_format($item->unit_amount,2)}}</td>
+                                        <td class="text-end fs-12 d-none ">{{ number_format($item->discount,2)}}</td>
+                                        <td class="text-end fs-12 d-none">{{ $item->currency}} {{ number_format($item->total_amount,2)}}</td>
                                     </tr>
                                     <? endforeach;?>
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="fw-medium"> Total </td>
+                                        <td class="fw-medium text-end">{{ number_format($total_qty,0) }}</td>
+                                    </tr>
+                                </tfoot>
                             </table>
                             <!--end table-->
                         </div>
                         <div class="border-top border-top-dashed mt-2">
-                            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
+                            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto  d-none" style="width:250px">
                                 <tbody>
                                     <tr>
                                         <td>Sub Total</td>

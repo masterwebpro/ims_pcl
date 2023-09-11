@@ -15,7 +15,8 @@ class RcvHdr extends Model
         'rcv_no',
         'po_num',
         'store_id',
-        'client_id',
+        'company_id',
+        'customer_id',
         'supplier_id',
         'date_received',
         'received_by',
@@ -59,10 +60,16 @@ class RcvHdr extends Model
         return $this->hasOne(TruckType::class, 'id', 'created_by');
     }
 
-    public function client() 
+    public function customer() 
     {
-        return $this->hasOne(Client::class, 'id', 'client_id');
+        return $this->hasOne(Client::class, 'id', 'customer_id');
     }
+
+    public function company() 
+    {
+        return $this->hasOne(Client::class, 'id', 'company_id');
+    }
+
     public function store() 
     {
         return $this->hasOne(Store::class, 'id', 'store_id');

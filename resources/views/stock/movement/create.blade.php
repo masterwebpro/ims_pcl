@@ -46,24 +46,26 @@
                             <div class="row g-3">
                                 <div class="col-4">
                                 <input type="hidden" name="ref_no" id="ref_no" value="" />
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
-                                    <p class="fw-medium mb-2" id="billing-name">
-                                        <input type="hidden" name="client_id" id="client_id" value="<?=$client_id?>" />
-                                        <select class="form-select select" disabled required="required" id="client" name="client">
-                                            <option value="">Select Client</option>                                                            
-                                            <? foreach($client_list as $client) : ?>
-                                                <option value="<?=$client->id?>" <?=($client->id == $client_id) ? 'selected': ''; ?> ><?=$client->client_name?></option>
+                                    <h6 class="text-muted mb-3">Company Name <span class="text-danger">*</span></h6>
+                                    <p class="mb-2">
+                                        <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>" />
+                                        <input type="hidden" name="company" id="company" value="<?=$company_id?>" />
+                                        <select class="form-select select" disabled>
+                                            <option value="">Select Company</option>                                                            
+                                            <? foreach($client_list as $company) : ?>
+                                                <option value="<?=$company->id?>" <?=($company->id == $company_id) ? 'selected': ''; ?> ><?=$company->client_name?></option>
                                             <? endforeach;?>
                                         </select>
-                                        <span class="text-danger error-msg client_error"></span>
+                                        <span class="text-danger error-msg company_error"></span>
                                     </p>
                                 </div>
                                 <!--end col-->
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site <span class="text-danger">*</span></h6>
-                                    <p class="fw-medium mb-2" id="shipping-name">
+                                    <h6 class="text-muted mb-3">Site Name <span class="text-danger">*</span></h6>
+                                    <p class="mb-2">
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$store_id?>" />
-                                        <select class="form-select select" disabled required="required" id="store" name="store">
+                                        <input type="hidden" name="store" value="<?=$store_id?>" />
+                                        <select class="form-select select" disabled id="store">
                                             <option value="">Select Store/Warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
@@ -71,8 +73,8 @@
                                 </div>
                                 <!--end col-->
                                 <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse <span class="text-danger">*</span></h6>
-                                    <p class="fw-medium mb-2" id="shipping-name">
+                                    <h6 class="text-muted mb-3">Warehouse <span class="text-danger">*</span></h6>
+                                    <p class="mb-2">
                                         <input type="hidden" name="warehouse_id" id='warehouse_id' value="<?=$warehouse_id?>" />
                                         <select class="form-select select" disabled required="required" id="warehouse" name="warehouse">
                                             <option value="">Select warehouse</option>                                                            
@@ -156,15 +158,17 @@
                             <div class="card-body p-4">
                                 <!-- ITEMS -->
                                 <div class="col-md-12 mb-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
-                                        <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
-                                        <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
-                                    </div>
+                                    <div class="col-md-12 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
+                                            <input type="text" class="form-control" name="item_code" id="item_code">
+                                            <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
+                                        </div>
+                                    </div> 
                                 </div> 
                                 
                                 <div class="table-responsive">
-                                    <table class="table table-bordered movement" id="product-list">
+                                    <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>
@@ -199,6 +203,7 @@
         </div>
         <!--end col-->
     </div>
+    </form>
 
 
     <!-- show charges Modal -->
@@ -280,14 +285,12 @@
             </div>
         </div>
     </div>
-</form>
+
 
 	@endsection
 @section('script')
 
-<script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
-<script src="{{ URL::asset('assets/libs/cleave.js/cleave.js.min.js') }}"></script>
-<script src="{{ URL::asset('assets/libs/masks/jquery.mask.min.js') }}"></script>
+
 <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
 
 <script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>

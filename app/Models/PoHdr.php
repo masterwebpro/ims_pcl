@@ -13,7 +13,8 @@ class PoHdr extends Model
     protected $fillable = [
         'po_num',
         'store_id',
-        'client_id',
+        'company_id',
+        'customer_id',
         'supplier_id',
         'po_date',
         'status',
@@ -32,10 +33,21 @@ class PoHdr extends Model
         return $this->hasOne(Supplier::class, 'id', 'supplier_id');
     }
 
-    public function client() 
+    // public function client() 
+    // {
+    //     return $this->hasOne(Client::class, 'id', 'client_id');
+    // }
+
+    public function customer() 
     {
-        return $this->hasOne(Client::class, 'id', 'client_id');
+        return $this->hasOne(Client::class, 'id', 'customer_id');
     }
+
+    public function company() 
+    {
+        return $this->hasOne(Client::class, 'id', 'company_id');
+    }
+
     public function store() 
     {
         return $this->hasOne(Store::class, 'id', 'store_id');
