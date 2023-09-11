@@ -4,9 +4,9 @@ $(document).ready(function () {
     $(".select2").select2();
 
     if ( $( "#store_id" ).length ) {
-        client_id = $("#client_id" ).val();
+        company_id = $("#company_id" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(client_id, store_id);
+        populateStore(company_id, store_id);
         populateWarehouse(store_id, '');
     }
 
@@ -21,11 +21,16 @@ $(document).ready(function () {
         $(this).addClass('selected');
     });
 
+    $('#po-table tbody').on('click', 'tr', function (e) {
+        $('#po-table tbody tr').removeClass('selected')
+        $(this).addClass('selected');
+    });
+
 });
 
-$(document).on('change', '#client', function() {
-    var client_id = $(this).val();
-    populateStore(client_id, '');
+$(document).on('change', '#company', function() {
+    var company_id = $(this).val();
+    populateStore(company_id, '');
 });
 
 $(document).on('change', '#store', function() {
@@ -37,7 +42,7 @@ $(document).on('click', '#find-items', function() {
    
     var sup_id = $('#supplier').val();
 
-    var supplier_id = (sup_id != '') ? sup_id : 0;
+    // var supplier_id = (sup_id != '') ? sup_id : 0;
 
     //if(supplier_id) {   
 
@@ -83,7 +88,7 @@ $(document).on('click', '#add-product', function() {
         <td class="text-start"> \
             <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
         '+rowCount+' </td> \
-        <td class="text-start  fs-14"> \
+        <td class="text-start  fs-12"> \
             '+data.product_name+'<br/><small>'+data.product_code+'</small> \
         </td> \
         <td class="text-start"> \
@@ -109,6 +114,15 @@ $(document).on('click', '#add-product', function() {
             <select name="inv_uom[]" data-id="'+idx+'" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
             '+uom+'</select> \
             <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
+        </td> \
+        <td class="ps-1"> \
+            <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" placeholder="Lot/Batch No" /> \
+        </td> \
+        <td class="ps-1"> \
+            <input type="date" class="form-control " name="expiry_date[]"  placeholder="Expiry Date" /> \
+        </td> \
+        <td class="ps-1"> \
+            <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  placeholder="Remarks" /> \
         </td> \
         <td>'+btn+'</td> \
         </tr>');
@@ -164,71 +178,38 @@ $(document).on('click', '.receive-po', function (e) {
     e.preventDefault();
     $('#po_num_holder').val('');
     $('#show-po').modal('show');
+
+    if ($.fn.DataTable.isDataTable("#unit-allocation")) {
+        $('#po-table').DataTable().clear().destroy();
+    }
+    new DataTable("#po-table",{ 
+        paging: true,
+        ajax: BASEURL+"settings/getAllPostedPO",
+        columns: [
+            { data: 'po_num' },
+            { data: 'po_date' },
+            { data: 'supplier_name' },
+            { data: 'customer_name'},
+            { data: 'created_by' }
+        ],
+    });
 });
 
 $(document).on('click', '#receive-po-btn', function (e) {
     e.preventDefault();
-    $('#preloading').modal('show');
-    var po_num = $('#po_num_holder').val();
-    setTimeout(function () {
-        window.location = BASEURL+'receive/'+escapeHtml(po_num)+'/create';
-    }, 300);
-    
+    var table = $('#po-table').DataTable();
+    var data = ( table.rows('.selected').data()[0] );
+
+    if (table.rows('.selected').data().length > 0) {
+        $('#preloading').modal('show');
+        rec = _encode(data.id);
+        setTimeout(function () {
+            window.location = BASEURL+'receive/'+rec.responseText+'/create';
+        }, 300);
+    } else {
+        alert("Please select a PO Number");
+    }    
 });
-
-
-
-// async
-const data = {
-    src: async (query) => {
-      try {
-        // Fetch Data from external Source
-        const source = await fetch(BASEURL + 'settings/getPostedPO');
-        const data = await source.json();
-        return data;
-      } catch (error) {
-        return error;
-      }
-    },
-    keys: ["po_num"],
-    cache: true
-}
-
-if($("#po_num_holder").length) {
-
-    var autoCompletePoNum = new autoComplete({
-        selector: "#po_num_holder",
-        placeHolder: "Search for PO number...",
-        data: data,
-        threshold: 2,
-        resultsList: {
-            element: function element(list, data) {
-                if (!data.results.length) {
-                    // Create "No Results" message element
-                    var message = document.createElement("div");
-                    // Add class to the created element
-                    message.setAttribute("class", "no_result");
-                    // Add message text content
-                    message.innerHTML = "<span>Found No Results for \"" + data.query + "\"</span>";
-                    // Append message element to the results list
-                    list.prepend(message);
-                }
-            },
-            noResults: true
-        },
-        resultItem: {
-            highlight: true
-        },
-        events: {
-            input: {
-                selection: function selection(event) {
-                    var selection = event.detail.selection.value;
-                    autoCompletePoNum.input.value = selection.po_num;
-                }
-            }
-        }
-    });
-}
 
 function _submitData(form_data) {
     $.ajax({
@@ -304,7 +285,7 @@ $(document).on('blur keyup', '#item_code', function(e) {
                             <td class="text-start"> \
                                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data.data.product_id+'" value="'+data.data.product_id+'" /> \
                             '+rowCount+' </td> \
-                            <td class="text-start  fs-14"> \
+                            <td class="text-start  fs-12"> \
                                 '+data.data.product_name+'<br/><small>'+data.data.product_code+'</small> \
                             </td> \
                             <td class="text-start"> \
@@ -330,6 +311,15 @@ $(document).on('blur keyup', '#item_code', function(e) {
                                 <select name="inv_uom[]" data-id="'+idx+'" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
                                 '+uom+'</select> \
                                 <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
+                            </td> \
+                            <td class="ps-1"> \
+                                <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" placeholder="Lot/Batch No" /> \
+                            </td> \
+                            <td class="ps-1"> \
+                                <input type="date" class="form-control " name="expiry_date[]"  placeholder="Expiry Date" /> \
+                            </td> \
+                            <td class="ps-1"> \
+                                <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  placeholder="Remarks" /> \
                             </td> \
                             <td>'+btn+'</td> \
                             </tr>');

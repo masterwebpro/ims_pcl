@@ -53,7 +53,7 @@ class StockMovementController extends Controller
         
         $warehouse = _decode($session['warehouse']);
         $store = _decode($session['store']);
-        $client = _decode($session['client']);
+        $company = _decode($session['company']);
 
         //get rack and layer
         $location = [
@@ -67,7 +67,7 @@ class StockMovementController extends Controller
             'client_list'=>$client_list, 
             'warehouse_id' =>$warehouse? $warehouse : '',
             'store_id'=> $store? $store : '',
-            'client_id'=> $client? $client : '',
+            'company_id'=> $company? $company : '',
             'location'=> $location,
         ]);
     }
@@ -76,7 +76,7 @@ class StockMovementController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'warehouse_id'=>'required',
-            'client_id'=>'required',
+            'company_id'=>'required',
             'store_id'=>'required',
             'item_type.*'=>'required',
             'product_id.*' => 'required',
@@ -89,7 +89,7 @@ class StockMovementController extends Controller
             
         ], [
             'warehouse'=>'Warehouse is required',
-            'client'=>'Client  is required',
+            'company'=>'Company is required',
             'store'=>'Store is required',
             'product_id.*' => 'Product is required',
             'item_type.*'=>'Item type is required',
@@ -167,7 +167,7 @@ class StockMovementController extends Controller
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
                     'trans_type'=>'SM',
-                    'trans_type'=>'X',
+                    'status'=>'X',
                     'inv_qty'=>$request->new_inv_qty[$x],
                     'inv_uom'=>$request->new_inv_uom[$x],
                     'whse_qty'=>$request->new_inv_qty[$x],
@@ -184,7 +184,7 @@ class StockMovementController extends Controller
                     'warehouse_id'=>$request->warehouse_id,
                     'storage_location_id'=>$request->old_location[$x],
                     'trans_type'=>'SM',
-                    'trans_type'=>'X',
+                    'status'=>'X',
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
                     'inv_qty'=>($request->new_inv_qty[$x] * -1),
@@ -281,12 +281,12 @@ class StockMovementController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'warehouse'=>'required',
-            'client'=>'required',
+            'company'=>'required',
             'store'=>'required',
             
         ], [
             'warehouse'=>'Warehouse is required',
-            'client'=>'Client  is required',
+            'company'=>'Company  is required',
             'store'=>'Store is required',
         ]);
 
@@ -298,7 +298,7 @@ class StockMovementController extends Controller
 
             $data = [
                 'warehouse'=>_encode($request->warehouse),
-                'client'=>_encode($request->client),
+                'company'=>_encode($request->company),
                 'store'=>_encode($request->store)
             ];
 

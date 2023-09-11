@@ -33,10 +33,10 @@ class SettingsController extends Controller
     }
 
     function getPostedPo(Request $request) {
-        $data = \App\Models\PoHdr::select('po_num')->where('status', 'posted')->get();
+        $data = \App\Models\PoHdr::select('po_num', 'id')->where('status', 'posted')->get();
         return response()->json($data);
     }
-
+    
     public function getUom(Request $request) {
 
         $uom_list = UOM::all();
@@ -281,5 +281,25 @@ class SettingsController extends Controller
     function getTruckType(Request $request) {
         $data = \App\Models\TruckType::select('vehicle_code','vehicle_desc')->get();
         return response()->json($data);
+    }
+
+    function getAllPostedPo(Request $request) {
+        $data = \App\Models\PoHdr::select('po_hdr.id','po_num', 'po_date', 's.supplier_name as supplier_name', 'cx.client_name as customer_name', 'cm.client_name as company_name', 'u.first_name as created_by', 'po_hdr.created_at' )
+        ->where('po_hdr.status', 'posted')
+        ->leftJoin('suppliers as s','s.id','po_hdr.supplier_id')
+        ->leftJoin('client_list as cx','cx.id','po_hdr.customer_id')
+        ->leftJoin('client_list as cm','cm.id','po_hdr.company_id')
+        ->leftJoin('store_list as sl','sl.id','po_hdr.store_id')
+        ->leftJoin('users as u','u.id','po_hdr.created_by')
+        ->get();
+        return Datatables::of($data)->addIndexColumn()->make();
+    }
+
+    public function _encode(Request $request, $value) {
+        // return response()->json([
+        //     'success'  => true,
+        //     'data'    => _encode($value)
+        // ]);
+        return _encode($value);
     }
 }

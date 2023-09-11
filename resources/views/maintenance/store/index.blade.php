@@ -73,9 +73,9 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="store_code">Store Code</th>
-                                <th class="sort" data-sort="store_name">Store Name</th>
-                                <th class="sort" data-sort="client_name">Client Name</th>
+                                <th class="sort" data-sort="store_code">Site Code</th>
+                                <th class="sort" data-sort="store_name">Site Name</th>
+                                <th class="sort" data-sort="client_name">Customer Name</th>
                                 <th class="sort" data-sort="tin">Tin</th>
                                 <th class="sort" data-sort="address_1">Address 1</th>
                                 <th class="sort" data-sort="address_1">Address 2</th>

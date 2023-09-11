@@ -1,14 +1,14 @@
 $(document).ready(function () {
     $(".select2").select2({
-        dropdownParent: $("#show-form")
+        dropdownParent: $("#movement-form")
     });
 
-    $(".select").select2();
+    $(".select2").select2();
 
     if ( $( "#store_id" ).length ) {
-        client_id = $("#client_id" ).val();
+        company_id = $("#company_id" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(client_id, store_id);
+        populateStore(company_id, store_id);
         populateWarehouse(store_id, '');
     }
 
@@ -25,14 +25,13 @@ $(document).ready(function () {
     });
 });
 
-
 $(document).on('click', '.create-movement', function() {
    $('#show-form').modal('show');
 });
 
-$(document).on('change', '#client', function() {
-    var client_id = $(this).val();
-    populateStore(client_id, '');
+$(document).on('change', '#company', function() {
+    var company_id = $(this).val();
+    populateStore(company_id, '');
 });
 
 $(document).on('change', '#store', function() {
@@ -48,7 +47,7 @@ $(document).on('change', '#rack', function() {
 
 $(document).on('click', '#movement-next-btn', function() {
     var store = $('#store').val();
-    var client = $('#client').val();
+    var company = $('#company').val();
     var warehouse = $('#warehouse').val();
    
     $.ajax({
@@ -56,7 +55,7 @@ $(document).on('click', '#movement-next-btn', function() {
         method: "POST",
         data: {
             store : store,
-            client : client,
+            company : company,
             warehouse : warehouse,
             _token : $('input[name=_token]').val()
         },
@@ -193,7 +192,9 @@ $(document).on('click', '#add-product', function() {
             var rowCount = ($('#product-list tr').length) - 1;
             var idx = rowCount - 3;
             var btn = '<div class="text-center">';
-            btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
+            // btn += '<a href="javascript:void(0)" class="text-info split-product" data-id="'+(rowCount-1)+'"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>';
+            btn += '&nbsp; <a href="javascript:void(0)" class="text-danger remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i>Remove</a>';
+            
             btn += '</div>'
 
             $('#product-list tbody').append('<tr id="product_'+(rowCount-1)+'"> \
@@ -212,19 +213,18 @@ $(document).on('click', '#add-product', function() {
                 '+data[x].old_location+' \
             </td> \
             <td class="text-start ps-1 fs-13"> \
-                <div class="input-group"> \
+                <div class="input-group"  style="width: 140px;"> \
                     <input type="text" readonly class="form-control input-group-text numeric movement_item" name="old_inv_qty[]" data-id="'+data[x].product_id+'" id="old_inv_qty_'+(rowCount-1)+'" value="'+data[x].inv_qty+'"> \
                     <input type="hidden" readonly class="form-control" name="old_inv_uom[]" data-id="'+data[x].product_id+'" id="old_inv_uom_'+(rowCount-1)+'" value="'+data[x].i_uom_id+'"> \
                     <span class="input-group-text">'+data[x].i_code+'</span> \
                 </div> \
                 <span class="text-danger error-msg old_inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
-            <td class="text-start ps-1"><select name="new_location[]" id="new_location_'+(rowCount-1)+'" class="form-select select2"> \
-                '+new_location+'</select> \
+            <td class="text-start ps-1"><select style="width: 100px;" name="new_location[]" id="new_location_'+(rowCount-1)+'" class="form-select select2">'+new_location+'</select> \
                 <span class="text-danger error-msg new_location'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="text-start ps-1"> \
-                <div class="input-group"> \
+                <div class="input-group"  style="width: 140px;"> \
                     <input type="text" class="form-control new_inv_qty numeric movement_item" name="new_inv_qty[]" data-id="'+data[x].product_id+'" id="new_inv_qty_'+(rowCount-1)+'" value="'+data[x].inv_qty+'"> \
                     <input type="hidden" readonly class="form-control" name="new_inv_uom[]" data-id="'+data[x].product_id+'" id="new_inv_uom_'+(rowCount-1)+'" value="'+data[x].i_uom_id+'"> \
                     <span class="input-group-text">'+data[x].i_code+'</span> \
@@ -335,4 +335,28 @@ $(document).on('blur', '.new_inv_qty', function() {
         $('#submit-receive').find('span.'+prefix.replace('.','')+'_error').text('Insufficient Qty');
     }
 });
+
+$(document).on('blur', '#item_code', function(e) {
+    var val = $(this).val();
+    scanItem(val); 
+});
+
+$(document).on('keyup', '#item_code', function(e) {
+    var val = $(this).val();
+    if (e.keyCode === 13)  {
+        scanItem(val); 
+    }
+});
+
+function scanItem(val) {
+    console.log(val)
+}
+
+$(document).on('click', '.split-product', function(e) {
+    e.preventDefault();
+    var thisRow = $( this ).closest( 'tr' )[0];
+    $( thisRow ).clone().insertAfter( thisRow ).find( '.new_inv_qty' ).val('');
+});
+
+
 

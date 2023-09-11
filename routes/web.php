@@ -50,6 +50,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/product', App\Http\Controllers\ProductController::class);
     Route::resource('/maintenance/attributes', App\Http\Controllers\AttributesController::class);
 
+    Route::resource('/users', App\Http\Controllers\UsersController::class);
+
 });
 
 Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
@@ -59,6 +61,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/products', [App\Http\Controllers\SettingsController::class, 'getProducts']);
     Route::get('/uom', [App\Http\Controllers\SettingsController::class, 'getUom']);
     Route::get('/getPostedPO', [App\Http\Controllers\SettingsController::class, 'getPostedPo']);
+    Route::get('/getAllPostedPO', [App\Http\Controllers\SettingsController::class, 'getAllPostedPo']);
     Route::get('/getBrand', [App\Http\Controllers\SettingsController::class, 'getBrandByCategory']);
     Route::get('/getEntity', [App\Http\Controllers\SettingsController::class, 'getAttributeEntity']);
     Route::get('/getCategoryAttribute', [App\Http\Controllers\SettingsController::class, 'getCategoryAttribute']);
@@ -73,11 +76,9 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/withdrawal_list', [App\Http\Controllers\SettingsController::class, 'getWithdrawalList']);
     Route::get('/getTruckType', [App\Http\Controllers\SettingsController::class, 'getTruckType']);
 
-
-
-
     Route::get('/product', [App\Http\Controllers\SettingsController::class, 'getProduct']);
     Route::get('/allProducts', [App\Http\Controllers\SettingsController::class, 'getAllProduct']);
+    Route::get('/_encode/{value}', [App\Http\Controllers\SettingsController::class, '_encode']);
 
 });
 
@@ -97,8 +98,6 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
     Route::get('/inventory',[App\Http\Controllers\ReportController::class,'inventory'])->name('report.inventory');
     Route::get('/getInventoryReport',[App\Http\Controllers\ReportController::class,'getInventoryReport'])->name('report.getInventoryReport');
-
-
 });
 
 

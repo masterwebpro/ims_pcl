@@ -171,7 +171,7 @@
                                 </div> 
                                 
                                 <div class="table-responsive">
-                                    <table class="table table-bordered movement" id="product-list">
+                                    <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>
@@ -206,7 +206,7 @@
                                                             {{isset($dtl->old_location->location) ? $dtl->old_location->location : 'RA' }}
                                                         </td>
                                                         <td>
-                                                            <div class="input-group">
+                                                            <div class="input-group"  style="width: 140px;">
                                                                 <input type="text" readonly class="form-control input-group-text numeric movement_item" name="old_inv_qty[]" data-id="<?=($x)?>" id="old_inv_qty_<?=($x)?>" value="<?=$dtl->old_inv_qty?>">
                                                                 <input type="hidden" readonly class="form-control" name="old_inv_uom[]" data-id="<?=($x)?>" id="old_inv_uom_<?=($x)?>" value="<?=$dtl->old_inv_uom?>">
                                                                 <span class="input-group-text">{{$dtl->old_uom->code}}</span>
@@ -214,13 +214,13 @@
                                                             <span class="text-danger error-msg old_inv_qty<?=($x)?>_error"></span>
                                                         </td>
                                                         <td>
-                                                            <select name="new_location[]" id="new_location_<?=($x)?>" class="form-select" style="width: 120px;">
+                                                            <select name="new_location[]"  style="width: 120px;"  id="new_location_<?=($x)?>" class="form-select" style="width: 120px;">
                                                                 <?=$stock->getNewLocation($mv_hdr->warehouse_id, $dtl->new_storage_location_id);?>
                                                             </select>
                                                             <span class="text-danger error-msg new_location<?=($x)?>_error"></span>
                                                         </td>
                                                         <td>
-                                                            <div class="input-group">
+                                                            <div class="input-group"  style="width: 140px;">
                                                                 <input type="text" class="form-control new_inv_qty numeric movement_item" name="new_inv_qty[]" data-id="<?=($x)?>" id="new_inv_qty_<?=($x)?>" value="<?=$dtl->new_inv_qty?>">
                                                                 <input type="hidden" readonly class="form-control" name="new_inv_uom[]" data-id="<?=($x)?>" id="new_inv_uom_<?=($x)?>" value="<?=$dtl->new_inv_uom?>">
                                                                 <span class="input-group-text">{{$dtl->new_uom->code}}</span>

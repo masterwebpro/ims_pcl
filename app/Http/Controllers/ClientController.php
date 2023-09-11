@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ComponentsController;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +53,10 @@ class ClientController extends Controller
                 ])
                 ->orderByDesc('created_at')
                 ->paginate(20);
-        return view('maintenance/client/index', ['client' => $client, 'type' => ['T' => "Third-Party", 'C' => "Customer"]]);
+
+        $client_type =   (new ComponentsController)->client_type();
+
+        return view('maintenance/client/index', ['client' => $client, 'type' => ['O' => "Company", 'T' => "Third-Party", 'C' => "Customer", 'S' => "Supplier"]]);
     }
 
     /**
@@ -63,10 +67,11 @@ class ClientController extends Controller
     public function create()
     {
         $client = Client::all();
+        $client_type =   (new ComponentsController)->client_type();
 
         return view('maintenance/client/create', [
             'client'=> $client,
-            'client_type'=> ['T' => "Third-Party", 'C' => "Customer"],
+            'client_type'=> $client_type ,
         ]);
     }
 
@@ -163,10 +168,11 @@ class ClientController extends Controller
     public function show($id)
     {
         $client = Client::find(_decode($id));
+        $client_type = (new ComponentsController)->client_type();
 
         return view('maintenance/client/view', [
             'client'=>$client,
-            'client_type'=> ['T' => "Third-Party", 'C' => "Customer"],
+            'client_type'=> $client_type,
         ]);
     }
 
@@ -179,32 +185,11 @@ class ClientController extends Controller
     public function edit($id)
     {
         $client = Client::find(_decode($id));
+        $client_type = (new ComponentsController)->client_type();
+
         return view('maintenance/client/edit', [
             'client'=>$client,
-            'client_type'=> ['T' => "Third-Party", 'C' => "Customer"],
+            'client_type'=> $client_type,
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

@@ -3,6 +3,12 @@
 @section('css')
 
 <link rel="stylesheet" href="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.css') }} ">
+<!--datatable css-->
+<link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<!--datatable responsive css-->
+<link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+
 
 @endsection
 @section('content')
@@ -24,54 +30,95 @@
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">
-                <form action="{{ route('receive.index') }}" method="GET">
+                <form action="{{ route('receive.index')  }}" method="GET">
                     <div class="row g-3">
-                        <div class="col-xxl-4 col-sm-12">
+                        <div class="col-lg-3 col-sm-6">
                             <div class="search-box">
                                 <input type="text" name="q" class="form-control search"
-                                    placeholder="Search for tasks or something...">
+                                    placeholder="RCV or PO Number" value="{{isset($request->q) ? $request->q : ''}}">
                                 <i class="ri-search-line search-icon"></i>
                             </div>
                         </div>
                         <!--end col-->
 
-                        <div class="col-xxl-2 col-sm-4">
+                        <div class="col-lg-3 col-sm-6">
                             <div class="input-light">
-                                <select class="form-control" name="filter_date" id="filter_date">
-                                    <option value="po_date">PO Date</option>
-                                    <option value="created_at">Created Date</option>
+                                <select class="form-select" name="filter_date" id="filter_date">
+                                    <option value="">Filter Date By</option>
+                                    <option <?=($request->filter_date == 'po_date') ? 'selected': ''?> value="po_date">PO Date</option>
+                                    <option <?=($request->filter_date == 'created_at') ? 'selected': ''?> value="created_at">Created Date</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="col-xxl-2 col-sm-4">
+                        <div class="col-lg-3 col-sm-6">
                             <input type="text" class="form-control" name="date" id="date_picker"
-                                data-provider="flatpickr" data-date-format="Y-d-m" data-range-date="true"
+                                data-provider="flatpickr" data-date-format="Y-d-m" value="{{isset($request->date) ? $request->date : ''}}" data-range-date="true"
                                 placeholder="Select date range">
                         </div>
                         <!--end col-->
 
-                        <div class="col-xxl-3 col-sm-4">
+                        <div class="col-lg-3 col-sm-3">
                             <div class="input-light">
                                 <select class="form-control" data-choices data-choices-search-false
                                     name="status" id="status">
                                     <option value="">Status</option>
-                                    <option value="all" selected>All</option>
-                                    <option value="open">Open</option>
-                                    <option value="posted">Posted</option>
+                                    <option <?=($request->status == 'all') ? 'selected': ''?> value="all" selected>All Status</option>
+                                    <option <?=($request->status == 'open') ? 'selected': ''?> value="open">Open</option>
+                                    <option <?=($request->status == 'closed') ? 'selected': ''?> value="closed">Closed</option>
+                                    <option <?=($request->status == 'posted') ? 'selected': ''?> value="posted">Posted</option>
                                 </select>
                             </div>
                         </div>
                         <!--end col-->
-                        <div class="col-xxl-1 col-sm-4">
-                            <button type="submit" class="btn btn-primary w-100"> <i
-                                    class="ri-equalizer-fill me-1 align-bottom"></i>
-                                Filters
-                            </button>
-                        </div>
-                        <!--end col-->
                     </div>
                     <!--end row-->
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-lg-3 col-sm-6">
+                            <select class="form-select select2" id="supplier" name="supplier">
+                                <option value="">Select Supplier</option>
+                                <? foreach($supplier_list as $supplier) : ?>
+                                    <option value="<?=$supplier->id?>" <?=($request->supplier == $supplier->id) ? 'selected': ''?>  ><?=$supplier->supplier_name?></option>
+                                <? endforeach;?>
+                            </select>
+                        </div>
+                        <!--end col-->
+
+                        <div class="col-lg-3 col-sm-6">
+                            <select class="form-select select2" id="customer" name="customer">
+                                <option value="">Select Customer</option>
+                                <? foreach($client_list as $customer) : ?>
+                                    <? if($customer->client_type == 'C') : ?>
+                                        <option value="<?=$customer->id?>" <?=($request->customer == $customer->id) ? 'selected': ''?> ><?=$customer->client_name?></option>
+                                    <? endif;?>
+                                <? endforeach;?>
+                            </select>
+                        </div>
+                        <!--end col-->
+
+                        <div class="col-lg-3 col-sm-6">
+                            <select class="form-select select2" id="company" name="company">
+                                <option value="">Select Company</option>
+                                <? foreach($client_list as $company) : ?>
+                                    <? if($company->client_type == 'O') : ?>
+                                        <option value="<?=$company->id?>"  <?=($request->company == $company->id) ? 'selected': ''?> ><?=$company->client_name?></option>
+                                    <? endif;?>
+                                <? endforeach;?>
+                            </select>
+                        </div>
+                        <!--end col-->
+
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="">
+                                <div class="">
+                                    <button type="submit" class="submit-receive-search btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</button>
+                                    <a href="#" class="submit-receive-xls btn btn-secondary btn-label rounded-pill d-none"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i>Excel</a>
+                                </div>
+                            </div>
+                            <!--end col-->
+                        </div>
+                    </div>
                 </form>
             </div>
             <!--end card-body-->
@@ -81,10 +128,11 @@
                         <thead class="table-light text-muted">
                             <tr>
                                 <th class="sort" data-sort="id">RCV #</th>
-                                <th class="sort" data-sort="id">PO Number</th>
-                                <th class="sort" data-sort="id">Invoice Number</th>
+                                <th class="sort" data-sort="id">PO #</th>
+                                <th class="sort" data-sort="id">Invoice #</th>
                                 <th class="sort" data-sort="supplier_name">Supplier Name</th>
-                                <th class="sort" data-sort="client_name">Client Name</th>
+                                <th class="sort" data-sort="customer_name">Customer Name</th>
+                                <th class="sort" data-sort="company_name">Company Name</th>
                                 <th class="sort" data-sort="store">Site</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>
@@ -99,7 +147,8 @@
                                         <td class="po_num">{{ $receive->po_num}}</td>
                                         <td class="sales_invoice">{{ $receive->sales_invoice}}</td>
                                         <td>{{ $receive->supplier_name}}</td>
-                                        <td class="client_name">{{ $receive->client_name}}</td>
+                                        <td class="customer_name">{{ $receive->customer->client_name}}</td>
+                                        <td class="company_name">{{ $receive->company->client_name}}</td>
                                         <td class="store">{{ $receive->store_name}}</td>
                                         <td class="status"><span class="badge {{ $receive->status }} text-uppercase fs-11">{{ $receive->status }}</span></td>
                                         <td class="action">
@@ -138,23 +187,32 @@
 <!--end row-->
 
 <div class="modal fade" id="show-po" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabel">Search PO Number</h5>
+                <h5 class="modal-title" id="exampleModalLabel">List of PO Number</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
            
             <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-md-12 form-group">
-                        <input type="text" class="form-control" dir="ltr" spellcheck=false autocomplete="off" autocapitalize="off" name="po_num_holder" id="po_num_holder" value="" placeholder="Enter PO Number">
-                    </div>
-                </div>
+                <table class="table align-middle table-nowrap" id="po-table" width="100%">
+                    <thead class="table-light text-muted">
+                        <tr>
+                            <th class="sort" data-sort="po_date">PO Date</th>    
+                            <th class="sort" data-sort="po_num">PO Number</th>
+                            <th class="sort" data-sort="supplier_name">Supplier Name</th>
+                            <th class="sort" data-sort="customer_name">Customer Name</th>
+                            <th class="sort" data-sort="created_by">Created By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="list form-check-all">
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
-                    <button type="button" class="btn btn-success" id="receive-po-btn">Submit</button>
+                    <button type="button"  id="receive-po-btn" class=" btn btn-warning btn-label rounded-pill"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Select</button>
                 </div>
             </div>
         </div>
@@ -168,10 +226,15 @@
 
 <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/moment/moment.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
  <!-- autocomplete js -->
  <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
+
+<script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/receive/receive.js') }}"></script>
 

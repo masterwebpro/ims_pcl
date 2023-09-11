@@ -25,7 +25,7 @@ class PurchaseOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $po_list = PoHdr::select('po_hdr.*', 'sp.supplier_name', 's.store_name','c.client_name', 'u.name', DB::raw(
+        $po_list = PoHdr::select('po_hdr.*', 'sp.supplier_name', 's.store_name','cm.client_name as company_name', 'cx.client_name as customer_name', 'u.name', DB::raw(
             '(SELECT sum(total_amount) as total_net
                 FROM po_dtl pd
                 WHERE pd.po_num = po_hdr.po_num
@@ -33,27 +33,17 @@ class PurchaseOrderController extends Controller
         , true))
         ->leftJoin('suppliers as sp', 'sp.id', '=', 'po_hdr.supplier_id')
         ->leftJoin('store_list as s', 's.id', '=', 'po_hdr.store_id')
-        ->leftJoin('client_list as c', 'c.id', '=', 'po_hdr.client_id')
+        ->leftJoin('client_list as cx', 'cx.id', '=', 'po_hdr.customer_id')
+        ->leftJoin('client_list as cm', 'cm.id', '=', 'po_hdr.company_id')
         ->leftJoin('users as u', 'u.id', '=', 'po_hdr.created_by')
-        ->where([
-            [function ($query) use ($request) {
-                if (($s = $request->q)) {
-                    $query->leftJoin('suppliers as sp', 'sp.id', '=', 'po_hdr.supplier_id');
-                    $query->leftJoin('store_list as s', 's.id', '=', 'po_hdr.store_id');
-                    $query->leftJoin('client_list as c', 'c.id', '=', 'po_hdr.client_id');
-                    $query->orWhere('po_hdr.po_num','like', '%'.$s.'%');
-                    $query->orWhere('sp.supplier_name', 'like', '%' . $s . '%');
-                    $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
-                    $query->get();
-                }
-            }]
-        ])->orderByDesc('created_at')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->status)) {
                     if($s != 'all')
                         $query->orWhere('po_hdr.status', $s);
+                }
+                if ($request->q) {
+                    $query->where('po_hdr.po_num', $request->q);
                 }
 
                 if ($request->filter_date && $request->po_date) {
@@ -63,15 +53,27 @@ class PurchaseOrderController extends Controller
                     if($request->filter_date == 'created_at') {
                         $query->whereBetween('po_hdr.created_at', [$request->po_date." 00:00:00", $request->po_date." 23:59:00"]);
                     }
+                }
+                if ($request->supplier) {
+                    $query->where('po_hdr.supplier_id', $request->supplier);
+                }
 
+                if ($request->customer) {
+                    $query->where('po_hdr.customer_id', $request->customer);
+                }
+
+                if ($request->company) {
+                    $query->where('po_hdr.company_id', $request->company);
                 }
 
                 $query->get();
             }]
         ])
         ->paginate(20);
+        $client_list = Client::where('is_enabled', '1')->get();
+        $supplier_list = Supplier::all();
 
-        return view('po/index', ['po_list'=>$po_list]);
+        return view('po/index', ['po_list'=>$po_list, 'client_list'=> $client_list, 'supplier_list'=>$supplier_list, 'request'=>$request]);
     }
 
     public function create()
@@ -94,7 +96,8 @@ class PurchaseOrderController extends Controller
 
         $validator = Validator::make($request->all(), [
             'supplier'=>'required',
-            'client'=>'required',
+            'company'=>'required',
+            'customer'=>'required',
             'store'=>'required',
             'po_date'=>'required',
             'uom.*' => 'required',
@@ -106,7 +109,8 @@ class PurchaseOrderController extends Controller
                 
         ], [
             'supplier'=>'Supplier is required',
-            'client'=>'Client  is required',
+            'customer'=>'Customer is required',
+            'company'=>'Company  is required',
             'store'=>'Store is required',
             'po_num'=>'Po Number is required',
             'po_date'=>'PO Date is required',
@@ -129,7 +133,8 @@ class PurchaseOrderController extends Controller
             $po = PoHdr::updateOrCreate(['id' => $request->po_id], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
-                'client_id'=>$request->client,
+                'company_id'=>$request->company,
+                'customer_id'=>$request->customer,
                 'supplier_id'=>$request->supplier,
                 'po_date'=>date("Y-m-d", strtotime($request->po_date)),
                 'status'=>$request->status,

@@ -196,7 +196,7 @@
                                                         </td>
                                                         <td class="text-center ps-1 fs-13">
                                                             <input type="hidden" readonly class="form-control" name="old_location[]" data-id="<?=($x)?>" id="old_location_<?=($x)?>" value="{{$dtl->old_storage_location_id}}">
-                                                            {{$dtl->old_location->location}}
+                                                            {{isset($dtl->old_location->location) ? $dtl->old_location->location : 'RA'}}
                                                         </td>
                                                         <td>
                                                             <div class="input-group">
@@ -213,8 +213,8 @@
                                                             <span class="text-danger error-msg new_location<?=($x)?>_error"></span>
                                                         </td>
                                                         <td>
-                                                            <div class="input-group">
-                                                                <input type="text" readonly class="form-control disabled numeric movement_item" name="new_inv_qty[]" data-id="<?=($x)?>" id="new_inv_qty_<?=($x)?>" value="<?=$dtl->new_inv_qty?>">
+                                                            <div class="input-group" style="width: 140px;">
+                                                                <input type="text"  readonly class="form-control disabled numeric movement_item" name="new_inv_qty[]" data-id="<?=($x)?>" id="new_inv_qty_<?=($x)?>" value="<?=$dtl->new_inv_qty?>">
                                                                 <input type="hidden" readonly class="form-control" name="new_inv_uom[]" data-id="<?=($x)?>" id="new_inv_uom_<?=($x)?>" value="<?=$dtl->new_inv_uom?>">
                                                                 <span class="input-group-text">{{$dtl->new_uom->code}}</span>
                                                             </div>

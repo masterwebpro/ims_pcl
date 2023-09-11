@@ -44,11 +44,11 @@
                     <div class="col-lg-12">
                         <div class="card-body p-4 ">
                             <div class="row g-3">
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name <span class="text-danger">*</span></h6>
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Supplier Name <span class="text-danger">*</span></h6>
                                     <input type="hidden" name="rcv_no" id="rcv_no" />
-                                    <p class="fw-medium mb-2" id="shipping-name">
-                                        <select class="form-select select2" required="required" id="supplier" name="supplier">
+                                    <p class="mb-2">
+                                        <select class="form-select select2" id="supplier" name="supplier">
                                             <option value="">Select Supplier</option>                                                            
                                             <? foreach($supplier_list as $supplier) : ?>
                                                 <option value="<?=$supplier->id?>" ><?=$supplier->supplier_name?></option>
@@ -56,38 +56,46 @@
                                         </select> 
                                         <span class="text-danger error-msg supplier_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                    <p class="text-muted mb-1">supp_add2 here</p>
-                                    <p class="text-muted mb-0">supp_city province, country here</p> -->
                                 </div>
 
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
-                                    <p class="fw-medium mb-2" id="billing-name">
-                                        <select class="form-select select2" required="required" id="client" name="client">
-                                            <option value="">Select Client</option>                                                            
-                                            <? foreach($client_list as $client) : ?>
-                                                <option value="<?=$client->id?>" ><?=$client->client_name?></option>
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Customer Name <span class="text-danger">*</span></h6>
+                                    <p class="mb-2">
+                                        <select class="form-select select2" id="customer" name="customer">
+                                            <option value="">Select Customer</option>                                                            
+                                            <? foreach($client_list as $customer) : ?>
+                                                <? if(strtoupper($customer->client_type) == 'C') : ?>
+                                                    <option value="<?=$customer->id?>" ><?=$customer->client_name?></option>
+                                                <? endif;?>
                                             <? endforeach;?>
                                         </select>
-                                        <span class="text-danger error-msg client_error"></span>
+                                        <span class="text-danger error-msg  customer_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
-                                    <p class="text-muted mb-1">client_add2 here</p>
-                                    <p class="text-muted mb-0">client_city province, country here</p> -->
+                                </div>
+
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Company <span class="text-danger">*</span></h6>
+                                    <p class="mb-2" id="billing-name">
+                                        <select class="form-select select2" required="required" id="company" name="company">
+                                            <option value="">Select company</option>                                                            
+                                            <? foreach($client_list as $company) : ?>
+                                                <? if(strtoupper($company->client_type) == 'O') : ?>
+                                                    <option value="<?=$company->id?>" ><?=$company->client_name?></option>
+                                                <? endif;?>
+                                            <? endforeach;?>
+                                        </select>
+                                        <span class="text-danger error-msg company_error"></span>
+                                    </p>
                                 </div>
                                 <!--end col-->
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address <span class="text-danger">*</span></h6>
-                                    <p class="fw-medium mb-2" id="shipping-name">
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted fw-medium mb-3">Site Name <span class="text-danger">*</span></h6>
+                                    <p class=" mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>                                                            
+                                            <option value="">Select Site/Warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                    <p class="text-muted mb-1">supp_add2 here</p>
-                                    <p class="text-muted mb-0">supp_city province, country here</p> -->
                                 </div>
                                 <!--end col-->
                             </div>
@@ -144,9 +152,9 @@
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received <span class="text-danger">*</span></label>
+                                    <label for="colFormLabel" class="col-lg-4  col-form-label">Date Received<span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" id="date_received" name="date_received" value="" placeholder="Date Received">
+                                        <input type="date" class="form-control" id="date_received" name="date_received" value="<?=date("Y-m-d")?>" placeholder="Date Received">
                                         <span class="text-danger error-msg date_received_error"></span>
                                     </div>
                                 </div>
@@ -169,7 +177,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Inspect Date <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="" placeholder="Inspect Date">
+                                        <input type="date" class="form-control"  id="inspect_date" name="inspect_date" value="<?=date("Y-m-d")?>" placeholder="Inspect Date">
                                         <span class="text-danger error-msg inspect_date_error"></span>
                                     </div>
                                 </div>
@@ -183,7 +191,7 @@
                                 <div class="row">
                                     <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" name="date_arrived" id="date_arrived" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_arrived" id="date_arrived" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
                                     </div>
                                 </div>
@@ -206,7 +214,7 @@
                                 <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" name="date_departed" id="date_departed" placeholder="DD-MM-YYYY">
+                                        <input type="date" class="form-control" name="date_departed" id="date_departed" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
                                     </div>
                                 </div>
@@ -304,12 +312,22 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
+                                                <th scope="col" >Lot/Batch</th>
+                                                <th scope="col" >Expiry Date</th>
+                                                <th scope="col" >Remarks</th>
                                                 <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
                                             
                                         </tbody>
+                                            <tfoot>
+                                                <td colspan='3' class="fw-semibold">Total</td>
+                                                <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_whse_qty" value="0" placeholder="0.00" readonly /></td>
+                                                <td class="text-end">&nbsp;</td>
+                                                <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_inv_qty" value="0" placeholder="0.00" readonly /></td>
+                                                <td colspan='4'>&nbsp;</td>
+                                            </tfoot>
                                         </table>
                                         
                                     <!--end table-->

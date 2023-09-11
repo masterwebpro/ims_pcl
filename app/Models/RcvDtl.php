@@ -19,6 +19,9 @@ class RcvDtl extends Model
         'inv_uom',
         'whse_qty',
         'whse_uom',
+        'lot_no',
+        'expiry_date',
+        'remarks',
         'updated_at',
         'created_at'
     ];

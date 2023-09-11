@@ -28,26 +28,13 @@ class ReceiveController extends Controller
 {
     public function index(Request $request)
     {
-        $receive_list = RcvHdr::select('rcv_hdr.*', 'sp.supplier_name', 's.store_name','c.client_name', 'u.name')
+        $receive_list = RcvHdr::select('rcv_hdr.*', 'sp.supplier_name', 's.store_name','cx.client_name as customer_name', 'cm.client_name as company_name', 'u.name')
         ->leftJoin('suppliers as sp', 'sp.id', '=', 'rcv_hdr.supplier_id')
         ->leftJoin('store_list as s', 's.id', '=', 'rcv_hdr.store_id')
-        ->leftJoin('client_list as c', 'c.id', '=', 'rcv_hdr.client_id')
+        ->leftJoin('client_list as cx', 'cx.id', '=', 'rcv_hdr.customer_id')
+        ->leftJoin('client_list as cm', 'cm.id', '=', 'rcv_hdr.company_id')
         ->leftJoin('users as u', 'u.id', '=', 'rcv_hdr.created_by')
-        ->where([
-            [function ($query) use ($request) {
-                if (($s = $request->q)) {
-                    $query->leftJoin('suppliers as sp', 'sp.id', '=', 'rcv_hdr.supplier_id');
-                    $query->leftJoin('store_list as s', 's.id', '=', 'rcv_hdr.store_id');
-                    $query->leftJoin('client_list as c', 'c.id', '=', 'rcv_hdr.client_id');
-                    // $query->orWhere('rcv_hdr.po_num','like', '%'.$s.'%');
-                    $query->orWhere('sp.supplier_name', 'like', '%' . $s . '%');
-                    $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('rcv_hdr.rcv_no', 'LIKE', '%' . $s . '%');
-                    $query->get();
-                }
-            }]
-        ])->orderByDesc('created_at')
+        ->orderByDesc('rcv_hdr.created_at')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->status)) {
@@ -55,22 +42,38 @@ class ReceiveController extends Controller
                         $query->orWhere('rcv_hdr.status', $s);
                 }
 
-                // if ($request->filter_date && $request->po_date) {
-                //     if($request->filter_date == 'po_date') {
-                //         $query->whereBetween('po_hdr.po_date', [$request->po_date." 00:00:00", $request->po_date." 23:59:00"]);
-                //     }
+                if ($request->q) {
+                    $query->where('rcv_hdr.po_num', $request->q);
+                    $query->orWhere('rcv_hdr.rcv_no', $request->q);
+                }
+
+                if ($request->filter_date && $request->po_date) {
+                    if($request->filter_date == 'po_date') {
+                        $query->whereBetween('rcv_hdr.po_date', [$request->po_date." 00:00:00", $request->po_date." 23:59:00"]);
+                    }
                     if($request->filter_date == 'created_at') {
                         $query->whereBetween('rcv_hdr.created_at', [$request->po_date." 00:00:00", $request->po_date." 23:59:00"]);
                     }
-                    
-                // }
+                }
+                if ($request->supplier) {
+                    $query->where('rcv_hdr.supplier_id', $request->supplier);
+                }
+
+                if ($request->customer) {
+                    $query->where('rcv_hdr.customer_id', $request->customer);
+                }
+
+                if ($request->company) {
+                    $query->where('rcv_hdr.company_id', $request->company);
+                }
 
                 $query->get();
             }]
-        ])
-        ->paginate(20);
+        ])->paginate(20);
+        $supplier_list = Supplier::all();
+        $client_list = Client::where('is_enabled', '1')->get();
 
-        return view('receive/index', ['receive_list'=>$receive_list]);
+        return view('receive/index', ['receive_list'=>$receive_list, 'supplier_list'=>$supplier_list, 'client_list'=>$client_list,  'request'=>$request]);
     }
 
     public function create()
@@ -98,7 +101,8 @@ class ReceiveController extends Controller
         
         $validator = Validator::make($request->all(), [
             'supplier'=>'required',
-            'client'=>'required',
+            'customer'=>'required',
+            'company'=>'required',
             'store'=>'required',
             'sales_invoice'=>'required',
             'received_by'=>'required',
@@ -119,8 +123,9 @@ class ReceiveController extends Controller
             'item_type.*' => 'required',
         ], [
             'supplier'=>'Supplier is required',
-            'client'=>'Client  is required',
-            'store'=>'Store is required',
+            'customer'=>'Customer is required',
+            'company'=>'Company is required',
+            'store'=>'Site is required',
             'sales_invoice'=>'Sales invoice is required',
             'received_by'=>'Received by is required',
             'date_received'=>'Date received is required',
@@ -163,6 +168,7 @@ class ReceiveController extends Controller
 
                 SeriesModel::insert($series);
             }
+
            
             $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
@@ -170,7 +176,8 @@ class ReceiveController extends Controller
             $rcv = RcvHdr::updateOrCreate(['rcv_no' => $rcv_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
-                'client_id'=>$request->client,
+                'company_id'=>$request->company,
+                'customer_id'=>$request->customer,
                 'supplier_id'=>$request->supplier,
                 'sales_invoice'=>$request->sales_invoice,
                 'received_by'=>$request->received_by,
@@ -189,6 +196,7 @@ class ReceiveController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
+
             //save on dtl
             $dtl = array();
             $masterfile = [];
@@ -201,6 +209,9 @@ class ReceiveController extends Controller
                     'inv_uom'=>$request->inv_uom[$x],
                     'whse_qty'=>$request->whse_qty[$x],
                     'whse_uom'=>$request->whse_uom[$x],
+                    'lot_no'=>$request->lot_no[$x],
+                    'expiry_date'=>$request->expiry_date[$x],
+                    'remarks'=>$request->item_remarks[$x],
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
@@ -218,7 +229,8 @@ class ReceiveController extends Controller
                     'whse_qty'=>$request->whse_qty[$x],
                     'whse_uom'=>$request->whse_uom[$x],
                     'store_id'=>$request->store,
-                    'client_id'=>$request->client,
+                    'customer_id'=>$request->customer,
+                    'company_id'=>$request->company,
                     'warehouse_id'=>$request->warehouse,
                     'storage_location_id'=>null,
                     'created_at'=>$this->current_datetime,
@@ -331,9 +343,11 @@ class ReceiveController extends Controller
             'uom_list'=>$uom_list]);
     }
 
-    public function receivePo($po_num)
+    public function receivePo($po_id)
     {
-        $po = PoHdr::where('po_num', html_entity_decode($po_num))->first();
+        $po_id = _decode($po_id);
+
+        $po = PoHdr::where('id', $po_id)->first();
 
         if($po) {
             $uom_list = UOM::all();

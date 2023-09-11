@@ -22,13 +22,13 @@
             <div class="card-header border-0">
                 <div class="align-items-center">
                     <div class="row">
-                        <div class="col-xxl-4 text-start">
+                        <div class="col-lg-3 text-start">
                             <h5 class="card-title mb-0 flex-grow-1"><?=$rcv->rcv_no?> </h5>
                         </div>
-                        <div class="col-lg-4 text-center">
+                        <div class="col-lg-3 text-center">
                             <span class="badge  fs-16 <?=$rcv->status?> text-uppercase"><?=$rcv->status?></span>
                         </div>
-                        <div class="col-lg-4 text-end">
+                        <div class="col-lg-6 text-end">
                             <?php  if ($rcv->status == 'open') : ?>
                             <a href="{{ URL::to('receive') }}/<?=_encode($rcv->id)?>/edit" class="btn btn-success btn-label rounded-pill"><i class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i> Edit</a>
                             <? endif;?>
@@ -51,10 +51,10 @@
                     <div class="col-lg-12">
                         <div class="card-body p-4 ">
                             <div class="row g-3">
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Supplier Name</h6>
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted mb-3">Supplier Name</h6>
                                     <input type="hidden" name="rcv_no" id="rcv_no" value="<?=$rcv->rcv_no?>" />
-                                    <p class="fw-medium mb-2" id="shipping-name">
+                                    <p class=" mb-2">
                                         <select class="form-select select2" disabled required="required" id="supplier" name="supplier">
                                             <option value="">Select Supplier</option>                                                            
                                             <? foreach($supplier_list as $supplier) : ?>
@@ -63,40 +63,48 @@
                                         </select> 
                                         <span class="text-danger error-msg supplier_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                    <p class="text-muted mb-1">supp_add2 here</p>
-                                    <p class="text-muted mb-0">supp_city province, country here</p> -->
                                 </div>
 
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
-                                    <p class="fw-medium mb-2" id="billing-name">
-                                        <input type="hidden" name="client_id" id="client_id" value="<?=$rcv->client_id?>" />
-                                        <select class="form-select select2" disabled required="required" id="client" name="client">
-                                            <option value="">Select Client</option>                                                            
-                                            <? foreach($client_list as $client) : ?>
-                                                <option value="<?=$client->id?>" <?=($client->id == $rcv->client_id) ? 'selected': ''; ?> ><?=$client->client_name?></option>
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted mb-3">Customer</h6>
+                                    <p class=" mb-2">
+                                        <select class="form-select select2" disabled id="customer" name="customer">
+                                            <option value="">Select customer</option>    
+                                            <? foreach($client_list as $customer) : ?>
+                                                <? if(strtoupper($customer->client_type) == 'C') : ?>
+                                                    <option value="<?=$customer->id?>" <?=($customer->id == $rcv->customer_id) ? 'selected': ''; ?> ><?=$customer->client_name?></option>
+                                                <? endif;?>
                                             <? endforeach;?>
                                         </select>
                                         <span class="text-danger error-msg client_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
-                                    <p class="text-muted mb-1">client_add2 here</p>
-                                    <p class="text-muted mb-0">client_city province, country here</p> -->
+                                </div>
+
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted mb-3">Company</h6>
+                                    <p class=" mb-2">
+                                        <input type="hidden" name="company_id" id="company_id" value="<?=$rcv->company_id?>" />
+                                        <select class="form-select select2" disabled  id="company" name="company">
+                                            <option value="">Select Client</option>                                                            
+                                            <? foreach($client_list as $company) : ?>
+                                                <? if(strtoupper($company->client_type) == 'O') : ?>
+                                                    <option value="<?=$company->id?>" <?=($company->id == $rcv->company_id) ? 'selected': ''; ?> ><?=$company->client_name?></option>
+                                                <? endif;?>
+                                            <? endforeach;?>
+                                        </select>
+                                        <span class="text-danger error-msg client_error"></span>
+                                    </p>
                                 </div>
                                 <!--end col-->
-                                <div class="col-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address</h6>
-                                    <p class="fw-medium mb-2" id="shipping-name">
+                                <div class="col-lg-3 col-md-6">
+                                    <h6 class="text-muted mb-3">Site Name</h6>
+                                    <p class="mb-2">
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$rcv->store_id?>" />
                                         <select class="form-select select2" disabled required="required" id="store" name="store">
                                             <option value="">Select Store/Warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
-                                    <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                    <p class="text-muted mb-1">supp_add2 here</p>
-                                    <p class="text-muted mb-0">supp_city province, country here</p> -->
                                 </div>
                                 <!--end col-->
                             </div>
@@ -314,15 +322,24 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
+                                                <th scope="col" >Lot/Batch</th>
+                                                <th scope="col" >Expiry Date</th>
+                                                <th scope="col" >Remarks</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
                                             <? 
                                             $rowCount = count($rcv->items);
+                                            $total_whse_qty = 0;
+                                            $total_inv_qty = 0;
                                             $x=1;
                                              ?>
                                             @if(isset($rcv->items))
                                                 @foreach($rcv->items as $item)
+                                                <? 
+                                                    $total_whse_qty += $item->whse_qty;
+                                                    $total_inv_qty += $item->inv_qty;
+                                                ?>
                                                 <tr id="product_{{$item->product_id}}">
                                                     <td class="text-start fs-12">
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
@@ -337,8 +354,8 @@
                                                             <option class="fs-8" value="repair" <?=($item->item_type == 'repair')? 'selected':''?>>Repair</option>                                                                                                                    
                                                         </select>
                                                     </td>
-                                                    <td class="fs-12">
-                                                        <input type="text"  disabled  class="form-control numeric whse_qty uom_select fs-12" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                    <td class="fs-12 ">
+                                                        <input type="text"  disabled  class="form-control numeric text-end whse_qty uom_select fs-12" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
                                                     </td>
                                                     <td class="fs-12">
                                                        <select name="whse_uom[]"  disabled id="whse_uom_{{$x}}" class="uom uom_select form-select">
@@ -349,7 +366,7 @@
                                                         </select>
                                                     </td>
                                                     <td class="fs-12">
-                                                        <input type="text" disabled class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                        <input type="text" disabled class="form-control inv_qty  text-end numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                     </td>
                                                     <td class=" ps-1">
                                                         <select name="inv_uom[]"  disabled  id="inv_uom_{{$x}}" class="uom uom_select form-select">
@@ -358,6 +375,15 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" disabled style="width: 150px;" name="lot_no[]" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="date" class="form-control " disabled name="expiry_date[]"  value="{{$item->expiry_date}}" placeholder="Expiry Date" />
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="text" class="form-control" disabled style="width: 150px;" name="item_remarks[]"  value="{{$item->remarks}}" placeholder="Remarks" />
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -368,6 +394,13 @@
                                             @endif
                                             
                                         </tbody>
+                                        <tfoot>
+                                            <td colspan='3' class="fw-semibold">Total</td>
+                                            <td class="text-end fw-medium"><?=$total_whse_qty?></td>
+                                            <td class="text-end">&nbsp;</td>
+                                            <td class="text-end fw-medium"><?=$total_inv_qty?></td>
+                                            <td colspan='4'>&nbsp;</td>
+                                        </tfoot>
                                         </table>
                                         
                                     <!--end table-->
