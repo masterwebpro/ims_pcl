@@ -321,9 +321,11 @@
                     <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
                         <thead class="table-light">
                             <tr>
-                                <th>&nbsp;</th>
+                            <th>&nbsp;</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
+                                <th>Rack</th>
+                                <th>Layer</th>
                                 <th>Item Type</th>
                                 <th>Inv Qty</th>
                                 <th>Inv Uom</th>

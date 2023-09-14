@@ -100,7 +100,8 @@ $(document).on('click', '.search-item', function() {
     var rcv_no = $('#rcv_no').val();
     var layer = $('#layer').val();
     var storage_location_id = $('#storage_location_id').val();
- 
+
+    
     if(warehouse_id) {   
 
         $('#show-items').modal('show'); 
@@ -109,6 +110,8 @@ $(document).on('click', '.search-item', function() {
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
+
+        console.log(store_id + " - " + client_id);
 
         $.ajax({
             url: BASEURL + 'settings/getStorageLocationId',
@@ -130,6 +133,11 @@ $(document).on('click', '.search-item', function() {
                     let storage_id = response.map(x => x.storage_location_id).join(", ");
 
                     console.log(storage_id);
+
+                    if ($.fn.DataTable.isDataTable("#show-items-list")) {
+                        $('#show-items-list').DataTable().clear().destroy();
+                    }
+                    
 
                     new DataTable("#show-items-list",{
                         order: [[1, 'desc']],
