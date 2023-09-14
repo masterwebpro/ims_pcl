@@ -17,7 +17,7 @@
 @endcomponent
 
 <div class="row justify-content-center">
-    <div class="col-xxl-11">
+    <div class="col-xxl-12">
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
@@ -38,7 +38,7 @@
 
 <form name="submit-receive" id="submit-receive">
     <div class="row justify-content-center">
-        <div class="col-xxl-11">
+        <div class="col-xxl-12">
             <div class="card">
                 <div class="row mb-3">
                     <div class="col-lg-12">
@@ -97,7 +97,7 @@
     <!--end row-->
 
     <div class="row justify-content-center">
-        <div class="col-xxl-11">
+        <div class="col-xxl-12">
             <div class="card" id="demo">
                 <div class="row">
                     <div class="col-lg-12 d-none">

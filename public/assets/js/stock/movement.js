@@ -201,7 +201,7 @@ $(document).on('click', '#add-product', function() {
             var idx = rowCount - 3;
             var btn = '<div class="text-center">';
             // btn += '<a href="javascript:void(0)" class="text-info split-product" data-id="'+(rowCount-1)+'"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>';
-            btn += '&nbsp; <a href="javascript:void(0)" class="text-danger remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i>Remove</a>';
+            btn += '&nbsp; <a href="javascript:void(0)" class="text-danger remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
             
             btn += '</div>'
 

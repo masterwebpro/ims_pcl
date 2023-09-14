@@ -22,17 +22,16 @@
 ?>
 
 <div class="row justify-content-center">
-    <div class="col-xxl-11">
+    <div class="col-xxl-12">
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1"><?=$mv_hdr->ref_no?></h5>
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                         <? if($mv_hdr->status == 'open') : ?>
-                        <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
-                        <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                            <a href="{{ URL::to('stock/movement') }}/<?=_encode($mv_hdr->id);?>/edit" class="btn btn-info btn-label rounded-pill"><i class="ri-pencil-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Edit </a> </div>
                         <? endif;?>
-                        <a href="{{ URL::to('stock/movement') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
+                            &nbsp; <a href="{{ URL::to('stock/movement') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
                 </div>
             </div>
@@ -45,7 +44,7 @@
 
 <form name="submit-receive" id="submit-receive">
     <div class="row justify-content-center">
-        <div class="col-xxl-11">
+        <div class="col-xxl-12">
             <div class="card">
                 <div class="row mb-3">
                     <div class="col-lg-12">
@@ -53,13 +52,13 @@
                             <div class="row g-3">
                                 <div class="col-4">
                                 <input type="hidden" name="ref_no" id="ref_no" value="<?=$mv_hdr->ref_no?>" />
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Company Name <span class="text-danger">*</span></h6>
                                     <p class="fw-medium mb-2" id="billing-name">
-                                        <input type="hidden" name="client_id" id="client_id" value="<?=$mv_hdr->client_id?>" />
-                                        <select class="form-select select" disabled required="required" id="client" name="client">
-                                            <option value="">Select Client</option>                                                            
+                                        <input type="hidden" name="company_id" id="company_id" value="<?=$mv_hdr->company_id?>" />
+                                        <select class="form-select select" disabled required="required" id="company" name="company">
+                                            <option value="">Company Client</option>                                                            
                                             <? foreach($client_list as $client) : ?>
-                                                <option value="<?=$client->id?>" <?=($client->id == $mv_hdr->client_id) ? 'selected': ''; ?> ><?=$client->client_name?></option>
+                                                <option value="<?=$client->id?>" <?=($client->id == $mv_hdr->company_id) ? 'selected': ''; ?> ><?=$client->client_name?></option>
                                             <? endforeach;?>
                                         </select>
                                         <span class="text-danger error-msg client_error"></span>
@@ -102,7 +101,7 @@
     <!--end row-->
 
     <div class="row justify-content-center">
-        <div class="col-xxl-11">
+        <div class="col-xxl-12">
             <div class="card" id="demo">
                 <div class="row">
                     <div class="col-lg-12 d-none">

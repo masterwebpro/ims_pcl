@@ -62,7 +62,7 @@
                                         <? foreach($active_list as $active) :?>
                                             <tr>
                                                 <td class="rcv_no">{{ $active->ref_no}}</td>
-                                                <td class="po_num">{{ $active->client->client_name}}</td>
+                                                <td class="po_num">{{ $active->company->client_name}}</td>
                                                 <td class="sales_invoice">{{ $active->store->store_name}}</td>
                                                 <td>{{ $active->warehouse->warehouse_name}}</td>
                                                 
@@ -111,7 +111,7 @@
                                         <? foreach($posted_list as $active) :?>
                                             <tr>
                                                 <td class="rcv_no">{{ $active->ref_no}}</td>
-                                                <td class="po_num">{{ $active->client->client_name}}</td>
+                                                <td class="po_num">{{ $active->customer->client_name}}</td>
                                                 <td class="sales_invoice">{{ $active->store->store_name}}</td>
                                                 <td>{{ $active->warehouse->warehouse_name}}</td>
                                                 

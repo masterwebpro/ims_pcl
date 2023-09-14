@@ -373,6 +373,7 @@
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal"><i class="ri-close-line label-icon align-middle rounded-pill fs-16 me-2"></i>Close</button>
                     <button type="button" class="btn btn-success" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add</button>
                 </div>
             </div>

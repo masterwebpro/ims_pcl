@@ -23,10 +23,16 @@ class MvHdr extends Model
         return $this->hasOne(User::class, 'id', 'created_by');
     }
 
-    public function client() 
+    public function company() 
     {
-        return $this->hasOne(Client::class, 'id', 'client_id');
+        return $this->hasOne(Client::class, 'id', 'company_id');
     }
+
+    public function customer() 
+    {
+        return $this->hasOne(Client::class, 'id', 'customer_id');
+    }
+
     public function store() 
     {
         return $this->hasOne(Store::class, 'id', 'store_id');
