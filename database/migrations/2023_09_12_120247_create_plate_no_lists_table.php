@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('wd_hdr', function (Blueprint $table) {
-            $table->string('dispatch_no')->nullable()->after('wd_no');
+        Schema::create('plate_no_list', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("trucker_id");
+            $table->string("plate_no",50);
+            $table->string("vehicle_type",100);
+            $table->boolean('is_enabled')->default(1);
+            $table->timestamps();
         });
     }
 
@@ -25,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('plate_no_list');
     }
 };

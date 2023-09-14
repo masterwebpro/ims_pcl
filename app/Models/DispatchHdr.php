@@ -27,7 +27,7 @@ class DispatchHdr extends Model
                     'wd_hdr.dr_no'
                     )
                     ->leftJoin('wd_hdr','wd_hdr.wd_no','dispatch_dtl.wd_no')
-                    ->leftJoin('client_list as cl','cl.id','wd_hdr.client_id')
+                    ->leftJoin('client_list as cl','cl.id','wd_hdr.customer_id')
                     ->leftJoin('client_list as del','del.id','wd_hdr.deliver_to_id');
     }
 

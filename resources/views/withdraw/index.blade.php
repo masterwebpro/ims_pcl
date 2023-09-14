@@ -86,9 +86,10 @@
                                 <th class="sort" data-sort="order_type">Order Type</th>
                                 <th class="sort" data-sort="id">PO Number</th>
                                 <th class="sort" data-sort="id">Sales Invoice</th>
-                                <th class="sort" data-sort="client_name">Client Name</th>
+                                <th class="sort" data-sort="client_name">Company Name</th>
+                                <th class="sort" data-sort="client_name">Customer Name</th>
                                 <th class="sort" data-sort="supplier_name">Deliver To</th>
-                                <th class="sort" data-sort="store">Store/Warehouse</th>
+                                <th class="sort" data-sort="store">Site Name</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="status">Withdrawal Date</th>
                                 <th class="sort" data-sort="action">Action</th>
@@ -105,6 +106,7 @@
                                         <td class="order_type">{{ $withdraw->order_type}}</td>
                                         <td class="po_num">{{ $withdraw->po_num}}</td>
                                         <td class="sales_invoice">{{ $withdraw->sales_invoice}}</td>
+                                        <td class="company_name">{{ $withdraw->company_name}}</td>
                                         <td class="client_name">{{ $withdraw->client_name}}</td>
                                         <td>{{ $withdraw->deliver_to}}</td>
                                         <td class="store">{{ $withdraw->store_name}}</td>

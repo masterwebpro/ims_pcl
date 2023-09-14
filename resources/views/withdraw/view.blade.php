@@ -58,24 +58,35 @@
                         <div class="col-lg-12">
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Company Name <span
+                                                class="text-danger">*</span></h6>
+                                        <p class="fw-medium mb-2" id="billing-name">
+                                            <select class="form-select select2" required="required" id="company" disabled
+                                                name="company">
+                                                <option value="">Select Company</option>
+                                                <? foreach($company_list as $company) : ?>
+                                                <option value="<?= $company->id ?>" <?=($company->id == $wd->company_id) ? 'selected' : '' ?>><?= $company->client_name ?></option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg company_error"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Customer Name <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
                                             <select class="form-select select2" required="required" id="client" disabled
                                                 name="client">
                                                 <option value="">Select Client</option>
                                                 <? foreach($client_list as $client) : ?>
-                                                <option value="<?= $client->id ?>" <?=($client->id == $wd->client_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
+                                                <option value="<?= $client->id ?>" <?=($client->id == $wd->custoemer_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg client_error"></span>
                                         </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
-                                            <p class="text-muted mb-1">client_add2 here</p>
-                                            <p class="text-muted mb-0">client_city province, country here</p> -->
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
                                                 class="text-danger">*</span></h6>
                                         <input type="hidden" name="wd_no" id="wd_no" value="{{ $wd->wd_no }}" />
@@ -93,8 +104,8 @@
                                         </p>
                                     </div>
                                     <!--end col-->
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Name
                                             <span class="text-danger">*</span>
                                         </h6>
                                         <p class="fw-medium mb-2" id="shipping-name">
@@ -346,6 +357,8 @@
                                                     @endif
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
+                                                    <th scope="col">Lot No</th>
+                                                    <th scope="col">Expiry Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     <th scope="col">Action</th>
@@ -382,6 +395,12 @@
                                                         </td>
                                                         <td class=" ps-1">
                                                             {{ $item->master->uom->code }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ ($item->master->receiving) ? $item->master->receiving->lot_no : "" }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ ($item->master->receiving) ? $item->master->receiving->expiry_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
                                                             {{ $item->master->warehouse->warehouse_name }}

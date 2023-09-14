@@ -81,7 +81,7 @@ class SupplierController extends Controller
             'supplier_code' => 'Supplier code is required',
             'contact_no' => 'Supplier contact is required',
             'supplier_address' => 'Supplier address is required',
-            'client' => 'client is required'
+            'client_id' => 'client is required'
         ]);
 
         if ($validator->fails()) {
@@ -100,18 +100,18 @@ class SupplierController extends Controller
                 'updated_at'=>$this->current_datetime,
             ]);
 
-            $client = json_decode($request->client);
             ClientSupplier::where('supplier_id',$supplier->id)->delete();
-            foreach($client as $client_id)
-            {
+            if(isset($request->client_id)){
+                for($x=0; $x < count($request->client_id); $x++ ) {
                 ClientSupplier::updateOrCreate([
                         'supplier_id' => $supplier->id,
-                        'client_id' => $client_id
+                        'client_id' => $request->client_id[$x]
                     ],
                     [
                         'supplier_id' => $supplier->id,
-                        'client_id' => $client_id
+                        'client_id' => $request->client_id[$x]
                     ]);
+                }
             }
 
             DB::connection()->commit();

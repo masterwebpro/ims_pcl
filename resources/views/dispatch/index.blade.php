@@ -80,9 +80,18 @@
                         <thead class="table-light text-muted">
                             <tr>
                                 <th class="sort" data-sort="dispatch_no">Dispatch #</th>
+                                <th class="sort" data-sort="dispatch_date">Dispatcher</th>
                                 <th class="sort" data-sort="dispatch_date">Dispatch Date</th>
+                                <th class="sort" data-sort="dispatch_no">Trucker Name </th>
+                                <th class="sort" data-sort="dispatch_no">Truck Type</th>
+                                <th class="sort" data-sort="dispatch_no">Plate No.</th>
+                                <th class="sort" data-sort="dispatch_no">Seal No.</th>
+                                <th class="sort" data-sort="dispatch_no">Driver Name</th>
+                                <th class="sort" data-sort="dispatch_date">Start Loading</th>
+                                <th class="sort" data-sort="dispatch_date">Finish Loading</th>
+                                <th class="sort" data-sort="dispatch_date">Depart Date</th>
                                 <th class="sort" data-sort="wd_count">No. of Withdrawal</th>
-                                <th class="sort" data-sort="wd_count">No. of Truck</th>
+                                <th class="sort" data-sort="wd_count">Created By</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
@@ -93,9 +102,18 @@
                                 <? foreach($dispatch_list as $dispatch) :?>
                                     <tr>
                                         <td class="dispatch_no">{{ $dispatch->dispatch_no}}</td>
+                                        <td class="">{{ $dispatch->dispatch_by }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y',strtotime($dispatch->dispatch_date)) }}</td>
+                                        <td class="">{{ $dispatch->trucker_name }}</td>
+                                        <td class="">{{ $dispatch->truck_type }}</td>
+                                        <td class="">{{ $dispatch->plate_no }}</td>
+                                        <td class="">{{ $dispatch->seal_no }}</td>
+                                        <td class="">{{ $dispatch->driver }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->stat_datetime)) }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->finish_datetime)) }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->depart_datetime)) }}</td>
                                         <td class="">{{ $dispatch->items_count }}</td>
-                                        <td class="">{{ $dispatch->truck_count }}</td>
+                                        <td class="">{{ $dispatch->name }}</td>
                                         <td class="status"><span class="badge {{ $dispatch->status }} text-uppercase fs-11">{{ $dispatch->status }}</span></td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">

@@ -36,7 +36,7 @@ class SettingsController extends Controller
         $data = \App\Models\PoHdr::select('po_num', 'id')->where('status', 'posted')->get();
         return response()->json($data);
     }
-    
+
     public function getUom(Request $request) {
 
         $uom_list = UOM::all();
@@ -190,22 +190,31 @@ class SettingsController extends Controller
                     ->orderBy('product_name','ASC')
                     ->orderBy('date_received','ASC');
 
-        if(isset($request->master_id))
+        if(isset($request->master_id)){
             $result->whereNotIN('masterfile_id', json_decode($request->master_id));
+        }
 
-        if(isset($request->warehouse_id))
+        if($request->company_id > 0){
+            $result->where('company_id', $request->company_id);
+        }
+
+        if(isset($request->warehouse_id)){
             $result->where('warehouse_id', $request->warehouse_id);
+        }
 
-        if($request->client_id > 0)
-            $result->where('client_id', $request->client_id);
+        if($request->customer_id > 0){
+            $result->where('customer_id', $request->customer_id);
+        }
 
-        if($request->store_id > 0)
+        if($request->store_id > 0){
             $result->where('store_id', $request->store_id);
+        }
 
-        if($request->item_type)
+        if($request->item_type){
             $result->where('item_type', $request->item_type);
+        }
 
-        if($request->product){
+        if(isset($request->product)){
             $keyword = '%'.$request->product.'%';
             $result->where(function($cond)use($keyword){
                 $cond->where('product_code','like',$keyword)
@@ -213,7 +222,6 @@ class SettingsController extends Controller
                 ->orwhere('product_sku','like',$keyword);
             });
         }
-
 
         $record = $result->get();
         $record = collect($record)
@@ -255,7 +263,7 @@ class SettingsController extends Controller
                     'wd_hdr.sales_invoice',
                     'wd_hdr.dr_no'
                     )
-                    ->leftJoin('client_list as cl','cl.id','wd_hdr.client_id')
+                    ->leftJoin('client_list as cl','cl.id','wd_hdr.customer_id')
                     ->leftJoin('client_list as del','del.id','wd_hdr.deliver_to_id')
                     ->whereNull('dispatch_no')
                     ->orderBy('wd_hdr.order_date','ASC');
@@ -273,7 +281,7 @@ class SettingsController extends Controller
                         $result->where('wd_hdr.status', $request->status);
                     if(isset($request->wd_no))
                         $result->whereNotIN('wd_hdr.wd_no', json_decode($request->wd_no));
-                    
+
         $data = $result->get();
         return response()->json($data);
     }
@@ -301,5 +309,24 @@ class SettingsController extends Controller
         //     'data'    => _encode($value)
         // ]);
         return _encode($value);
+    }
+
+    function getPlateNoList(Request $request) {
+        $data =  \App\Models\PlateNoList::get();
+
+    }
+
+    function getPlateNo(Request $request) {
+        $data =  \App\Models\PlateNoList::select('plate_no_list.vehicle_type','tt.vehicle_code','tt.vehicle_desc','plate_no_list.plate_no','plate_no_list.trucker_id','tl.trucker_name')
+                ->leftJoin('trucker_list as tl','tl.id','plate_no_list.trucker_id')
+                ->leftJoin('truck_type as tt','tt.vehicle_code','plate_no_list.vehicle_type')
+                ->groupBy('plate_no_list.plate_no');
+                if(isset($request->plate_no)){
+                    $data->where('plate_no_list.plate_no',$request->plate_no);
+                }
+        $result =  $data->get();
+        return response()->json([
+            'success'  => true,
+            'data'    => $result]);
     }
 }
