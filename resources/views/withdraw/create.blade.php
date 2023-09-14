@@ -52,24 +52,35 @@
                         <div class="col-lg-12">
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Company Name <span
+                                                class="text-danger">*</span></h6>
+                                        <p class="fw-medium mb-2" id="billing-name">
+                                            <select class="form-select select2" required="required" id="company"
+                                                name="company">
+                                                <option value="">Select Company</option>
+                                                <? foreach($company_list as $company) : ?>
+                                                <option value="<?= $company->id ?>"><?= $company->client_name ?></option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg company_error"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Customer Name <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
                                             <select class="form-select select2" required="required" id="client"
                                                 name="client">
-                                                <option value="">Select Client</option>
+                                                <option value="">Select Customer</option>
                                                 <? foreach($client_list as $client) : ?>
                                                 <option value="<?= $client->id ?>"><?= $client->client_name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg client_error"></span>
                                         </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">client_add  here</p>
-                                            <p class="text-muted mb-1">client_add2 here</p>
-                                            <p class="text-muted mb-0">client_city province, country here</p> -->
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
                                                 class="text-danger">*</span></h6>
                                         <input type="hidden" name="wd_no" id="wd_no" />
@@ -84,26 +95,20 @@
                                             </select>
                                             <span class="text-danger error-msg deliver_to_error"></span>
                                         </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                            <p class="text-muted mb-1">supp_add2 here</p>
-                                            <p class="text-muted mb-0">supp_city province, country here</p> -->
                                     </div>
 
                                     <!--end col-->
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Name
                                             <span class="text-danger">*</span>
                                         </h6>
                                         <p class="fw-medium mb-2" id="shipping-name">
                                             <select class="form-select select2" required="required" id="store"
                                                 name="store">
-                                                <option value="">Select Store/Warehouse</option>
+                                                <option value="">Select Site Name</option>
                                             </select>
                                             <span class="text-danger error-msg store_error"></span>
                                         </p>
-                                        <!-- <p class="text-muted mb-1" id="shipping-address-line-1">supp_add  here</p>
-                                            <p class="text-muted mb-1">supp_add2 here</p>
-                                            <p class="text-muted mb-0">supp_city province, country here</p> -->
                                     </div>
                                     <!--end col-->
                                 </div>
@@ -174,7 +179,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="withdraw_date"
-                                            name="withdraw_date" placeholder="Withdraw Date">
+                                            name="withdraw_date" placeholder="Withdraw Date" value="<?=date('Y-m-d');?>">
                                             <span class="text-danger error-msg withdraw_date_error"></span>
                                         </div>
                                     </div>
@@ -229,7 +234,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="order_date"
-                                            name="order_date" value="" placeholder="Order Date">
+                                            name="order_date" value="<?=date('Y-m-d');?>" placeholder="Order Date">
                                             <span class="text-danger error-msg order_date_error"></span>
                                         </div>
                                     </div>
@@ -245,7 +250,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="pickup_date"
-                                                name="pickup_date" value="" placeholder="Pickup Date">
+                                                name="pickup_date" value="<?=date('Y-m-d');?>" placeholder="Pickup Date">
                                             <span class="text-danger error-msg pickup_date_error"></span>
                                         </div>
                                     </div>
@@ -256,7 +261,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="trgt_dlv_date"
-                                                name="trgt_dlv_date" value="" placeholder="Date Received">
+                                                name="trgt_dlv_date" value="<?=date('Y-m-d');?>" placeholder="Date Received">
                                             <span class="text-danger error-msg trgt_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -279,11 +284,10 @@
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Actual Delivery Date <span
-                                                class="text-danger">*</span></label>
+                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Actual Delivery Date</label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="actual_dlv_date"
-                                                name="actual_dlv_date" value="" placeholder="Inspect Date">
+                                                name="actual_dlv_date" value="<?=date('Y-m-d');?>" placeholder="Inspect Date">
                                             <span class="text-danger error-msg actual_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -339,6 +343,8 @@
                                                     <th scope="col">Available Stocks</th>
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
+                                                    <th scope="col">Lot No</th>
+                                                    <th scope="col">Expiry Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     <th scope="col" class="text-center">Action</th>
@@ -418,12 +424,13 @@
                                 <tr>
                                     <th>&nbsp;</th>
                                     <th>Product Code</th>
-                                    <th>Product SKU</th>
                                     <th>Product Name</th>
                                     <th>Date Recieved</th>
                                     <th>Item Type</th>
                                     <th>Available Stocks</th>
                                     <th>Unit</th>
+                                    <th>Lot No.</th>
+                                    <th>Expiry Date</th>
                                     <th>Warehouse</th>
                                     <th>Location</th>
                                 </tr>

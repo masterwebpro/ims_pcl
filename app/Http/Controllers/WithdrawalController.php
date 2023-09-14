@@ -42,21 +42,24 @@ class WithdrawalController extends Controller
 
     public function index(Request $request)
     {
-        $wd_list = WdHdr::select('wd_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name', 'u.name')
+        $wd_list = WdHdr::select('wd_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name','com.client_name as company_name', 'u.name')
         ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id')
         ->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id')
-        ->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.client_id')
+        ->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.customer_id')
+        ->leftJoin('client_list as com', 'c.id', '=', 'wd_hdr.company_id')
         ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->q)) {
                     $query->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id');
                     $query->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id');
-                    $query->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.client_id');
+                    $query->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.customer_id');
+                    $query->leftJoin('client_list as com', 'c.id', '=', 'wd_hdr.company_id');
                     $query->orWhere('wd_hdr.order_no','like', '%'.$s.'%');
                     $query->orWhere('cl.client_name', 'like', '%' . $s . '%');
                     $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
                     $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
+                    $query->orWhere('com.client_name', 'LIKE', '%' . $s . '%');
                     $query->orWhere('wd_hdr.wd_no', 'LIKE', '%' . $s . '%');
                     $query->get();
                 }
@@ -96,6 +99,7 @@ class WithdrawalController extends Controller
     {
         $order_type = OrderType::all();
         $store_list = Store::all();
+        $company_list = Client::where('client_type','O')->get();
         $client_list = Client::where('client_type','C')->get();
         $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
@@ -109,6 +113,7 @@ class WithdrawalController extends Controller
 
 
         return view('withdraw/create', [
+            'company_list'=>$company_list,
             'client_list'=>$client_list,
             'store_list'=>$store_list,
             'deliver_list'=>$deliver_list,
@@ -131,6 +136,7 @@ class WithdrawalController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'company'=>'required',
             'client'=>'required',
             'deliver_to'=>'required',
             'store'=>'required',
@@ -141,7 +147,7 @@ class WithdrawalController extends Controller
             'order_date'=>'required',
             'pickup_date'=>'required',
             'trgt_dlv_date'=>'required',
-            'actual_dlv_date'=>'required',
+            // 'actual_dlv_date'=>'required',
             // 'warehouse'=>'required',
             // 'whse_qty.*' => 'required',
             // 'whse_uom.*' => 'required',
@@ -149,7 +155,8 @@ class WithdrawalController extends Controller
             // 'inv_uom.*' => 'required',
             // 'item_type.*' => 'required',
         ], [
-            'client'=>'Client  is required',
+            'company'=>'Company is required',
+            'client'=>'Customer is required',
             'deliver_to'=>'Deliver to is required',
             'store'=>'Store is required',
             'order_type'=>'Order type is required',
@@ -159,7 +166,7 @@ class WithdrawalController extends Controller
             'withdraw_date'=>'Withdrawal date is required',
             'pickup_date'=>'Pickup date is required',
             'trgt_dlv_date'=>'Target delivery date is required',
-            'actual_dlv_date'=>'Actual delivery date is required',
+            // 'actual_dlv_date'=>'Actual delivery date is required',
             // 'warehouse'=>'Warehouse  is required',
             // 'whse_qty.*' => 'Qty  is required',
             // 'whse_uom.*' => 'UOM  is required',
@@ -191,7 +198,8 @@ class WithdrawalController extends Controller
             $wd = WdHdr::updateOrCreate(['wd_no' => $wd_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
-                'client_id'=>$request->client,
+                'company_id'=>$request->company,
+                'customer_id'=>$request->client,
                 'deliver_to_id'=>$request->deliver_to,
                 'sales_invoice'=>$request->sales_invoice,
                 'dr_no'=>$request->dr_no,
@@ -217,6 +225,11 @@ class WithdrawalController extends Controller
                 $wd_dtl_ids = WdDtl::where('wd_no',$wd_no)->pluck('id');
                 WdDtl::where('wd_no',$wd_no)->delete();
                 WdDtlItemize::whereIn('wd_dtl_id',$wd_dtl_ids)->delete();
+
+                if($request->status == 'posted'){
+                    $twd_no = $this->generateWdNo("TWD","TWD");
+                }
+
                 for($x=0; $x < count($request->product_id); $x++ ) {
                     $serial_data = array();
                     if($request->is_serialize[$x] == 1)
@@ -275,7 +288,6 @@ class WithdrawalController extends Controller
                     if($request->status == 'posted'){
                         $masterData = MasterfileModel::find($request->masterfile_id[$x]);
                         $inv_qty = ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x];
-                        $twd_no = $this->generateWdNo("TWD","TWD");
                         $series[] = [
                             'series' => $twd_no,
                             'trans_type' => 'TWD',
@@ -297,7 +309,8 @@ class WithdrawalController extends Controller
                             'whse_qty'=> -$inv_qty,
                             'whse_uom'=> $masterData->whse_uom,
                             'warehouse_id' => $masterData->warehouse_id,
-                            'client_id' => $masterData->client_id,
+                            'customer_id' => $masterData->customer_id,
+                            'company_id' => $masterData->company_id,
                             'store_id' => $masterData->store_id
                         ]);
                         MasterfileModel::create([
@@ -313,7 +326,8 @@ class WithdrawalController extends Controller
                             'whse_qty'=> $inv_qty,
                             'whse_uom'=> $masterData->whse_uom,
                             'warehouse_id' => $masterData->warehouse_id,
-                            'client_id' => $masterData->client_id,
+                            'customer_id' => $masterData->customer_id,
+                            'company_id' => $masterData->company_id,
                             'store_id' => $masterData->store_id
                         ]);
                     }
@@ -364,6 +378,7 @@ class WithdrawalController extends Controller
                 ->where('wd_hdr.id', _decode($id))->first();
         $order_type = OrderType::all();
         $store_list = Store::all();
+        $company_list = Client::where('client_type','O')->get();
         $client_list = Client::where('client_type','C')->get();
         $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
@@ -371,6 +386,7 @@ class WithdrawalController extends Controller
 
         return view('withdraw/view', [
             'wd' => $wd,
+            'company_list'=>$company_list,
             'client_list'=>$client_list,
             'store_list'=>$store_list,
             'deliver_list'=>$deliver_list,
@@ -395,6 +411,7 @@ class WithdrawalController extends Controller
                 ->where('wd_hdr.id', _decode($id))->first();
         $order_type = OrderType::all();
         $store_list = Store::all();
+        $company_list = Client::where('client_type','O')->get();
         $client_list = Client::where('client_type','C')->get();
         $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
@@ -402,6 +419,7 @@ class WithdrawalController extends Controller
 
         return view('withdraw/edit', [
             'wd' => $wd,
+            'company_list'=>$company_list,
             'client_list'=>$client_list,
             'store_list'=>$store_list,
             'deliver_list'=>$deliver_list,
@@ -457,7 +475,7 @@ class WithdrawalController extends Controller
         set_time_limit(0);
         $wd = WdHdr::select('wd_hdr.*', 'cl.client_name', 'del.client_name as deliver_to', 'u.name')
                 ->selectRaw('CONCAT(del.address_1, " ", del.city, " " , del.province, " ", del.country, " ", del.zipcode) as address')
-                ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.client_id')
+                ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.customer_id')
                 ->leftJoin('client_list as del', 'del.id', '=', 'wd_hdr.deliver_to_id')
                 ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
                 ->where('wd_hdr.id', _decode($id))->first();
@@ -476,7 +494,7 @@ class WithdrawalController extends Controller
         set_time_limit(0);
         $wd = WdHdr::select('wd_hdr.*', 'cl.client_name', 'del.client_name as deliver_to', 'u.name')
                 ->selectRaw('CONCAT(del.address_1, " ", del.city, " " , del.province, " ", del.country, " ", del.zipcode) as address')
-                ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.client_id')
+                ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.customer_id')
                 ->leftJoin('client_list as del', 'del.id', '=', 'wd_hdr.deliver_to_id')
                 ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
                 ->where('wd_hdr.id', _decode($id))->first();
@@ -485,6 +503,6 @@ class WithdrawalController extends Controller
             'created_by' => Auth::user()->name
         ]);
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream($wd->wd_no.'.pdf');
+        return $pdf->download($wd->wd_no.'.pdf');
     }
 }

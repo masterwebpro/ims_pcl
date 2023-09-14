@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('wd_hdr', function (Blueprint $table) {
-            $table->string('dispatch_no')->nullable()->after('wd_no');
+        Schema::table('wd_dtl', function(Blueprint $table)
+        {
+            $table->decimal('actual_rcv_qty',12,2)->default(0)->after('inv_qty');
+
         });
     }
 

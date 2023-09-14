@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('wd_hdr', function (Blueprint $table) {
-            $table->string('dispatch_no')->nullable()->after('wd_no');
+        Schema::table('wd_hdr', function(Blueprint $table)
+        {
+            $table->renameColumn('client_id', 'customer_id');
+            $table->unsignedInteger('company_id')->index()->after('store_id');
+
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-
+        //
     }
 };

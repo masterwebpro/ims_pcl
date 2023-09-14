@@ -1,5 +1,11 @@
 $(document).ready(function () {
     $(".select").select2();
+    var plate_no = $("#plate_no").val();
+    if(plate_no.length){
+        var trucker = populatePlateNo(plate_no);
+        $("#trucker_name").val(trucker[0].trucker_name);
+        $("#truck_type").val(trucker[0].vehicle_desc);
+    }
     $('#show-withdrawal-list tbody').on('click', 'tr', function (e) {
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected')
@@ -10,6 +16,13 @@ $(document).ready(function () {
     });
 });
 
+$(document).on('change', '#plate_no', function() {
+    var plate_no = $(this).val();
+    var trucker = populatePlateNo(plate_no);
+    $("#trucker_name").val(trucker[0].trucker_name);
+    $("#truck_type").val(trucker[0].vehicle_desc);
+});
+
 $(document).on('click', '.create-dispatch', function (e) {
     e.preventDefault();
     $('#preloading').modal('show');
@@ -17,54 +30,6 @@ $(document).on('click', '.create-dispatch', function (e) {
         window.location = BASEURL+'dispatch/create';
     }, 300);
 });
-
-function addRow(val = "") {
-    populateTruckType();
-    var newRow = `<tr>
-        <td>
-            <select class="form-select select2 truck_type" required="required" id="truck_type" name="truck_type[]">
-                <option value="">Select Truck Type</option>
-            </select>
-            <span class="text-danger error-msg truck_type_error"></span>
-        </td>
-        <td>
-            <input type="text" class="form-control numeric" id="no_of_package"
-                name="no_of_package[]" placeholder="Enter Quantity">
-        </td>
-        <td>
-            <input type="text" class="form-control" id="plate_no"
-                name="plate_no[]" placeholder="Enter Plate No.">
-        </td>
-        <td>
-            <input type="text" class="form-control" id="driver"
-                name="driver[]" placeholder="Enter Driver">
-        </td>
-        <td>
-            <input type="text" class="form-control" id="contact"
-                name="contact[]" placeholder="Enter Contact">
-        </td>
-        <td>
-            <div class="text-center">
-                <button type="button" class="remove-row btn btn-icon btn-danger remove-truck mx-2 waves-effect waves-light">
-                    <i class="ri-delete-bin-5-fill"></i>
-                </button>
-            </div>
-        </td>
-    </tr>`;
-    $("#truck-list tbody").append(newRow);
-  }
-
-  function removeRow() {
-    $(this).closest("tr").remove();
-  }
-
-  $("#add-row").on("click", function () {
-    addRow();
-  });
-
-  $(document).on("click", ".remove-row", function () {
-    removeRow.call(this);
-  });
 
 $(document).on('click', '#find-withdrawal', function() {
     $('#show-withdrawal').modal('show');
@@ -148,9 +113,6 @@ $(document).on('click', '#add-withdrawal', function() {
             <td class="text-start  fs-14"> \
                 '+data[x].wd_no+'\
             </td> \
-            <td class="text-center ps-1 fs-13"> \
-                '+ data[x].client_name +' \
-            </td> \
             <td class="text-start fs-14"> \
                 '+ data[x].deliver_to +' \
             </td> \
@@ -189,6 +151,7 @@ function totalPackage(){
         total += parseFloat($(this).find("input[name='wd_qty[]']").val());
     });
     $("#total").text(total.toFixed(2));
+    $("#qty").val(total.toFixed(2));
 }
 
 $(document).on('click', '.submit-open', function (e) {
@@ -198,6 +161,17 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'open');
      _submitData(form_data);
+});
+
+$(document).on('click', '.generate-deliveryslip', function (e) {
+    e.preventDefault();
+    $('#preloading').modal('show');
+    var id = $('#dispatch_id').val();
+    console.log(id)
+    setTimeout(function () {
+        window.location = BASEURL+'deliverySlip/'+ id;
+        $('#preloading').modal('hide');
+    }, 300);
 });
 
 $(document).on('click', '.submit-posted', function (e) {

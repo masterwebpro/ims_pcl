@@ -29,6 +29,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
     Route::get('/withdrawalSlip/{id}', [App\Http\Controllers\WithdrawalController::class, 'withdrawalslip']);
     Route::resource('/dispatch', App\Http\Controllers\DispatchController::class);
+    Route::get('/deliverySlip/{id}', [App\Http\Controllers\DispatchController::class, 'deliveryslip']);
+    Route::resource('/pod', App\Http\Controllers\PodController::class);
+
 
 
 
@@ -46,6 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/location', App\Http\Controllers\StorageLocationController::class);
     Route::resource('/maintenance/product', App\Http\Controllers\ProductController::class);
     Route::resource('/maintenance/attributes', App\Http\Controllers\AttributesController::class);
+    Route::resource('/maintenance/trucker', App\Http\Controllers\TruckerController::class);
 
     Route::resource('/users', App\Http\Controllers\UsersController::class);
 
@@ -72,6 +76,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/available_item', [App\Http\Controllers\SettingsController::class, 'getAvailableItem']);
     Route::get('/withdrawal_list', [App\Http\Controllers\SettingsController::class, 'getWithdrawalList']);
     Route::get('/getTruckType', [App\Http\Controllers\SettingsController::class, 'getTruckType']);
+    Route::get('/getPlateNo', [App\Http\Controllers\SettingsController::class, 'getPlateNo']);
 
     Route::get('/product', [App\Http\Controllers\SettingsController::class, 'getProduct']);
     Route::get('/allProducts', [App\Http\Controllers\SettingsController::class, 'getAllProduct']);

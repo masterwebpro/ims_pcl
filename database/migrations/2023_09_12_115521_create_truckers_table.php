@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('wd_hdr', function (Blueprint $table) {
-            $table->string('dispatch_no')->nullable()->after('wd_no');
+        Schema::create('trucker_list', function (Blueprint $table) {
+            $table->id();
+            $table->string('trucker_name',100)->index();
+            $table->boolean('is_enabled')->default(1);
+            $table->timestamps();
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('trucker_list');
     }
 };

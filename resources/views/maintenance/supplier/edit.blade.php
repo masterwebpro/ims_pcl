@@ -89,7 +89,7 @@
                                         <div class="col-md-4 form-group">
                                             <label for="client" class="form-label">Client<span
                                                 class="text-danger">*</span></label>
-                                            <select class="form-control category_id" id="client" name="client" data-choices
+                                            <select class="form-control category_id" id="client" name="client_id[]" data-choices
                                                 data-choices-removeItem multiple>
                                                 <option value="">Select Client</option>
                                                 <? foreach ($client_list as $client) :?>

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Withdrawal @endsection
+@section('title') POD @endsection
 @section('css')
 
 <link rel="stylesheet" href="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.css') }} ">
@@ -8,7 +8,7 @@
 @section('content')
 @component('components.breadcrumb')
 @slot('li_1') Outbound @endslot
-@slot('title') Withdrawal @endslot
+@slot('title') POD @endslot
 @endcomponent
 
 <div class="row">
@@ -16,15 +16,11 @@
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">Withdrawal List</h5>
-                    <div class="flex-shrink-0">
-                        <button data-status="open" class="create-withdrawal btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Withdrawal</button>
-                        <button data-status="open" class="create-withdrawal btn btn-secondary btn-label rounded-pill d-none"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Withdraw from DO</button>
-                    </div>
+                    <h5 class="card-title mb-0 flex-grow-1">POD List</h5>
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">
-                <form action="{{ route('withdraw.index') }}" method="GET">
+                <form action="{{ route('dispatch.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-xxl-4 col-sm-12">
                             <div class="search-box">
@@ -38,7 +34,7 @@
                         <div class="col-xxl-2 col-sm-4">
                             <div class="input-light">
                                 <select class="form-control" name="filter_date" id="filter_date">
-                                    <option value="po_date">Withdraw Date</option>
+                                    <option value="dispatch_date">Dispatch Date</option>
                                     <option value="created_at">Created Date</option>
                                 </select>
                             </div>
@@ -80,43 +76,37 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="id">WD #</th>
-                                <th class="sort" data-sort="order_no">DR Number</th>
-                                <th class="sort" data-sort="order_no">Order Number</th>
-                                <th class="sort" data-sort="order_type">Order Type</th>
-                                <th class="sort" data-sort="id">PO Number</th>
-                                <th class="sort" data-sort="id">Sales Invoice</th>
-                                <th class="sort" data-sort="client_name">Company Name</th>
-                                <th class="sort" data-sort="client_name">Customer Name</th>
-                                <th class="sort" data-sort="supplier_name">Deliver To</th>
-                                <th class="sort" data-sort="store">Site Name</th>
+                                <th class="sort" data-sort="batch_no">Batch No #</th>
+                                <th class="sort" data-sort="dispatch_by">Dispatch By</th>
+                                <th class="sort" data-sort="dispatch_date">Dispatch Date</th>
+                                <th class="sort" data-sort="receive_by">Received By</th>
+                                <th class="sort" data-sort="receive_date">Received Date</th>
+                                <th class="sort" data-sort="arrived_date">Arrived Date</th>
+                                <th class="sort" data-sort="depart_date">Departed Date</th>
+                                <th class="sort" data-sort="remarks">Remarks</th>
                                 <th class="sort" data-sort="status">Status</th>
-                                <th class="sort" data-sort="status">Withdrawal Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
 
                         <tbody class="list form-check-all">
-                            <? if($wd_list->total() > 0 ) : ?>
-                                <? foreach($wd_list as $withdraw) :?>
+                            <? if($pod_list->total() > 0 ) : ?>
+                                <? foreach($pod_list as $pod) :?>
                                     <tr>
-                                        <td class="rcv_no">{{ $withdraw->wd_no}}</td>
-                                        <td class="order_no">{{ $withdraw->dr_no}}</td>
-                                        <td class="order_no">{{ $withdraw->order_no}}</td>
-                                        <td class="order_type">{{ $withdraw->order_type}}</td>
-                                        <td class="po_num">{{ $withdraw->po_num}}</td>
-                                        <td class="sales_invoice">{{ $withdraw->sales_invoice}}</td>
-                                        <td class="company_name">{{ $withdraw->company_name}}</td>
-                                        <td class="client_name">{{ $withdraw->client_name}}</td>
-                                        <td>{{ $withdraw->deliver_to}}</td>
-                                        <td class="store">{{ $withdraw->store_name}}</td>
-                                        <td class="status"><span class="badge {{ $withdraw->status }} text-uppercase fs-11">{{ $withdraw->status }}</span></td>
-                                        <td class="order_date">{{ date('M d, Y',strtotime($withdraw->order_date)) }}</td>
+                                        <td>{{ $pod->batch_no}}</td>
+                                        <td>{{ $pod->dispatch_by}}</td>
+                                        <td>{{ ($pod->dispatch_date) ? date('M d, Y',strtotime($pod->dispatch_date)) : "-" }}</td>
+                                        <td>{{ $pod->receive_by}}</td>
+                                        <td>{{ ($pod->receive_date) ? date('M d, Y',strtotime($pod->receive_date)) : "-" }}</td>
+                                        <td>{{ ($pod->arrived_date) ? date('M d, Y',strtotime($pod->arrived_date)) : "-" }}</td>
+                                        <td>{{ ($pod->depart_date) ? date('M d, Y',strtotime($pod->depart_date)) : "-" }}</td>
+                                        <td>{{ $pod->remarks }}</td>
+                                        <td class="status"><span class="badge bg-info text-uppercase fs-11">{{ $pod->status }}</span></td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('withdraw') }}/<?=_encode($withdraw->id)?>" data-id="{{$withdraw->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <? if($withdraw->status != 'posted') : ?>
-                                                    <a href="{{ URL::to('withdraw') }}/<?=_encode($withdraw->id);?>/edit" data-id="{{$withdraw->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                <a href="{{ URL::to('pod') }}/<?=_encode($pod->id)?>" data-id="{{$pod->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <? if($pod->status != 'posted') : ?>
+                                                    <a href="{{ URL::to('pod') }}/<?=_encode($pod->id);?>/edit" data-id="{{$pod->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                                 <? endif; ?>
                                         </td>
                                     </tr>
@@ -137,7 +127,7 @@
                     <!--end table-->
                 </div>
                 <!-- Pagination -->
-                {!! $wd_list->withQueryString()->links('pagination::bootstrap-5') !!}
+                {!! $pod_list->withQueryString()->links('pagination::bootstrap-5') !!}
             </div>
             <!--end card-body-->
         </div>
@@ -183,7 +173,7 @@
  <!-- autocomplete js -->
  <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
 
-<script src="{{ URL::asset('/assets/js/withdraw/withdraw.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/pod/pod.js') }}"></script>
 
 
 

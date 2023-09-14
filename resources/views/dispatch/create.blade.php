@@ -47,11 +47,133 @@
         <div class="row justify-content-center">
             <div class="col-xxl-11">
                 <div class="card" id="demo">
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <div class="row ms-3 mt-3 mx-3">
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Plate No <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select select2" required="required" id="plate_no" name="plate_no">
+                                        <option value="">Select Truck Type</option>
+                                        <? foreach($plate_no_list as $plate) : ?>
+                                            <option value="<?=$plate->plate_no?>">{{ $plate->plate_no }}</option>
+                                        <? endforeach;?>
+                                    </select>
+                                    <span class="text-danger error-msg plate_no_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Trucker Name<span
+                                        class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="trucker_name" name="trucker_name" disabled
+                                        value="" placeholder="Trucker Name">
+                                    <span class="text-danger error-msg trucker_name_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Truck Type <span
+                                            class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="truck_type" name="truck_type"
+                                            value="" placeholder="Truck Type" disabled>
+                                    <span class="text-danger error-msg truck_type_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Seal No.<span
+                                        class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="seal_no" name="seal_no"
+                                        value="" placeholder="Seal No.">
+                                    <span class="text-danger error-msg seal_no_error"></span>
+                                </div>
+                            </div>
+                            <div class="row ms-3 mt-3 mx-3">
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Dispatcher Name<span
+                                        class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="dispatch_by" name="dispatch_by"
+                                        value="" placeholder="Dispatcher Name">
+                                    <span class="text-danger error-msg dispatch_by_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Driver<span
+                                        class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="driver" name="driver"
+                                        value="" placeholder="Driver Name">
+                                    <span class="text-danger error-msg driver_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Helper</label>
+                                        <input type="text" class="form-control" id="helper" name="helper"
+                                        value="" placeholder="Helper Name">
+                                    <span class="text-danger error-msg helper_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Contact Number</label>
+                                        <input type="text" class="form-control" id="contact_no" name="contact_no"
+                                        value="" placeholder="Contact">
+                                    <span class="text-danger error-msg contact_no_error"></span>
+                                </div>
+                            </div>
+                            <div class="row ms-3 mt-3 mx-3">
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Dispatch Date <span
+                                            class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" id="dispatch_date"
+                                            name="dispatch_date" placeholder="Dispatch Date" value="<?=date('Y-m-d');?>">
+                                        <span class="text-danger error-msg dispatch_date_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                        <label for="colFormLabel" class="form-label">Start Loading<span
+                                                class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="start_date"
+                                                    name="start_date" placeholder="Start Date" value="<?=date('Y-m-d');?>">
+                                                <input type="time" class="form-control" id="start_time"
+                                                    name="start_time" placeholder="Dispatch Date" value="">
+                                            </div>
+                                            <span class="text-danger error-msg start_time_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Finish Loading<span
+                                            class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" id="finish_date"
+                                                name="finish_date" placeholder="Finish Date" value="<?=date('Y-m-d');?>">
+                                            <input type="time" class="form-control" id="finish_time"
+                                                name="finish_time" placeholder="Finish Time" value="">
+                                        </div>
+                                        <span class="text-danger error-msg finish_time_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Depart Date/Time<span
+                                            class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" id="date_departed"
+                                                name="date_departed" placeholder="Departed Date" value="<?=date('Y-m-d');?>">
+                                            <input type="time" class="form-control" id="time_departed"
+                                                name="time_departed" placeholder="Departed Time" value="">
+                                        </div>
+                                        <span class="text-danger error-msg time_departed_error"></span>
+                                </div>
+                            </div>
+                            <div class="row ms-3 mt-3 mx-3">
+                                <div class="col-lg-3 col-md-3 form-group">
+                                        <label for="colFormLabel" class="form-label">Prepared By</label>
+                                            <input type="text" class="form-control" id="created_by" name="created_by" disabled
+                                                value="<?=$created_by?>" placeholder="Created By">
+                                            <span class="text-danger error-msg created_by_error"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-xxl-11">
+                <div class="card" id="demo">
                     <div class="row ">
                         <div class=" col-lg-12">
                             <div class="card-header card-title mb-0 flex-grow-1">
                                 <div class="d-flex align-items-center">
-                                    <h5 class="card-title mb-0 flex-grow-1">Withdrawal</h5>
+                                    <h5 class="card-title mb-0 flex-grow-1">Withdrawal List</h5>
                                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                                         <button type="button" id="find-withdrawal" class="btn btn-warning btn-label rounded-pill"><i
                                                 class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -66,9 +188,9 @@
                                             <tr class="table-active">
                                                 <th scope="col" style="width: 10px;">#</th>
                                                 <th scope="col">WD #</th>
-                                                <th scope="col">Client</th>
+                                                {{-- <th scope="col">Client</th> --}}
                                                 <th scope="col">Deliver To</th>
-                                                <th scope="col">No. of Package</th>
+                                                <th scope="col">Quantity</th>
                                                 <th scope="col">Order No.</th>
                                                 <th scope="col">Order Date</th>
                                                 <th scope="col">DR Number</th>
@@ -81,7 +203,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="4" class="text-end">Total</td>
+                                                <td colspan="3" class="text-end">Total</td>
                                                 <td class="text-center" id="total">0.00</td>
                                                 <td colspan="6"></td>
                                             </tr>
@@ -99,83 +221,6 @@
                 <!--end card-->
             </div>
             <!--end col-->
-            <div class="col-xxl-11">
-                <div class="card" id="demo">
-                    <div class="row ">
-                        <div class=" col-lg-12">
-                            <div class="card-header card-title mb-0 flex-grow-1">
-                                <div class="d-flex align-items-center">
-                                    <h5 class="card-title mb-0 flex-grow-1">Vehicle</h5>
-                                    <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                                        <button type="button" id="add-row" class="btn btn-info btn-label rounded-pill"><i
-                                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                                            Add Truck</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="table-responsive">
-                                    <table class="table table-nowrap" id="truck-list">
-                                        <thead>
-                                            <tr class="table-active">
-                                                <th scope="col">Truck Type</th>
-                                                <th scope="col">No. of Package</th>
-                                                <th scope="col">Plate No.</th>
-                                                <th scope="col">Driver</th>
-                                                <th scope="col">Contact</th>
-                                                <th scope="col" class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="newlink">
-                                            <tr>
-                                                <td>
-                                                    <select class="form-select select2 truck_type" required="required" id="truck_type" name="truck_type[]">
-                                                        <option value="">Select Truck Type</option>
-                                                        <? foreach($truck_type_list as $truck) : ?>
-                                                            <option value="<?=$truck->vehicle_code?>" ><?="(".$truck->vehicle_code.") ".$truck->vehicle_desc?></option>
-                                                        <? endforeach;?>
-                                                    </select>
-                                                    <span class="text-danger error-msg truck_type0_error"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control numeric" id="no_of_package"
-                                                        name="no_of_package[]" placeholder="Enter Quantity">
-                                                    <span class="text-danger error-msg no_of_package0_error"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="plate_no"
-                                                        name="plate_no[]" placeholder="Enter Plate No.">
-                                                    <span class="text-danger error-msg plate_no0_error"></span>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="driver"
-                                                        name="driver[]" placeholder="Enter Driver">
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="contact"
-                                                        name="contact[]" placeholder="Enter Contact">
-                                                </td>
-                                                <td>
-                                                    <div class="text-center">
-                                                        <button type="button" class="remove-row btn btn-icon btn-danger remove-truck mx-2 waves-effect waves-light">
-                                                            <i class="ri-delete-bin-5-fill"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <!--end table-->
-                                </div>
-                            </div>
-                            <!--end card-body-->
-                        </div>
-                        <!--end col-->
-                    </div>
-                    <!--end row-->
-                </div>
-                <!--end card-->
-            </div>
         </div>
     </form>
 
@@ -212,7 +257,7 @@
                                 <tr>
                                     <th>&nbsp;</th>
                                     <th scope="col">WD #</th>
-                                    <th scope="col">Client</th>
+                                    <th scope="col">Customer</th>
                                     <th scope="col">Deliver To</th>
                                     <th scope="col">No. of Package</th>
                                     <th scope="col">Order No.</th>
