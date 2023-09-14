@@ -80,11 +80,14 @@ $(document).on('click', '#add-product', function() {
         var uom = getUom();
         var rowCount = $('#product-list tr').length;
         var idx = rowCount - 1;
+
+        let uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+
         var btn = '<div class="text-center">';
         btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+rowCount+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
         btn += '</div>'
 
-        $('#product-list tbody').append('<tr id="product_'+rowCount+'"> \
+        $('#product-list tbody').append('<tr id="product_'+uniqueId+'"> \
         <td class="text-start"> \
             <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
         '+rowCount+' </td> \
@@ -92,28 +95,28 @@ $(document).on('click', '#add-product', function() {
             '+data.product_name+'<br/><small>'+data.product_code+'</small> \
         </td> \
         <td class="text-start"> \
-            <select name="item_type[]" id="item_type_'+rowCount+'" class="uom uom_select form-select">  \
+            <select name="item_type[]" id="item_type_'+uniqueId+'" class="uom uom_select form-select">  \
                 <option value="good">Good</option>  \
                 <option value="damage">Damage</option> \
                 <option value="repair">Repair</option> \
             </select> \
-            <span class="text-danger error-msg item_type'+(rowCount-1)+'_error"></span> \
+            <span class="text-danger error-msg item_type'+uniqueId+'_error"></span> \
         </td>  \
         <td class="text-start ps-1"> \
-            <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+idx+'" id="whse_qty_'+idx+'" value="" placeholder="Whse Qty" /> \
-            <span class="text-danger error-msg whse_qty'+(rowCount-1)+'_error"></span> \
+            <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+uniqueId+'" id="whse_qty_'+uniqueId+'" value="" placeholder="Whse Qty" /> \
+            <span class="text-danger error-msg whse_qty'+uniqueId+'_error"></span> \
         </td> \
-            <td class="text-start ps-1"><select name="whse_uom[]" data-id="'+idx+'" id="uom_'+idx+'" class="uom  whse_uom uom_select form-select select2"> \
+            <td class="text-start ps-1"><select name="whse_uom[]" data-id="'+uniqueId+'" id="uom_'+uniqueId+'" class="uom  whse_uom uom_select form-select select2"> \
             '+uom+'</select> \
-            <span class="text-danger error-msg whse_uom'+(rowCount-1)+'_error"></span> \
+            <span class="text-danger error-msg whse_uom'+uniqueId+'_error"></span> \
         </td> \
         <td class="text-start ps-1"> \
-            <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+idx+'" id="inv_qty_'+idx+'" value="" placeholder="Inv Qty" /> \
-            <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
+            <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+uniqueId+'" id="inv_qty_'+uniqueId+'" value="" placeholder="Inv Qty" /> \
+            <span class="text-danger error-msg inv_qty'+uniqueId+'_error"></span> \
         <td class="text-start ps-1"> \
-            <select name="inv_uom[]" data-id="'+idx+'" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
+            <select name="inv_uom[]" data-id="'+uniqueId+'" id="inv_uom_'+uniqueId+'" class="uom uom_select form-select select2"> \
             '+uom+'</select> \
-            <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
+            <span class="text-danger error-msg inv_uom'+uniqueId+'_error"></span> \
         </td> \
         <td class="ps-1"> \
             <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" placeholder="Lot/Batch No" /> \
@@ -356,6 +359,13 @@ $(document).on('keyup', '.whse_qty', function(e){
     var val = $(this).val();
 
     $('#inv_qty_'+id).val(val);
+
+    computeAll();
+});
+
+$(document).on('keyup', '.inv_qty', function(e){
+    e.preventDefault();
+    computeAll();
 });
 
 $(document).on('change', '.whse_uom', function(e){
@@ -365,3 +375,19 @@ $(document).on('change', '.whse_uom', function(e){
 
     $('#inv_uom_'+id).val(val);
 });
+
+function computeAll() {
+
+    var total_whse_qty = 0;
+    var total_inv_qty = 0;
+
+    $("table#product-list").find('input[name^="whse_qty"]').each(function () {
+        total_whse_qty += stringToFloat($(this).val());
+    });
+
+    $("table#product-list").find('input[name^="inv_qty"]').each(function () {
+        total_inv_qty += stringToFloat($(this).val());
+    });
+    $("#total_inv_qty").val(total_inv_qty);
+    $("#total_whse_qty").val(total_whse_qty);
+}

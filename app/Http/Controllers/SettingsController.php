@@ -157,7 +157,7 @@ class SettingsController extends Controller
         //     $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
 
         if($request->client_id > 0)
-            $result->where('client_id', $request->client_id);
+            $result->where('company_id', $request->client_id);
 
         if($request->store_id > 0)
             $result->where('store_id', $request->store_id);
@@ -171,7 +171,7 @@ class SettingsController extends Controller
 
     public function getNewLocation(Request $request, $warehouse_id) {
 
-        $location_list = \App\Models\StorageLocationModel::select('storage_location_id','location')->where('warehouse_id', $warehouse_id)->get();
+        $location_list = \App\Models\StorageLocationModel::select('storage_location_id','location')->where('warehouse_id', $warehouse_id)->orderBy('location')->get();
 
         $html = '<option value="">Select Location</option>';
         foreach ($location_list as $loc) {

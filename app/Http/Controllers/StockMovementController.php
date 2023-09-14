@@ -336,7 +336,7 @@ class StockMovementController extends Controller
 
     public function getNewLocation($warehouse_id, $storage_id) {
 
-        $location_list = \App\Models\StorageLocationModel::select('storage_location_id','location')->where('warehouse_id', $warehouse_id)->get();
+        $location_list = \App\Models\StorageLocationModel::select('storage_location_id','location')->where('warehouse_id', $warehouse_id)->orderBy('location')->get();
         
         $html = '<option value="">New Loc</option>';
         foreach ($location_list as $loc) {
