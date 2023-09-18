@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('plate_no',50)->nullable()->after('truck_type');
             $table->string('seal_no',50)->nullable()->after('plate_no');
             $table->string('driver',100)->nullable()->after('seal_no');
-            $table->string('contact_no',20)->nullable()->after('contact_no');
-            $table->string('helper',100)->nullable()->after('helper');
+            $table->string('contact_no',20)->nullable()->after('driver');
+            $table->string('helper',100)->nullable()->after('contact_no');
         });
     }
 
