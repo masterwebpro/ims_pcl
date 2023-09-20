@@ -14,6 +14,6 @@ class Pod extends Model
 
     public function items()
     {
-        return $this->hasMany(WdDtl::class, 'wd_no', 'wd_no');
+        return $this->hasMany(WdDtl::class, 'wd_no', 'batch_no');
     }
 }

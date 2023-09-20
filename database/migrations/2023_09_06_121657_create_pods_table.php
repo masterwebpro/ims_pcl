@@ -22,9 +22,10 @@ return new class extends Migration
             $table->string('receive_by',50)->nullable();
             $table->dateTime('receive_date')->nullable();
             $table->string('dispatch_by')->nullable();
-            $table->date('dispatch_date')->nullable();
+            $table->dateTime('dispatch_date')->nullable();
             $table->bigInteger('created_by');
             $table->text('remarks');
+            $table->string('attachment')->nullable();
             $table->timestamps();
         });
     }

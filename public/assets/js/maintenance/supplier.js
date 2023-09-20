@@ -24,7 +24,6 @@ $(document).on('click', '.submit-supplier', function (e) {
         success: function (data) {
             if($.isEmptyObject(data.error)) {
                 if(data.success == true) {
-                    console.log(data.data)
                     setTimeout(function(){
                         window.location= BASEURL + 'maintenance/supplier/'+data.id+'/edit';
                     }, 300);

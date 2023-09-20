@@ -189,14 +189,10 @@ $(document).ready(function () {
     });
 
     $(document).on('click','#steparrow-units',function(){
-        if ($("#msrp").val() && $("#supplier_price").val() && $("#product_srp").val() && $("#special_price").val()) {
-            $("#steparrow-unit-info-tab").prop('disabled',false);
-            const nextTab = $(this).data("nexttab");
-            $(`#${nextTab}`).click();
-        } else {
-            $("#steparrow-unit-info-tab").prop('disabled',true);
-            alert("Please fill in all required fields.");
-        }
+        $("#steparrow-unit-info-tab").prop('disabled',false);
+        const nextTab = $(this).data("nexttab");
+        $(`#${nextTab}`).click();
+      
     });
 
     function validate_general(){

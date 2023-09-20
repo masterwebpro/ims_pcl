@@ -94,7 +94,6 @@ $(document).ready(function() {
             success: function (data) {
                 if($.isEmptyObject(data.error)) {
                     if(data.success == true) {
-                        console.log(data.data)
                         setTimeout(function(){
                             window.location= BASEURL + 'maintenance/category/'+data.id+'/edit';
                         }, 300);
