@@ -123,41 +123,45 @@ class ProductController extends Controller
                 'srp'=> $request->product_srp,
             ]);
 
-            $uom = json_decode($request->uom_id);
+            if(isset($request->uom_id)){
+                $uom = json_decode($request->uom_id);
 
-            if(!empty($uom)){
-                ProductUom::where('product_id',$product->product_id)->delete();
-                foreach($uom as $key => $uom_id)
-                {
-                    ProductUom::updateOrCreate([
+                if(!empty($uom)){
+                    ProductUom::where('product_id',$product->product_id)->delete();
+                    foreach($uom as $key => $uom_id)
+                    {
+                        ProductUom::updateOrCreate([
+                                'product_id' => $product->product_id,
+                                'uom_id' => $uom_id,
+                            ], [
                             'product_id' => $product->product_id,
                             'uom_id' => $uom_id,
-                        ], [
-                        'product_id' => $product->product_id,
-                        'uom_id' => $uom_id,
-                    ]);
+                        ]);
+                    }
+                }
+                else{
+                    ProductUom::where('product_id',$product->product_id)->delete();
                 }
             }
-            else{
-                ProductUom::where('product_id',$product->product_id)->delete();
-            }
-            $attribute_entity = json_decode($request->attribute_entity);
-            if(!empty($attribute_entity)){
-                ProductAttribute::where('product_id',$product->product_id)->delete();
-                foreach($attribute_entity as $key => $entity)
-                {
-                    ProductAttribute::updateOrCreate([
+            if(isset($request->attribute_entity)){
+                $attribute_entity = json_decode($request->attribute_entity);
+                if(!empty($attribute_entity)){
+                    ProductAttribute::where('product_id',$product->product_id)->delete();
+                    foreach($attribute_entity as $key => $entity)
+                    {
+                        ProductAttribute::updateOrCreate([
+                                'product_id' => $product->product_id,
+                                'attribute_id' => $entity->attribute_id,
+                            ], [
                             'product_id' => $product->product_id,
                             'attribute_id' => $entity->attribute_id,
-                        ], [
-                        'product_id' => $product->product_id,
-                        'attribute_id' => $entity->attribute_id,
-                        'attribute_value' => $entity->attribute_code,
-                    ]);
+                            'attribute_value' => $entity->attribute_code,
+                        ]);
+                    }
                 }
-            }
-            else{
-                ProductAttribute::where('product_id',$product->product_id)->delete();
+                else{
+                    ProductAttribute::where('product_id',$product->product_id)->delete();
+                }
             }
 
         DB::connection()->commit();

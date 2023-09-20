@@ -2,7 +2,6 @@ $(document).ready(function () {
   var attribute_id = $("#attribute_id").val();
   var entity = getAttributeEntity(attribute_id);
   var input_type = $("#input_type").val();
-  console.log(input_type);
   entity.forEach(function (val) {
     switch (input_type) {
       case "text_field":

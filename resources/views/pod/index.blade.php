@@ -76,9 +76,14 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="batch_no">Batch No #</th>
-                                <th class="sort" data-sort="dispatch_by">Dispatch By</th>
+                                <th class="sort" data-sort="batch_no">Dispatch No.</th>
+                                <th class="sort" data-sort="batch_no">WD No.</th>
+                                <th class="sort" data-sort="dispatch_by">Dispatcher Name</th>
                                 <th class="sort" data-sort="dispatch_date">Dispatch Date</th>
+                                <th class="sort" data-sort="dispatch_date">Trucker Name</th>
+                                <th class="sort" data-sort="dispatch_date">Truck Type</th>
+                                <th class="sort" data-sort="dispatch_date">Plate No.</th>
+                                <th class="sort" data-sort="dispatch_date">Driver</th>
                                 <th class="sort" data-sort="receive_by">Received By</th>
                                 <th class="sort" data-sort="receive_date">Received Date</th>
                                 <th class="sort" data-sort="arrived_date">Arrived Date</th>
@@ -93,9 +98,14 @@
                             <? if($pod_list->total() > 0 ) : ?>
                                 <? foreach($pod_list as $pod) :?>
                                     <tr>
+                                        <td>{{ $pod->dispatch_no }}</td>
                                         <td>{{ $pod->batch_no}}</td>
                                         <td>{{ $pod->dispatch_by}}</td>
                                         <td>{{ ($pod->dispatch_date) ? date('M d, Y',strtotime($pod->dispatch_date)) : "-" }}</td>
+                                        <td>{{ $pod->trucker_name }}</td>
+                                        <td>{{ $pod->truck_type }}</td>
+                                        <td>{{ $pod->plate_no }}</td>
+                                        <td>{{ $pod->driver }}</td>
                                         <td>{{ $pod->receive_by}}</td>
                                         <td>{{ ($pod->receive_date) ? date('M d, Y',strtotime($pod->receive_date)) : "-" }}</td>
                                         <td>{{ ($pod->arrived_date) ? date('M d, Y',strtotime($pod->arrived_date)) : "-" }}</td>

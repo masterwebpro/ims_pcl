@@ -69,6 +69,7 @@ $(document).on('click', '.search-item', function() {
 });
 
 function masterfile(){
+    var company_id = $('#company').val();
     var client_id = $('#client').val();
     var store_id = $('#store').val();
     var warehouse_id = $('#warehouse').val();
@@ -89,7 +90,8 @@ function masterfile(){
         ajax: {
             url : BASEURL+"settings/available_item",
             data : {
-                client_id : client_id,
+                company_id : company_id,
+                customer_id : client_id,
                 store_id : store_id,
                 warehouse_id : warehouse_id,
                 product : product,
@@ -102,11 +104,12 @@ function masterfile(){
             { data: 'product_id',  visible: false },
             { data: 'product_code' },
             { data: 'product_name' },
-            { data: 'product_sku' },
             { data: 'date_received' },
             { data: 'item_type' },
             { data: 'inv_qty' , render: $.fn.dataTable.render.number( ',', '.', 2)},
             { data: 'inv_uom_code' },
+            { data: 'lot_no' },
+            { data: 'expiry_date' },
             { data: 'warehouse_name' },
             { data: 'location' },
         ],
@@ -166,6 +169,12 @@ $(document).on('click', '#add-product', function() {
             <td class="text-start  fs-14"> \
                 '+data[x].inv_uom_code+'\
                 <input type="hidden" readonly class="form-control" name="inv_uom[]" data-id="'+data[x].inv_uom+'" id="inv_uom_'+(rowCount-1)+'" value="'+data[x].inv_uom+'"> \
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].lot_no+'\
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].expiry_date+'\
             </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].warehouse_name+'\

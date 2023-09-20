@@ -242,8 +242,7 @@
                                             <div class="row mb-3">
                                                 <div class="col-lg-3">
                                                     <label for="product_code" class="form-label">Product
-                                                        MSRP
-                                                        <span class="text-danger">*</span></label>
+                                                        MSRP</label>
                                                 </div>
                                                 <div class="col-lg-9">
                                                     <input type="hidden" name="product_price_id" id="product_price_id" value="{{ isset($price->product_price_id) ? $price->product_price_id : '' }}">
@@ -256,7 +255,7 @@
                                             <div class="row mb-3">
                                                 <div class="col-lg-3">
                                                     <label for="product_upc" class="form-label">Supplier
-                                                        Price <span class="text-danger">*</span></label></label>
+                                                        Price </label></label>
                                                 </div>
                                                 <div class="col-lg-9">
                                                     <input type="url" class="form-control numeric" id="supplier_price"  value="{{ isset($price->supplier_price) ? $price->supplier_price : '' }}"
@@ -269,7 +268,7 @@
                                                 <div class="col-lg-3">
                                                     <label for="product_name" class="form-label">Product
                                                         SRP
-                                                        <span class="text-danger">*</span></label>
+                                                        </label>
                                                 </div>
                                                 <div class="col-lg-9">
                                                     <input type="url" class="form-control numeric" id="product_srp"  value="{{ isset($price->srp) ? $price->srp : '' }}"
@@ -281,8 +280,7 @@
                                             <div class="row mb-3">
                                                 <div class="col-lg-3">
                                                     <label for="product_name" class="form-label">Special
-                                                        Price
-                                                        <span class="text-danger">*</span></label>
+                                                        Price</label>
                                                 </div>
                                                 <div class="col-lg-9">
                                                     <input type="url" class="form-control numeric" id="special_price"  value="{{ isset($price->special_price) ? $price->special_price : '' }}"
