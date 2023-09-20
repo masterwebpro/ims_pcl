@@ -25,6 +25,7 @@ class MvHdr extends Model
 
     public function company() 
     {
+        
         return $this->hasOne(Client::class, 'id', 'company_id');
     }
 
