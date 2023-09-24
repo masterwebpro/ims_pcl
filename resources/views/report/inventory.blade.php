@@ -23,13 +23,15 @@
                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
                                     <p class=" mb-2">
-                                        <select class="form-select select2" id="client" name="client">
-                                            <option value="">Select Client</option>                                                            
+                                        <select class="form-select select2" id="company" name="company">
+                                            <option value="">Select Company</option>                                                            
                                             <? foreach($client_list as $client) : ?>
+                                                <? if(strtoupper($client->client_type) == 'O') : ?>
                                                 <option value="<?=$client->id?>" ><?=$client->client_name?></option>
+                                                <? endif;?>
                                             <? endforeach;?>
                                         </select>
-                                        <span class="text-danger error-msg client_error"></span>
+                                        <span class="text-danger error-msg company_error"></span>
                                     </p>
                                 </div>
                                 <!--end col-->
