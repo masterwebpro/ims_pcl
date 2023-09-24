@@ -198,7 +198,7 @@
                                                             {{isset($dtl->old_location->location) ? $dtl->old_location->location : 'RA'}}
                                                         </td>
                                                         <td>
-                                                            <div class="input-group">
+                                                            <div class="input-group"  style="width: 140px;">
                                                                 <input type="text" readonly class="form-control input-group-text numeric movement_item" name="old_inv_qty[]" data-id="<?=($x)?>" id="old_inv_qty_<?=($x)?>" value="<?=$dtl->old_inv_qty?>">
                                                                 <input type="hidden" readonly class="form-control" name="old_inv_uom[]" data-id="<?=($x)?>" id="old_inv_uom_<?=($x)?>" value="<?=$dtl->old_inv_uom?>">
                                                                 <span class="input-group-text">{{$dtl->old_uom->code}}</span>
