@@ -14,7 +14,9 @@ use App\Models\RcvDtl;
 use App\Models\Products;
 
 use App\Exports\ExportRcvDetailed;
-
+use App\Exports\ExportWdDetailed;
+use App\Models\OrderType;
+use App\Models\WdHdr;
 use DataTables;
 
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +25,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 
 use Maatwebsite\Excel\Facades\Excel;
-
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -304,6 +305,118 @@ class ReportController extends Controller
             'result'    => $result,
         ]);
 
+    }
+
+    public function getWithdrawalDetailedIndex(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->get();
+        $order_type = OrderType::all();
+        return view('report/withdrawal_detailed', [
+            'client_list'=>$client_list,
+            'order_type'=>$order_type,
+            'request'=>$request,
+        ]);
+    }
+
+    public function getWithdrawalDetailed(Request $request)
+    {
+        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', )
+                ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+                ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
+                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom');
+
+        if($request->has('wd_no') && $request->wd_no !='')
+            $wd->where('wd_hdr.wd_no', $request->wd_no);
+        
+        if($request->has('client')  && $request->client !='')
+            $wd->where('wd_hdr.customer_id', $request->client);
+        
+        if($request->has('store')  && $request->store !='')
+            $wd->where('wd_hdr.store_id', $request->store);
+        
+        if($request->has('warehouse')  && $request->warehouse !='')
+            $wd->where('wd_hdr.warehouse_id', $request->warehouse);
+
+        if($request->has('product_code')  && $request->product_code !='')
+            $wd->where('p.product_code', $request->product_code);
+        
+        if($request->has('order_type')  && $request->order_type !='')
+            $wd->where('wd_hdr.order_type', $request->order_type);
+
+        if($request->has('withdraw_date')  && $request->withdraw_date !='' ) {
+            $date_split = explode(" to ",$request->withdraw_date);
+            $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
+            $to = date('Y-m-d',  strtotime($date_split[1]))." 023:59:59";
+            $wd->whereBetween('withdraw_date', [$from, $to]);
+        }
+
+        if($request->has('product_name')  && $request->product_name !='')
+            $wd->where('p.product_name','LIKE','%'.$request->product_name.'%');
+
+        $result = $wd->get();
+
+        return response()->json([
+            'success'  => true,
+            'message' => 'Saved successfully!',
+            'data'    => $result,
+        ]);
+    }
+
+    function exportWithdrawalDetailed(Request $request) {
+        ob_start();
+		$file_name = 'export-withdrawal-detailed'.date('Ymd-His').'.xls'; 
+        return Excel::download(new ExportWdDetailed($request), $file_name);
+    }
+
+    function printPdfWithdrawalDetailed(Request $request) {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', )
+                ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+                ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
+                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom');
+
+        if($request->has('wd_no') && $request->wd_no !='')
+            $wd->where('wd_hdr.wd_no', $request->wd_no);
+        
+        if($request->has('client')  && $request->client !='')
+            $wd->where('wd_hdr.client_id', $request->client);
+        
+        if($request->has('store')  && $request->store !='')
+            $wd->where('wd_hdr.store_id', $request->store);
+        
+        if($request->has('warehouse')  && $request->warehouse !='')
+            $wd->where('wd_hdr.warehouse_id', $request->warehouse);
+
+        if($request->has('product_code')  && $request->product_code !='')
+            $wd->where('p.product_code', $request->product_code);
+        
+        if($request->has('order_type')  && $request->order_type !='')
+            $wd->where('wd_hdr.order_type', $request->order_type);
+
+        if($request->has('withdraw_date')  && $request->withdraw_date !='' ) {
+            $date_split = explode(" to ",$request->withdraw_date);
+            $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
+            $to = date('Y-m-d',  strtotime($date_split[1]))." 023:59:59";
+            $wd->whereBetween('withdraw_date', [$from, $to]);
+        }
+
+        if($request->has('product_name')  && $request->product_name !='')
+            $wd->where('p.product_name','LIKE','%'.$request->product_name.'%');
+
+        $result = $wd->get();
+
+        $data = [
+            'title' =>'Withdrawal Detailed | Report Summary',
+            'date' => date('m/d/Y'),
+            'result' => $result
+        ];
+
+        $pdf = PDF::loadView('report/withdrawal_detailed_pdf', $data);
+        $pdf->setPaper('A4','landscape');
+        $pdf->setOption('margin', 0);
+        return $pdf->stream();
     }
 
 }

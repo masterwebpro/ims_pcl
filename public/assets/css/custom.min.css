@@ -61,6 +61,30 @@
     background-color: rgba(10,179,156,.1);
 }
 
+.dispatch {
+    color: #CDA323;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
+.delivered {
+    color: #09D935;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
+.incomplete {
+    color: #E01919;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
+.complete {
+    color: #0B4BDF;
+    font-size: 15px;
+    background-color: rgba(10,179,156,.1);
+}
+
 .uom_select {
     width: 100px;
 }
@@ -79,7 +103,7 @@ table.movement {
 
 .movement>:not(caption)>*>* {
     padding: 0.30rem 0.6rem !important;
-    
+
 }
 
 .flatpickr-calendar {

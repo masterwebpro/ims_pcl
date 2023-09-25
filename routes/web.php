@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\FileUploadController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,6 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/dispatch', App\Http\Controllers\DispatchController::class);
     Route::get('/deliverySlip/{id}', [App\Http\Controllers\DispatchController::class, 'deliveryslip']);
     Route::resource('/pod', App\Http\Controllers\PodController::class);
+    Route::post('/upload-attachment', 'App\Http\Controllers\FileUploadController@upload');
 
 
 
@@ -100,6 +102,11 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
     Route::get('/inventory',[App\Http\Controllers\ReportController::class,'inventory'])->name('report.inventory');
     Route::get('/getInventoryReport',[App\Http\Controllers\ReportController::class,'getInventoryReport'])->name('report.getInventoryReport');
+    
+    Route::get('/withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailedIndex']);
+    Route::get('/get-withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailed']);
+    Route::get('/export-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'exportWithdrawalDetailed'])->name('export-withdrawal-detailed');
+    Route::get('/print-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'printPdfWithdrawalDetailed'])->name('print-withdrawal-detailed');
 });
 
 

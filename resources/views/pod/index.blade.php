@@ -111,7 +111,7 @@
                                         <td>{{ ($pod->arrived_date) ? date('M d, Y',strtotime($pod->arrived_date)) : "-" }}</td>
                                         <td>{{ ($pod->depart_date) ? date('M d, Y',strtotime($pod->depart_date)) : "-" }}</td>
                                         <td>{{ $pod->remarks }}</td>
-                                        <td class="status"><span class="badge bg-info text-uppercase fs-11">{{ $pod->status }}</span></td>
+                                        <td class="status"><span class="badge {{ strtolower($pod->status) }} text-uppercase fs-11">{{ $pod->status }}</span></td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('pod') }}/<?=_encode($pod->id)?>" data-id="{{$pod->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
