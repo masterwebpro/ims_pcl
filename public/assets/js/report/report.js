@@ -136,3 +136,113 @@ $(document).on('click', '.submit-receive-print', function(e) {
     }, 100);
     
 });
+
+$(document).on('click', '.submit-withdrawal-search', function(e) {
+    e.preventDefault();
+    var wd_no = $('#wd_no').val();
+    var client = $('#client').val();
+    var store = $('#store').val();
+    var warehouse = $('#warehouse').val();
+    var withdraw_date = $('#withdraw_date').val();
+    var order_type = $('#order_type').val();
+    var product_code = $('#product_code').val();
+    var product_name = $('#product_name').val();
+
+    $.ajax({
+        url: BASEURL + 'reports/get-withdrawal-detailed',
+        method: 'get',
+        data: {
+            wd_no:wd_no,
+            client:client,
+            store:store,
+            warehouse:warehouse,
+            withdraw_date:withdraw_date,
+            order_type:order_type,
+            product_code:product_code,
+            product_name:product_name,
+        },
+        dataType: 'json',
+        beforeSend: function () {
+            $('#preloading').modal('show');
+            $('#submit-withdrawal').find('span.error-msg').text('');
+        },
+        success: function (data) {
+            if($.isEmptyObject(data.errors)) {
+                if(data.success == true) {
+                    var results = data.data;
+                    var table = '';
+                    $('#load-search').removeClass('d-none');
+                    $('#load-data').addClass('d-none');
+                    $('#item_list tbody').html('');
+                    results.forEach(function(item) {
+                        //var date = moment();
+                        table += '<tr>';
+                            table += "<td width='120px;'>"+moment(new Date(item.withdraw_date)).format("DD MMM YYYY") +"</td>";
+                            table += "<td width='120px;'>"+item.wd_no+"</td>";
+                            table += "<td width='120px;'>"+item.order_no+"</td>";
+                            table += "<td width='120px;'>"+item.order_type+"</td>";
+                            table += "<td width='120px;'>"+item.dr_no+"</td>";
+                            table += "<td width='120px;'>"+item.sales_invoice+"</td>";
+                            table += "<td width='120px;'>"+item.po_num+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
+                            table += "<td class='text-left'>"+item.product_name+"</td>";
+                            table += "<td class='text-center'>"+item.inv_qty+" / "+item.ui_code+"</td>";                      
+                        table += '</tr>';
+                    });
+
+                    $('#item_list tbody').append(table);
+                  
+                } else {
+                    toastr.error(data.message,'Error on saving'); 
+                }
+            } else {
+                toastr.error('Some fields are required');
+            }
+        },
+        complete: function() {
+           $('#preloading').modal('hide');
+		}
+    });
+});
+
+$(document).on('click', '.submit-withdrawal-xls', function(e) {
+    e.preventDefault();
+    var wd_no = $('#wd_no').val();
+    var client = $('#client').val();
+    var store = $('#store').val();
+    var warehouse = $('#warehouse').val();
+    var withdraw_date = $('#withdraw_date').val();
+    var product_code = $('#product_code').val();
+    var product_name = $('#product_name').val();
+    var order_type = $('#order_type').val();
+
+    window.location.href= BASEURL + 'reports/export-withdrawal-detailed?wd_no='+wd_no+'&client='+client+'&store='+store+'&warehouse='+warehouse+'&withdraw_date='+withdraw_date+'&order_type='+order_type+'&product_code='+product_code+'&product_name='+product_name;
+});
+
+
+$(document).on('click', '.submit-withdrawal-print', function(e) {
+    $('#preloading').modal('show');
+    $('#load-data').html('');
+    $('#load-data').removeClass('d-none');
+    $('#load-data').attr('style','min-height:500px;');
+    $('#load-search').addClass('d-none');
+    
+    e.preventDefault();
+    var wd_no = $('#wd_no').val();
+    var client = $('#client').val();
+    var store = $('#store').val();
+    var warehouse = $('#warehouse').val();
+    var withdraw_date = $('#withdraw_date').val();
+    var order_type = $('#order_type').val();
+    var product_code = $('#product_code').val();
+    var product_name = $('#product_name').val();
+
+    pdf_url= BASEURL + 'reports/print-withdrawal-detailed?wd_no='+wd_no+'&client='+client+'&store='+store+'&warehouse='+warehouse+'&withdraw_date='+withdraw_date+'&order_type='+order_type+'&product_code='+product_code+'&product_name='+product_name;
+    var iframe = $('<iframe>');
+    iframe.attr('src',pdf_url);
+    setTimeout(function () {
+        $('#preloading').modal('hide');
+        $('#load-data').append(iframe);    
+    }, 100);
+    
+});

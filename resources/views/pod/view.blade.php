@@ -112,7 +112,7 @@
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Received By</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="receive_by" name="receive_by"
+                                        <input type="text" class="form-control" id="receive_by" name="receive_by" disabled
                                             value="<?=$pod->receive_by?>" placeholder="Received By">
                                     </div>
                                     <span class="text-danger error-msg receive_by_error"></span>
