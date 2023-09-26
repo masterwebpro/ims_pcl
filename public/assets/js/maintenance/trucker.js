@@ -45,7 +45,9 @@ function addRow(val = "") {
   $(document).on('click', '.submit-trucker', function (e) {
     e.preventDefault();
     var checkbox = document.getElementById("is_enabled");
-    var is_enabled = checkbox.checked ? 1 : 0;
+    if(checkbox){
+     var is_enabled = checkbox.checked ? 1 : 0;
+    }
     var form_data = new FormData(document.getElementById("submit-trucker"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("is_enabled[]", is_enabled);
