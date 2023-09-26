@@ -3,7 +3,13 @@ $(document).ready(function () {
         dropdownParent: $("#movement-form")
     });
 
-    $(".select2").select2();
+    $(".select3").select2({
+        dropdownParent: $("#show-items")
+    });
+
+
+
+    //$(".select2").select2();
 
     if ( $( "#store_id" ).length ) {
         company_id = $("#company_id" ).val();
@@ -95,11 +101,10 @@ $(document).on('click', '.search-item', function() {
 
     var warehouse_id = $('#warehouse_id').val();
     var store_id = $('#store_id').val();
-    var client_id = $('#client_id').val();
-    var rack = $('#rack').val();
+    var company_id = $('#company_id').val();
+    var location = $('#location').val();
     var rcv_no = $('#rcv_no').val();
-    var layer = $('#layer').val();
-    var storage_location_id = $('#storage_location_id').val();
+    //var storage_location_id = $('#storage_location_id').val();
 
     
     if(warehouse_id) {   
@@ -110,21 +115,17 @@ $(document).on('click', '.search-item', function() {
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
-
-        console.log(store_id + " - " + client_id);
-
         $.ajax({
             url: BASEURL + 'settings/getStorageLocationId',
             method: "get",
             data: {
-                rack : rack,
-                layer : layer,
+                location : location,
                 warehouse_id : warehouse_id,
                 _token : $('input[name=_token]').val()
             },
             dataType: 'json',
             beforeSend: function () {
-                $('#preloading').modal('show');
+                // $('#preloading').modal('show');
                 $('#show-form').find('span.error-msg').text('');
             },
             success: function (response) {
@@ -132,13 +133,12 @@ $(document).on('click', '.search-item', function() {
 
                     let storage_id = response.map(x => x.storage_location_id).join(", ");
 
-                    console.log(storage_id);
+                    console.log(storage_id+" - "+store_id+" - "+company_id+" - "+rcv_no);
 
                     if ($.fn.DataTable.isDataTable("#show-items-list")) {
                         $('#show-items-list').DataTable().clear().destroy();
                     }
                     
-
                     new DataTable("#show-items-list",{
                         order: [[1, 'desc']],
                         paging: true,
@@ -148,7 +148,7 @@ $(document).on('click', '.search-item', function() {
                             data: {
                                 storage_id: storage_id,
                                 store_id: store_id,
-                                client_id: client_id,
+                                client_id: company_id,
                                 rcv_no : rcv_no,
                                 warehouse_id:warehouse_id
                             },
@@ -158,8 +158,7 @@ $(document).on('click', '.search-item', function() {
                             { data: 'product_id', visible: false },
                             { data: 'product_code' },
                             { data: 'product_name' },
-                            { data: 'rack' },
-                            { data: 'layer' },
+                            { data: 'old_location' },
                             { data: 'item_type' },
                             { data: 'inv_qty' },
                             { data: 'i_code' },

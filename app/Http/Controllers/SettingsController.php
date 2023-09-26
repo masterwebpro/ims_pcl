@@ -125,6 +125,16 @@ class SettingsController extends Controller
         return  $data;
     }
 
+    function getLocationWarehouse($warehouse_id) {
+        $data =  \App\Models\StorageLocationModel::where('warehouse_id', $warehouse_id)->get();
+
+        return $data;
+        // return response()->json([
+        //     'success'  => true,
+        //     'data'    => $data]);
+    }
+
+
     public function getLevel(Request $request) {
         $data = \App\Models\StorageLocationModel::where('rack', $request->rack)->where('warehouse_id', $request->warehouse_id)->get();
         return response()->json($data);
@@ -133,11 +143,8 @@ class SettingsController extends Controller
     public function getStorageLocation(Request $request) {
         $data = \App\Models\StorageLocationModel::select('storage_location_id')->where('warehouse_id', $request->warehouse_id);
 
-        if($request->rack > 0)
-            $data->where('rack', $request->rack);
-        if($request->layer > 0)
-            $data->where('level', $request->layer);
-
+        if($request->location > 0)
+            $data->where('storage_location_id', $request->location);
         $data = $data->get();
         return response()->json($data);
     }
@@ -153,8 +160,8 @@ class SettingsController extends Controller
                 ->leftJoin('uom as iu','iu.uom_id','masterfiles.inv_uom')
                 ->groupBy('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level');
 
-        // if(isset($request->storage_id))
-        //     $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
+        if(isset($request->storage_id))
+            $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
 
         if($request->client_id > 0)
             $result->where('company_id', $request->client_id);

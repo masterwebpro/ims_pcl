@@ -56,19 +56,14 @@ class StockMovementController extends Controller
         $company = _decode($session['company']);
 
         //get rack and layer
-        $location = [
-            "rack" => "",
-            "layer"=> ""
-        ];
-
-        $location = (new SettingsController)->getLocationPerWarehouse($warehouse);
+        $locations = (new SettingsController)->getLocationWarehouse($warehouse);
 
         return view('stock/movement/create', [
             'client_list'=>$client_list, 
             'warehouse_id' =>$warehouse? $warehouse : '',
             'store_id'=> $store? $store : '',
             'company_id'=> $company? $company : '',
-            'location'=> $location,
+            'locations'=> $locations,
         ]);
     }
 
@@ -105,7 +100,7 @@ class StockMovementController extends Controller
         }
 
         DB::connection()->beginTransaction();
-        
+
         try {
             $ref_no = $request->ref_no;
 

@@ -198,7 +198,7 @@ class ReportController extends Controller
         
      
         if($request->has('client')  && $request->client !='')
-            $rcv->where('masterfiles.client_id', $request->client);
+            $rcv->where('masterfiles.company_id', $request->client);
         
         if($request->has('store')  && $request->store !='')
             $rcv->where('masterfiles.store_id', $request->store);
@@ -232,7 +232,7 @@ class ReportController extends Controller
             ->orderBy("masterfiles.created_at");
         
         if($request->has('client')  && $request->client !='')
-            $rcv->where('masterfiles.client_id', $request->client);
+            $rcv->where('masterfiles.company_id', $request->client);
         
         if($request->has('store')  && $request->store !='')
             $rcv->where('masterfiles.store_id', $request->store);

@@ -224,27 +224,15 @@
                                 <input type="text" class="form-control" id="rcv_no" name="rcv_no" value="" placeholder="Receive Number">
                             </p>
                         </div>
-
+      
                         <div class="col-3">
-                            <h6 class="text-muted text-uppercase fw-semibold">Rack </h6>
+                            <h6 class="text-muted text-uppercase fw-semibold">Location </h6>
                             <p class="fw-medium" id="billing-name">
-                                <select class="form-select" id="rack" name="rack">
+                                <select class="form-select select3" id="location" name="location">
                                     <option value="">Select Rack</option>  
-                                    <? foreach($location as $location_id=>$racks) : ?>
-                                        <? foreach($racks as $rack=>$layers) : ?>
-                                            <option value="<?=$rack?>"><?=$rack?></option>  
-                                        <? endforeach;?>
+                                    <? foreach($locations as $location) : ?>
+                                         <option value="<?=$location->storage_location_id?>"><?=$location->location?></option>  
                                     <? endforeach;?>
-                                
-                                </select>
-                            </p>
-                        </div>
-
-                        <div class="col-3">
-                            <h6 class="text-muted text-uppercase fw-semibold">Layer</h6>
-                            <p class="fw-medium" id="billing-name">
-                                <select class="form-select" id="layer" name="layer">
-                                    <option value="">Select layer</option>   
                                 </select>
                             </p>
                         </div>
@@ -263,8 +251,7 @@
                                 <th>&nbsp;</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
-                                <th>Rack</th>
-                                <th>Layer</th>
+                                <th>Location</th>
                                 <th>Item Type</th>
                                 <th>Inv Qty</th>
                                 <th>Inv Uom</th>
