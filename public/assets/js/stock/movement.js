@@ -133,7 +133,7 @@ $(document).on('click', '.search-item', function() {
 
                     let storage_id = response.map(x => x.storage_location_id).join(", ");
 
-                    console.log(storage_id+" - "+store_id+" - "+company_id+" - "+rcv_no);
+                    //console.log(storage_id+" - "+store_id+" - "+company_id+" - "+rcv_no);
 
                     if ($.fn.DataTable.isDataTable("#show-items-list")) {
                         $('#show-items-list').DataTable().clear().destroy();
@@ -147,6 +147,7 @@ $(document).on('click', '.search-item', function() {
                             url: BASEURL+"settings/masterfile",
                             data: {
                                 storage_id: storage_id,
+                                location : location,
                                 store_id: store_id,
                                 client_id: company_id,
                                 rcv_no : rcv_no,
