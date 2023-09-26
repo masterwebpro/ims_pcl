@@ -46,6 +46,13 @@
                                             name="trucker_name" id="trucker_name" value="" placeholder="Enter Trucker Name">
                                         <span class="text-danger error-msg trucker_name_error"></span>
                                     </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="is_enabled" class="form-label">Enable </label>
+                                        <div class="form-check form-switch form-switch-success form-switch-md" dir="ltr">
+                                            <input type="checkbox" class="form-check-input" id="is_enabled"
+                                                name="is_enabled" checked>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

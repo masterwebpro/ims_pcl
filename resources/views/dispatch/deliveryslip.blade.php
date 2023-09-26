@@ -56,22 +56,6 @@
     <br>
     <table class="table table-info">
         <thead class="text-bold" style="font-style: bold;">
-            @php
-                $plate_no = "";
-                $seal_no = "";
-                $truck_type = "";
-                $trucker_name = "";
-                $cnt = count($dispatch->truck);
-                $c = 1;
-                foreach ($dispatch->truck as $truck) {
-                    $slash = ($cnt == $c) ? "" : " / ";
-                    $seal_no .= $truck->seal_no .$slash;
-                    $plate_no .= $truck->plate_no .$slash;
-                    $truck_type .= $truck->truck_type .$slash;
-                    $trucker_name .= $truck->trucker_name .$slash;
-                    $c++;
-                }
-            @endphp
             <tr>
                 <td scope="col" style="width: 120px;">Batch No</td>
                 <td scope="col">:</td>
@@ -85,21 +69,21 @@
                 <td scope="col">Truck Seal</td>
                 <td scope="col">:</td>
                 <td scope="col" class="text-capitalize">
-                    {{ $seal_no }}
+                    {{ $dispatch->seal_no }}
                 </td>
                 <td scope="col"></td>
                 <td scope="col" class="text-end border border-bottom-solid">Plate No</td>
                 <td scope="col">:</td>
-                <td scope="col" class="text-start">{{ $plate_no }}</td>
+                <td scope="col" class="text-start">{{ $dispatch->plate_no }}</td>
             </tr>
             <tr>
                 <td scope="col">Trucker Name</td>
                 <td scope="col">:</td>
-                <td scope="col">{{ $trucker_name }}</td>
+                <td scope="col">{{ $dispatch->trucker_name }}</td>
                 <td scope="col"></td>
                 <td scope="col" class="text-end">Truck Type</td>
                 <td scope="col">:</td>
-                <td scope="col" class="text-start">{{ $truck_type }}</td>
+                <td scope="col" class="text-start">{{ $dispatch->truck_type }}</td>
             </tr>
         </thead>
     </table>

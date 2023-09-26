@@ -60,20 +60,6 @@
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
                                     <div class="col-3">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Company Name <span
-                                                class="text-danger">*</span></h6>
-                                        <p class="fw-medium mb-2" id="billing-name">
-                                            <select class="form-select select2" required="required" id="company"
-                                                name="company">
-                                                <option value="">Select Company</option>
-                                                <? foreach($company_list as $company) : ?>
-                                                <option value="<?= $company->id ?>" <?=($company->id == $wd->company_id) ? 'selected' : '' ?>><?= $company->client_name ?></option>
-                                                <? endforeach;?>
-                                            </select>
-                                            <span class="text-danger error-msg company_error"></span>
-                                        </p>
-                                    </div>
-                                    <div class="col-3">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Customer Name <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
@@ -103,6 +89,20 @@
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg supplier_error"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Company Name <span
+                                                class="text-danger">*</span></h6>
+                                        <p class="fw-medium mb-2" id="billing-name">
+                                            <select class="form-select select2" required="required" id="company"
+                                                name="company">
+                                                <option value="">Select Company</option>
+                                                <? foreach($company_list as $company) : ?>
+                                                <option value="<?= $company->id ?>" <?=($company->id == $wd->company_id) ? 'selected' : '' ?>><?= $company->client_name ?></option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg company_error"></span>
                                         </p>
                                     </div>
                                     <!--end col-->
@@ -408,10 +408,10 @@
                                                             {{ ($item->master->receiving) ? $item->master->receiving->expiry_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ $item->master->warehouse->warehouse_name }}
+                                                            {{ ($item->master->warehouse) ? $item->master->warehouse->warehouse_name : ""}}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ $item->master->location->location }}
+                                                            {{ ($item->master->location) ? $item->master->location->location  : ""}}
                                                         </td>
                                                         <td>
                                                             <div class="text-center">
