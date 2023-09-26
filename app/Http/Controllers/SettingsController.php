@@ -329,4 +329,9 @@ class SettingsController extends Controller
             'success'  => true,
             'data'    => $result]);
     }
+
+    function getLocation(Request $request) {
+        $data = \App\Models\StorageLocationModel::where('warehouse_id', $request->warehouse_id)->where('is_enabled', 1)->get();
+        return response()->json($data);
+    }
 }

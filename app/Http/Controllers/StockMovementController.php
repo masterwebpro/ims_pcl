@@ -125,7 +125,7 @@ class StockMovementController extends Controller
             //updateOrCreate
             $sm = MvHdr::updateOrCreate(['ref_no' => $ref_no], [
                 'store_id'=>$request->store_id,
-                'client_id'=>$request->client_id,
+                'company_id'=>$request->company_id,
                 'warehouse_id'=>$request->warehouse_id,
                 'status'=>$request->status,
                 'remarks'=>$request->remarks,
@@ -161,7 +161,7 @@ class StockMovementController extends Controller
                 $masterfile[] = array(
                     'ref_no'=>$ref_no,
                     'store_id'=>$request->store_id,
-                    'client_id'=>$request->client_id,
+                    'company_id'=>$request->company_id,
                     'warehouse_id'=>$request->warehouse_id,
                     'storage_location_id'=>$request->new_location[$x],
                     'product_id'=>$request->product_id[$x],
@@ -180,7 +180,7 @@ class StockMovementController extends Controller
                 $masterfile[] = array(
                     'ref_no'=>$ref_no,
                     'store_id'=>$request->store_id,
-                    'client_id'=>$request->client_id,
+                    'company_id'=>$request->company_id,
                     'warehouse_id'=>$request->warehouse_id,
                     'storage_location_id'=>$request->old_location[$x],
                     'trans_type'=>'SM',

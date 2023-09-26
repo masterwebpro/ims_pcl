@@ -84,6 +84,8 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/allProducts', [App\Http\Controllers\SettingsController::class, 'getAllProduct']);
     Route::get('/_encode/{value}', [App\Http\Controllers\SettingsController::class, '_encode']);
 
+    Route::get('/getLocation', [App\Http\Controllers\SettingsController::class, 'getLocation']);
+
 });
 
 Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {

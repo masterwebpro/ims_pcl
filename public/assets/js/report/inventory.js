@@ -56,7 +56,7 @@ if($("#product_holder").length) {
 $(document).on('click', '.submit-inventory', function(e) {
     e.preventDefault();
 
-    var client = $('#client').val();
+    var company = $('#company').val();
     var store = $('#store').val();
     var warehouse = $('#warehouse').val();
     var item_type = $('#item_type').val();
@@ -67,7 +67,7 @@ $(document).on('click', '.submit-inventory', function(e) {
         url: BASEURL + 'reports/getInventoryReport',
         method: 'get',
         data: {
-            client:client,
+            company:company,
             store:store,
             warehouse:warehouse,
             item_type:item_type,
@@ -122,4 +122,23 @@ $(document).on('click', '.submit-inventory', function(e) {
            $('#preloading').modal('hide');
 		}
     });
+});
+
+$(document).on('change', '#company', function() {
+    var company_id = $(this).val();
+    populateStore(company_id, '');
+});
+
+$(document).on('change', '#store', function() {
+    var store_id = $(this).val();
+    populateWarehouse(store_id, '');
+});
+
+
+$(document).on('change', '#warehouse', function() {
+    var value = $(this).val();
+    //populateWarehouse(store_id, '');
+
+    populateLocation('location', value, '');
+
 });
