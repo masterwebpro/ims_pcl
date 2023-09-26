@@ -46,7 +46,7 @@ class WithdrawalController extends Controller
         ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id')
         ->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id')
         ->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.customer_id')
-        ->leftJoin('client_list as com', 'c.id', '=', 'wd_hdr.company_id')
+        ->leftJoin('client_list as com', 'com.id', '=', 'wd_hdr.company_id')
         ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
         ->where([
             [function ($query) use ($request) {
