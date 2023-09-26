@@ -19,7 +19,7 @@
                     <h5 class="card-title mb-0 flex-grow-1">Withdrawal List</h5>
                     <div class="flex-shrink-0">
                         <button data-status="open" class="create-withdrawal btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Withdrawal</button>
-                        <button data-status="open" class="create-withdrawal btn btn-secondary btn-label rounded-pill d-none"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Withdraw from DO</button>
+                        <button data-status="open" class="create-withdrawal btn btn-secondary btn-label rounded-pill"><i class="ri-download-line label-icon align-middle rounded-pill fs-16 me-2"></i> Withdraw from DO</button>
                     </div>
                 </div>
             </div>
