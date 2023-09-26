@@ -55,6 +55,7 @@
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row ms-3 mt-3 mx-3">
+                                <input type="hidden" name="dispatch_id" value="{{ _encode($dispatch->id) }}" id="dispatch_id">
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Plate No <span
                                             class="text-danger">*</span></label>

@@ -17,8 +17,12 @@ $(document).ready(function () {
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
-        $('#show-items-list tbody tr').removeClass('selected')
-        $(this).addClass('selected');
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected')
+        }
+        else{
+            $(this).addClass('selected');
+        }
     });
 
 });
@@ -77,47 +81,40 @@ $(document).on('click', '.remove-product', function() {
 
 $(document).on('click', '#add-product', function() {
     var table = $('#show-items-list').DataTable();
-    var data = ( table.rows('.selected').data()[0] );
+    var data = ( table.rows('.selected').data());
+    if(data.length > 0) {
+        for(x=0; x<data.length; x++) {
+            var uom = getUom();
+            var rowCount = $('#product-list tr').length;
+            var idx = rowCount - 3;
+            var btn = '<div class="text-center">';
+            btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
+            btn += '</div>'
 
-    if (table.rows('.selected').data().length > 0) {
-        var uom = getUom();
-        var rowCount = $('#product-list tr').length;
-        var idx = rowCount - 1;
-        var btn = '<div class="text-center">';
-        btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+data.product_id+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
-        btn += '</div>'
-
-        $('#product-list tbody').append('<tr id="product_'+data.product_id+'"> \
-        <td class="text-start"> \
-            <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
-        '+rowCount+' </td> \
-        <td class="text-start  fs-14"> \
-            '+data.product_name+'<br/><small>'+data.product_code+'</small> \
-        </td> \
-        <td class="text-start ps-1"> \
-            <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+data.product_id+'" id="whse_qty_'+idx+'" value="" placeholder="Whse Qty" /> \
-            <span class="text-danger error-msg whse_qty'+(rowCount-1)+'_error"></span> \
-        </td> \
-            <td class="text-start ps-1"><select name="whse_uom[]" id="uom_'+idx+'" class="uom uom_select form-select select2"> \
-            '+uom+'</select> \
-            <span class="text-danger error-msg whse_uom'+(rowCount-1)+'_error"></span> \
-        </td> \
-        <td class="text-start ps-1"> \
-            <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+data.product_id+'" id="inv_qty_'+idx+'" value="" placeholder="Inv Qty" /> \
-            <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
-        </td> \
-        <td class="text-start ps-1"> \
-            <select name="inv_uom[]" id="inv_uom_'+idx+'" class="uom uom_select form-select select2"> \
-            '+uom+'</select> \
-            <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
-        </td> \
-        <td>'+btn+'</td> \
-        </tr>');
+            $('#product-list tbody').append('<tr id="rows_'+(rowCount-1)+'"> \
+            <td class="text-start"> \
+                <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
+            '+rowCount+' </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].product_name+'<br/><small>'+data[x].product_code+'</small> \
+            </td> \
+            <td class="text-start ps-1"> \
+                <input type="text" class="form-control inv_qty numeric uom_select w-50" name="inv_qty[]" data-id="'+data[x].product_id+'" id="inv_qty_'+(rowCount-1)+'" value="1" placeholder="Order Quantity" /> \
+                <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
+            </td> \
+            <td class="text-start ps-1"> \
+                <select name="inv_uom[]" id="inv_uom_'+idx+'" class="uom uom_select form-select select2  w-50"> \
+                '+uom+'</select> \
+                <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
+            </td> \
+            <td>'+btn+'</td> \
+            </tr>');
+            toastr.success(data[x].product_name + ' successfully added');
+        }
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
-    toastr.success(data.product_name + ' successfully added');
-    //$('#show-items').modal('hide');
+    $('#show-items').modal('hide');
 });
 
 $(document).on('click', '.submit-open', function (e) {

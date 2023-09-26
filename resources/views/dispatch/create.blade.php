@@ -64,16 +64,14 @@
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Trucker Name<span
                                         class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="trucker_name" name="trucker_name" disabled
+                                    <input type="text" class="form-control" id="trucker_name" name="trucker_name" readonly
                                         value="" placeholder="Trucker Name">
-                                    <span class="text-danger error-msg trucker_name_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Truck Type <span
                                             class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="truck_type" name="truck_type"
-                                            value="" placeholder="Truck Type" disabled>
-                                    <span class="text-danger error-msg truck_type_error"></span>
+                                            value="" placeholder="Truck Type" readonly>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Seal No.<span
@@ -126,7 +124,7 @@
                                                 <input type="date" class="form-control" id="start_date"
                                                     name="start_date" placeholder="Start Date" value="<?=date('Y-m-d');?>">
                                                 <input type="time" class="form-control" id="start_time"
-                                                    name="start_time" placeholder="Dispatch Date" value="">
+                                                    name="start_time" placeholder="Dispatch Date" value="{{ date('H:i') }}">
                                             </div>
                                             <span class="text-danger error-msg start_time_error"></span>
                                 </div>
@@ -137,7 +135,7 @@
                                             <input type="date" class="form-control" id="finish_date"
                                                 name="finish_date" placeholder="Finish Date" value="<?=date('Y-m-d');?>">
                                             <input type="time" class="form-control" id="finish_time"
-                                                name="finish_time" placeholder="Finish Time" value="">
+                                                name="finish_time" placeholder="Finish Time" value="<?=date('H:i')?>">
                                         </div>
                                         <span class="text-danger error-msg finish_time_error"></span>
                                 </div>
@@ -148,7 +146,7 @@
                                             <input type="date" class="form-control" id="date_departed"
                                                 name="date_departed" placeholder="Departed Date" value="<?=date('Y-m-d');?>">
                                             <input type="time" class="form-control" id="time_departed"
-                                                name="time_departed" placeholder="Departed Time" value="">
+                                                name="time_departed" placeholder="Departed Time" value="<?=date('H:i');?>">
                                         </div>
                                         <span class="text-danger error-msg time_departed_error"></span>
                                 </div>
@@ -156,7 +154,7 @@
                             <div class="row ms-3 mt-3 mx-3">
                                 <div class="col-lg-3 col-md-3 form-group">
                                         <label for="colFormLabel" class="form-label">Prepared By</label>
-                                            <input type="text" class="form-control" id="created_by" name="created_by" disabled
+                                            <input type="text" class="form-control" id="created_by" name="created_by" readonly
                                                 value="<?=$created_by?>" placeholder="Created By">
                                             <span class="text-danger error-msg created_by_error"></span>
                                 </div>
