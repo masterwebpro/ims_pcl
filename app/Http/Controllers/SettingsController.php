@@ -145,6 +145,7 @@ class SettingsController extends Controller
 
         if($request->location > 0)
             $data->where('storage_location_id', $request->location);
+
         $data = $data->get();
         return response()->json($data);
     }
@@ -160,17 +161,26 @@ class SettingsController extends Controller
                 ->leftJoin('uom as iu','iu.uom_id','masterfiles.inv_uom')
                 ->groupBy('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level');
 
-        if(isset($request->storage_id))
-            $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
-
-        if($request->client_id > 0)
+        if($request->location) {
+            if(isset($request->storage_id)) {
+                if($request->storage_id) {
+                    $result->whereIn('masterfiles.storage_location_id', explode(",",$request->storage_id));
+                }
+            }
+        } else {
+            $result->where('masterfiles.storage_location_id', null);
+        }
+            
+        if($request->client_id)
             $result->where('company_id', $request->client_id);
 
-        if($request->store_id > 0)
+        if($request->store_id)
             $result->where('store_id', $request->store_id);
 
-        if($request->rcv_no > 0)
-            $result->where('ref_no', $request->rcv_no);
+        if($request->rcv_no) {
+            $result->where('masterfiles.ref_no', $request->rcv_no);
+        }
+            
 
         $record = $result->get();
         return response()->json($record);

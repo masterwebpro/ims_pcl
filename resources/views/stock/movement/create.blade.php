@@ -229,13 +229,14 @@
                             <h6 class="text-muted text-uppercase fw-semibold">Location </h6>
                             <p class="fw-medium" id="billing-name">
                                 <select class="form-select select3" id="location" name="location">
-                                    <option value="">Select Rack</option>  
+                                    <option value="">No Location</option>  
                                     <? foreach($locations as $location) : ?>
                                          <option value="<?=$location->storage_location_id?>"><?=$location->location?></option>  
                                     <? endforeach;?>
                                 </select>
                             </p>
                         </div>
+
 
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">&nbsp;</h6>
