@@ -403,10 +403,10 @@
                                                             {{ ($item->master->receiving) ? $item->master->receiving->expiry_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ $item->master->warehouse->warehouse_name }}
+                                                            {{ ($item->master->warehouse) ? $item->master->warehouse->warehouse_name : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ $item->master->location->location }}
+                                                            {{ ($item->master->location) ?  $item->master->location->location : "" }}
                                                         </td>
                                                         <td class="ps-1">
                                                             @if ($item->product->is_serialize == 1)
