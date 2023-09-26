@@ -116,7 +116,7 @@
                                         <input type="date" class="form-control" id="receive_date"
                                             {{ $pod->status == 'Delivered' ? 'disabled' : '' }} name="receive_date"
                                             placeholder="Start Date"
-                                            value="{{ date('Y-m-d', strtotime($pod->receive_date)) }}">
+                                            value="{{ ($pod->receive_date) ? date('Y-m-d', strtotime($pod->receive_date)) : date('Y-m-d') }}">
                                         <input type="time" class="form-control" id="receive_time" name="receive_time"
                                             placeholder="Dispatch Date"
                                             value="{{ date('H:i:s', strtotime($pod->receive_date)) }}">
@@ -140,7 +140,7 @@
                                             <input type="date" class="form-control" id="arrived_date"
                                                 {{ $pod->status == 'Delivered' ? 'disabled' : '' }}
                                                 name="arrived_date" placeholder="Start Date"
-                                                value="{{ date('Y-m-d', strtotime($pod->arrived_date)) }}">
+                                                value="{{ ($pod->arrived_date) ? date('Y-m-d', strtotime($pod->arrived_date)) : date('Y-m-d') }}">
                                             <input type="time" class="form-control" id="arrived_time"
                                                 {{ $pod->status == 'Delivered' ? 'disabled' : '' }}
                                                 name="arrived_time" placeholder="Arrived Date"
@@ -157,7 +157,7 @@
                                             <input type="date" class="form-control" id="depart_date"
                                                 {{ $pod->status == 'Delivered' ? 'disabled' : '' }} name="depart_date"
                                                 placeholder="Depart Date"
-                                                value="{{ date('Y-m-d', strtotime($pod->depart_date)) }}">
+                                                value="{{ ($pod->depart_date) ? date('Y-m-d', strtotime($pod->depart_date)) : date('Y-m-d') }}">
                                             <input type="time" class="form-control" id="depart_time"
                                                 {{ $pod->status == 'Delivered' ? 'disabled' : '' }} name="depart_time"
                                                 placeholder="Depart Date"

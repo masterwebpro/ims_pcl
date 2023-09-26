@@ -109,7 +109,7 @@
                                         <td class="">{{ $dispatch->plate_no }}</td>
                                         <td class="">{{ $dispatch->seal_no }}</td>
                                         <td class="">{{ $dispatch->driver }}</td>
-                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->stat_datetime)) }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->start_datetime)) }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->finish_datetime)) }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->depart_datetime)) }}</td>
                                         <td class="">{{ $dispatch->items_count }}</td>
