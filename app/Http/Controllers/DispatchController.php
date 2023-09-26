@@ -346,6 +346,6 @@ class DispatchController extends Controller
             'created_by' => Auth::user()->name
         ]);
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream($dispatch->dispatch_no.'.pdf');
+        return $pdf->download($dispatch->dispatch_no.'.pdf');
     }
 }

@@ -167,7 +167,6 @@ $(document).on('click', '.generate-deliveryslip', function (e) {
     e.preventDefault();
     $('#preloading').modal('show');
     var id = $('#dispatch_id').val();
-    console.log(id)
     setTimeout(function () {
         window.location = BASEURL+'deliverySlip/'+ id;
         $('#preloading').modal('hide');

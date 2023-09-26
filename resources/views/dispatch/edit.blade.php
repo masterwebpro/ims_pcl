@@ -55,6 +55,7 @@
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row ms-3 mt-3 mx-3">
+                                <input type="hidden" name="dispatch_id" value="{{ _encode($dispatch->id) }}" id="dispatch_id">
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <input type="hidden" name="dispatch_no" value="{{ $dispatch->dispatch_no }}">
                                     <label for="colFormLabel" class="form-label">Plate No <span
@@ -70,16 +71,14 @@
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Trucker Name<span
                                         class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="trucker_name" name="trucker_name"
+                                    <input type="text" class="form-control" id="trucker_name" name="trucker_name" readonly
                                         value="{{ $dispatch->trucker_name }}" placeholder="Trucker Name">
-                                    <span class="text-danger error-msg trucker_name_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Truck Type <span
                                             class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="truck_type" name="truck_type"
+                                            <input type="text" class="form-control" id="truck_type" name="truck_type" readonly
                                             value="{{ $dispatch->truck_type }}" placeholder="Truck Type">
-                                    <span class="text-danger error-msg truck_type_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Seal No.<span
