@@ -246,23 +246,25 @@
                         </div>
                     </div>   
 
-                    <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
-                        <thead class="table-light">
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>Product Code</th>
-                                <th>Product Name</th>
-                                <th>Location</th>
-                                <th>Item Type</th>
-                                <th>Inv Qty</th>
-                                <th>Inv Uom</th>
-                                <th>Whse qty</th>
-                                <th>Whse Uom</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th>Product Code</th>
+                                    <th>Product Name</th>
+                                    <th>Location</th>
+                                    <th>Item Type</th>
+                                    <th>Inv Qty</th>
+                                    <th>Inv Uom</th>
+                                    <th>Whse qty</th>
+                                    <th>Whse Uom</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                     
                 </div>
                 <div class="modal-footer">
