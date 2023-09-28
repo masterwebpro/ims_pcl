@@ -15,6 +15,7 @@ use App\Models\Products;
 
 use App\Exports\ExportRcvDetailed;
 use App\Exports\ExportWdDetailed;
+use App\Exports\ExportInventory;
 use App\Models\OrderType;
 use App\Models\WdHdr;
 use DataTables;
@@ -265,7 +266,7 @@ class ReportController extends Controller
     }
 
     public function getInventoryReport(Request $request) {
-        $rcv = MasterfileModel::select('client_name', 'store_name', 'w.warehouse_name', 'product_code', 'product_name', 'sl.location',  'masterfiles.whse_uom', 'masterfiles.inv_uom', 'masterfiles.item_type', 'masterfiles.status', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(inv_qty) as inv_qty"), DB::raw("SUM(whse_qty) as whse_qty"))
+        $rcv = MasterfileModel::select('client_name', 'store_name', 'w.warehouse_name', 'product_code', 'product_name',  'sl.location',  'masterfiles.whse_uom', 'masterfiles.inv_uom', 'masterfiles.item_type', 'masterfiles.status', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(inv_qty) as inv_qty"), DB::raw("SUM(whse_qty) as whse_qty"))
             ->leftJoin('products as p', 'p.product_id', '=', 'masterfiles.product_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterfiles.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterfiles.company_id')
@@ -417,6 +418,12 @@ class ReportController extends Controller
         $pdf->setPaper('A4','landscape');
         $pdf->setOption('margin', 0);
         return $pdf->stream();
+    }
+
+    function exportInventory(Request $request) {
+        ob_start();
+		$file_name = 'inventory_summary'.date('Ymd-His').'.xls'; 
+        return Excel::download(new ExportInventory($request), $file_name);
     }
 
 }

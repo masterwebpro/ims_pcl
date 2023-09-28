@@ -129,7 +129,7 @@
                                     <th class="fw-medium text-center">Reference No</th>
                                     <th class="fw-medium text-center">Location</th>
                                     <th class="fw-medium text-center">Type</th>
-                                    <th class="fw-medium text-center">Deliveries QTY</th>
+                                    <th class="fw-medium text-center">Received QTY</th>
                                     <th class="fw-medium text-center">Transfer QTY</th>
                                     <th class="fw-medium text-center">Withdraw QTY</th>
                                     <th class="fw-medium text-center">Balance</th>

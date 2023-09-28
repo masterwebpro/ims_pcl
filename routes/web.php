@@ -102,8 +102,10 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-receiving-detailed',[App\Http\Controllers\ReportController::class,'exportReceivingDetailed'])->name('export-receiving-detailed');
     Route::get('/print-receiving-detailed',[App\Http\Controllers\ReportController::class,'printPdfReceivingDetailed'])->name('print-receiving-detailed');
     Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
+    
     Route::get('/inventory',[App\Http\Controllers\ReportController::class,'inventory'])->name('report.inventory');
     Route::get('/getInventoryReport',[App\Http\Controllers\ReportController::class,'getInventoryReport'])->name('report.getInventoryReport');
+    Route::get('/export-inventory',[App\Http\Controllers\ReportController::class,'exportInventory'])->name('exportInventory');
     
     Route::get('/withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailedIndex']);
     Route::get('/get-withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailed']);
