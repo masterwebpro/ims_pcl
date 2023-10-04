@@ -30,14 +30,7 @@ class PodController extends Controller
         ->leftJoin('wd_hdr', 'wd_hdr.wd_no', '=', 'pod.batch_no')
         ->leftJoin('dispatch_hdr', 'dispatch_hdr.dispatch_no', '=', 'wd_hdr.dispatch_no')
         ->leftJoin('users as u', 'u.id', '=', 'pod.created_by')
-        ->where([
-            [function ($query) use ($request) {
-                if (($s = $request->q)) {
-                    $query->orWhere('pod.batch_no','like', '%'.$s.'%');
-                    $query->get();
-                }
-            }]
-        ])->orderByDesc('created_at')
+        ->orderByDesc('created_at')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->status)) {
@@ -45,12 +38,27 @@ class PodController extends Controller
                         $query->orWhere('pod.status', $s);
                 }
 
+                if ($request->q) {
+                    $query->where('pod.batch_no', $request->q)
+                        ->orWhere('pod.dispatch_by', $request->q)
+                        ->orWhere('pod.dispatch_no', $request->q)
+                        ->orWhere('pod.receive_by', $request->q)
+                        ->orWhere('dispatch_hdr.trucker_name', $request->q)
+                        ->orWhere('dispatch_hdr.truck_type', $request->q)
+                        ->orWhere('dispatch_hdr.plate_no', $request->q)
+                        ->orWhere('dispatch_hdr.driver', $request->q)
+                        ->orWhere('dispatch_hdr.driver', $request->q)
+                        ->orWhere('dispatch_hdr.contact_no', $request->q)
+                        ->orWhere('dispatch_hdr.helper', $request->q)
+                        ->orWhere('dispatch_hdr.seal_no', $request->q);
+                }
+
                 if ($request->filter_date && $request->dispatch_date) {
                     if($request->filter_date == 'dispatch_date') {
-                        $query->whereBetween('pod.dispatch_date', [$request->dispatch_date." 00:00:00", $request->dispatch_date." 23:59:00"]);
+                        $query->whereBetween('pod.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:00"]);
                     }
                     if($request->filter_date == 'created_at') {
-                        $query->whereBetween('pod.created_at', [$request->created_at." 00:00:00", $request->created_at." 23:59:00"]);
+                        $query->whereBetween('pod.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
                     }
 
                 }

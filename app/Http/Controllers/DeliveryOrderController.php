@@ -42,23 +42,9 @@ class DeliveryOrderController extends Controller
         $do_list = DoHdr::select('do_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name', 'u.name')
         ->leftJoin('client_list as cl', 'cl.id', '=', 'do_hdr.deliver_to_id')
         ->leftJoin('store_list as s', 's.id', '=', 'do_hdr.store_id')
-        ->leftJoin('client_list as c', 'c.id', '=', 'do_hdr.client_id')
+        ->leftJoin('client_list as c', 'c.id', '=', 'do_hdr.customer_id')
         ->leftJoin('users as u', 'u.id', '=', 'do_hdr.created_by')
-        ->where([
-            [function ($query) use ($request) {
-                if (($s = $request->q)) {
-                    $query->leftJoin('client_list as cl', 'cl.id', '=', 'do_hdr.deliver_to_id');
-                    $query->leftJoin('store_list as s', 's.id', '=', 'do_hdr.store_id');
-                    $query->leftJoin('client_list as c', 'c.id', '=', 'do_hdr.client_id');
-                    // $query->orWhere('do_hdr.po_num','like', '%'.$s.'%');
-                    $query->orWhere('cl.client_name', 'like', '%' . $s . '%');
-                    $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('do_hdr.do_no', 'LIKE', '%' . $s . '%');
-                    $query->get();
-                }
-            }]
-        ])->orderByDesc('created_at')
+        ->orderByDesc('do_hdr.created_at')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->status)) {
@@ -66,22 +52,42 @@ class DeliveryOrderController extends Controller
                         $query->orWhere('do_hdr.status', $s);
                 }
 
-                // if ($request->filter_date && $request->po_date) {
-                //     if($request->filter_date == 'po_date') {
-                //         $query->whereBetween('po_hdr.po_date', [$request->po_date." 00:00:00", $request->po_date." 23:59:00"]);
-                //     }
+                if ($request->q) {
+                    $query->where('do_hdr.do_no', $request->q);
+                    $query->orWhere('do_hdr.order_no', $request->q);
+                    $query->orWhere('do_hdr.sales_invoice', $request->q);
+                    $query->orWhere('do_hdr.po_num', $request->q);
+                }
+
+                if ($request->filter_date && $request->order_date) {
+                    if($request->filter_date == 'order_date') {
+                        $query->whereBetween('do_hdr.order_date', [$request->order_date." 00:00:00", $request->order_date." 23:59:00"]);
+                    }
                     if($request->filter_date == 'created_at') {
                         $query->whereBetween('do_hdr.created_at', [$request->order_date." 00:00:00", $request->order_date." 23:59:00"]);
                     }
 
-                // }
+                }
+
+                if ($request->delivery_to) {
+                    $query->where('do_hdr.delivery_to_id', $request->delivery_to);
+                }
+
+                if ($request->customer) {
+                    $query->where('do_hdr.customer_id', $request->customer);
+                }
+
+                if ($request->company) {
+                    $query->where('do_hdr.company_id', $request->company);
+                }
 
                 $query->get();
             }]
         ])
         ->paginate(20);
-
-        return view('do/index', ['do_list'=>$do_list]);
+        $deliver_list = Client::where('client_type','T')->get();
+        $client_list = Client::where('is_enabled', '1')->get();
+        return view('do/index', ['do_list'=>$do_list, 'deliver_list'=> $deliver_list, 'client_list'=> $client_list, 'request'=> $request]);
     }
 
     /**
@@ -94,6 +100,7 @@ class DeliveryOrderController extends Controller
         $order_type = OrderType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
+        $company_list = Client::where('client_type','O')->get();
         $client_list = Client::where('client_type','C')->get();
         $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
@@ -101,6 +108,7 @@ class DeliveryOrderController extends Controller
 
         return view('do/create', [
             'client_list'=>$client_list,
+            'company_list'=>$company_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'deliver_list'=>$deliver_list,
@@ -121,7 +129,8 @@ class DeliveryOrderController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'client'=>'required',
+            'company'=>'required',
+            'customer'=>'required',
             'deliver_to'=>'required',
             'store'=>'required',
             'order_type'=>'required',
@@ -131,14 +140,11 @@ class DeliveryOrderController extends Controller
             'pickup_date'=>'required',
             'trgt_dlv_date'=>'required',
             'actual_dlv_date'=>'required',
-            'warehouse'=>'required',
-            'whse_qty.*' => 'required',
-            'whse_uom.*' => 'required',
             'inv_qty.*' => 'required',
-            'inv_uom.*' => 'required',
-            'item_type.*' => 'required',
+            'inv_uom.*' => 'required'
         ], [
-            'client'=>'Client  is required',
+            'company'=>'Company  is required',
+            'customer'=>'Customer  is required',
             'deliver_to'=>'Deliver to is required',
             'store'=>'Store is required',
             'order_type'=>'Order type is required',
@@ -148,12 +154,8 @@ class DeliveryOrderController extends Controller
             'pickup_date'=>'Pickup date is required',
             'trgt_dlv_date'=>'Target delivery date is required',
             'actual_dlv_date'=>'Actual delivery date is required',
-            'warehouse'=>'Warehose  is required',
-            'whse_qty.*' => 'Qty  is required',
-            'whse_uom.*' => 'UOM  is required',
             'inv_qty.*' => 'Qty  is required',
             'inv_uom.*' => 'UOM  is required',
-            'item_type.*' => 'This is required'
         ]);
 
         if ($validator->fails()) {
@@ -180,7 +182,8 @@ class DeliveryOrderController extends Controller
             $do = DoHdr::updateOrCreate(['do_no' => $do_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
-                'client_id'=>$request->client,
+                'customer_id'=>$request->customer,
+                'company_id'=>$request->company,
                 'deliver_to_id'=>$request->deliver_to,
                 'sales_invoice'=>$request->sales_invoice,
                 'order_no'=>$request->order_no,
@@ -199,23 +202,22 @@ class DeliveryOrderController extends Controller
             ]);
 
             //save on dtl
-            $dtl = array();
-            for($x=0; $x < count($request->product_id); $x++ ) {
-                $dtl[] = array(
-                    'do_no'=>$do_no,
-                    'product_id'=>$request->product_id[$x],
-                    'inv_qty'=>$request->inv_qty[$x],
-                    'inv_uom'=>$request->inv_uom[$x],
-                    'whse_qty'=>$request->whse_qty[$x],
-                    'whse_uom'=>$request->whse_uom[$x],
-                    'unserve_qty'=>$request->inv_qty[$x],
-                    'created_at'=>$this->current_datetime,
-                    'updated_at'=>$this->current_datetime,
-                );
+            if(isset($request->product_id)){
+                DoDtl::where('do_no',$do_no)->delete();
+                $dtl = array();
+                for($x=0; $x < count($request->product_id); $x++ ) {
+                    $dtl[] = array(
+                        'do_no'=>$do_no,
+                        'product_id'=>$request->product_id[$x],
+                        'inv_qty'=>$request->inv_qty[$x],
+                        'inv_uom'=>$request->inv_uom[$x],
+                        'unserve_qty'=>$request->inv_qty[$x],
+                        'created_at'=>$this->current_datetime,
+                        'updated_at'=>$this->current_datetime,
+                    );
+                }
+                DoDtl::insert($dtl);
             }
-
-            DoDtl::where('do_no',$do_no)->delete();
-            DoDtl::insert($dtl);
 
             $audit_trail[] = [
                 'control_no' => $do_no,
@@ -263,13 +265,14 @@ class DeliveryOrderController extends Controller
         $store_list = Store::all();
         $supplier_list = Supplier::all();
         $client_list = Client::where('client_type','C')->get();
+        $company_list = Client::where('client_type','O')->get();
         $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
-
         return view('do/view', [
             'do' => $do,
             'client_list'=>$client_list,
+            'company_list'=>$company_list,
             'deliver_list'=>$deliver_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
@@ -296,6 +299,7 @@ class DeliveryOrderController extends Controller
         $store_list = Store::all();
         $supplier_list = Supplier::all();
         $client_list = Client::where('client_type','C')->get();
+        $company_list = Client::where('client_type','O')->get();
         $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
@@ -303,6 +307,7 @@ class DeliveryOrderController extends Controller
         return view('do/edit', [
             'do' => $do,
             'client_list'=>$client_list,
+            'company_list'=>$company_list,
             'deliver_list' => $deliver_list,
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,

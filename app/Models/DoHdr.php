@@ -14,7 +14,7 @@ class DoHdr extends Model
 
     public function items()
     {
-        return $this->hasMany(DoDtl::class, 'do_no', 'do_no');
+        return $this->hasMany(DoDtl::class, 'do_no', 'do_no')->with('unit');
     }
     public function supplier()
     {
@@ -39,5 +39,10 @@ class DoHdr extends Model
     public function store()
     {
         return $this->hasOne(Store::class, 'id', 'store_id');
+    }
+
+    public function uom()
+    {
+        return $this->belongsTo(UOM::class, 'uom_id', 'uom_id');
     }
 }
