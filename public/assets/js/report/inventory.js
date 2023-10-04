@@ -138,7 +138,20 @@ $(document).on('change', '#store', function() {
 $(document).on('change', '#warehouse', function() {
     var value = $(this).val();
     //populateWarehouse(store_id, '');
-
     populateLocation('location', value, '');
 
+});
+
+
+$(document).on('click', '.submit-xls-inventory', function(e) {
+    e.preventDefault();
+
+    var company = $('#company').val();
+    var store = $('#store').val();
+    var warehouse = $('#warehouse').val();
+    var item_type = $('#item_type').val();
+    var product_id = $('#product_id').val();
+    var location = $('#location').val();
+    
+    window.location.href= BASEURL + 'reports/export-inventory?company='+company+'&store='+store+'&warehouse='+warehouse+'&item_type='+item_type+'&product_id='+product_id+'&location='+location;
 });
