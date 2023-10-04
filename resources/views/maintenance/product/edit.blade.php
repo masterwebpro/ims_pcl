@@ -310,7 +310,7 @@
                                                 <div class="form-group">
                                                     <label for="uom_id" class="form-label">Product UOM <span
                                                             class="text-danger">*</span></label>
-                                                    <select class="form-control" name="uom_id" data-choices
+                                                    <select class="form-control" name="uom_id[]" data-choices
                                                         data-choices-removeItem multiple id="uom_id">
                                                         <option value="">Select Unit of Measure </option>
                                                         <? foreach($uom as $un) : ?>
