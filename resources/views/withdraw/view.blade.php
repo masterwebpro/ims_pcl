@@ -353,7 +353,7 @@
                                                     <th scope="col">Item Type</th>
                                                     <th scope="col">Date Received</th>
                                                     @if ($wd->status == 'open')
-                                                    <th scope="col">Available Stocks</th>
+                                                    {{-- <th scope="col">Available Stocks</th> --}}
                                                     @endif
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
@@ -384,11 +384,11 @@
                                                         <td class=" ps-1">
                                                             {{ isset($item->master->receiving) ? date('M d, Y', strtotime($item->master->receiving->date_received)) : '' }}
                                                         </td>
-                                                        @if ($wd->status == 'open')
+                                                        {{-- @if ($wd->status == 'open')
                                                         <td class="ps-1 text-center">
                                                             {{ number_format($item->master->inv_qty,2) }}
                                                         </td>
-                                                        @endif
+                                                        @endif --}}
                                                         <td class="ps-1 text-center">
                                                             {{ number_format($item->inv_qty,2) }}
                                                             <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]" data-qty="{{ $item->master->inv_qty }}" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />

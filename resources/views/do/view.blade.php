@@ -59,24 +59,24 @@
                         <div class="col-lg-12">
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Customer Name <span
                                                 class="text-danger">*</span></h6>
                                         <input type="hidden" name="do_no" id="do_no" />
                                         <p class="fw-medium mb-2" id="shipping-name">
-                                            <select class="form-select select2" required="required" id="supplier" disabled
-                                                name="client">
-                                                <option value="">Select Client</option>
+                                            <select class="form-select select2" required="required" id="customer" disabled
+                                                name="customer">
+                                                <option value="">Select Customer</option>
                                                 <? foreach($client_list as $client) : ?>
-                                                <option value="<?= $client->id ?>" <?=($client->id == $do->client_id) ? 'selected' : '' ?>><?= $client->client_name ?>
+                                                <option value="<?= $client->id ?>" <?=($client->id == $do->customer_id) ? 'selected' : '' ?>><?= $client->client_name ?>
                                                 </option>
                                                 <? endforeach;?>
                                             </select>
-                                            <span class="text-danger error-msg supplier_error"></span>
+                                            <span class="text-danger error-msg customer_error"></span>
                                         </p>
                                     </div>
 
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
@@ -90,15 +90,29 @@
                                             <span class="text-danger error-msg client_error"></span>
                                         </p>
                                     </div>
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Company <span
+                                            class="text-danger">*</span></h6>
+                                    <p class="fw-medium mb-2" id="billing-name">
+                                        <select class="form-select select2" id="company" name="company" disabled>
+                                            <option value="">Select Company</option>
+                                            <? foreach($company_list as $company) : ?>
+                                                <? if($company->client_type == 'O') : ?>
+                                                    <option value="<?=$company->id?>"  <?=($do->company_id == $company->id) ? 'selected': ''?> ><?=$company->client_name?></option>
+                                                <? endif;?>
+                                            <? endforeach;?>
+                                        </select>
+                                        </p>
+                                    </div>
                                     <!--end col-->
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Site
                                             <span class="text-danger">*</span>
                                         </h6>
                                         <p class="fw-medium mb-2" id="shipping-name">
                                             <select class="form-select select2" required="required" id="store" disabled
                                                 name="store">
-                                                <option value="">Select Store/Warehouse</option>
+                                                <option value="">Select Site</option>
                                                 <? foreach($store_list as $store) : ?>
                                                 <option value="<?= $store->id ?>" <?=($store->id == $do->store_id) ? 'selected' : '' ?>><?= $store->store_name ?></option>
                                                 <? endforeach;?>
@@ -204,7 +218,7 @@
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Order Date <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
-                                            <input type="date" class="form-control" id="order_date"
+                                            <input type="date" class="form-control" id="order_date" disabled
                                             name="order_date" value="{{ $do->order_date }}" placeholder="Order Date">
                                             <span class="text-danger error-msg order_date_error"></span>
                                         </div>
@@ -271,22 +285,6 @@
                             <div class="row ms-3 mx-3">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span
-                                                class="text-danger">*</span></label>
-                                        <div class="col-lg-8">
-                                            <select class="form-select select2" required="required" id="warehouse" disabled
-                                                name="warehouse">
-                                                <option value="">Select warehouse</option>
-                                                <? foreach ($warehouse_list as $key => $wh):?>
-                                                <option value="<?=$wh->id?>" <?=($wh->id == $do->warehouse_id) ? 'selected' : ''?>>{{ $wh->warehouse_name }}</option>
-                                                <? endforeach;?>
-                                            </select>
-                                            <span class="text-danger error-msg warehouse_error"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="row">
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
                                         <div class="col-lg-8">
                                             <input type="text" class="form-control" name="remarks" id="remarks" disabled
@@ -312,11 +310,10 @@
                                                 <tr class="table-active">
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
-                                                    <th scope="col">WHSE Qty</th>
-                                                    <th scope="col">WHSE UOM</th>
-                                                    <th scope="col">Inv Qty</th>
-                                                    <th scope="col">Inv UOM</th>
-                                                    <th scope="col">Unserve Qty</th>
+                                                    <th scope="col">Order Quantity</th>
+                                                    <th scope="col">Unit</th>
+                                                    <th scope="col">Unserve Quantity</th>
+                                                    <th scope="col">Unit</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="newlink">
@@ -333,30 +330,17 @@
                                                         <td class="text-start fs-14">
                                                             {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                         </td>
-                                                        <td class=" ps-1">
-                                                            <input type="text"  disabled  class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                        <td class="ps-1">
+                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select w-100 " name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                         </td>
                                                         <td class=" ps-1">
-                                                           <select name="whse_uom[]"  disabled id="whse_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom_whse)
-                                                                <option value="{{$uom_whse->uom_id}}" <?=($uom_whse->uom_id == $item->whse_uom) ? 'selected': ''; ?> >{{$uom_whse->code}}</option>
-                                                                @endforeach
-                                                            </select>
+                                                            {{ ($item->unit) ? $item->unit->code : "" }}
                                                         </td>
                                                         <td class="ps-1">
-                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select w-100 " name="unserve_qty[]" data-id="{{$item->product_id}}" id="unserve_qty_{{$x}}" value="{{$item->unserve_qty}}" placeholder="Unserve Qty" />
                                                         </td>
                                                         <td class=" ps-1">
-                                                            <select name="inv_uom[]"  disabled  id="inv_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom)
-                                                                <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td class="ps-1">
-                                                            <input type="text" disabled class="form-control inv_qty numeric uom_select" name="unserve_qty[]" data-id="{{$item->product_id}}" id="unserve_qty_{{$x}}" value="{{$item->unserve_qty}}" placeholder="Unserve Qty" />
+                                                            {{ ($item->unit) ? $item->unit->code : "" }}
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -384,43 +368,6 @@
             <!--end col-->
         </div>
     </form>
-
-
-    <!-- show charges Modal -->
-    <div class="modal" id="show-items" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-light p-3">
-                    <h5 class="modal-title" id="exampleModalLabel">Product List</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                        id="close-modal"></button>
-                </div>
-
-                <div class="modal-body">
-                    <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
-                        <thead class="table-light">
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>Product Code</th>
-                                <th>Product SKU</th>
-                                <th>Product Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-
-                </div>
-                <div class="modal-footer">
-                    <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-success" id="add-product"><i
-                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 @section('script')
     <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>

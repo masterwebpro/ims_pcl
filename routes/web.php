@@ -52,6 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/product', App\Http\Controllers\ProductController::class);
     Route::resource('/maintenance/attributes', App\Http\Controllers\AttributesController::class);
     Route::resource('/maintenance/trucker', App\Http\Controllers\TruckerController::class);
+    Route::resource('/maintenance/particulars', App\Http\Controllers\ParticularController::class);
 
     Route::resource('/users', App\Http\Controllers\UsersController::class);
 
@@ -86,6 +87,9 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/getLocation', [App\Http\Controllers\SettingsController::class, 'getLocation']);
 
+    Route::get('/getAllPostedDO', [App\Http\Controllers\SettingsController::class, 'getAllPostedDo']);
+    Route::get('/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAvailableStocks']);
+
 });
 
 Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
@@ -104,7 +108,7 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
     Route::get('/inventory',[App\Http\Controllers\ReportController::class,'inventory'])->name('report.inventory');
     Route::get('/getInventoryReport',[App\Http\Controllers\ReportController::class,'getInventoryReport'])->name('report.getInventoryReport');
-    
+
     Route::get('/withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailedIndex']);
     Route::get('/get-withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailed']);
     Route::get('/export-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'exportWithdrawalDetailed'])->name('export-withdrawal-detailed');

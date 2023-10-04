@@ -25,6 +25,12 @@ $(document).ready(function () {
             $(this).addClass('selected');
         }
     });
+
+    $('#do-table tbody').on('click', 'tr', function (e) {
+        $('#do-table tbody tr').removeClass('selected')
+        $(this).addClass('selected');
+    });
+
 });
 
 $(document).on('change', '#company', function() {
@@ -85,7 +91,7 @@ function masterfile(){
         order: [[1, 'asc'],[4,'asc']],
         paging: true,
         columnDefs : [
-            { targets: [6], className: 'dt-body-right' },
+            { targets: [4], className: 'dt-body-right' },
         ],
         ajax: {
             url : BASEURL+"settings/available_item",
@@ -104,12 +110,12 @@ function masterfile(){
             { data: 'product_id',  visible: false },
             { data: 'product_code' },
             { data: 'product_name' },
-            { data: 'date_received' },
+            //{ data: 'date_received' },
             { data: 'item_type' },
             { data: 'inv_qty' , render: $.fn.dataTable.render.number( ',', '.', 2)},
-            { data: 'inv_uom_code' },
-            { data: 'lot_no' },
-            { data: 'expiry_date' },
+            { data: 'ui_code' },
+            //{ data: 'lot_no' },
+            //{ data: 'expiry_date' },
             { data: 'warehouse_name' },
             { data: 'location' },
         ],
@@ -156,9 +162,6 @@ $(document).on('click', '#add-product', function() {
             <td class="text-center ps-1 fs-13"> \
                 <span class="badge '+ itemType +' text-capitalize">'+data[x].item_type+'</span> \
             </td> \
-            <td class="text-start fs-14"> \
-                '+data[x].date_received+'\
-            </td> \
             <td class="text-center  fs-14"> \
                 '+data[x].inv_qty.toFixed(2)+'\
             </td> \
@@ -167,14 +170,8 @@ $(document).on('click', '#add-product', function() {
                 <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].inv_uom_code+'\
+                '+data[x].ui_code+'\
                 <input type="hidden" readonly class="form-control" name="inv_uom[]" data-id="'+data[x].inv_uom+'" id="inv_uom_'+(rowCount-1)+'" value="'+data[x].inv_uom+'"> \
-            </td> \
-            <td class="text-start  fs-14"> \
-                '+data[x].lot_no+'\
-            </td> \
-            <td class="text-start  fs-14"> \
-                '+data[x].expiry_date+'\
             </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].warehouse_name+'\
@@ -213,7 +210,6 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("status", 'open');
 
     var serial_list = [];
-    console.log(localStorage);
     if(localStorage.length > 0){
         for (var i = 0; i < localStorage.length; i++) {
             var key = localStorage.key(i);
@@ -225,7 +221,6 @@ $(document).on('click', '.submit-open', function (e) {
             }
         }
    }
-   console.log(localStorage)
     form_data.append("serial_list", JSON.stringify(serial_list));
     _submitData(form_data);
 });
@@ -552,6 +547,28 @@ $(document).on("click","#download-template",function(){
     a.download = 'serial-template.csv';
     a.click();
     URL.revokeObjectURL(url);
+});
+
+$(document).on('click', '.withdraw-do', function (e) {
+    e.preventDefault();
+    $('#do_num_holder').val('');
+    $('#show-do').modal('show');
+
+    if ($.fn.DataTable.isDataTable("#unit-allocation")) {
+        $('#do-table').DataTable().clear().destroy();
+    }
+    new DataTable("#do-table",{
+        paging: true,
+        ajax: BASEURL+"settings/getAllPostedDO",
+        columns: [
+            { data: 'do_no' },
+            { data: 'order_date' },
+            { data: 'order_no' },
+            { data: 'customer_name'},
+            { data: 'deliver_to' },
+            { data: 'created_by' }
+        ],
+    });
 });
 
 

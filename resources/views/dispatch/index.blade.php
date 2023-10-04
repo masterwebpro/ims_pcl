@@ -92,6 +92,7 @@
                                 <th class="sort" data-sort="dispatch_date">Depart Date</th>
                                 <th class="sort" data-sort="wd_count">No. of Withdrawal</th>
                                 <th class="sort" data-sort="wd_count">Created By</th>
+                                <th class="sort" data-sort="wd_count">Created At</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
@@ -114,6 +115,7 @@
                                         <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->depart_datetime)) }}</td>
                                         <td class="">{{ $dispatch->items_count }}</td>
                                         <td class="">{{ $dispatch->name }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->created_at)) }}</td>
                                         <td class="status"><span class="badge {{ $dispatch->status }} text-uppercase fs-11">{{ $dispatch->status }}</span></td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">

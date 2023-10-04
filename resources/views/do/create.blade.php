@@ -52,21 +52,21 @@
                         <div class="col-lg-12">
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Customer Name <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
-                                            <select class="form-select select2" required="required" id="client"
-                                                name="client">
-                                                <option value="">Select Client</option>
+                                            <select class="form-select select2" required="required" id="customer"
+                                                name="customer">
+                                                <option value="">Select Customer</option>
                                                 <? foreach($client_list as $client) : ?>
                                                 <option value="<?= $client->id ?>"><?= $client->client_name ?></option>
                                                 <? endforeach;?>
                                             </select>
-                                            <span class="text-danger error-msg client_error"></span>
+                                            <span class="text-danger error-msg customer_error"></span>
                                         </p>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
                                                 class="text-danger">*</span></h6>
                                         <input type="hidden" name="do_no" id="do_no" />
@@ -82,9 +82,23 @@
                                             <span class="text-danger error-msg deliver_to_error"></span>
                                         </p>
                                     </div>
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Company Name <span
+                                                class="text-danger">*</span></h6>
+                                        <p class="fw-medium mb-2" id="billing-name">
+                                            <select class="form-select select2" required="required" id="company"
+                                                name="company">
+                                                <option value="">Select Company</option>
+                                                <? foreach($company_list as $company) : ?>
+                                                <option value="<?= $company->id ?>"><?= $company->client_name ?></option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg company_error"></span>
+                                        </p>
+                                    </div>
                                     <!--end col-->
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Site
                                             <span class="text-danger">*</span>
                                         </h6>
                                         <p class="fw-medium mb-2" id="shipping-name">
@@ -194,7 +208,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="order_date"
-                                            name="order_date" value="" placeholder="Order Date">
+                                            name="order_date" value="<?=date('Y-m-d');?>" placeholder="Order Date">
                                             <span class="text-danger error-msg order_date_error"></span>
                                         </div>
                                     </div>
@@ -210,18 +224,17 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="pickup_date"
-                                                name="pickup_date" value="" placeholder="Pickup Date">
+                                                name="pickup_date" value="<?=date('Y-m-d');?>" placeholder="Pickup Date">
                                             <span class="text-danger error-msg pickup_date_error"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Target Delivery Date <span
-                                                class="text-danger">*</span></label>
+                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Target Delivery Date</label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="trgt_dlv_date"
-                                                name="trgt_dlv_date" value="" placeholder="Date Received">
+                                                name="trgt_dlv_date" value="<?=date('Y-m-d');?>" placeholder="Date Received">
                                             <span class="text-danger error-msg trgt_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -244,11 +257,10 @@
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Actual Delivery Date <span
-                                                class="text-danger">*</span></label>
+                                        <label for="colFormLabel" class="col-lg-4  col-form-label">Actual Delivery Date</label>
                                         <div class="col-lg-8">
                                             <input type="date" class="form-control" id="actual_dlv_date"
-                                                name="actual_dlv_date" value="" placeholder="Inspect Date">
+                                                name="actual_dlv_date" value="<?=date('Y-m-d');?>" placeholder="Inspect Date">
                                             <span class="text-danger error-msg actual_dlv_date_error"></span>
                                         </div>
                                     </div>
@@ -258,7 +270,7 @@
 
                         <div class="col-lg-12 mt-3">
                             <div class="row ms-3 mx-3">
-                                <div class="col-lg-6 col-md-6">
+                                {{-- <div class="col-lg-6 col-md-6">
                                     <div class="row">
                                         <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span
                                                 class="text-danger">*</span></label>
@@ -270,7 +282,7 @@
                                             <span class="text-danger error-msg warehouse_error"></span>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-lg-6 col-md-6">
                                     <div class="row">
                                         <label for="colFormLabel" class="col-lg-4  col-form-label">Remarks</label>
@@ -313,10 +325,10 @@
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
                                                     {{-- <th scope="col">Item Type</th> --}}
-                                                    <th scope="col">WHSE Qty</th>
-                                                    <th scope="col">WHSE UOM</th>
-                                                    <th scope="col">Inv Qty</th>
-                                                    <th scope="col">Inv UOM</th>
+                                                    {{-- <th scope="col">WHSE Qty</th>
+                                                    <th scope="col">WHSE UOM</th> --}}
+                                                    <th scope="col">Order Quantity</th>
+                                                    <th scope="col">Unit</th>
                                                     {{-- <th scope="col">Lot/Batch #</th> --}}
                                                     {{-- <th scope="col">Expiry Date</th> --}}
                                                     <th scope="col" class="text-center">Action</th>
@@ -362,8 +374,9 @@
                                 <th>&nbsp;</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
-                                <th>Product SKU</th>
+                                {{-- <th>Product SKU</th> --}}
                                 <th>Available Stocks</th>
+                                <th>Unit</th>
                             </tr>
                         </thead>
                         <tbody>

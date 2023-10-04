@@ -4,7 +4,7 @@ $(document).ready(function () {
     $(".select2").select2();
 
     if ( $( "#store_id" ).length ) {
-        client_id = $("#client_id" ).val();
+        client_id = $("#customer" ).val();
         store_id = $("#store_id" ).val();
         populateStore(client_id, store_id);
         populateWarehouse(store_id, '');
@@ -27,9 +27,9 @@ $(document).ready(function () {
 
 });
 
-$(document).on('change', '#client', function() {
-    var client_id = $(this).val();
-    populateStore(client_id, '');
+$(document).on('change', '#company', function() {
+    var company_id = $(this).val();
+    populateStore(company_id, '');
 });
 
 $(document).on('change', '#store', function() {
@@ -39,12 +39,12 @@ $(document).on('change', '#store', function() {
 
 $(document).on('click', '#find-items', function() {
 
-    var client_id = $('#client').val();
+    var customer_id = $('#customer').val();
     var store_id = $('#store').val();
     var warehouse_id = $('#warehouse').val();
+    var company_id = $('#company').val();
 
-    if(client_id) {
-
+    if(customer_id) {
         $('#show-items').modal('show');
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
@@ -53,11 +53,12 @@ $(document).on('click', '#find-items', function() {
             order: [[1, 'desc']],
             paging: true,
             ajax: {
-                url : BASEURL+"settings/available_item",
+                url : BASEURL+"settings/getAvailableStocks",
                 data : {
-                    client_id : client_id,
+                    customer_id : customer_id,
                     store_id : store_id,
                     warehouse_id : warehouse_id,
+                    company_id : company_id,
                 },
                 dataSrc:""
             },
@@ -65,12 +66,13 @@ $(document).on('click', '#find-items', function() {
                 { data: 'product_id',  visible: false },
                 { data: 'product_code' },
                 { data: 'product_name' },
-                { data: 'product_sku' },
+                //{ data: 'product_sku' },
                 { data: 'inv_qty' },
+                { data: 'ui_code' },
             ],
         });
     } else {
-        alert("Client Name required");
+        alert("Customer Name required");
     }
 });
 
@@ -94,18 +96,17 @@ $(document).on('click', '#add-product', function() {
             $('#product-list tbody').append('<tr id="rows_'+(rowCount-1)+'"> \
             <td class="text-start"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
+                <input type="hidden" name="inv_uom[]" readonly id="inv_uom'+data[x].inv_uom+'" value="'+data[x].inv_uom+'" /> \
             '+rowCount+' </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].product_name+'<br/><small>'+data[x].product_code+'</small> \
             </td> \
             <td class="text-start ps-1"> \
-                <input type="text" class="form-control inv_qty numeric uom_select w-50" name="inv_qty[]" data-id="'+data[x].product_id+'" id="inv_qty_'+(rowCount-1)+'" value="1" placeholder="Order Quantity" /> \
+                <input type="text" class="form-control inv_qty numeric uom_select w-100" name="inv_qty[]" data-id="'+data[x].product_id+'" id="inv_qty_'+(rowCount-1)+'" value="1" placeholder="Order Quantity" /> \
                 <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
-            <td class="text-start ps-1"> \
-                <select name="inv_uom[]" id="inv_uom_'+idx+'" class="uom uom_select form-select select2  w-50"> \
-                '+uom+'</select> \
-                <span class="text-danger error-msg inv_uom'+(rowCount-1)+'_error"></span> \
+            <td class="text-center ps-1"> \
+                '+data[x].ui_code+'\
             </td> \
             <td>'+btn+'</td> \
             </tr>');
@@ -155,23 +156,6 @@ $(document).on('click', '.create-do', function (e) {
         window.location = BASEURL+'do/create';
     }, 300);
 });
-
-$(document).on('click', '.receive-po', function (e) {
-    e.preventDefault();
-    $('#po_num_holder').val('');
-    $('#show-po').modal('show');
-});
-
-$(document).on('click', '#receive-po-btn', function (e) {
-    e.preventDefault();
-    $('#preloading').modal('show');
-    var po_num = $('#po_num_holder').val();
-    setTimeout(function () {
-        window.location = BASEURL+'receive/'+escapeHtml(po_num)+'/create';
-    }, 300);
-
-});
-
 
 $(document).on('click', '.submit-withdrawal', function (e) {
     e.preventDefault();

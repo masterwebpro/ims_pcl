@@ -384,13 +384,13 @@
                                                         </td>
                                                         <td class=" ps-1">
                                                             @php
-                                                                $type = ($item->master->item_type == 'good') ? 'bg-success' : 'bg-danger';
+                                                                $type = (isset($item->master) && $item->master->item_type == 'good') ? 'bg-success' : 'bg-danger';
                                                             @endphp
-                                                            <span class="badge {{$type}} text-capitalize">{{$item->master->item_type}} </span>
+                                                            <span class="badge {{$type}} text-capitalize">{{ isset($item->master) ? $item->master->item_type : ""}} </span>
                                                         </td>
-                                                        <td class=" ps-1">
+                                                        {{-- <td class=" ps-1">
                                                             {{ isset($item->master->receiving) ? date('M d, Y', strtotime($item->master->receiving->date_received)) : '' }}
-                                                        </td>
+                                                        </td> --}}
                                                         <td class="ps-1 text-center">
                                                             {{ number_format($item->master->inv_qty,2) }}
                                                         </td>
@@ -401,12 +401,12 @@
                                                         <td class=" ps-1">
                                                             {{ $item->master->uom->code }}
                                                         </td>
-                                                        <td class=" ps-1">
+                                                        {{-- <td class=" ps-1">
                                                             {{ ($item->master->receiving) ? $item->master->receiving->lot_no : "" }}
                                                         </td>
                                                         <td class=" ps-1">
                                                             {{ ($item->master->receiving) ? $item->master->receiving->expiry_date : "" }}
-                                                        </td>
+                                                        </td> --}}
                                                         <td class=" ps-1">
                                                             {{ ($item->master->warehouse) ? $item->master->warehouse->warehouse_name : ""}}
                                                         </td>
@@ -506,12 +506,12 @@
                                 <th>&nbsp;</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
-                                <th>Date Recieved</th>
+                                {{-- <th>Date Recieved</th> --}}
                                 <th>Item Type</th>
                                 <th>Available Stocks</th>
                                 <th>Unit</th>
-                                <th>Lot No.</th>
-                                <th>Expiry Date</th>
+                                {{-- <th>Lot No.</th> --}}
+                                {{-- <th>Expiry Date</th> --}}
                                 <th>Warehouse</th>
                                 <th>Location</th>
                             </tr>
