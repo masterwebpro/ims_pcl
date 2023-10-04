@@ -85,12 +85,12 @@ class ProductController extends Controller
         // return $request->all();
         DB::connection()->beginTransaction();
         $validator = Validator::make($request->all(), [
-            'product_code' => 'required',
+            // 'product_code' => 'required',
             'product_name' => 'required',
             'supplier_id' => 'required'
         ], [
             'supplier_id' => 'Supplier is required',
-            'product_code' => 'Product code  is required',
+            // 'product_code' => 'Product code  is required',
             'product_name' => 'Product name  is required'
         ]);
 
@@ -102,7 +102,7 @@ class ProductController extends Controller
 
         try {
             $product = Products::updateOrCreate(['product_id' => $request->product_id], [
-                'product_code'=>$request->product_code,
+                'product_code'=> isset($request->product_code) ? $request->product_code : "TEMP_CODE",
                 'product_name'=>$request->product_name,
                 'product_upc'=>$request->product_upc,
                 'product_sku'=>$request->product_sku,
@@ -114,34 +114,41 @@ class ProductController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
+            if(!isset($request->product_id)){
+                $cat_name = substr($request->category,0,1);
+                $seq_name = substr(preg_replace('/[^a-zA-Z]/', '', $request->product_name),0,2);
+                $product_code = $cat_name.$seq_name.str_pad($product->product_id, 6, '0', STR_PAD_LEFT);
 
+                $product->update([
+                    'product_code' => $product_code,
+                    'product_upc' => isset($request->product_upc) ? $request->product_upc : $product_code,
+                    'product_sku' => isset($request->product_sku) ? $request->product_sku : $product_code
+
+                ]);
+            }
             ProductPrice::updateOrCreate(["product_price_id" => $request->product_price_id],[
                 'product_id'=> $product->product_id,
-                'msrp' => $request->msrp,
-                'supplier_price'=> $request->supplier_price,
-                'special_price'=> $request->special_price,
-                'srp'=> $request->product_srp,
+                'msrp' => isset($request->msrp) ? $request->msrp : 0,
+                'supplier_price'=> isset($request->supplier_price) ? $request->supplier_price : 0,
+                'special_price'=> isset($request->special_price) ? $request->special_price : 0,
+                'srp'=> isset($request->product_srp) ? $request->product_srp : 0,
             ]);
 
             if(isset($request->uom_id)){
-                $uom = json_decode($request->uom_id);
-
-                if(!empty($uom)){
-                    ProductUom::where('product_id',$product->product_id)->delete();
-                    foreach($uom as $key => $uom_id)
-                    {
-                        ProductUom::updateOrCreate([
-                                'product_id' => $product->product_id,
-                                'uom_id' => $uom_id,
-                            ], [
+                ProductUom::where('product_id',$product->product_id)->delete();
+                for($x=0; $x < count($request->uom_id); $x++ )
+                {
+                    ProductUom::updateOrCreate([
                             'product_id' => $product->product_id,
-                            'uom_id' => $uom_id,
-                        ]);
-                    }
+                            'uom_id' => $request->uom_id[$x],
+                        ], [
+                        'product_id' => $product->product_id,
+                        'uom_id' => $request->uom_id[$x],
+                    ]);
                 }
-                else{
-                    ProductUom::where('product_id',$product->product_id)->delete();
-                }
+            }
+            else{
+                ProductUom::where('product_id',$product->product_id)->delete();
             }
             if(isset($request->attribute_entity)){
                 $attribute_entity = json_decode($request->attribute_entity);

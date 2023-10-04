@@ -77,7 +77,7 @@
                                                         Name <span class="text-danger">*</span></label>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    <select class="form-control" data-choices name="supplier_id" required
+                                                    <select class="form-control select2" name="supplier_id"
                                                         id="supplier_id">
                                                         <option value="">Select Supplier Name
                                                         </option>
@@ -105,34 +105,6 @@
                                                 <label for="is_enabled">Enable</label>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_code" class="form-label">Product
-                                                        Code
-                                                        <span class="text-danger">*</span></label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="text" class="form-control" id="product_code" required
-                                                        name="product_code" placeholder="Enter Product Code">
-                                                    <div class="invalid-feedback">Please enter product code</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_upc" class="form-label">Product
-                                                        UPC</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="url" class="form-control" id="product_upc"
-                                                        name="product_upc" placeholder="Enter Product UPC">
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="col-6">
                                             <div class="row mb-3">
                                                 <div class="col-lg-3">
@@ -151,15 +123,16 @@
                                         <div class="col-6">
                                             <div class="row mb-3">
                                                 <div class="col-lg-3">
-                                                    <label for="product_sku" class="form-label">Product
-                                                        SKU</label>
+                                                    <label for="product_upc" class="form-label">Product
+                                                        UPC</label>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    <input type="url" class="form-control" id="product_sku"
-                                                        name="product_sku" placeholder="Enter Product SKU">
+                                                    <input type="url" class="form-control" id="product_upc"
+                                                        name="product_upc" placeholder="Enter Product UPC">
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="col-6">
                                             <div class="row mb-3">
                                                 <div class="col-lg-3">
@@ -168,15 +141,28 @@
                                                     </label>
                                                 </div>
                                                 <div class="col-lg-9">
+                                                    <input type="hidden" name="category" id="category">
                                                     <select class="form-control select2" name="category_id"
                                                         id="category_id">
                                                         <option value="">Select Category</option>
                                                         <? foreach($category as $index => $cat) : ?>
-                                                        <option value="<?= $cat->category_id ?>">
+                                                        <option value="<?= $cat->category_id ?>" data-category="{{ $cat->category_name }}">
                                                             {{ $cat->category_name }}</option>
                                                         <? endforeach;?>
                                                     </select>
                                                     <div class="invalid-feedback">Please Select Category</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row mb-3">
+                                                <div class="col-lg-3">
+                                                    <label for="product_sku" class="form-label">Product
+                                                        SKU</label>
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <input type="url" class="form-control" id="product_sku"
+                                                        name="product_sku" placeholder="Enter Product SKU">
                                                 </div>
                                             </div>
                                         </div>
@@ -195,6 +181,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-start gap-3 mt-4">
@@ -301,7 +288,7 @@
                                                 <div class="form-group">
                                                     <label for="uom_id" class="form-label">Product UOM <span
                                                             class="text-danger">*</span></label>
-                                                    <select class="form-control" name="uom_id" data-choices
+                                                    <select class="form-control" name="uom_id[]" data-choices
                                                         data-choices-removeItem multiple id="uom_id">
                                                         <option value="">Select Unit of Measure </option>
                                                         <? foreach($uom as $un) : ?>

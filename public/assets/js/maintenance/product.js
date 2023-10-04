@@ -36,13 +36,16 @@ $(document).ready(function () {
         var brand_id = $("#brand").data('brand');
         populateBrand(category_id, brand_id);
     }
-    if ($("#brand").val() !== "" && $("#category_id").val() !== "" && $("#brand").val() &&  $("#product_code").val() !== "" && $("#product_name").val() !== ""){
+    if ($("#brand").val() !== "" && $("#category_id").val() !== "" && $("#brand").val() &&  $("#product_name").val() !== ""){
         $("#steparrow-attributes").prop("disabled", false);
     }
 
-    $('#category_id').on('change', function() {
+    $(document).on('change', '#category_id', function() {
         validate_general();
         var category_id = $(this).val();
+        var selectedOption = $(this).find(':selected');
+        var dataCategory = selectedOption.data('category');
+        $("#category").val(dataCategory);
         populateBrand(category_id,'');
         var entity = getCategoryAttribute(category_id);
         if(entity.length){
@@ -91,7 +94,6 @@ $(document).ready(function () {
         form_data.append("_token", $('input[name=_token]').val());
         form_data.append("is_enabled", is_enabled);
         form_data.append("is_serialize", is_serialize);
-        form_data.append("uom_id", JSON.stringify(selecteduom));
         form_data.append("attribute_entity", JSON.stringify(attribute_entity));
 
         $.ajax({
@@ -192,7 +194,7 @@ $(document).ready(function () {
         $("#steparrow-unit-info-tab").prop('disabled',false);
         const nextTab = $(this).data("nexttab");
         $(`#${nextTab}`).click();
-      
+
     });
 
     function validate_general(){
