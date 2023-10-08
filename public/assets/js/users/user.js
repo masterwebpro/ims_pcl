@@ -25,6 +25,12 @@ $(document).on('click', '#user-save', function (e) {
     $.each($(".perm:checked"), function(){
         arr.push($(this).val());
     });
+
+    //module_access
+    var module_access = [];
+    $.each($(".module:checked"), function(){
+        module_access.push($(this).val());
+    });
     
     $.ajax({
         url: BASEURL + 'users',
@@ -45,6 +51,7 @@ $(document).on('click', '#user-save', function (e) {
             password: password,
             is_edit_password: is_edit_password,
             menu_access: arr,
+            module_access: module_access,
             password_confirmation: password_confirmation,
             _token: $('input[name=_token]').val()
         },
@@ -60,7 +67,10 @@ $(document).on('click', '#user-save', function (e) {
                 if(data.success == true) {
                    showSuccess(data.message);
                    toastr.success(data.message);
-                    
+                   setTimeout(() => {
+                    window.location=BASEURL+'users';
+                   }, 300);
+                  
                 } else {
                     toastr.error(data.message,'Error on saving'); 
                 }
@@ -101,120 +111,8 @@ $('.perm').on('change', function() {
     }
 });
 
-
-
-// $(document).on('click', '#submit', function (e) {
-//     e.preventDefault();
-//     saveUser();
-// });
-
-// $.ajaxSetup({
-//     headers: {
-//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//     }
-// });
-
-// // $('#reported_to').select2();
-
-// function saveUser() {
-
-//     let is_passed           = true
-//     let _token              = $('#_csrf_token').val()
-
-//     let role_id             = $('#role_id').val()
-//     let user_id             = $('#user_id').val()
-//     let first_name          = $('#first_name').val()
-//     let middle_name         = $('#middle_name').val()
-//     let last_name           = $('#last_name').val()
-//     let email               = $('#email').val()
-//     let mobile_no           = $('#mobile_no').val()
-//     let company             = $('#company').val()
-//     let is_active           = $("#is_active").is(":checked");
-//     let department          = $('#department').val()
-//     let position            = $('#position').val()
-//     let reported_to         = $('#reported_to').val()
-//     let image_path         = $('#image_path').val()
-
-//     let username            = $('#name').val()
-//     let new_password        = $('#new_password').val()
-//     let confirm_password    = $('#confirm_password').val()
-
-//     let perm_access         = $('.perm_checkbox:checkbox:checked')
-
-//     let role_name           = $('#role_id').find(":selected").text();
-//     let perm_list           = []
-//     $.each(perm_access, function(key, value) {
-//         perm_list.push($(value).attr('data-id'));
-//         perm_list.push($(value).attr('data-parent-name'));
-//     });
-
-//     if (new_password !== confirm_password) {
-//         toastr.error('<b>Password</b> and <b>Confirm Password</b> does not match!');
-//         is_passed = false
-//     }
-//     perm_list = [...new Set(perm_list)];
-
-//     if (is_passed) {
-//         let data = {
-//             _token,
-//             user_id,
-//             role_id,
-//             first_name,
-//             middle_name,
-//             last_name,
-//             email,
-//             mobile_no,
-//             is_active,
-//             company,
-//             department,
-//             position,
-//             reported_to,
-//             username,
-//             new_password,
-//             perm_list,
-//             role_name,
-//             image_path
-//         }
-//         console.log(data)
-//         $.ajax({
-//             url: BASEURL + "users/save",
-//             method: "post",
-//             data: data,
-//             dataType: 'json',
-//             beforeSend: function () {
-//                 $('span.error-msg').text('');
-//             },
-//             success: function (data) {
-//                 if ($.isEmptyObject(data.error)) {
-//                     if (data.success == true) {
-//                         showSuccess(data.msg)
-//                         setTimeout(function () {
-//                             window.location = BASEURL + 'users';
-//                         }, 200);
-//                     } else {
-//                         toastr.error(data.msg, 'Error on saving');
-//                     }
-//                 } else {
-//                     $.each(data.error, function (prefix, val) {
-//                         console.log(prefix)
-//                         $(`#${prefix}`).addClass("is-invalid")
-//                         $(`.${prefix}_error`).text(val);
-
-//                         toastr.error(`${titleCase(prefix)} is required`, 'Error on saving');
-//                     });
-//                 }
-
-//             }
-//         });
-//     }
-// }
-
 const titleCase = (s) =>
   s.replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase())
-
-
-// password_row
-
 
 if($('#old_role_name').val()){
     let name = $('#old_role_name').val();

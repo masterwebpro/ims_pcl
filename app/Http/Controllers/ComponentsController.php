@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Submenu;
+use App\Models\UserModulePermission;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ComponentsController extends Controller
 {
@@ -44,4 +46,12 @@ class ComponentsController extends Controller
             'O' => "Company"
         ];
     }
+
+
+    // public function _userModuleAccess($module) {
+    //     $user_module_access = UserModulePermission::where('user_id', Auth::id())->get();
+    //     //session(['module_access' => $user_module_access]);
+    //     dd($user_module_access);
+    //     return $user_module_access;
+    // }
 }

@@ -259,6 +259,8 @@
                                     <th>Inv Uom</th>
                                     <th>Whse qty</th>
                                     <th>Whse Uom</th>
+                                    <th>Ref1 No</th>
+                                    <th>Ref1 Type</th>
                                 </tr>
                             </thead>
                             <tbody>

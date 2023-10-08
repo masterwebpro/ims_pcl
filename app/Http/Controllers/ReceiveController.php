@@ -6,6 +6,8 @@ use Illuminate\Http\Response;
 
 use App\Models\RcvHdr;
 use App\Models\RcvDtl;
+use App\Models\MvHdr;
+use App\Models\MvDtl;
 use App\Models\PoHdr;
 use App\Models\SeriesModel;
 use App\Models\Client;
@@ -233,6 +235,8 @@ class ReceiveController extends Controller
                     'company_id'=>$request->company,
                     'warehouse_id'=>$request->warehouse,
                     'storage_location_id'=>null,
+                    'ref1_no'=>$rcv_no,
+                    'ref1_type'=>'rcv',
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
@@ -382,5 +386,136 @@ class ReceiveController extends Controller
         $series = "R-" . $date . "-" . $num;
 
         return $series;
+    }
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Dispatch  $dispatch
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        DB::connection()->beginTransaction();
+
+        try 
+        {
+            $rcv_no = $request->rcv_no;
+            if($rcv_no) {
+                $rcv_hdr = RcvHdr::where('rcv_no', $rcv_no)->first();
+                $rcv = RcvHdr::where('rcv_no', $rcv_no)->delete();
+                $rcv_dtl = RcvDtl::where('rcv_no', $rcv_no)->delete();
+                $po = PoHdr::where('po_num', $rcv_hdr->po_num)->update(['status'=>'open']);
+
+                
+                $audit_trail[] = [
+                    'control_no' => $rcv_no,
+                    'type' => 'RCV',
+                    'status' => 'deleted',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'deleted'
+                ];
+
+                AuditTrail::insert($audit_trail);
+
+                DB::connection()->commit();
+
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'deleted successfully!',
+                    'data'    => $rcv
+                ]);
+
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
+    }
+
+    public function unpost(Request $request)
+    {
+        DB::connection()->beginTransaction();
+        try 
+        {
+            $rcv_no = $request->rcv_no;
+            if($rcv_no) {
+
+                //check if has movement
+                if(hasMovement($rcv_no, 'rcv')) {
+                    return response()->json([
+                        'success'  => false,
+                        'message' => 'Unable to unpost the transaction! Please remove it in PUTAWAY first.',
+                        'data'    => $rcv_no
+                    ]);
+
+                } else {
+
+                    if(hasPendingMovement($rcv_no, 'rcv')) {
+                        return response()->json([
+                            'success'  => false,
+                            'message' => 'Unable to unpost the transaction! Still have active PUTAWAY.',
+                            'data'    => $rcv_no
+                        ]);
+    
+                    } else {
+                        $rcv = RcvHdr::where('rcv_no', $rcv_no)->update(['status'=>'open']);
+                        //remove on MW HDR and DTL
+                        $mster_hdr = MasterfileModel::where('ref_no', $rcv_no)->delete();
+                        $mv_hdr = MvHdr::where('ref_no', $rcv_no)->delete();
+                        $mv_dtl = MvDtl::where('ref_no', $rcv_no)->delete();
+
+                        $audit_trail[] = [
+                            'control_no' => $rcv_no,
+                            'type' => 'RCV',
+                            'status' => 'open',
+                            'created_at' => date('y-m-d h:i:s'),
+                            'updated_at' => date('y-m-d h:i:s'),
+                            'user_id' => Auth::user()->id,
+                            'data' => 'unpost'
+                        ];
+
+                        AuditTrail::insert($audit_trail);
+
+    
+                        DB::connection()->commit();
+                        return response()->json([
+                            'success'  => true,
+                            'message' => 'Unpost successfully!',
+                            'data'    => $rcv
+                        ]);
+                    }
+                }
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
     }
 }

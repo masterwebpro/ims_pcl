@@ -28,10 +28,30 @@
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1"><?=$mv_hdr->ref_no?></h5>
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                        <? if($mv_hdr->status == 'open') : ?>
-                        <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
-                        <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+
+                        <? if(in_array($mv_hdr->status, array('open', 'new'))) : ?>
+                            <? if (mod_access('putaway',  'add', Auth::id())) : ?>
+                                <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+                            <? endif ;?>
+
+                            <? if (mod_access('putaway', 'post', Auth::id())) : ?>
+                                <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                            <? endif ;?>
+
+                            <? if($mv_hdr->status == 'open') : ?>
+                                <? if (mod_access('putaway',  'delete', Auth::id())) : ?>
+                                    <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
+                                <? endif ;?>
+                            <? endif ;?>
+                           
                         <? endif;?>
+
+                        <? if(in_array($mv_hdr->status, array('posted', 'closed'))) : ?>
+                            <? if (mod_access('putaway',  'unpost', Auth::id())) : ?>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-po"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                            <? endif ;?>
+                        <? endif;?>
+
                         <a href="{{ URL::to('stock/movement') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
                 </div>
@@ -195,6 +215,8 @@
                                                         <td>
                                                             <?=$x+1?>
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_<?=$dtl->product_id?>" value="<?=$dtl->product_id?>" />
+                                                            <input type="hidden" name="ref1_no[]" readonly id="product_id_<?=$dtl->product_id?>" value="<?=$dtl->ref1_no?>" />
+                                                            <input type="hidden" name="ref1_type[]" readonly id="product_id_<?=$dtl->product_id?>" value="<?=$dtl->ref1_type?>" />
                                                         </td>
                                                         <td class="text-start  fs-12">{{$dtl->item->product_name}}<br/><small>{{$dtl->item->product_code}}</small></td>
                                                         <td class="text-center ps-1 fs-12">

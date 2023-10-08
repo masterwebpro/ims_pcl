@@ -10,7 +10,7 @@ class MvHdr extends Model
     use HasFactory;
     protected $table = 'mv_hdr';
 
-    protected $fillable = ['ref_no','status','company_id', 'customer_id', 'store_id','warehouse_id','remarks','created_by', 'created_at','upated_at'];
+    protected $fillable = ['ref_no','status','company_id', 'customer_id', 'store_id','warehouse_id','remarks', 'ref1_no','ref1_type','created_by', 'created_at','upated_at'];
 
    
     public function warehouse() 

@@ -12,6 +12,8 @@ use App\Models\Supplier;
 use App\Models\UOM;
 use App\Models\AuditTrail;
 
+use App\Http\Controllers\ComponentsController;
+
 use DataTables;
 
 use Illuminate\Support\Facades\Auth;

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 
 function test() {
     echo 'test';
@@ -115,4 +116,43 @@ function parseNumber(string $money) : float
 {
     $money = preg_replace('/[ ,]+/', '', $money);
     return number_format((float) $money, 2, '.', '');
+}
+
+function mod_access($module, $code, $user_id)
+{
+    $mod_access = DB::table('user_module_access')->select('user_module_access.*', 'm.module_name', 'p.code', 'p.name')->where('user_id', $user_id)
+        ->leftJoin('modules as m', 'm.id', '=', 'user_module_access.module_id')
+        ->leftJoin('permissions as p', 'p.id', '=', 'user_module_access.permission_id')
+        ->where('module_name', $module)
+        ->where('p.code', $code)->get();
+
+    if ($mod_access->count() > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function hasMovement($ref_no, $type) {
+    $hasMovement = DB::table('masterfiles')->where('ref1_no', $ref_no)
+        ->where('ref1_type', $type)
+        ->whereNotNull('storage_location_id')
+        ->get();
+
+    if ($hasMovement->count() > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hasPendingMovement($ref_no, $type) {
+    $hasPendingMovement = DB::table('mv_dtl')->where('ref1_no', $ref_no)
+        ->where('ref1_type', $type)
+        ->get();
+        
+    if ($hasPendingMovement->count() > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
