@@ -90,7 +90,7 @@ $(document).on('click', '#add-product', function() {
         $('#product-list tbody').append('<tr id="product_'+uniqueId+'"> \
         <td class="text-start"> \
             <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
-        '+rowCount+' </td> \
+        '+rowCount-1+' </td> \
         <td class="text-start  fs-12"> \
             '+data.product_name+'<br/><small>'+data.product_code+'</small> \
         </td> \
@@ -104,19 +104,19 @@ $(document).on('click', '#add-product', function() {
         </td>  \
         <td class="text-start ps-1"> \
             <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+uniqueId+'" id="whse_qty_'+uniqueId+'" value="" placeholder="Whse Qty" /> \
-            <span class="text-danger error-msg whse_qty'+uniqueId+'_error"></span> \
+            <span class="text-danger error-msg whse_qty'+(idx-1)+'_error"></span> \
         </td> \
             <td class="text-start ps-1"><select name="whse_uom[]" data-id="'+uniqueId+'" id="uom_'+uniqueId+'" class="uom  whse_uom uom_select form-select select2"> \
             '+uom+'</select> \
-            <span class="text-danger error-msg whse_uom'+uniqueId+'_error"></span> \
+            <span class="text-danger error-msg whse_uom'+(idx-1)+'_error"></span> \
         </td> \
         <td class="text-start ps-1"> \
             <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+uniqueId+'" id="inv_qty_'+uniqueId+'" value="" placeholder="Inv Qty" /> \
-            <span class="text-danger error-msg inv_qty'+uniqueId+'_error"></span> \
+            <span class="text-danger error-msg inv_qty'+(idx-1)+'_error"></span> \
         <td class="text-start ps-1"> \
             <select name="inv_uom[]" data-id="'+uniqueId+'" id="inv_uom_'+uniqueId+'" class="uom uom_select form-select select2"> \
             '+uom+'</select> \
-            <span class="text-danger error-msg inv_uom'+uniqueId+'_error"></span> \
+            <span class="text-danger error-msg inv_uom'+(idx-1)+'_error"></span> \
         </td> \
         <td class="ps-1"> \
             <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" placeholder="Lot/Batch No" /> \
@@ -169,6 +169,104 @@ $(document).on('click', '.submit-posted', function (e) {
         }
     });
 });
+
+$(document).on('click', '.submit-delete', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to DELETE this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, DELETE it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'receive',
+                data: {
+                    rcv_no : $('#rcv_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "DELETE",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-receive').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'receive';
+                            }, 300);
+                            
+                        } else {
+                            toastr.error(data.message,'Error on saving'); 
+                         
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+
+$(document).on('click', '.submit-unpost', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to UNPOST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, UNPOST it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'receive/unpost',
+                data: {
+                    rcv_no : $('#rcv_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "post",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-receive').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'receive';
+                            }, 300);
+                            
+                        } else {
+                            // toastr.error(data.message,'Error on saving'); 
+                            showError(data.message);
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+
+
 $(document).on('click', '.create-receiving', function (e) {
     e.preventDefault();
     $('#preloading').modal('show');

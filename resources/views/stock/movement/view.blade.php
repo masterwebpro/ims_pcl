@@ -28,6 +28,12 @@
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1"><?=$mv_hdr->ref_no?></h5>
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
+                        <? if(in_array($mv_hdr->status, array('posted'))) : ?>
+                            <? if (mod_access('putaway',  'unpost', Auth::id())) : ?>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                            <? endif ;?>
+                        <? endif;?>
+
                         <? if($mv_hdr->status == 'open') : ?>
                             <a href="{{ URL::to('stock/movement') }}/<?=_encode($mv_hdr->id);?>/edit" class="btn btn-info btn-label rounded-pill"><i class="ri-pencil-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Edit </a> </div>
                         <? endif;?>

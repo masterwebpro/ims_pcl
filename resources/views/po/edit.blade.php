@@ -28,9 +28,28 @@
                 <h4 class="card-title mb-0 flex-grow-1">PO Creation <span class="badge badge-soft-primary fs-16 text-uppercase {{ $po->status }}" id="po-status">{{ $po->status}}</span></h4>
                 <div class="flex-shrink-0">
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                        <? if($po->status != 'posted') : ?>
-                        <button type="button" data-status="open" class="btn btn-success btn-label rounded-pill submit-po"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
-                        <button type="button" data-status="posted" class="btn btn-info btn-label rounded-pill submit-po"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+
+                        <? if(in_array($po->status, array('open', 'new'))) : ?>
+                            <? if (mod_access('po',  'add', Auth::id())) : ?>
+                                <button type="button" data-status="open" class="btn btn-success btn-label rounded-pill submit-po"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+                            <? endif ;?>
+
+                            <? if (mod_access('po',  'post', Auth::id())) : ?>
+                                <button type="button" data-status="posted" class="btn btn-info btn-label rounded-pill submit-po"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                            <? endif ;?>
+
+                            <? if($po->status == 'open') : ?>
+                                <? if (mod_access('po',  'delete', Auth::id())) : ?>
+                                    <button type="button" data-status="delete" class="btn btn-danger btn-label rounded-pill submit-po"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
+                                <? endif ;?>
+                            <? endif ;?>
+                           
+                        <? endif;?>
+
+                        <? if(in_array($po->status, array('posted', 'closed'))) : ?>
+                            <? if (mod_access('po',  'unpost', Auth::id())) : ?>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-po"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                            <? endif ;?>
                         <? endif;?>
                         <a  href="{{ URL::to('po') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>

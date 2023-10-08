@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Menu;
 use App\Models\UserMenuAccess;
+use App\Models\UserModulePermission;
+use App\Models\Permissions;
+use App\Models\Modules;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -152,7 +156,26 @@ class UsersController extends Controller
                     UserMenuAccess::insert($menu_dtl);
                 }
             }
-            
+
+            //save on module access
+            $module_dtl = array();
+            if(isset($request->module_access)) {
+                for($x=0; $x < count($request->module_access); $x++ ) {
+                    $module = explode("_",$request->module_access[$x]);
+                    $module_dtl[] = array(
+                        'user_id'=>$user_id,
+                        'module_id'=>$module[1],
+                        'permission_id'=>$module[2],
+                        'created_at'=>$this->current_datetime,
+                        'updated_at'=>$this->current_datetime,
+                    );
+                }
+                if($module_dtl) {
+                    UserModulePermission::where('user_id',$user_id)->delete();
+                    UserModulePermission::insert($module_dtl);
+                }
+            }
+    
             DB::connection()->commit();
 
             return response()->json([
@@ -185,11 +208,14 @@ class UsersController extends Controller
     {
         $id = _decode($id);
 
-        $permissions = [];
+        $permissions = Permissions::all();
+        $modules = Modules::all();
 
         $user_list = [];
 
         $user_menu_access = UserMenuAccess::where('user_id', $id)->get();
+
+        $user_module_access = UserModulePermission::where('user_id', $id)->get();
 
         $menu_list = $this->getUserMenu();
 
@@ -206,7 +232,9 @@ class UsersController extends Controller
             'roles', 
             'is_create',
             'menu_list', 
-            'user_menu_access')
+            'user_menu_access',
+            'user_module_access',
+            'modules')
         );
     }
 

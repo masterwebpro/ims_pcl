@@ -24,6 +24,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/po', App\Http\Controllers\PurchaseOrderController::class);
     Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
     Route::get('/receive/{id}/create', [App\Http\Controllers\ReceiveController::class, 'receivePo']);
+    Route::delete('/receive', [App\Http\Controllers\ReceiveController::class, 'destroy']);
+    Route::post('/receive/unpost', [App\Http\Controllers\ReceiveController::class, 'unpost']);
 
     Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
     Route::resource('/withdraw', App\Http\Controllers\WithdrawalController::class);
@@ -34,9 +36,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/pod', App\Http\Controllers\PodController::class);
     Route::post('/upload-attachment', 'App\Http\Controllers\FileUploadController@upload');
     Route::resource('/expense', App\Http\Controllers\ExpenseController::class);
-
-
-
 
     Route::resource('/setting/suppliers', App\Http\Controllers\SuppliersController::class);
 
@@ -99,6 +98,9 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
     Route::resource('/movement', App\Http\Controllers\StockMovementController::class);
+    Route::delete('/movement', [App\Http\Controllers\StockMovementController::class, 'destroy']);
+    Route::post('/movement/unpost', [App\Http\Controllers\StockMovementController::class, 'unpost']);
+
     Route::post('/movement/validate', [App\Http\Controllers\StockMovementController::class, 'getValidate']);
     Route::resource('/adjustment', App\Http\Controllers\StockAdjustmentController::class);
     Route::resource('/count-sheet', App\Http\Controllers\CountSheetController::class);
@@ -126,12 +128,6 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
 
 
 Route::get('/setting/suppliers/getdata', [App\Http\Controllers\SuppliersController::class, 'getDataTableData'])->name('getdata');
-
-
-// Route::get('/suppliers', [App\Http\Controllers\SuppliersController::class, 'index'])->name('index');
-// Route::get('/suppliers/create', [App\Http\Controllers\SuppliersController::class, 'create'])->as('supplier.create');
-// Route::get('/suppliers/store', [App\Http\Controllers\SuppliersController::class, 'store'])->name('store');
-
 Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
 
 //Update User Details

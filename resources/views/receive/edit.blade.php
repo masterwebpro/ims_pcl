@@ -28,8 +28,30 @@
                         <span class="badge  fs-16 <?=$rcv->status?> text-uppercase"><?=$rcv->status?></span>
                     </div>
                     <div class="col-md-6 text-end">
-                    <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
-                        <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+
+                        <? if(in_array($rcv->status, array('open', 'new'))) : ?>
+                            <? if (mod_access('rcv',  'add', Auth::id())) : ?>
+                                <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+                            <? endif ;?>
+
+                            <? if (mod_access('rcv',  'post', Auth::id())) : ?>
+                                <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                            <? endif ;?>
+
+                            <? if($rcv->status == 'open') : ?>
+                                <? if (mod_access('rcv',  'delete', Auth::id())) : ?>
+                                    <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
+                                <? endif ;?>
+                            <? endif ;?>
+                           
+                        <? endif;?>
+
+                        <? if(in_array($rcv->status, array('posted', 'closed'))) : ?>
+                            <? if (mod_access('rcv',  'unpost', Auth::id())) : ?>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-po"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                            <? endif ;?>
+                        <? endif;?>
+                        
                         <a href="{{ URL::to('receive') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>            
                 </div>

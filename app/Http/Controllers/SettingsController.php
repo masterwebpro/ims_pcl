@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AvailableItem;
-use App\Models\MasterfileModel;
+use App\Models\MasterdataModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UOM;
@@ -152,7 +152,7 @@ class SettingsController extends Controller
     }
 
     public function getMasterfileData(Request $request) {
-        $result = \App\Models\MasterfileModel::select('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id as old_location_id', 'sl.location as old_location', 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer', DB::raw("SUM(inv_qty) as inv_qty"), DB::raw("SUM(inv_qty) as whse_qty"))
+        $result = \App\Models\MasterfileModel::select('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id as old_location_id', 'sl.location as old_location', 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer','masterfiles.ref1_no','masterfiles.ref1_type', DB::raw("SUM(inv_qty) as inv_qty"), DB::raw("SUM(inv_qty) as whse_qty"))
                 ->where('masterfiles.warehouse_id', $request->warehouse_id)
                 ->having('inv_qty', '>', 0)
                 ->having('whse_qty', '>', 0)
@@ -160,7 +160,7 @@ class SettingsController extends Controller
                 ->leftJoin('storage_locations as sl','sl.storage_location_id','masterfiles.storage_location_id')
                 ->leftJoin('uom as wu','wu.uom_id','masterfiles.whse_uom')
                 ->leftJoin('uom as iu','iu.uom_id','masterfiles.inv_uom')
-                ->groupBy('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level');
+                ->groupBy('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level','masterfiles.ref1_no','masterfiles.ref1_type');
 
         if($request->location) {
             if(isset($request->storage_id)) {
@@ -484,5 +484,116 @@ class SettingsController extends Controller
             }
         $record = $data->get();
         return response()->json($record);
+    }
+    
+    function stockInMasterData() {
+
+    }
+
+    function _stockOutMasterData($company_id, $store_id, $warehouse_id, $storage_location_id, $masterfile_log_data) {
+
+		$insert_data = array();
+
+		foreach($masterfile_log_data as $key => $item) {
+
+			$masterfile_id = $this->_has_masterfile($item);
+
+			if($masterfile_id) {
+                //update MASTERDATA
+
+                // $updateData = DB::table('masterdata')->where('product_id', $params['product_id'])
+                // ->where('company_id', $params['company_id'])
+                // ->where('store_id', $params['store_id'])
+                // ->where('warehouse_id', $params['warehouse_id'])
+                // ->where('product_id', $params['product_id']);
+
+                // if(isset($params['storage_location_id']))
+                //     $updateData->where('storage_location_id', $params['storage_location_id']);
+
+                // if(isset($params['lot_no']))
+                //     $updateData->where('lot_no', $params['lot_no']);
+            
+                // if(isset($params['expiry_date']))
+                //     $updateData->where('expiry_date', $params['expiry_date']);
+
+                // if(isset($params['received_date']))
+                //     $updateData->where('received_date', $params['received_date']);
+
+                // $updateData->update([
+                //     'inv_qty' => $item['inv_qty'],
+                //     'whse_qty' => $item['whse_qty'],
+                // ]);	
+
+               
+                // $result->inv_qty = ($result->inv_qty + $item['inv_qty']);
+                // $result->whse_qty = ($result->whse_qty + $item['whse_qty']);
+
+                // $result->save();
+                
+				
+                // $sql = "update masterfile set 
+				// 		good_qty = (good_qty - ".abs($good_qty)."), 
+				// 	where masterfile_id = ". $masterfile_id;
+
+				// $queryCnt = $this->CI->db->query($sql);
+
+			} else {
+                //insert MASTERDATA
+				$insert_data[] = array(
+					'company_id'=>$item['company_id'],
+					'store_id'=>$item['store_id'],
+                    'warehouse_id'=>$item['warehouse_id'],
+                    'product_id'=>$item['product_id'],
+                    'storage_location_id'=>$item['storage_location_id'],
+                    'item_type'=>$item['item_type'],
+                    'inv_qty'=>$item['inv_qty'],
+                    'inv_uom'=>$item['inv_uom'],
+                    'whse_qty'=>$item['whse_qty'],
+                    'whse_uom'=>$item['whse_uom'],
+                    'expiry_date'=>$item['expiry_date'],
+                    'lot_no'=>$item['lot_no'],
+                    'received_date'=>$item['received_date'],
+                );
+			}
+		}
+
+		if($insert_data) {
+            MasterdataModel::insert($insert_data);
+		}
+	}
+
+    function _has_masterfile($params) {
+        $result = MasterfileModel::select('*');
+                 
+        if(isset($params['company_id']))
+            $result->where('company_id', $params['company_id']);
+        
+        if(isset($params['store_id']))
+            $result->where('store_id', $params['store_id']);
+        
+        if(isset($params['warehouse_id']))
+            $result->where('warehouse_id', $params['warehouse_id']);
+        
+        if(isset($params['product_id']))
+            $result->where('product_id', $params['product_id']);
+        
+        if(isset($params['storage_location_id']))
+            $result->where('storage_location_id', $params['storage_location_id']);
+
+        if(isset($params['lot_no']))
+            $result->where('lot_no', $params['lot_no']);
+    
+        if(isset($params['expiry_date']))
+            $result->where('expiry_date', $params['expiry_date']);
+
+        if(isset($params['received_date']))
+            $result->where('received_date', $params['received_date']);
+
+        $record = $result->get();
+
+        if ($record) 
+            return true;
+        else
+            return false;
     }
 }

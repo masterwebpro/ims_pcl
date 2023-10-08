@@ -145,7 +145,7 @@
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('po') }}/<?=_encode($po->id)?>" data-id="{{$po->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <? if($po->status != 'posted') : ?>
+                                                <? if(in_array($po->status, array('open'))) : ?>
                                                     <a href="{{ URL::to('po') }}/<?=_encode($po->id);?>/edit" data-id="{{$po->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                                 <? endif; ?>
                                         </td>

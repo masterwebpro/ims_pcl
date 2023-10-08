@@ -100,7 +100,6 @@ class StockMovementController extends Controller
         }
 
         DB::connection()->beginTransaction();
-
         try {
             $ref_no = $request->ref_no;
 
@@ -150,6 +149,8 @@ class StockMovementController extends Controller
                     'new_inv_uom'=>$request->new_inv_uom[$x],
                     'new_whse_qty'=>$request->new_inv_qty[$x],
                     'new_whse_uom'=>$request->new_inv_uom[$x],
+                    'ref1_no'=>$request->ref1_no[$x],
+                    'ref1_type'=>$request->ref1_type[$x],
                 );
 
                 // //add on the masterfile new location
@@ -167,6 +168,8 @@ class StockMovementController extends Controller
                     'inv_uom'=>$request->new_inv_uom[$x],
                     'whse_qty'=>$request->new_inv_qty[$x],
                     'whse_uom'=>$request->new_inv_uom[$x],
+                    'ref1_no'=>$request->ref1_no[$x],
+                    'ref1_type'=>$request->ref1_type[$x],
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
@@ -186,6 +189,8 @@ class StockMovementController extends Controller
                     'inv_uom'=>$request->new_inv_uom[$x],
                     'whse_qty'=>($request->new_inv_qty[$x] * -1),
                     'whse_uom'=>$request->new_inv_uom[$x],
+                    'ref1_no'=>$request->ref1_no[$x],
+                    'ref1_type'=>$request->ref1_type[$x],
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
@@ -339,5 +344,108 @@ class StockMovementController extends Controller
             $html .= "<option $sel value='".$loc->storage_location_id."'>".$loc->location."</option>";
         }
         return $html;
+    }
+    public function destroy(Request $request)
+    {
+        DB::connection()->beginTransaction();
+
+        try 
+        {
+            $ref_no = $request->ref_no;
+            if($ref_no) {
+                $mv_hdr = MvHdr::where('ref_no', $ref_no)->delete();
+                $mv_dtl = MvDtl::where('ref_no', $ref_no)->delete();
+
+                  
+                $audit_trail[] = [
+                    'control_no' => $ref_no,
+                    'type' => 'SM',
+                    'status' => 'deleted',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'deleted'
+                ];
+
+                AuditTrail::insert($audit_trail);
+
+                DB::connection()->commit();
+
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'deleted successfully!',
+                    'data'    => $mv_hdr
+                ]);
+
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
+    }
+
+    public function unpost(Request $request)
+    {
+        DB::connection()->beginTransaction();
+
+        try 
+        {
+            $ref_no = $request->ref_no;
+            if($ref_no) {
+                $rcv = MvHdr::where('ref_no', $ref_no)->update(['status'=>'open']);
+               
+                //remove on masterfiles
+                $mster_hdr = MasterfileModel::where('ref_no', $ref_no)->delete();
+
+                 
+                $audit_trail[] = [
+                    'control_no' => $ref_no,
+                    'type' => 'SM',
+                    'status' => 'open',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'unpost'
+                ];
+
+                AuditTrail::insert($audit_trail);
+    
+                DB::connection()->commit();
+
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'Updated successfully!',
+                    'data'    => $rcv
+                ]);
+
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
     }
 }

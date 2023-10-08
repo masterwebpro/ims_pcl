@@ -29,10 +29,17 @@
                             <span class="badge  fs-16 <?=$rcv->status?> text-uppercase"><?=$rcv->status?></span>
                         </div>
                         <div class="col-lg-6 text-end">
-                            <?php  if ($rcv->status == 'open') : ?>
+
+                        <? if(in_array($rcv->status, array('posted'))) : ?>
+                            <? if (mod_access('rcv',  'unpost', Auth::id())) : ?>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                            <? endif ;?>
+                        <? endif;?>
+
+                        <?php  if ($rcv->status == 'open') : ?>
                             <a href="{{ URL::to('receive') }}/<?=_encode($rcv->id)?>/edit" class="btn btn-success btn-label rounded-pill"><i class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i> Edit</a>
-                            <? endif;?>
-                            <a href="{{ URL::to('receive') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
+                        <? endif;?>
+                        <a href="{{ URL::to('receive') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                         </div>
                     </div>                    
                 </div>
