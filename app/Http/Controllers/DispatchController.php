@@ -32,19 +32,25 @@ class DispatchController extends Controller
         $dispatch_list = DispatchHdr::select('dispatch_hdr.*', 'u.name')
         ->withCount('items')
         ->leftJoin('users as u', 'u.id', '=', 'dispatch_hdr.created_by')
-        ->where([
-            [function ($query) use ($request) {
-                if (($s = $request->q)) {
-                    $query->orWhere('dispatch_hdr.dispatch_no','like', '%'.$s.'%');
-                    $query->get();
-                }
-            }]
-        ])->orderByDesc('created_at')
+        ->orderByDesc('created_at')
         ->where([
             [function ($query) use ($request) {
                 if (($s = $request->status)) {
                     if($s != 'all')
                         $query->orWhere('dispatch_hdr.status', $s);
+                }
+
+                if ($request->q) {
+                    $query->where('dispatch_hdr.dispatch_no', $request->q)
+                        ->orWhere('dispatch_hdr.dispatch_by', $request->q)
+                        ->orWhere('dispatch_hdr.trucker_name', $request->q)
+                        ->orWhere('dispatch_hdr.truck_type', $request->q)
+                        ->orWhere('dispatch_hdr.plate_no', $request->q)
+                        ->orWhere('dispatch_hdr.driver', $request->q)
+                        ->orWhere('dispatch_hdr.driver', $request->q)
+                        ->orWhere('dispatch_hdr.contact_no', $request->q)
+                        ->orWhere('dispatch_hdr.helper', $request->q)
+                        ->orWhere('dispatch_hdr.seal_no', $request->q);
                 }
 
                 if ($request->filter_date && $request->dispatch_date) {

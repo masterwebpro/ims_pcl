@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/deliverySlip/{id}', [App\Http\Controllers\DispatchController::class, 'deliveryslip']);
     Route::resource('/pod', App\Http\Controllers\PodController::class);
     Route::post('/upload-attachment', 'App\Http\Controllers\FileUploadController@upload');
+    Route::resource('/expense', App\Http\Controllers\ExpenseController::class);
 
 
 
@@ -52,8 +53,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/product', App\Http\Controllers\ProductController::class);
     Route::resource('/maintenance/attributes', App\Http\Controllers\AttributesController::class);
     Route::resource('/maintenance/trucker', App\Http\Controllers\TruckerController::class);
+    Route::resource('/maintenance/particulars', App\Http\Controllers\ParticularController::class);
 
     Route::resource('/users', App\Http\Controllers\UsersController::class);
+    Route::get('/productTemplate', 'App\Http\Controllers\ProductController@productTemplate');
+    Route::post('/uploadProduct', 'App\Http\Controllers\ProductController@uploadProduct');
 
 });
 
@@ -86,6 +90,11 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/getLocation', [App\Http\Controllers\SettingsController::class, 'getLocation']);
 
+    Route::get('/getAllPostedDO', [App\Http\Controllers\SettingsController::class, 'getAllPostedDo']);
+    Route::get('/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAvailableStocks']);
+    Route::get('/getParticulars', [App\Http\Controllers\SettingsController::class, 'getParticulars']);
+    Route::get('/getAllPostedDispatch', [App\Http\Controllers\SettingsController::class, 'getAllPostedDispatch']);
+
 });
 
 Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
@@ -102,11 +111,12 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-receiving-detailed',[App\Http\Controllers\ReportController::class,'exportReceivingDetailed'])->name('export-receiving-detailed');
     Route::get('/print-receiving-detailed',[App\Http\Controllers\ReportController::class,'printPdfReceivingDetailed'])->name('print-receiving-detailed');
     Route::get('/getStockLedger',[App\Http\Controllers\ReportController::class,'getStockLedger'])->name('getStockLedger');
-    
+
     Route::get('/inventory',[App\Http\Controllers\ReportController::class,'inventory'])->name('report.inventory');
     Route::get('/getInventoryReport',[App\Http\Controllers\ReportController::class,'getInventoryReport'])->name('report.getInventoryReport');
+
     Route::get('/export-inventory',[App\Http\Controllers\ReportController::class,'exportInventory'])->name('exportInventory');
-    
+
     Route::get('/withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailedIndex']);
     Route::get('/get-withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailed']);
     Route::get('/export-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'exportWithdrawalDetailed'])->name('export-withdrawal-detailed');

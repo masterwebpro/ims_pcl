@@ -42,52 +42,69 @@ class WithdrawalController extends Controller
 
     public function index(Request $request)
     {
+        $dateRangeParts = explode(" to ", $request->date);
+        $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
+        $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
+
         $wd_list = WdHdr::select('wd_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name','com.client_name as company_name', 'u.name')
         ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id')
         ->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id')
         ->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.customer_id')
         ->leftJoin('client_list as com', 'com.id', '=', 'wd_hdr.company_id')
         ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
+        ->orderByDesc('wd_hdr.created_at')
         ->where([
-            [function ($query) use ($request) {
-                if (($s = $request->q)) {
-                    $query->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id');
-                    $query->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id');
-                    $query->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.customer_id');
-                    $query->leftJoin('client_list as com', 'c.id', '=', 'wd_hdr.company_id');
-                    $query->orWhere('wd_hdr.order_no','like', '%'.$s.'%');
-                    $query->orWhere('cl.client_name', 'like', '%' . $s . '%');
-                    $query->orWhere('s.store_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('c.client_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('com.client_name', 'LIKE', '%' . $s . '%');
-                    $query->orWhere('wd_hdr.wd_no', 'LIKE', '%' . $s . '%');
-                    $query->get();
-                }
-            }]
-        ])->orderByDesc('created_at')
-        ->where([
-            [function ($query) use ($request) {
+            [function ($query) use ($request, $startDate, $endDate) {
                 if (($s = $request->status)) {
                     if($s != 'all')
                         $query->orWhere('wd_hdr.status', $s);
                 }
 
-                // if ($request->filter_date && $request->po_date) {
-                //     if($request->filter_date == 'po_date') {
-                //         $query->whereBetween('po_hdr.po_date', [$request->po_date." 00:00:00", $request->po_date." 23:59:00"]);
-                //     }
+                if ($request->q) {
+                    $query->where('wd_hdr.wd_no', $request->q);
+                    $query->orWhere('wd_hdr.dr_no', $request->q);
+                    $query->orWhere('wd_hdr.order_no', $request->q);
+                    $query->orWhere('wd_hdr.sales_invoice', $request->q);
+                    $query->orWhere('wd_hdr.po_num', $request->q);
+                    $query->orWhere('wd_hdr.dispatch_no', $request->q);
+                }
+
+                if ($request->filter_date) {
+                    if($request->filter_date == 'withdraw_date') {
+                        $query->whereBetween('wd_hdr.withdraw_date', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+                    }
                     if($request->filter_date == 'created_at') {
-                        $query->whereBetween('wd_hdr.created_at', [$request->withdrawal_date." 00:00:00", $request->withdrawal_date." 23:59:00"]);
+                        $query->whereBetween('wd_hdr.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
                     }
 
-                // }
+                    if($request->filter_date == 'withdraw_date' && $startDate && $endDate)
+                    {
+                        $query->whereBetween('wd_hdr.withdraw_date',[$startDate,$endDate]);
+                    }
 
+                    if($request->filter_date == 'created_at' && $startDate && $endDate)
+                    {
+                        $query->whereBetween('wd_hdr.created_at',[$startDate,$endDate]);
+                    }
+                }
+                if ($request->delivery_to) {
+                    $query->where('wd_hdr.delivery_to_id', $request->delivery_to);
+                }
+
+                if ($request->customer) {
+                    $query->where('wd_hdr.customer_id', $request->customer);
+                }
+
+                if ($request->company) {
+                    $query->where('wd_hdr.company_id', $request->company);
+                }
                 $query->get();
             }]
         ])
         ->paginate(20);
-
-        return view('withdraw/index', ['wd_list'=>$wd_list]);
+        $deliver_list = Client::where('client_type','T')->get();
+        $client_list = Client::where('is_enabled', '1')->get();
+        return view('withdraw/index', ['wd_list'=>$wd_list, 'deliver_list'=> $deliver_list, 'client_list'=> $client_list, 'request'=> $request]);
     }
 
     /**

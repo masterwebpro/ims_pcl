@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Dispatch @endsection
+@section('title') Expense @endsection
 @section('css')
 
 <link rel="stylesheet" href="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.css') }} ">
@@ -8,7 +8,7 @@
 @section('content')
 @component('components.breadcrumb')
 @slot('li_1') Outbound @endslot
-@slot('title') Dispatch @endslot
+@slot('title') Expense @endslot
 @endcomponent
 
 <div class="row">
@@ -16,14 +16,14 @@
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">Dispatch List</h5>
+                    <h5 class="card-title mb-0 flex-grow-1">Expense List</h5>
                     <div class="flex-shrink-0">
-                        <button data-status="open" class="create-dispatch btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Dispatch</button>
+                        <button data-status="open" class="create-expense btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Create Expense</button>
                     </div>
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">
-                <form action="{{ route('dispatch.index') }}" method="GET">
+                <form action="{{ route('expense.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-xxl-4 col-sm-12">
                             <div class="search-box">
@@ -37,7 +37,7 @@
                         <div class="col-xxl-2 col-sm-4">
                             <div class="input-light">
                                 <select class="form-control" name="filter_date" id="filter_date">
-                                    <option value="dispatch_date">Dispatch Date</option>
+                                    <option value="dispatch_date">Expense Date</option>
                                     <option value="created_at">Created Date</option>
                                 </select>
                             </div>
@@ -79,49 +79,35 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="dispatch_no">Dispatch #</th>
-                                <th class="sort" data-sort="dispatch_date">Dispatcher</th>
-                                <th class="sort" data-sort="dispatch_date">Dispatch Date</th>
-                                <th class="sort" data-sort="dispatch_no">Trucker Name </th>
-                                <th class="sort" data-sort="dispatch_no">Truck Type</th>
-                                <th class="sort" data-sort="dispatch_no">Plate No.</th>
-                                <th class="sort" data-sort="dispatch_no">Seal No.</th>
-                                <th class="sort" data-sort="dispatch_no">Driver Name</th>
-                                <th class="sort" data-sort="dispatch_date">Start Loading</th>
-                                <th class="sort" data-sort="dispatch_date">Finish Loading</th>
-                                <th class="sort" data-sort="dispatch_date">Depart Date</th>
-                                <th class="sort" data-sort="wd_count">No. of Withdrawal</th>
-                                <th class="sort" data-sort="wd_count">Created By</th>
-                                <th class="sort" data-sort="wd_count">Created At</th>
+                                <th class="sort" data-sort="expense_no">Expense #</th>
+                                <th class="sort" data-sort="expense_date">Expense Date</th>
+                                <th class="sort" data-sort="plate_no">Plate No.</th>
+                                <th class="sort" data-sort="trucker_name">Trucker Name </th>
+                                <th class="sort" data-sort="truck_type">Truck Type</th>
+                                <th class="sort" data-sort="created_by">Created By</th>
+                                <th class="sort" data-sort="created_at">Created At</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
 
                         <tbody class="list form-check-all">
-                            <? if($dispatch_list->total() > 0 ) : ?>
-                                <? foreach($dispatch_list as $dispatch) :?>
+                            <? if($expense_list->total() > 0 ) : ?>
+                                <? foreach($expense_list as $expense) :?>
                                     <tr>
-                                        <td class="dispatch_no">{{ $dispatch->dispatch_no}}</td>
-                                        <td class="">{{ $dispatch->dispatch_by }}</td>
-                                        <td class="dipatch_date">{{ date('M d, Y',strtotime($dispatch->dispatch_date)) }}</td>
-                                        <td class="">{{ $dispatch->trucker_name }}</td>
-                                        <td class="">{{ $dispatch->truck_type }}</td>
-                                        <td class="">{{ $dispatch->plate_no }}</td>
-                                        <td class="">{{ $dispatch->seal_no }}</td>
-                                        <td class="">{{ $dispatch->driver }}</td>
-                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->start_datetime)) }}</td>
-                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->finish_datetime)) }}</td>
-                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->depart_datetime)) }}</td>
-                                        <td class="">{{ $dispatch->items_count }}</td>
-                                        <td class="">{{ $dispatch->name }}</td>
-                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->created_at)) }}</td>
-                                        <td class="status"><span class="badge {{ $dispatch->status }} text-uppercase fs-11">{{ $dispatch->status }}</span></td>
+                                        <td class="expense_no">{{ $expense->expense_no}}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y',strtotime($expense->expense_date)) }}</td>
+                                        <td class="">{{ $expense->plate_no }}</td>
+                                        <td class="">{{ $expense->trucker_name }}</td>
+                                        <td class="">{{ $expense->vehicle_type }}</td>
+                                        <td class="">{{ $expense->name }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($expense->created_at)) }}</td>
+                                        <td class="status"><span class="badge {{ $expense->status }} text-uppercase fs-11">{{ $expense->status }}</span></td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('dispatch') }}/<?=_encode($dispatch->id)?>" data-id="{{$dispatch->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <? if($dispatch->status != 'posted') : ?>
-                                                    <a href="{{ URL::to('dispatch') }}/<?=_encode($dispatch->id);?>/edit" data-id="{{$dispatch->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                <a href="{{ URL::to('expense') }}/<?=_encode($expense->id)?>" data-id="{{$expense->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <? if($expense->status != 'posted') : ?>
+                                                    <a href="{{ URL::to('expense') }}/<?=_encode($expense->id);?>/edit" data-id="{{$expense->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                                 <? endif; ?>
                                         </td>
                                     </tr>
@@ -142,7 +128,7 @@
                     <!--end table-->
                 </div>
                 <!-- Pagination -->
-                {!! $dispatch_list->withQueryString()->links('pagination::bootstrap-5') !!}
+                {!! $expense_list->withQueryString()->links('pagination::bootstrap-5') !!}
             </div>
             <!--end card-body-->
         </div>
@@ -151,33 +137,6 @@
     <!--end col-->
 </div>
 <!--end row-->
-
-<div class="modal fade" id="show-po" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content">
-            <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabel">Search PO Number</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-md-12 form-group">
-                        <input type="text" class="form-control" dir="ltr" spellcheck=false autocomplete="off" autocapitalize="off" name="po_num_holder" id="po_num_holder" value="" placeholder="Enter PO Number">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="hstack gap-2 justify-content-end">
-                    <button type="button" class="btn btn-success" id="do-po-btn">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 	@endsection
 @section('script')
 
@@ -188,7 +147,7 @@
  <!-- autocomplete js -->
  <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
 
-<script src="{{ URL::asset('/assets/js/dispatch/dispatch.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/expense/expense.js') }}"></script>
 
 
 

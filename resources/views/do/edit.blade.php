@@ -57,24 +57,24 @@
                         <div class="col-lg-12">
                             <div class="card-body p-4 ">
                                 <div class="row g-3">
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Customer Name <span
                                                 class="text-danger">*</span></h6>
                                         <input type="hidden" name="do_no" id="do_no" value="{{ $do->do_no }}" />
                                         <p class="fw-medium mb-2" id="shipping-name">
-                                            <select class="form-select select2" required="required" id="client"
-                                                name="client">
-                                                <option value="">Select Client</option>
+                                            <select class="form-select select2" required="required" id="customer"
+                                                name="customer">
+                                                <option value="">Select Customer</option>
                                                 <? foreach($client_list as $client) : ?>
-                                                <option value="<?= $client->id ?>" <?=($client->id == $do->client_id) ? 'selected' : '' ?>><?= $client->client_name ?>
+                                                <option value="<?= $client->id ?>" <?=($client->id == $do->customer_id) ? 'selected' : '' ?>><?= $client->client_name ?>
                                                 </option>
                                                 <? endforeach;?>
                                             </select>
-                                            <span class="text-danger error-msg client_error"></span>
+                                            <span class="text-danger error-msg customer_error"></span>
                                         </p>
                                     </div>
 
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <h6 class="text-muted text-uppercase fw-semibold mb-3">Deliver To <span
                                                 class="text-danger">*</span></h6>
                                         <p class="fw-medium mb-2" id="billing-name">
@@ -92,14 +92,29 @@
                                             <p class="text-muted mb-0">client_city province, country here</p> -->
                                     </div>
                                     <!--end col-->
-                                    <div class="col-4">
-                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse / Store Address
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Company <span
+                                            class="text-danger">*</span></h6>
+                                    <p class="fw-medium mb-2" id="billing-name">
+                                        <select class="form-select select2" id="company" name="company">
+                                            <option value="">Select Company</option>
+                                            <? foreach($company_list as $company) : ?>
+                                                <? if($company->client_type == 'O') : ?>
+                                                    <option value="<?=$company->id?>"  <?=($do->company_id == $company->id) ? 'selected': ''?> ><?=$company->client_name?></option>
+                                                <? endif;?>
+                                            <? endforeach;?>
+                                        </select>
+                                        </p>
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-3">
+                                        <h6 class="text-muted text-uppercase fw-semibold mb-3">Site
                                             <span class="text-danger">*</span>
                                         </h6>
                                         <p class="fw-medium mb-2" id="shipping-name">
                                             <select class="form-select select2" required="required" id="store"
                                                 name="store">
-                                                <option value="">Select Store/Warehouse</option>
+                                                <option value="">Select Site</option>
                                                 <? foreach($store_list as $store) : ?>
                                                 <option value="<?= $store->id ?>" <?=($store->id == $do->store_id) ? 'selected' : '' ?>><?= $store->store_name ?></option>
                                                 <? endforeach;?>
@@ -332,12 +347,8 @@
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
                                                     {{-- <th scope="col">Item Type</th> --}}
-                                                    <th scope="col">WHSE Qty</th>
-                                                    <th scope="col">WHSE UOM</th>
-                                                    <th scope="col">Inv Qty</th>
-                                                    <th scope="col">Inv UOM</th>
-                                                    {{-- <th scope="col">Lot/Batch #</th> --}}
-                                                    {{-- <th scope="col">Expiry Date</th> --}}
+                                                    <th scope="col">Order Quantity</th>
+                                                    <th scope="col" class="text-center">Unit</th>
                                                     <th scope="col" class="text-center">Action</th>
                                                 </tr>
                                             </thead>
@@ -351,31 +362,16 @@
                                                     <tr id="product_{{$item->product_id}}">
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
+                                                            <input type="hidden" name="inv_uom[]" readonly id="inv_uom{{$x}}" value="{{$item->inv_uom}}" />
                                                         {{$x++}} </td>
                                                         <td class="text-start fs-14">
                                                             {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                         </td>
-                                                        <td class=" ps-1">
-                                                            <input type="text"    class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
-                                                        </td>
-                                                        <td class=" ps-1">
-                                                           <select name="whse_uom[]"   id="whse_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom_whse)
-                                                                <option value="{{$uom_whse->uom_id}}" <?=($uom_whse->uom_id == $item->whse_uom) ? 'selected': ''; ?> >{{$uom_whse->code}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
                                                         <td class="ps-1">
-                                                            <input type="text"  class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                            <input type="text"  class="form-control inv_qty numeric uom_select w-100" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                         </td>
-                                                        <td class=" ps-1">
-                                                            <select name="inv_uom[]"    id="inv_uom_{{$x}}" class="uom uom_select form-select">
-                                                                <option value="">Select UOM</option>
-                                                                @foreach($uom_list as $uom)
-                                                                <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
-                                                                @endforeach
-                                                            </select>
+                                                        <td class="text-center ps-1">
+                                                            {{ ($item->unit) ? $item->unit->code : "" }}
                                                         </td>
                                                         <td>
                                                             <div class="text-center">
@@ -430,8 +426,8 @@
                                 <th>&nbsp;</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
-                                <th>Product SKU</th>
                                 <th>Available Stocks</th>
+                                <th>Unit</th>
                             </tr>
                         </thead>
                         <tbody>

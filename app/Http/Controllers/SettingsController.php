@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AvailableItem;
+use App\Models\MasterfileModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UOM;
@@ -170,7 +171,7 @@ class SettingsController extends Controller
         } else {
             $result->where('masterfiles.storage_location_id', null);
         }
-            
+
         if($request->client_id)
             $result->where('company_id', $request->client_id);
 
@@ -180,7 +181,7 @@ class SettingsController extends Controller
         if($request->rcv_no) {
             $result->where('masterfiles.ref_no', $request->rcv_no);
         }
-            
+
 
         $record = $result->get();
         return response()->json($record);
@@ -203,32 +204,67 @@ class SettingsController extends Controller
 
 
     public function getAvailableItem(Request $request) {
-        $result = AvailableItem::where('status','X')
+        $result = MasterfileModel::select(
+                        'masterfiles.product_id',
+                        'client_name',
+                        'store_name',
+                        'w.warehouse_name',
+                        'product_code',
+                        'product_name',
+                        'sl.location',
+                        'masterfiles.whse_uom',
+                        'masterfiles.inv_uom',
+                        'masterfiles.item_type',
+                        'masterfiles.status',
+                        'uw.code as uw_code',
+                        'ui.code as ui_code',
+                        DB::raw('SUM(inv_qty) as inv_qty'),
+                        DB::raw('SUM(whse_qty) as whse_qty')
+                    )
+                    ->leftJoin('products as p','p.product_id','=','masterfiles.product_id')
+                    ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterfiles.storage_location_id')
+                    ->leftJoin('client_list as cl','cl.id','=','masterfiles.company_id')
+                    ->leftJoin('store_list as s','s.id','=','masterfiles.store_id')
+                    ->leftJoin('warehouses as w','w.id','=','masterfiles.warehouse_id')
+                    ->leftJoin('uom as uw','uw.uom_id','=','masterfiles.whse_uom')
+                    ->leftJoin('uom as ui','ui.uom_id','=','masterfiles.inv_uom')
+                    ->where('masterfiles.status','X')
+                    ->groupBy([
+                        'client_name',
+                        'store_name',
+                        'w.warehouse_name',
+                        'product_name',
+                        'sl.location',
+                        'masterfiles.item_type',
+                        'masterfiles.status',
+                        'masterfiles.whse_uom',
+                        'masterfiles.inv_uom'
+                    ])
+                    ->having('inv_qty','>', 0)
                     ->orderBy('product_name','ASC')
-                    ->orderBy('date_received','ASC');
-
+                    ->orderBy('sl.location','ASC');
         if(isset($request->master_id)){
-            $result->whereNotIN('masterfile_id', json_decode($request->master_id));
+            $result->whereNotIN('masterfiles.masterfile_id', json_decode($request->master_id));
         }
 
         if($request->company_id > 0){
-            $result->where('company_id', $request->company_id);
+            $result->where('masterfiles.company_id', $request->company_id);
         }
 
         if(isset($request->warehouse_id)){
-            $result->where('warehouse_id', $request->warehouse_id);
+            $result->where('masterfiles.warehouse_id', $request->warehouse_id);
         }
 
         if($request->customer_id > 0){
-            $result->where('customer_id', $request->customer_id);
+            $result->where('masterfiles.customer_id', $request->customer_id);
         }
 
         if($request->store_id > 0){
-            $result->where('store_id', $request->store_id);
+            $result->where('masterfiles.store_id', $request->store_id);
         }
 
         if($request->item_type){
-            $result->where('item_type', $request->item_type);
+            $result->where('masterfiles.item_type', $request->item_type);
         }
 
         if(isset($request->product)){
@@ -239,13 +275,7 @@ class SettingsController extends Controller
                 ->orwhere('product_sku','like',$keyword);
             });
         }
-
         $record = $result->get();
-        $record = collect($record)
-                    ->map(function($val){
-                    $val['date_received'] = date('M d, Y',strtotime($val['date_received']));
-                    return $val;
-                    })->values()->all();
         return response()->json($record);
     }
 
@@ -282,6 +312,7 @@ class SettingsController extends Controller
                     )
                     ->leftJoin('client_list as cl','cl.id','wd_hdr.customer_id')
                     ->leftJoin('client_list as del','del.id','wd_hdr.deliver_to_id')
+                    ->where('wd_hdr.status','posted')
                     ->whereNull('dispatch_no')
                     ->orderBy('wd_hdr.order_date','ASC');
                     if(isset($request->keyword)){
@@ -350,5 +381,108 @@ class SettingsController extends Controller
     function getLocation(Request $request) {
         $data = \App\Models\StorageLocationModel::where('warehouse_id', $request->warehouse_id)->where('is_enabled', 1)->get();
         return response()->json($data);
+    }
+
+    function getAllPostedDo(Request $request) {
+        $data = \App\Models\DoHdr::select('do_hdr.id','do_no','order_no', 'order_date', 'del.client_name as deliver_to', 'cx.client_name as customer_name', 'cm.client_name as company_name', 'u.name as created_by', 'do_hdr.created_at' )
+        ->where('do_hdr.status', 'posted')
+        ->leftJoin('client_list as del','del.id','do_hdr.deliver_to_id')
+        ->leftJoin('client_list as cx','cx.id','do_hdr.customer_id')
+        ->leftJoin('client_list as cm','cm.id','do_hdr.company_id')
+        ->leftJoin('store_list as sl','sl.id','do_hdr.store_id')
+        ->leftJoin('users as u','u.id','do_hdr.created_by')
+        ->get();
+        return Datatables::of($data)->addIndexColumn()->make();
+    }
+
+    public function getAvailableStocks(Request $request) {
+        $result = MasterfileModel::select(
+                        'masterfiles.product_id',
+                        'client_name',
+                        'store_name',
+                        'w.warehouse_name',
+                        'product_code',
+                        'product_name',
+                        'sl.location',
+                        'masterfiles.whse_uom',
+                        'masterfiles.inv_uom',
+                        'masterfiles.item_type',
+                        'masterfiles.status',
+                        'uw.code as uw_code',
+                        'ui.code as ui_code',
+                        DB::raw('SUM(inv_qty) as inv_qty'),
+                        DB::raw('SUM(whse_qty) as whse_qty')
+                    )
+                    ->leftJoin('products as p','p.product_id','=','masterfiles.product_id')
+                    ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterfiles.storage_location_id')
+                    ->leftJoin('client_list as cl','cl.id','=','masterfiles.company_id')
+                    ->leftJoin('store_list as s','s.id','=','masterfiles.store_id')
+                    ->leftJoin('warehouses as w','w.id','=','masterfiles.warehouse_id')
+                    ->leftJoin('uom as uw','uw.uom_id','=','masterfiles.whse_uom')
+                    ->leftJoin('uom as ui','ui.uom_id','=','masterfiles.inv_uom')
+                    ->where('masterfiles.status','X')
+                    ->groupBy([
+                        'client_name',
+                        'store_name',
+                        'product_name',
+                        'masterfiles.item_type',
+                        'masterfiles.status',
+                        'masterfiles.whse_uom',
+                        'masterfiles.inv_uom'
+                    ])
+                    ->having('inv_qty','>', 0)
+                    ->orderBy('product_name','ASC')
+                    ->orderBy('sl.location','ASC');
+        if(isset($request->master_id)){
+            $result->whereNotIN('masterfiles.masterfile_id', json_decode($request->master_id));
+        }
+
+        if($request->company_id > 0){
+            $result->where('masterfiles.company_id', $request->company_id);
+        }
+
+        if(isset($request->warehouse_id)){
+            $result->where('masterfiles.warehouse_id', $request->warehouse_id);
+        }
+
+        if($request->customer_id > 0){
+            $result->where('masterfiles.customer_id', $request->customer_id);
+        }
+
+        if($request->store_id > 0){
+            $result->where('masterfiles.store_id', $request->store_id);
+        }
+
+        if($request->item_type){
+            $result->where('masterfiles.item_type', $request->item_type);
+        }
+
+        if(isset($request->product)){
+            $keyword = '%'.$request->product.'%';
+            $result->where(function($cond)use($keyword){
+                $cond->where('product_code','like',$keyword)
+                ->orwhere('product_name','like',$keyword)
+                ->orwhere('product_sku','like',$keyword);
+            });
+        }
+        $record = $result->get();
+        return response()->json($record);
+    }
+
+    function getParticulars(Request $request) {
+        $data = \App\Models\Particular::get();
+        return response()->json($data);
+    }
+
+    function getAllPostedDispatch(Request $request) {
+        $data = \App\Models\DispatchHdr::select('id','dispatch_no','dispatch_date')->where('status', 'posted');
+            if(isset($request->dispatch_no)){
+                $data->whereNotIN('dispatch_no', json_decode($request->dispatch_no));
+            }
+            if(isset($request->plate_no)){
+                $data->where('plate_no', $request->plate_no);
+            }
+        $record = $data->get();
+        return response()->json($record);
     }
 }

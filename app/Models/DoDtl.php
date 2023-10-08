@@ -26,4 +26,9 @@ class DoDtl extends Model
     {
         return $this->belongsTo(UOM::class, 'uom_id', 'uom_id');
     }
+
+    public function unit()
+    {
+        return $this->belongsTo(UOM::class, 'inv_uom', 'uom_id');
+    }
 }

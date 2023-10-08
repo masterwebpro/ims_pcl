@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductTemplate;
 use App\Http\Controllers\Controller;
+use App\Imports\ProductUpload;
 use App\Models\Attributes;
 use App\Models\Brand;
 use App\Models\Category;
@@ -18,7 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
+use Maatwebsite\Excel\Facades\Excel;
 class ProductController extends Controller
 {
     /**
@@ -83,23 +85,25 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // return $request->all();
-        DB::connection()->beginTransaction();
         $validator = Validator::make($request->all(), [
-            // 'product_code' => 'required',
+            'supplier_id' => 'required',
             'product_name' => 'required',
-            'supplier_id' => 'required'
+            'uom_id' => 'required|present',
+            'category_id' => 'required',
+            'category_brand_id' => 'required',
         ], [
             'supplier_id' => 'Supplier is required',
             // 'product_code' => 'Product code  is required',
-            'product_name' => 'Product name  is required'
+            'product_name' => 'Product name  is required',
+            'uom_id' => 'Unit of measure is required',
+            'category_id' => 'Category is required',
+            'category_brand_id' => 'Brand is required',
         ]);
 
         if ($validator->fails()) {
-            foreach($validator->errors()->toArray() as $error){
-                return response()->json(["status" => false, "message" => $error[0]],200);
-            }
+            return response()->json(['errors' => $validator->errors()]);
         }
-
+        DB::connection()->beginTransaction();
         try {
             $product = Products::updateOrCreate(['product_id' => $request->product_id], [
                 'product_code'=> isset($request->product_code) ? $request->product_code : "TEMP_CODE",
@@ -109,8 +113,8 @@ class ProductController extends Controller
                 'supplier_id'=>$request->supplier_id,
                 'category_brand_id'=>$request->category_brand_id,
                 'created_by' => Auth::user()->id,
-                'is_enabled'=>$request->is_enabled,
-                'is_serialize'=>$request->is_serialize,
+                'is_enabled'=> isset($request->is_enabled) ? 1 : 0,
+                'is_serialize'=>isset($request->is_serialize) ? 1 : 0,
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
@@ -272,5 +276,134 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function productTemplate()
+    {
+        $supplier_list = Supplier::select('supplier_code','supplier_name')->get()->toArray();
+        $supplier[] = ['SUPPLIER CODE', 'SUPPLIER NAME'];
+        foreach ($supplier_list as $key => $value){
+            $supplier[] = [$value['supplier_code'],$value['supplier_name']];
+        }
+        $category_brand[] = ['CATEGORY','BRAND'];
+        $category_list = CategoryBrand::select('cat.category_name as category','br.brand_name as brand')
+                        ->leftJoin('categories as cat','cat.category_id','category_brands.category_id')
+                        ->leftJoin('brands as br','br.brand_id','category_brands.brand_id')
+                        ->get()->toArray();
+        foreach ($category_list as $key => $value){
+            $category_brand[] = [$value['category'],$value['brand']];
+        }
+
+        $unit[] = ['CODE','NAME'];
+        $unit_list = UOM::select('code','uom_desc as name')->get()->toArray();
+        foreach ($unit_list as $key => $value){
+            $unit[] = [$value['code'],$value['name']];
+        }
+        $data = [
+            'header' => [['SUPPLIER CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT']],
+            'supplier' => $supplier,
+            'category_brand' => $category_brand,
+            'unit' => $unit
+        ];
+        return Excel::download(new ProductTemplate($data), 'product_template.xlsx');
+    }
+
+    public function uploadProduct(Request $request){
+        $validator = Validator::make($request->all(), [
+            'excel_file' => 'required|mimes:xlsx'
+        ],['excel_file' => 'Excel file is required']);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+        DB::connection()->beginTransaction();
+
+        if ($request->hasFile('excel_file')) {
+            try {
+                $import = new ProductUpload;
+                $data = Excel::toCollection($import, $request->file('excel_file'));
+                if(isset($data[0]))
+                {
+                    $prod_data = $data[0];
+                    $header =  $data[0][0];
+                    $valid_header = ['SUPPLIER CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT'];
+                    foreach($header as $val){
+                        if(!in_array($val,$valid_header)){
+                            return response()->json(['status' => false, 'message' => 'File upload failed, Invalid header format. Please download the correct template.']);
+                        }
+                    }
+                    if(count($prod_data) > 1){
+                        $xdata = [];
+                        $rows = 2;
+                        for($i=1;$i< count($prod_data);$i++){
+                            if(isset($prod_data[$i][0]) && isset($prod_data[$i][1]) && isset($prod_data[$i][2]) && isset($prod_data[$i][3]) && isset($prod_data[$i][4])){
+                                $supplier   =     Supplier::select('id')->where('supplier_code',$prod_data[$i][0])->orWhere('supplier_name',$prod_data[$i][0])->first();
+                                $category   =     CategoryBrand::select('category_brands.*')
+                                                ->leftJoin('categories as cat','cat.category_id','category_brands.category_id')
+                                                ->leftJoin('brands as br','br.brand_id','category_brands.brand_id')
+                                                ->where('category_name',$prod_data[$i][2])
+                                                ->where('brand_name',$prod_data[$i][3])
+                                                ->first();
+
+                                $xdata[$i]['is_enabled'] = 1;
+                                $xdata[$i]['is_serialize'] = 0;
+
+                                $uom = UOM::select('uom_id','code','uom_desc as name')->where('code',$prod_data[$i][4])->orWhere('uom_desc',$prod_data[$i][4])->first();
+                                if($supplier){
+                                    $xdata[$i]['supplier_id'] = $supplier['id'];
+                                }
+                                else{
+                                    return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} supplier name is not found."]);
+                                }
+                                if(isset($prod_data[$i][1])){
+                                    $xdata[$i]['product_name'] = $prod_data[$i][1];
+                                }
+                                else{
+                                    return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} product name is required."]);
+                                }
+                                if($category)
+                                {
+                                    $xdata[$i]['category_brand_id'] = $category['category_brand_id'];
+                                    $xdata[$i]['category'] = $prod_data[$i][2];
+                                    $xdata[$i]['category_id'] = $category['category_id'];
+                                }
+                                else{
+                                    return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} category brand not found."]);
+                                }
+                                if($uom)
+                                {
+                                    $xdata[$i]['uom_id'][] = $uom['uom_id'];
+                                }else{
+                                    return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} unit of measure not found."]);
+                                }
+
+                            }else{
+                                return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} all header must have value."]);
+                            }
+                            $rows++;
+                        }
+
+                        foreach($xdata as $item){
+                            $request = new Request($item);
+                            $this->store($request);
+                        }
+                        DB::commit();
+                        return response()->json(['status' => true, 'message' => 'File uploaded successfully']);
+                    }
+                    else{
+                        return response()->json(['status' => false, 'message' => 'File upload failed, No data to be uploaded.']);
+                    }
+                }
+                else{
+                    return response()->json(['status' => false, 'message' => 'File upload failed, No data to be uploaded.']);
+                }
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw $th;
+            }
+    }else{
+            return response()->json(['message' => 'File upload failed'], 400);
+        }
+
     }
 }
