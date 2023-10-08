@@ -300,7 +300,11 @@ class ProductController extends Controller
             $unit[] = [$value['code'],$value['name']];
         }
         $data = [
-            'header' => [['SUPPLIER CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT']],
+            'header' => [
+                ['SUPPLIER CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT'],
+                ['TAMSONS-S', 'FUIDMASTER 507A Flush Valve 2', 'Tampsons','FLUIDMASTER','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
+                ['T-ACCU-001', '5 STAR PNEUMATIC DOOR CLOSER - BRONZE', 'SBMCI','BARS','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
+            ],
             'supplier' => $supplier,
             'category_brand' => $category_brand,
             'unit' => $unit
@@ -388,7 +392,10 @@ class ProductController extends Controller
                             $this->store($request);
                         }
                         DB::commit();
-                        return response()->json(['status' => true, 'message' => 'File uploaded successfully']);
+                        return response()->json([
+                            'success'  => true,
+                            'message' => 'File uploaded successfully!'
+                        ]);
                     }
                     else{
                         return response()->json(['status' => false, 'message' => 'File upload failed, No data to be uploaded.']);
