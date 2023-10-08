@@ -305,7 +305,7 @@
                                     <table class="table table-nowrap" id="product-list">
                                         <thead>
                                             <tr class="table-active">
-                                                <th scope="col"  style="width: 10px;">#</th>
+                                                <th scope="col" class="d-none"  style="width: 10px;">#</th>
                                                 <th scope="col" >Product</th>
                                                 <th scope="col" >Item Type</th>
                                                 <th scope="col" >WHSE Qty</th>
