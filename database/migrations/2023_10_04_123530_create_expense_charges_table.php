@@ -13,15 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('expense_hdr', function (Blueprint $table) {
+        Schema::create('expense_charges', function (Blueprint $table) {
             $table->id();
             $table->string('expense_no',15)->index();
-            $table->date('expense_date');
-            $table->string('plate_no');
-            $table->dateTime('posted_date');
-            $table->bigInteger('posted_by')->nullable();
-            $table->string('status')->index()->comment('open, posted');
-            $table->bigInteger('created_by');
+            $table->string('particular')->nullable();
+            $table->decimal('amount',12,2)->default(0);
             $table->timestamps();
         });
     }
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('expense_hdr');
+        Schema::dropIfExists('expense_charges');
     }
 };

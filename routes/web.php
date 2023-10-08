@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/deliverySlip/{id}', [App\Http\Controllers\DispatchController::class, 'deliveryslip']);
     Route::resource('/pod', App\Http\Controllers\PodController::class);
     Route::post('/upload-attachment', 'App\Http\Controllers\FileUploadController@upload');
+    Route::resource('/expense', App\Http\Controllers\ExpenseController::class);
 
 
 
@@ -55,6 +56,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/particulars', App\Http\Controllers\ParticularController::class);
 
     Route::resource('/users', App\Http\Controllers\UsersController::class);
+    Route::get('/productTemplate', 'App\Http\Controllers\ProductController@productTemplate');
+    Route::post('/uploadProduct', 'App\Http\Controllers\ProductController@uploadProduct');
 
 });
 
@@ -89,6 +92,8 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/getAllPostedDO', [App\Http\Controllers\SettingsController::class, 'getAllPostedDo']);
     Route::get('/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAvailableStocks']);
+    Route::get('/getParticulars', [App\Http\Controllers\SettingsController::class, 'getParticulars']);
+    Route::get('/getAllPostedDispatch', [App\Http\Controllers\SettingsController::class, 'getAllPostedDispatch']);
 
 });
 

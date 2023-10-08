@@ -31,6 +31,7 @@
                     <h4 class="card-title mb-0 flex-grow-1">Create Product</h4>
                     <div class="flex-shrink-0">
                         <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
+                            <button type="button" class="btn btn-success btn-label rounded-pill submit-product"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
                             <a href="{{ URL::to('maintenance/product') }}"
                                 class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -39,285 +40,143 @@
                     </div>
                 </div><!-- end card header -->
                 <div class="card-body">
-                    <form method="POST" name="form-supplier" action="javascript:void(0);" id="form-product" class="form-steps" autocomplete="off">
-                        <div class="step-arrow-nav mb-4">
-                            <ul class="nav nav-pills custom-nav nav-justified" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="steparrow-gen-info-tab" data-bs-toggle="pill"
-                                        data-bs-target="#steparrow-gen-info" type="button" role="tab"
-                                        aria-controls="steparrow-gen-info" aria-selected="true">General</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="steparrow-attributes-info-tab" data-bs-toggle="pill" disabled
-                                        data-bs-target="#steparrow-attributes-info" type="button" role="tab"
-                                        aria-controls="steparrow-attributes-info" aria-selected="false">Attributes</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="steparrow-pricing-info-tab" data-bs-toggle="pill" disabled
-                                        data-bs-target="#steparrow-pricing-info" type="button" role="tab"
-                                        aria-controls="steparrow-pricing-info" aria-selected="false">Pricing</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="steparrow-unit-info-tab" data-bs-toggle="pill" disabled
-                                        data-bs-target="#steparrow-unit-info" type="button" role="tab"
-                                        aria-controls="steparrow-unit-info" aria-selected="false">Unit of Measure</button>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="tab-content">
-                            <div class="tab-pane show active" id="steparrow-gen-info" role="tabpanel"
-                                aria-labelledby="steparrow-gen-info-tab">
-                                <div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="supplier_id" class="form-label">Supplier
-                                                        Name <span class="text-danger">*</span></label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <select class="form-control select2" name="supplier_id"
-                                                        id="supplier_id">
-                                                        <option value="">Select Supplier Name
-                                                        </option>
-                                                        <? foreach($supplier_list as $supplier) : ?>
-                                                        <option value="<?= $supplier->id ?>">
-                                                            <?= $supplier->supplier_name ?></option>
-                                                        <? endforeach;?>
-                                                    </select>
-                                                </div>
-                                            </div>
+                    <form name="submit-product" id="submit-product">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="supplier_id" class="form-label">Supplier
+                                                Name <span class="text-danger">*</span></label>
                                         </div>
-                                        <div class="col-3">
-                                            <div class="form-check form-switch form-switch-primary form-switch-lg"
-                                                dir="ltr">
-                                                <input type="checkbox" class="form-check-input" id="is_serialize"
-                                                    name="is_serialize">
-                                                <label for="is_serialize">Serialize</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="form-check form-switch form-switch-success form-switch-lg"
-                                                dir="ltr">
-                                                <input type="checkbox" class="form-check-input" name="is_enabled"
-                                                    id="is_enabled" checked>
-                                                <label for="is_enabled">Enable</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_name" class="form-label">Product
-                                                        Name
-                                                        <span class="text-danger">*</span></label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="url" class="form-control" id="product_name" required
-                                                        name="product_name" placeholder="Enter Product Name">
-                                                    <div class="invalid-feedback">Please enter product name</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_upc" class="form-label">Product
-                                                        UPC</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="url" class="form-control" id="product_upc"
-                                                        name="product_upc" placeholder="Enter Product UPC">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="category_id" class="form-label">Category
-                                                        <span class="text-danger">*</span></label>
-                                                    </label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="hidden" name="category" id="category">
-                                                    <select class="form-control select2" name="category_id"
-                                                        id="category_id">
-                                                        <option value="">Select Category</option>
-                                                        <? foreach($category as $index => $cat) : ?>
-                                                        <option value="<?= $cat->category_id ?>" data-category="{{ $cat->category_name }}">
-                                                            {{ $cat->category_name }}</option>
-                                                        <? endforeach;?>
-                                                    </select>
-                                                    <div class="invalid-feedback">Please Select Category</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_sku" class="form-label">Product
-                                                        SKU</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="url" class="form-control" id="product_sku"
-                                                        name="product_sku" placeholder="Enter Product SKU">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="brand_id" class="form-label">Brand
-                                                        <span class="text-danger">*</span></label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <select class="form-select select2" required="required"
-                                                        id="brand" name="category_brand_id">
-                                                        <option value="">Select Brand</option>
-                                                    </select>
-                                                    <div class="invalid-feedback">Please Select Brand</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-start gap-3 mt-4">
-                                    <button type="button" class="btn btn-info btn-label right ms-auto nexttab nexttab" id="steparrow-attributes" disabled
-                                        data-nexttab="steparrow-attributes-info-tab"><i
-                                            class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Next</button>
-                                </div>
-                            </div>
-                            <!-- end tab pane -->
-
-                            <div class="tab-pane fade" id="steparrow-attributes-info" role="tabpanel"
-                                aria-labelledby="steparrow-attributes-info-tab">
-                                <div>
-                                    <label for="">List of Attributes</label>
-                                    <div class="row justify-content-center" id="attributes">
-                                        <h5 class="text-danger">No available attributes</h5>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-start gap-3 mt-4">
-                                    <button type="button" class="btn btn-danger btn-label previestab"
-                                        data-previous="steparrow-gen-info-tab"><i
-                                            class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Back to
-                                        General</button>
-                                    <button type="button" class="btn btn-info btn-label right ms-auto nexttab nexttab"
-                                        data-nexttab="steparrow-pricing-info-tab"><i
-                                            class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Next</button>
-                                </div>
-                            </div>
-                            <!-- end tab pane -->
-
-                            <div class="tab-pane fade" id="steparrow-pricing-info" role="tabpanel"
-                                aria-labelledby="steparrow-pricing-info-tab">
-                                <div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_code" class="form-label">Product
-                                                        MSRP</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="text" class="form-control numeric" id="msrp"
-                                                        name="msrp" placeholder="Enter Product MSRP">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_upc" class="form-label">Supplier
-                                                        Price </label></label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="url" class="form-control numeric" id="supplier_price"
-                                                        name="supplier_price" placeholder="Enter Supplier Price">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_name" class="form-label">Product
-                                                        SRP
-                                                        </label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="url" class="form-control numeric" id="product_srp"
-                                                        name="product_srp" placeholder="Enter Product SRP">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row mb-3">
-                                                <div class="col-lg-3">
-                                                    <label for="product_name" class="form-label">Special
-                                                        Price
-                                                        </label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="url" class="form-control numeric" id="special_price"
-                                                        name="special_price" placeholder="Enter Special Price">
-                                                </div>
-                                            </div>
+                                        <div class="col-lg-9">
+                                            <select class="form-control select2" name="supplier_id"
+                                                id="supplier_id">
+                                                <option value="">Select Supplier Name
+                                                </option>
+                                                <? foreach($supplier_list as $supplier) : ?>
+                                                <option value="<?= $supplier->id ?>">
+                                                    <?= $supplier->supplier_name ?></option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg supplier_id_error"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-start gap-3 mt-4">
-                                    <button type="button" class="btn btn-danger btn-label previestab"
-                                        data-previous="steparrow-attributes-info-tab"><i
-                                            class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Back to
-                                        Attributes</button>
-                                    <button type="button" class="btn btn-info btn-label right ms-auto nexttab nexttab" id="steparrow-units"
-                                        data-nexttab="steparrow-unit-info-tab" id="steparrow-unit"><i
-                                            class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Next</button>
+                                <div class="col-3">
+                                    <div class="form-check form-switch form-switch-primary form-switch-lg"
+                                        dir="ltr">
+                                        <input type="checkbox" class="form-check-input" id="is_serialize"
+                                            name="is_serialize">
+                                        <label for="is_serialize">Serialize</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- end tab pane -->
-                            <div class="tab-pane fade" id="steparrow-unit-info" role="tabpanel"
-                                aria-labelledby="steparrow-unit-info-tab">
-                                <div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="row mb-3">
-                                                <div class="form-group">
-                                                    <label for="uom_id" class="form-label">Product UOM <span
-                                                            class="text-danger">*</span></label>
-                                                    <select class="form-control" name="uom_id[]" data-choices
-                                                        data-choices-removeItem multiple id="uom_id">
-                                                        <option value="">Select Unit of Measure </option>
-                                                        <? foreach($uom as $un) : ?>
-                                                        <option value="<?= $un->uom_id ?>"><?= $un->code ?> -
-                                                            <?= $un->uom_desc ?></option>
-                                                        <? endforeach;?>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                <div class="col-3">
+                                    <div class="form-check form-switch form-switch-success form-switch-lg"
+                                        dir="ltr">
+                                        <input type="checkbox" class="form-check-input" name="is_enabled"
+                                            id="is_enabled" checked>
+                                        <label for="is_enabled">Enable</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="product_name" class="form-label">Product
+                                                Name
+                                                <span class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <input type="url" class="form-control" id="product_name" required
+                                                name="product_name" placeholder="Enter Product Name">
+                                            <span class="text-danger error-msg product_name_error"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-start gap-3 mt-4">
-                                    <button type="button" class="btn btn-danger btn-label previestab"
-                                        data-previous="steparrow-pricing-info-tab"><i
-                                            class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Back to
-                                        Pricing</button>
-                                    <button type="button" disabled
-                                        class="btn btn-success btn-label right ms-auto rounded-pill submit-product"><i
-                                            class="ri-check-double-line label-icon align-middle rounded-pill fs-16 ms-2"></i>Save</button>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="product_upc" class="form-label">Product
+                                                UPC</label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <input type="url" class="form-control" id="product_upc"
+                                                name="product_upc" placeholder="Enter Product UPC">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="category_id" class="form-label">Category
+                                                <span class="text-danger">*</span></label>
+                                            </label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <input type="hidden" name="category" id="category">
+                                            <select class="form-control select2" name="category_id"
+                                                id="category_id">
+                                                <option value="">Select Category</option>
+                                                <? foreach($category as $index => $cat) : ?>
+                                                <option value="<?= $cat->category_id ?>" data-category="{{ $cat->category_name }}">
+                                                    {{ $cat->category_name }}</option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg category_id_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="product_sku" class="form-label">Product
+                                                SKU</label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <input type="url" class="form-control" id="product_sku"
+                                                name="product_sku" placeholder="Enter Product SKU">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="brand_id" class="form-label">Brand
+                                                <span class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <select class="form-select select2" required="required"
+                                                id="brand" name="category_brand_id">
+                                                <option value="">Select Brand</option>
+                                            </select>
+                                            <span class="text-danger error-msg category_brand_id_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="uom_id" class="form-label">Product UOM <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <select class="form-control" name="uom_id[]" data-choices
+                                                data-choices-removeItem multiple id="uom_id">
+                                                <option value="">Select Unit of Measure </option>
+                                                <? foreach($uom as $un) : ?>
+                                                <option value="<?= $un->uom_id ?>"><?= $un->code ?> -
+                                                    <?= $un->uom_desc ?></option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg uom_id_error"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- end tab content -->
                     </form>
                 </div>
-                <!-- end card body -->
             </div>
-        <!-- end card -->
     </div>
 @endsection
 @section('script')

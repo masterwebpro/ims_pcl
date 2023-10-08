@@ -193,7 +193,6 @@ function _submitData(form_data) {
         },
         success: function (data) {
             if($.isEmptyObject(data.errors)) {
-                console.log(data.data);
                 if(data.success == true) {
                     if(data.data.status == 'open') {
                         showSuccess(data.message);

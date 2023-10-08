@@ -468,4 +468,21 @@ class SettingsController extends Controller
         $record = $result->get();
         return response()->json($record);
     }
+
+    function getParticulars(Request $request) {
+        $data = \App\Models\Particular::get();
+        return response()->json($data);
+    }
+
+    function getAllPostedDispatch(Request $request) {
+        $data = \App\Models\DispatchHdr::select('id','dispatch_no','dispatch_date')->where('status', 'posted');
+            if(isset($request->dispatch_no)){
+                $data->whereNotIN('dispatch_no', json_decode($request->dispatch_no));
+            }
+            if(isset($request->plate_no)){
+                $data->where('plate_no', $request->plate_no);
+            }
+        $record = $data->get();
+        return response()->json($record);
+    }
 }

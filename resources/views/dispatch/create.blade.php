@@ -54,7 +54,7 @@
                                     <label for="colFormLabel" class="form-label">Plate No <span
                                             class="text-danger">*</span></label>
                                     <select class="form-select select2" required="required" id="plate_no" name="plate_no">
-                                        <option value="">Select Truck Type</option>
+                                        <option value="">Select Plate No</option>
                                         <? foreach($plate_no_list as $plate) : ?>
                                             <option value="<?=$plate->plate_no?>">{{ $plate->plate_no }}</option>
                                         <? endforeach;?>
