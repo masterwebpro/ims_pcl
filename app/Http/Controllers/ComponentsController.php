@@ -48,10 +48,28 @@ class ComponentsController extends Controller
     }
 
 
-    // public function _userModuleAccess($module) {
-    //     $user_module_access = UserModulePermission::where('user_id', Auth::id())->get();
-    //     //session(['module_access' => $user_module_access]);
-    //     dd($user_module_access);
-    //     return $user_module_access;
-    // }
+    public function _userSubMenuAccess() {
+        $user_menu = DB::table('user_menu_access')->select('menu_id')->where('user_id', Auth::id())->get();
+        $main_submenu = [];
+        foreach($user_menu as $menu) {
+            $main_submenu[] = $menu->menu_id;
+        }
+        return $main_submenu;
+    }
+
+    public function _userMenuAccess() {
+        $user_main_menu = DB::table('user_menu_access')->select('menus.id', DB::raw("count(submenus.id) as cnt"))
+            ->leftJoin('submenus', 'submenus.id', '=', 'user_menu_access.menu_id')
+            ->leftJoin('menus', 'menus.id', '=', 'submenus.menu_id')
+            ->where('user_menu_access.user_id', Auth::id())
+            ->groupBy('menus.menu_name')
+            ->get();
+
+        $main_menu = [];
+        foreach($user_main_menu as $menu) {
+            $main_menu[$menu->id][] = $menu->cnt;
+        }
+
+        return $main_menu;
+    }
 }

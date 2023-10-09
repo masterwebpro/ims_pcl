@@ -333,7 +333,7 @@
                                     <table class="table table-nowrap" id="product-list">
                                         <thead>
                                             <tr class="table-active">
-                                                <th style="width: 10px;">#</th>
+                                                <th style="width: 10px;" class="d-none">#</th>
                                                 <th style="width: 300px;">Product</th>
                                                 <th >Classfication</th>
                                                 <th >WHSE Qty</th>
@@ -360,7 +360,7 @@
                                                     $total_inv_qty += $item->inv_qty;
                                                 ?>
                                                 <tr id="product_{{$item->product_id}}">
-                                                    <td class="text-start fs-12">
+                                                    <td class="text-start fs-12 d-none">
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                     {{$x++}} </td>
                                                     <td class="text-start fs-12"> 
@@ -421,7 +421,7 @@
                                             
                                         </tbody>
                                             <tfoot>
-                                                <td colspan='3' class="fw-semibold">Total</td>
+                                                <td colspan='2' class="fw-semibold">Total</td>
                                                 <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_whse_qty" value="{{$total_whse_qty}}" placeholder="0.00" readonly /></td>
                                                 <td class="text-end">&nbsp;</td>
                                                 <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_inv_qty" value="{{$total_inv_qty}}" placeholder="0.00" readonly /></td>

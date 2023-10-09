@@ -69,7 +69,8 @@ $(document).on('click', '#find-items', function() {
 
 $(document).on('click', '.remove-product', function() {
     var id = $(this).data('id');
-    $('#product_'+id).remove();
+    // $('#product_'+id).remove();
+    $(this).closest("tr").remove();
 });
 
 $(document).on('click', '#add-product', function() {
@@ -88,9 +89,9 @@ $(document).on('click', '#add-product', function() {
         btn += '</div>'
 
         $('#product-list tbody').append('<tr id="product_'+uniqueId+'"> \
-        <td class="text-start"> \
+        <td class="text-start d-none"> \
             <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
-        '+rowCount-1+' </td> \
+        '+(rowCount-1)+' </td> \
         <td class="text-start  fs-12"> \
             '+data.product_name+'<br/><small>'+data.product_code+'</small> \
         </td> \
@@ -130,7 +131,7 @@ $(document).on('click', '#add-product', function() {
         <td>'+btn+'</td> \
         </tr>');
 
-        $('#show-items-list tbody tr').removeClass('selected')
+
     }
 
     $('#show-items-list tbody tr').removeClass('selected')

@@ -1,11 +1,4 @@
 @inject('components', 'App\Http\Controllers\ComponentsController')
-<?php
-// $components->_userModuleAccess();
-//    use App\Http\Controllers\ComponentsController;
-//    $component = new ComponentsController;
-   // $all_user_permissions = $component->getPermissionModuleName(Auth::id())->toArray();
-?>
-
 <!-- ========== App Menu ========== -->
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
@@ -39,26 +32,35 @@
         <div class="container-fluid">
             <div id="two-column-menu">
             </div>
+
+            <?
+                $user_menu = $components->_userSubMenuAccess();          
+                $user_main_menu = $components->_userMenuAccess();
+            ?>
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span>@lang('translation.menu')</span></li>
                 @foreach ($components->listsidebar() as $_menu)
                 <li class="nav-item">
                     @if(isset($_menu->submenu_names))
+                    <? if(isset($user_main_menu[$_menu->menu_id])) : ?>
                         <a class="nav-link menu-link" href="#side_menu_{{$_menu->menu_id}}" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="side_menu_{{$_menu->menu_id}}">
                             <i class="{{$_menu->icon}}"></i> <span>{{$_menu->parent_menu}}</span>
                         </a>
                         <div class="collapse menu-dropdown" id="side_menu_{{$_menu->menu_id}}">
                             <ul class="nav nav-sm flex-column">
-                            <?php $_submenu_names = explode(";", $_menu->submenu_names); ?>
-                            @foreach ($_submenu_names as $submenu_name)
-                                <?php $arr_submenu = explode(',', $submenu_name); ?>
-                   
-                            <li class="nav-item">
-                                <a href="{{ URL::to((isset($arr_submenu)) ? $arr_submenu[2] : '') }}" class="nav-link">{{ isset($arr_submenu) ? $arr_submenu[1] : '' }}</a>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                                <?php $_submenu_names = explode(";", $_menu->submenu_names); ?>
+                                @foreach ($_submenu_names as $submenu_name)
+                                    <?php $arr_submenu = explode(',', $submenu_name); ?>
+
+                                <? if( in_array( $arr_submenu[0] ,$user_menu ) ) : ?>
+                                    <li class="nav-item">
+                                        <a href="{{ URL::to((isset($arr_submenu)) ? $arr_submenu[2] : '') }}" class="nav-link">{{ isset($arr_submenu) ? $arr_submenu[1] : '' }}</a>
+                                    </li>
+                                <? endif;?>
+                                @endforeach
+                            </ul>
+                        </div>
+                    <? endif;?>
                     @else
                         <a class="nav-link menu-link" href="#side_menu_{{$_menu->menu_id}}">
                             <i class="{{$_menu->icon}}"></i> <span>{{$_menu->parent_menu}}</span>
