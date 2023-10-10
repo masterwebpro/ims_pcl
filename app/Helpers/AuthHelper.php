@@ -156,3 +156,142 @@ function hasPendingMovement($ref_no, $type) {
         return false;
     }
 }
+
+function _stockInMasterData($masterfile) {
+
+    $insert_data = array();
+
+    foreach($masterfile as $key => $params) {
+
+        $masterfile_id = _has_masterfile($params);
+
+        if($masterfile_id) {
+            //update MASTERDATA
+
+            $updateData = DB::table('masterdata')->where('product_id', $params['product_id'])
+            ->where('company_id', $params['company_id'])
+            ->where('store_id', $params['store_id'])
+            ->where('warehouse_id', $params['warehouse_id'])
+            ->where('product_id', $params['product_id']);
+
+            if(isset($params['storage_location_id']))
+                $updateData->where('storage_location_id', $params['storage_location_id']);
+
+            if(isset($params['lot_no']))
+                $updateData->where('lot_no', $params['lot_no']);
+        
+            if(isset($params['expiry_date']))
+                $updateData->where('expiry_date', $params['expiry_date']);
+
+            if(isset($params['received_date']))
+                $updateData->where('received_date', $params['received_date']);
+            
+            $record = $updateData->first();
+
+            DB::table('masterdata')
+                ->where('id', $record->id)
+                ->update([
+                    'inv_qty' => DB::raw('inv_qty + '.$record->inv_qty),
+                    'whse_qty' => DB::raw('whse_qty + '.$record->whse_qty),
+                ]);
+
+        } else {
+            //insert MASTERDATA
+            $insert_data[] = array(
+                'company_id'=>$params['company_id'],
+                'customer_id'=>$params['customer_id'],
+                'store_id'=>$params['store_id'],
+                'warehouse_id'=>$params['warehouse_id'],
+                'product_id'=>$params['product_id'],
+                'storage_location_id'=>isset($params['storage_location_id']) ? $params['storage_location_id'] : null ,
+                'item_type'=>$params['item_type'],
+                'inv_qty'=>$params['inv_qty'],
+                'inv_uom'=>$params['inv_uom'],
+                'whse_qty'=>$params['whse_qty'],
+                'whse_uom'=>$params['whse_uom'],
+                'expiry_date'=>isset($params['expiry_date']) ? $params['expiry_date'] : null ,
+                'lot_no'=>isset($params['lot_no']) ? $params['lot_no'] : null,
+                'received_date'=>isset($params['received_date']) ? $params['received_date'] : null
+            );
+        }
+    }
+
+    if($insert_data) {
+        DB::table('masterdata')->insert($insert_data);
+    }
+}
+
+function _stockOutMasterData($masterfile) {
+
+    foreach($masterfile as $key => $params) {
+        $masterfile_id = _has_masterfile($params);
+        if($masterfile_id) {
+
+            //search on Master
+            $updateData = DB::table('masterdata')->where('product_id', $params['product_id'])
+                ->where('company_id', $params['company_id'])
+                ->where('store_id', $params['store_id'])
+                ->where('warehouse_id', $params['warehouse_id'])
+                ->where('product_id', $params['product_id']);
+
+            if(isset($params['storage_location_id']))
+                $updateData->where('storage_location_id', $params['storage_location_id']);
+
+            if(isset($params['lot_no']))
+                $updateData->where('lot_no', $params['lot_no']);
+        
+            if(isset($params['expiry_date']))
+                $updateData->where('expiry_date', $params['expiry_date']);
+
+            if(isset($params['received_date']))
+                $updateData->where('received_date', $params['received_date']);
+            
+            $record = $updateData->first();
+            
+            //update MASTERDATA
+            DB::table('masterdata')
+                ->where('id', $record->id)
+                ->update([
+                    'inv_qty' => DB::raw('inv_qty - '.$record->inv_qty),
+                    'whse_qty' => DB::raw('whse_qty - '.$record->whse_qty),
+                ]);
+
+        } 
+    }
+}
+
+function _has_masterfile($params) {
+    $result = DB::table('masterdata')->select('*');
+             
+    if(isset($params['company_id']))
+        $result->where('company_id', $params['company_id']);
+    
+    if(isset($params['store_id']))
+        $result->where('store_id', $params['store_id']);
+    
+    if(isset($params['warehouse_id']))
+        $result->where('warehouse_id', $params['warehouse_id']);
+    
+    if(isset($params['product_id']))
+        $result->where('product_id', $params['product_id']);
+    
+    if(isset($params['storage_location_id']))
+        $result->where('storage_location_id', $params['storage_location_id']);
+
+    if(isset($params['lot_no']))
+        $result->where('lot_no', $params['lot_no']);
+
+    if(isset($params['expiry_date']))
+        $result->where('expiry_date', $params['expiry_date']);
+
+    if(isset($params['received_date']))
+        $result->where('received_date', $params['received_date']);
+
+    $record = $result->get();
+
+    if ($record->count() > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
