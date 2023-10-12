@@ -202,6 +202,7 @@ class ReceiveController extends Controller
             //save on dtl
             $dtl = array();
             $masterfile = [];
+            $masterdata = [];
             for($x=0; $x < count($request->product_id); $x++ ) {
                 $dtl[] = array(
                     'rcv_no'=>$rcv_no,
@@ -240,6 +241,23 @@ class ReceiveController extends Controller
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
+
+                $masterdata[] = array(
+                    'customer_id'=>$request->customer,
+                    'company_id'=>$request->company,
+                    'store_id'=>$request->store,
+                    'warehouse_id'=>$request->warehouse,
+                    'product_id'=>$request->product_id[$x],
+                    'storage_location_id'=>null,
+                    'item_type'=>$request->item_type[$x],
+                    'inv_qty'=>$request->inv_qty[$x],
+                    'inv_uom'=>$request->inv_uom[$x],
+                    'whse_qty'=>$request->whse_qty[$x],
+                    'whse_uom'=>$request->whse_uom[$x],
+                    'expiry_date'=>$request->expiry_date[$x],
+                    'lot_no'=>$request->lot_no[$x],
+                    'received_date'=>date("Y-m-d H:i:s", strtotime($request->date_received)), 
+                );
             }
 
             $result= RcvDtl::where('rcv_no',$rcv_no)->delete();
@@ -263,6 +281,8 @@ class ReceiveController extends Controller
                 //add on the masterfile
                 MasterfileModel::insert($masterfile);
 
+                _stockInMasterData($masterdata);
+
                 $audit_trail[] = [
                     'control_no' => $rcv_no,
                     'type' => 'masterfile',
@@ -272,6 +292,7 @@ class ReceiveController extends Controller
                     'user_id' => Auth::user()->id,
                     'data' => json_encode(array('comment' => 'Location: floor'))
                 ];
+
             }
 
             AuditTrail::insert($audit_trail);
@@ -455,6 +476,30 @@ class ReceiveController extends Controller
             $rcv_no = $request->rcv_no;
             if($rcv_no) {
 
+                //get Rcv Dtl
+                $rcv_dtl = RcvDtl::select('rcv_hdr.store_id','rcv_hdr.company_id','rcv_hdr.customer_id', 'rcv_hdr.date_received', 'rcv_hdr.warehouse_id','rcv_dtl.*')
+                    ->leftJoin('rcv_hdr', 'rcv_hdr.rcv_no', '=', 'rcv_dtl.rcv_no')
+                    ->where('rcv_dtl.rcv_no', $rcv_no)->get();
+                $masterdata = [];
+
+                foreach($rcv_dtl as $dtl) {
+                    $masterdata[] = array(
+                        'customer_id'=>$dtl->customer_id,
+                        'company_id'=>$dtl->company_id,
+                        'store_id'=>$dtl->store_id,
+                        'warehouse_id'=>$dtl->warehouse_id,
+                        'product_id'=>$dtl->product_id,
+                        'storage_location_id'=>null,
+                        'item_type'=>$dtl->item_type,
+                        'inv_qty'=>$dtl->inv_qty,
+                        'inv_uom'=>$dtl->inv_uom,
+                        'whse_qty'=>$dtl->whse_qty,
+                        'whse_uom'=>$dtl->whse_uom,
+                        'expiry_date'=>$dtl->expiry_date,
+                        'lot_no'=>$dtl->lot_no,
+                        'received_date'=>date("Y-m-d", strtotime($dtl->date_received)), 
+                    );
+                }
                 //check if has movement
                 if(hasMovement($rcv_no, 'rcv')) {
                     return response()->json([
@@ -479,6 +524,9 @@ class ReceiveController extends Controller
                         $mv_hdr = MvHdr::where('ref_no', $rcv_no)->delete();
                         $mv_dtl = MvDtl::where('ref_no', $rcv_no)->delete();
 
+                        //deduct on masterdata
+                        _stockOutMasterData($masterdata);
+
                         $audit_trail[] = [
                             'control_no' => $rcv_no,
                             'type' => 'RCV',
@@ -491,7 +539,6 @@ class ReceiveController extends Controller
 
                         AuditTrail::insert($audit_trail);
 
-    
                         DB::connection()->commit();
                         return response()->json([
                             'success'  => true,
