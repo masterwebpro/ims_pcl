@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MasterdataModel extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
     protected $table = 'masterdata';
-    protected $guarded = ['id','updated_at','created_at'];
+    protected $guarded = ['id'];
 }

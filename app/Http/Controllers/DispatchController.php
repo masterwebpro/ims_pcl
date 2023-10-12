@@ -12,6 +12,7 @@ use App\Models\MasterfileModel;
 use App\Models\SeriesModel;
 use App\Models\TruckType;
 use App\Models\AuditTrail;
+use App\Models\MasterdataModel;
 use App\Models\Pod;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
@@ -98,6 +99,7 @@ class DispatchController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request;
         $validator = Validator::make($request->all(), [
             'plate_no' => 'required',
             'dispatch_by' => 'required',
@@ -172,44 +174,74 @@ class DispatchController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
-            $wd_id = WdHdr::where('dispatch_no',$dispatch_no)->pluck('id');
-            WdHdr::whereIN('id',$wd_id)->update(['dispatch_no' => null]);
+            // $wd_id = WdHdr::where('dispatch_no',$dispatch_no)->pluck('id');
+            // WdHdr::whereIN('id',$wd_id)->update(['dispatch_no' => null]);
+            $dispatch_dtl = DispatchDtl::where('dispatch_no',$dispatch_no)->get();
+            foreach ($dispatch_dtl as $key => $dtl){
+                $wd_detail = WdDtl::find($dtl->wd_dtl_id);
+                $wd_detail->update(['dispatch_qty' => $wd_detail->dispatch_qty - $dtl->qty]);
+            }
             DispatchDtl::where('dispatch_no',$dispatch_no)->delete();
-            if(isset($request->wd_no)){
-                for($x=0; $x < count($request->wd_no); $x++ ) {
+            if(isset($request->wd_dtl_id)){
+                $wd_no = array();
+                for($x=0; $x < count($request->wd_dtl_id); $x++ ) {
+                    $wd_no[$request->wd_no[$x]] = $request->wd_no[$x];
                     $dtl = array(
                         'wd_no' => $request->wd_no[$x],
-                        'qty' => $request->wd_qty[$x],
+                        'wd_dtl_id' => $request->wd_dtl_id[$x],
+                        'qty' => $request->dispatch_qty[$x],
                         'dispatch_no'=>$dispatch_no,
                     );
                     $dtl = DispatchDtl::create($dtl);
-                    WdHdr::where('wd_no',$request->wd_no[$x])->update(['dispatch_no' => $dispatch_no]);
+                    $wd_detail = WdDtl::find($request->wd_dtl_id[$x]);
+                    $wd_detail->update(['dispatch_qty' => $request->dispatch_qty[$x]]);
 
                     if($request->status == 'posted'){
-                        $wd_dtl = WdDtl::where('wd_no',$request->wd_no[$x])->get();
-                        foreach($wd_dtl as $wdtl){
-                            $masterData = MasterfileModel::find($wdtl->masterfile_id);
+                        $masterData = MasterdataModel::find($wd_detail->master_id);
+                        if($masterData->inv_qty >= $request->dispatch_qty[$x] && $wd_detail->inv_qty >= $request->dispatch_qty[$x]){
+                            $masterData->update([
+                                'inv_qty' => $masterData->inv_qty - $request->dispatch_qty[$x],
+                                'whse_qty' => $masterData->whse_qty - $request->dispatch_qty[$x]
+                            ]);
                             MasterfileModel::create([
-                                'ref_no'=> $wdtl->wd_no,
+                                'ref_no'=> $wd_detail->wd_no,
                                 'status' => 'R',
                                 'trans_type' => 'WD',
                                 'item_type' => $masterData->item_type,
-                                'date_received' => $masterData->date_received,
-                                'product_id'=>$wdtl->product_id,
+                                'date_received' => isset($masterData->received_date) ? $masterData->received_date : "",
+                                'product_id'=>$wd_detail->product_id,
                                 'storage_location_id'=> $masterData->storage_location_id,
-                                'inv_qty'=> -$wdtl->inv_qty,
-                                'inv_uom'=> $wdtl->inv_uom,
-                                'whse_qty'=> -$wdtl->inv_qty,
-                                'whse_uom'=> $wdtl->inv_uom,
+                                'inv_qty'=> -$request->dispatch_qty[$x],
+                                'inv_uom'=> $wd_detail->inv_uom,
+                                'whse_qty'=> -$request->dispatch_qty[$x],
+                                'whse_uom'=> $wd_detail->inv_uom,
                                 'warehouse_id' => $masterData->warehouse_id,
                                 'customer_id' => $masterData->customer_id,
                                 'company_id' => $masterData->company_id,
-                                'store_id' => $masterData->store_id
+                                'store_id' => $masterData->store_id,
+                                'ref1_no' => $wd_detail->wd_no,
+                                'ref1_type' => 'WD'
                             ]);
                         }
+                        else{
+                            DB::rollBack();
+                            return response()->json([
+                                'success'  => false,
+                                'message' => "Line no {$x} inventory quantity is less than dispatch quantity",
+                            ]);
+                        }
+                    }
+                }
 
-                        Pod::create([
-                            'batch_no' => $request->wd_no[$x],
+                if($request->status == 'posted'){
+                    $wd = array_values($wd_no);
+                    for($w=0; $w < count($wd); $w++ ) {
+                        Pod::updateOrCreate(
+                            [
+                                'batch_no' => $wd[$w],
+                            ],
+                            [
+                            'batch_no' => $wd[$w],
                             'status' => 'dispatch',
                             'dispatch_by' => $request->dispatch_by,
                             'dispatch_date' => $dispatch_date,

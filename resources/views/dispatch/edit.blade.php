@@ -193,9 +193,10 @@
                                             <tr class="table-active">
                                                 <th scope="col" style="width: 10px;">#</th>
                                                 <th scope="col">WD #</th>
-                                                {{-- <th scope="col">Client</th> --}}
                                                 <th scope="col">Deliver To</th>
-                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Product Name</th>
+                                                <th scope="col">Withdraw Quantity</th>
+                                                <th scope="col">Dispatch Quantity</th>
                                                 <th scope="col">Order No.</th>
                                                 <th scope="col">Order Date</th>
                                                 <th scope="col">DR Number</th>
@@ -213,24 +214,34 @@
                                             @if(isset($dispatch->items))
                                                 @foreach($dispatch->items as $item)
                                                 @php
-                                                    $total += $item->qty;
+                                                    $total += $item->wd_qty;
                                                 @endphp
                                                 <tr id="wd_{{$item->wd_no}}">
                                                     <td class="text-start">
+                                                        <input type="hidden" name="wd_dtl_id[]"  value="{{$item->wd_dtl_id}}" />
                                                         <input type="hidden" name="wd_no[]"  value="{{$item->wd_no}}" />
-                                                        <input type="hidden" name="wd_qty[]" value="{{$item->qty}}" />
                                                     {{$x++}} </td>
                                                     <td class="text-start fs-14">
                                                         {{$item->wd_no}}
                                                     </td>
-                                                    {{-- <td class="text-start fs-14">
-                                                        {{$item->client_name}}
-                                                    </td> --}}
                                                     <td class="text-start fs-14">
                                                         {{$item->deliver_to}}
                                                     </td>
+                                                    <td class="text-start fs-14">
+                                                        {{$item->product_name}}
+                                                    </td>
                                                     <td class="ps-1 text-center">
-                                                        {{ number_format($item->qty,2) }}
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control inv_qty numeric w-50" data-id="{{ $x }}" id="inv_qty{{ $x }}" name="wd_qty" value="{{ $item->wd_qty }}" readonly placeholder="Enter Qty" />
+                                                            <span class="input-group-text">{{ $item->unit }}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="ps-1 text-center">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control dispatch_qty numeric w-50" name="dispatch_qty[]" data-id="{{ $x }}" id="dispatch_qty{{ $x }}" value="{{ $item->dispatch_qty }}" placeholder="Enter Qty" />
+                                                            <span class="input-group-text">{{ $item->unit }}</span>
+                                                            <span class="text-danger error-msg dispatch_qty{{ $x }}_error"></span>
+                                                        </div>
                                                     </td>
                                                     <td class="text-start fs-14">
                                                         {{$item->order_no}}
@@ -316,9 +327,11 @@
                                 <tr>
                                     <th>&nbsp;</th>
                                     <th scope="col">WD #</th>
-                                    <th scope="col">Client</th>
+                                    <th scope="col">Customer</th>
                                     <th scope="col">Deliver To</th>
-                                    <th scope="col">No. of Package</th>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Withdraw Quantity</th>
+                                    <th scope="col">Unit</th>
                                     <th scope="col">Order No.</th>
                                     <th scope="col">Order Date</th>
                                     <th scope="col">DR Number</th>

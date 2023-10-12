@@ -81,20 +81,20 @@ function masterfile(){
     var warehouse_id = $('#warehouse').val();
     var product = $('#product').val();
     var item_type = $('#item_type').val();
-    master = document.querySelectorAll('input[name="masterfile_id[]"]');
+    master = document.querySelectorAll('input[name="master_id[]"]');
     var master_id = [];
     master.forEach(input => {
         master_id.push(input.value);
     });
 
     new DataTable("#show-items-list",{
-        order: [[1, 'asc'],[4,'asc']],
+        order: [[1, 'asc'],[5,'asc']],
         paging: true,
         columnDefs : [
-            { targets: [4], className: 'dt-body-right' },
+            { targets: [5], className: 'dt-body-right' },
         ],
         ajax: {
-            url : BASEURL+"settings/available_item",
+            url : BASEURL+"settings/getAvailableStocks",
             data : {
                 company_id : company_id,
                 customer_id : client_id,
@@ -107,15 +107,15 @@ function masterfile(){
             dataSrc:""
         },
         columns: [
-            { data: 'product_id',  visible: false },
+            { data: 'master_id',  visible: false },
             { data: 'product_code' },
             { data: 'product_name' },
-            //{ data: 'date_received' },
+            { data: 'received_date' },
             { data: 'item_type' },
             { data: 'inv_qty' , render: $.fn.dataTable.render.number( ',', '.', 2)},
             { data: 'ui_code' },
-            //{ data: 'lot_no' },
-            //{ data: 'expiry_date' },
+            { data: 'lot_no' },
+            { data: 'expiry_date' },
             { data: 'warehouse_name' },
             { data: 'location' },
         ],
@@ -152,7 +152,7 @@ $(document).on('click', '#add-product', function() {
             $('#product-list tbody').append('<tr id="rows_'+(rowCount-1)+'"> \
             <td class="text-start"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
-                <input type="hidden" name="masterfile_id[]" readonly id="masterfile_id_'+data[x].masterfile_id+'" value="'+data[x].masterfile_id+'" /> \
+                <input type="hidden" name="master_id[]" readonly id="master_id_'+data[x].master_id+'" value="'+data[x].master_id+'" /> \
                 <input type="hidden" name="available_qty[]" readonly id="available_qty_'+data[x].inv_qty+'" value="'+data[x].inv_qty+'" /> \
                 <input type="hidden" name="is_serialize[]" readonly value="'+data[x].is_serialize+'" />\
             '+rowCount+' </td> \
@@ -161,6 +161,9 @@ $(document).on('click', '#add-product', function() {
             </td> \
             <td class="text-center ps-1 fs-13"> \
                 <span class="badge '+ itemType +' text-capitalize">'+data[x].item_type+'</span> \
+            </td> \
+            <td class="text-center  fs-14"> \
+                '+data[x].received_date+'\
             </td> \
             <td class="text-center  fs-14"> \
                 '+data[x].inv_qty.toFixed(2)+'\
@@ -172,6 +175,12 @@ $(document).on('click', '#add-product', function() {
             <td class="text-start  fs-14"> \
                 '+data[x].ui_code+'\
                 <input type="hidden" readonly class="form-control" name="inv_uom[]" data-id="'+data[x].inv_uom+'" id="inv_uom_'+(rowCount-1)+'" value="'+data[x].inv_uom+'"> \
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].lot_no+'\
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].expiry_date+'\
             </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].warehouse_name+'\

@@ -117,7 +117,7 @@
                         {{ number_format($item->inv_qty,2) }}
                     </td>
                     <td class="align-top ps-1">
-                        {{ $item->master->uom->code }}
+                        {{ ($item->uom) ? $item->uom->code : ""}}
                     </td>
                     @if ($item->product->is_serialize == 1)
                     <td class=" ps-1">

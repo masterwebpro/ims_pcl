@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AuditTrail;
 use App\Models\Client;
+use App\Models\MasterdataModel;
 use App\Models\MasterfileModel;
 use App\Models\OrderType;
 use App\Models\SeriesModel;
@@ -245,18 +246,26 @@ class WithdrawalController extends Controller
 
                 if($request->status == 'posted'){
                     $twd_no = $this->generateWdNo("TWD","TWD");
+                    $series[] = [
+                        'series' => $twd_no,
+                        'trans_type' => 'TWD',
+                        'created_at' => $this->current_datetime,
+                        'updated_at' => $this->current_datetime,
+                        'user_id' => Auth::user()->id,
+                    ];
+                    SeriesModel::insert($series);
                 }
 
                 for($x=0; $x < count($request->product_id); $x++ ) {
                     $serial_data = array();
                     if($request->is_serialize[$x] == 1)
                     {
-                        $targetMasterfileId = $request->masterfile_id[$x];
+                        $targetMasterfileId = $request->master_id[$x];
                         $targetProductId = $request->product_id[$x];
 
                         foreach ($serialist as $innerArray) {
                             $filteredItems = array_filter($innerArray, function ($item) use ($targetMasterfileId, $targetProductId) {
-                                return $item->masterfile_id == $targetMasterfileId && $item->product_id == $targetProductId;
+                                return $item->master_id == $targetMasterfileId && $item->product_id == $targetProductId;
                             });
 
                             if (!empty($filteredItems)) {
@@ -267,7 +276,7 @@ class WithdrawalController extends Controller
                     $dtl = array(
                         'wd_no'=>$wd_no,
                         'product_id'=>$request->product_id[$x],
-                        'masterfile_id'=>$request->masterfile_id[$x],
+                        'master_id'=>$request->master_id[$x],
                         'inv_qty'=> ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x],
                         'inv_uom'=>$request->inv_uom[$x],
                         'created_at'=>$this->current_datetime,
@@ -303,21 +312,14 @@ class WithdrawalController extends Controller
                     }
 
                     if($request->status == 'posted'){
-                        $masterData = MasterfileModel::find($request->masterfile_id[$x]);
+                        $masterData = MasterdataModel::find($request->master_id[$x]);
                         $inv_qty = ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x];
-                        $series[] = [
-                            'series' => $twd_no,
-                            'trans_type' => 'TWD',
-                            'created_at' => $this->current_datetime,
-                            'updated_at' => $this->current_datetime,
-                            'user_id' => Auth::user()->id,
-                        ];
-                        SeriesModel::insert($series);
+
                         MasterfileModel::create([
                             'ref_no'=> $twd_no,
                             'status' => 'X',
                             'trans_type' => 'WD',
-                            'date_received' => $masterData->date_received,
+                            'date_received' => isset($masterData->received_date) ? $masterData->received_date : "",
                             'item_type' => $masterData->item_type,
                             'product_id'=>$request->product_id[$x],
                             'storage_location_id'=> $masterData->storage_location_id,
@@ -328,14 +330,16 @@ class WithdrawalController extends Controller
                             'warehouse_id' => $masterData->warehouse_id,
                             'customer_id' => $masterData->customer_id,
                             'company_id' => $masterData->company_id,
-                            'store_id' => $masterData->store_id
+                            'store_id' => $masterData->store_id,
+                            'ref1_no' => $wd_no,
+                            'ref1_type' => 'WD'
                         ]);
                         MasterfileModel::create([
                             'ref_no'=> $twd_no,
                             'status' => 'R',
                             'trans_type' => 'WD',
                             'item_type' => $masterData->item_type,
-                            'date_received' => $masterData->date_received,
+                            'date_received' => isset($masterData->received_date) ? $masterData->received_date : "",
                             'product_id'=>$request->product_id[$x],
                             'storage_location_id'=>$masterData->storage_location_id,
                             'inv_qty'=> $inv_qty,
@@ -345,7 +349,9 @@ class WithdrawalController extends Controller
                             'warehouse_id' => $masterData->warehouse_id,
                             'customer_id' => $masterData->customer_id,
                             'company_id' => $masterData->company_id,
-                            'store_id' => $masterData->store_id
+                            'store_id' => $masterData->store_id,
+                            'ref1_no' => $wd_no,
+                            'ref1_type' => 'WD'
                         ]);
                     }
                 }
@@ -393,6 +399,7 @@ class WithdrawalController extends Controller
         $wd = WdHdr::select('wd_hdr.*', 'u.name')
                 ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
                 ->where('wd_hdr.id', _decode($id))->first();
+        // dd($wd);
         $order_type = OrderType::all();
         $store_list = Store::all();
         $company_list = Client::where('client_type','O')->get();

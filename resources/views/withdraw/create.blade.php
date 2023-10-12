@@ -338,12 +338,12 @@
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
                                                     <th scope="col">Item Type</th>
-                                                    {{-- <th scope="col">Date Received</th> --}}
+                                                    <th scope="col">Date Received</th>
                                                     <th scope="col">Available Stocks</th>
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
-                                                    {{-- <th scope="col">Lot No</th> --}}
-                                                    {{-- <th scope="col">Expiry Date</th> --}}
+                                                    <th scope="col">Lot No</th>
+                                                    <th scope="col">Expiry Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     <th scope="col" class="text-center">Action</th>
@@ -424,12 +424,12 @@
                                     <th>&nbsp;</th>
                                     <th>Product Code</th>
                                     <th>Product Name</th>
-                                    {{-- <th>Date Recieved</th> --}}
+                                    <th>Date Recieved</th>
                                     <th>Item Type</th>
                                     <th>Available Stocks</th>
                                     <th>Unit</th>
-                                    {{-- <th>Lot No.</th> --}}
-                                    {{-- <th>Expiry Date</th> --}}
+                                    <th>Lot No.</th>
+                                    <th>Expiry Date</th>
                                     <th>Warehouse</th>
                                     <th>Location</th>
                                 </tr>

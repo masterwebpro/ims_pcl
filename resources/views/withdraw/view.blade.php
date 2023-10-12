@@ -382,7 +382,7 @@
                                                             <span class="badge bg-success text-capitalize">{{ isset($item->master) ? $item->master->item_type : ''}} </span>
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ isset($item->master->receiving) ? date('M d, Y', strtotime($item->master->receiving->date_received)) : '' }}
+                                                            {{ isset($item->master) ? date('M d, Y', strtotime($item->master->received_date)) : '' }}
                                                         </td>
                                                         {{-- @if ($wd->status == 'open')
                                                         <td class="ps-1 text-center">
@@ -391,22 +391,22 @@
                                                         @endif --}}
                                                         <td class="ps-1 text-center">
                                                             {{ number_format($item->inv_qty,2) }}
-                                                            <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]" data-qty="{{ $item->master->inv_qty }}" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                            <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]"  data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ $item->master->uom->code }}
+                                                            {{ ($item->uom) ? $item->uom->code : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->receiving) ? $item->master->receiving->lot_no : "" }}
+                                                            {{ ($item->master) ? $item->master->lot_no : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->receiving) ? $item->master->receiving->expiry_date : "" }}
+                                                            {{ ($item->master) ? $item->master->expiry_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->warehouse) ? $item->master->warehouse->warehouse_name : "" }}
+                                                            {{ ($item->master) ? $item->master->warehouse_name : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->location) ?  $item->master->location->location : "" }}
+                                                            {{ ($item->master) ?  $item->master->location : "" }}
                                                         </td>
                                                         <td class="ps-1">
                                                             @if ($item->product->is_serialize == 1)
