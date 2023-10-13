@@ -25,12 +25,15 @@ class WdDtl extends Model
 
     public function uom()
     {
-        return $this->belongsTo(UOM::class, 'uom_id', 'uom_id');
+        return $this->belongsTo(UOM::class, 'inv_uom', 'uom_id');
     }
 
     public function master()
     {
-        return $this->belongsTo(MasterfileModel::class, 'masterfile_id', 'masterfile_id');
+        return $this->belongsTo(MasterdataModel::class, 'master_id', 'id')
+                ->select('masterdata.*','wh.warehouse_name','sl.location')
+                ->leftJoin('warehouses as wh','wh.id','masterdata.warehouse_id')
+                ->leftJoin('storage_locations as sl','sl.storage_location_id','masterdata.storage_location_id');
     }
 
     public function itemize()

@@ -29,6 +29,11 @@
                             <span class="badge  fs-16 <?=$wd->status?> text-uppercase"><?=$wd->status?></span>
                         </div>
                         <div class="col-md-6 text-end">
+                            <? if(in_array($wd->status, array('posted'))) : ?>
+                                <? if (mod_access('withdrawal',  'unpost', Auth::id())) : ?>
+                                    <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                                <? endif ;?>
+                            <? endif;?>
                             @if ($wd->status == 'open')
                             <a href="{{ URL::to('withdraw/'._encode($wd->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -368,9 +373,13 @@
                                                 <?
                                                 $rowCount = count($wd->items);
                                                 $x=1;
+                                                $total = 0;
                                                  ?>
                                                 @if(isset($wd->items))
                                                     @foreach($wd->items as $item)
+                                                    @php
+                                                        $total += $item->inv_qty;
+                                                    @endphp
                                                     <tr id="product_{{$item->product_id}}">
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
@@ -382,7 +391,7 @@
                                                             <span class="badge bg-success text-capitalize">{{ isset($item->master) ? $item->master->item_type : ''}} </span>
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ isset($item->master->receiving) ? date('M d, Y', strtotime($item->master->receiving->date_received)) : '' }}
+                                                            {{ isset($item->master) ? date('M d, Y', strtotime($item->master->received_date)) : '' }}
                                                         </td>
                                                         {{-- @if ($wd->status == 'open')
                                                         <td class="ps-1 text-center">
@@ -391,22 +400,22 @@
                                                         @endif --}}
                                                         <td class="ps-1 text-center">
                                                             {{ number_format($item->inv_qty,2) }}
-                                                            <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]" data-qty="{{ $item->master->inv_qty }}" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                            <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]"  data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ $item->master->uom->code }}
+                                                            {{ ($item->uom) ? $item->uom->code : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->receiving) ? $item->master->receiving->lot_no : "" }}
+                                                            {{ ($item->master) ? $item->master->lot_no : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->receiving) ? $item->master->receiving->expiry_date : "" }}
+                                                            {{ ($item->master) ? $item->master->expiry_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->warehouse) ? $item->master->warehouse->warehouse_name : "" }}
+                                                            {{ ($item->master) ? $item->master->warehouse_name : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->location) ?  $item->master->location->location : "" }}
+                                                            {{ ($item->master) ?  $item->master->location : "" }}
                                                         </td>
                                                         <td class="ps-1">
                                                             @if ($item->product->is_serialize == 1)
@@ -422,8 +431,14 @@
                                                     <td colspan="8" class="text-danger text-center">No Record Found!</td>
                                                 </tr>
                                                 @endif
-
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="4" class="text-end">Total</td>
+                                                    <td class="text-center" id="total"><?=number_format($total,2)?></td>
+                                                    <td colspan="6"></td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                         <!--end table-->

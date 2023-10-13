@@ -31,13 +31,28 @@
                             <span class="badge  fs-16 <?=$wd->status?> text-uppercase"><?=$wd->status?></span>
                         </div>
                         <div class="col-md-6 text-end">
-                            <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i
-                                    class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                                Save</button>
-                            <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i
-                                    class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                            <? if(in_array($wd->status, array('open', 'new'))) : ?>
+                                <? if (mod_access('withdrawal',  'add', Auth::id())) : ?>
+                                    <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+                                <? endif ;?>
+
+                                <? if (mod_access('withdrawal',  'post', Auth::id())) : ?>
+                                    <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                                <? endif ;?>
+
+                                <? if($wd->status == 'open') : ?>
+                                    <? if (mod_access('withdrawal',  'delete', Auth::id())) : ?>
+                                        <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
+                                    <? endif ;?>
+                                <? endif ;?>
+                            <? endif;?>
                             <button type="button" class="generate-picklist  btn btn-danger btn-label rounded-pill"><i
                                     class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Picklist</button>
+                            <? if(in_array($wd->status, array('posted', 'closed'))) : ?>
+                                <? if (mod_access('withdrawal',  'unpost', Auth::id())) : ?>
+                                    <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-withdrawal"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                                <? endif ;?>
+                            <? endif;?>
                             <a href="{{ URL::to('withdraw') }}" class="btn btn-primary btn-label rounded-pill"><i
                                     class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                 Back</a>
@@ -369,15 +384,19 @@
                                                 <?
                                                 $rowCount = count($wd->items);
                                                 $x=1;
+                                                $total = 0;
                                                  ?>
                                                 @if(isset($wd->items))
                                                     @foreach($wd->items as $item)
+                                                    @php
+                                                        $total += $item->inv_qty;
+                                                    @endphp
                                                     <tr id="rows_{{$x}}">
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
-                                                            <input type="hidden" name="masterfile_id[]" readonly id="masterfile_id" value="{{$item->masterfile_id}}" />
+                                                            <input type="hidden" name="master_id[]" readonly id="master_id" value="{{$item->master_id}}" />
                                                             <input type="hidden" name="inv_uom[]" readonly id="inv_uom_{{$item->inv_uom}}" value="{{$item->inv_uom}}" />
-                                                            <input type="hidden" name="is_serialize[]" readonly value="{{$item->product->is_serialize}}" />
+                                                            <input type="hidden" name="is_serialize[]" readonly value="{{ ($item->product) ? $item->product->is_serialize : 0 }}" />
                                                         {{$x++}} </td>
                                                         <td class="text-start fs-14">
                                                             {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
@@ -388,30 +407,30 @@
                                                             @endphp
                                                             <span class="badge {{$type}} text-capitalize">{{ isset($item->master) ? $item->master->item_type : ""}} </span>
                                                         </td>
-                                                        {{-- <td class=" ps-1">
-                                                            {{ isset($item->master->receiving) ? date('M d, Y', strtotime($item->master->receiving->date_received)) : '' }}
-                                                        </td> --}}
+                                                        <td class=" ps-1">
+                                                            {{ isset($item->master) ? date('M d, Y', strtotime($item->master->received_date)) : '' }}
+                                                        </td>
                                                         <td class="ps-1 text-center">
-                                                            {{ number_format($item->master->inv_qty,2) }}
+                                                            {{ ($item->master) ? number_format($item->master->inv_qty,2) : ""}}
                                                         </td>
                                                         <td class="ps-1">
-                                                            <input type="text"  class="form-control inv_qty numeric" name="inv_qty[]" data-qty="{{ $item->master->inv_qty }}" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                            <input type="text"  class="form-control inv_qty numeric" name="inv_qty[]" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                             <span class="text-danger error-msg inv_qty{{$x}}_error"></span>
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ $item->master->uom->code }}
-                                                        </td>
-                                                        {{-- <td class=" ps-1">
-                                                            {{ ($item->master->receiving) ? $item->master->receiving->lot_no : "" }}
+                                                            {{ ($item->uom) ? $item->uom->code : ""}}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->receiving) ? $item->master->receiving->expiry_date : "" }}
-                                                        </td> --}}
-                                                        <td class=" ps-1">
-                                                            {{ ($item->master->warehouse) ? $item->master->warehouse->warehouse_name : ""}}
+                                                            {{ ($item->master) ? $item->master->lot_no : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master->location) ? $item->master->location->location  : ""}}
+                                                            {{ ($item->master) ? $item->master->expiry_date : "" }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ ($item->master) ? $item->master->warehouse_name : ""}}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ ($item->master) ? $item->master->location  : ""}}
                                                         </td>
                                                         <td>
                                                             <div class="text-center">
@@ -432,8 +451,14 @@
                                                     <td colspan="8" class="text-danger text-center">No Record Found!</td>
                                                 </tr>
                                                 @endif
-
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="5" class="text-end">Total</td>
+                                                    <td class="text-start" id="total"><?=number_format($total,2)?></td>
+                                                    <td colspan="6"></td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                         <!--end table-->
@@ -506,12 +531,12 @@
                                 <th>&nbsp;</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
-                                {{-- <th>Date Recieved</th> --}}
+                                <th>Date Recieved</th>
                                 <th>Item Type</th>
                                 <th>Available Stocks</th>
                                 <th>Unit</th>
-                                {{-- <th>Lot No.</th> --}}
-                                {{-- <th>Expiry Date</th> --}}
+                                <th>Lot No.</th>
+                                <th>Expiry Date</th>
                                 <th>Warehouse</th>
                                 <th>Location</th>
                             </tr>

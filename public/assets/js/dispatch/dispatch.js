@@ -48,24 +48,24 @@ $(document).on('click', '#search-withdrawal', function() {
 
 function withdrawal(){
     var keyword = $("#keyword").val();
-    var wd_list = document.querySelectorAll('input[name="wd_no[]"]');
-    var wd_no = [];
+    var wd_list = document.querySelectorAll('input[name="wddtl_id[]"]');
+    var wddtl_id = [];
     wd_list.forEach(input => {
-        wd_no.push(input.value);
+        wddtl_id.push(input.value);
     });
 
     new DataTable("#show-withdrawal-list",{
-        order: [[1, 'asc'],[4,'asc']],
+        order: [[1, 'asc'],[5,'asc']],
         paging: true,
         columnDefs : [
-            { targets: [4], className: 'dt-body-right' },
+            { targets: [5], className: 'dt-body-right' },
         ],
         ajax: {
-            url : BASEURL+"settings/withdrawal_list",
+            url : BASEURL+"settings/withdrawalDetails",
             data : {
                 keyword : keyword,
                 status : "posted",
-                wd_no : JSON.stringify(wd_no),
+                wddtl_id : JSON.stringify(wddtl_id),
             },
             dataSrc:""
         },
@@ -74,7 +74,9 @@ function withdrawal(){
             { data: 'wd_no' },
             { data: 'client_name' },
             { data: 'deliver_to' },
-            { data: 'no_of_package' , render: $.fn.dataTable.render.number( ',', '.', 2), class : 'text-center'},
+            { data: 'product_name' },
+            { data: 'inv_qty' , render: $.fn.dataTable.render.number( ',', '.', 2), class : 'text-center'},
+            { data: 'ui_code' },
             { data: 'order_no' },
             { data: 'order_date' },
             { data: 'dr_no' },
@@ -108,7 +110,8 @@ $(document).on('click', '#add-withdrawal', function() {
             $('#withdrawal-list tbody').append('<tr id="rows_'+(rowCount-1)+'"> \
             <td class="text-start"> \
                 <input type="hidden" name="wd_no[]" value="'+data[x].wd_no+'" /> \
-                <input type="hidden" name="wd_qty[]" value="'+data[x].no_of_package+'" /> \
+                <input type="hidden" name="wd_dtl_id[]" value="'+data[x].id+'" /> \
+                <input type="hidden" name="wd_qty[]" value="'+data[x].inv_qty+'" /> \
             '+(rowCount-1)+' </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].wd_no+'\
@@ -116,8 +119,19 @@ $(document).on('click', '#add-withdrawal', function() {
             <td class="text-start fs-14"> \
                 '+ data[x].deliver_to +' \
             </td> \
-            <td class="text-center  fs-14"> \
-                '+data[x].no_of_package+'\
+            <td class="text-start fs-14 text-wrap"> \
+                '+ data[x].product_name +' \
+            </td> \
+            <td class="text-start fs-14"> \
+                <div class="input-group">\
+                <input type="text" class="form-control inv_qty numeric w-50" data-qty="'+data[x].inv_qty+'" data-id="'+ idx +'" id="inv_qty'+(rowCount-1)+'" value="'+ data[x].inv_qty +'" readonly placeholder="Enter Qty" /> \
+                <span class="input-group-text">'+ data[x].ui_code +'</span></div>\
+            </td> \
+            <td class="text-start fs-14"> \
+                <div class="input-group">\
+                <input type="text" class="form-control dispatch_qty numeric w-50" name="dispatch_qty[]" data-qty="'+data[x].inv_qty+'" data-id="'+ idx +'" id="dispatch_qty'+(rowCount-1)+'" value="'+ data[x].inv_qty +'" placeholder="Enter Qty" /> \
+                <span class="input-group-text">'+ data[x].ui_code +'</span>\
+                <span class="text-danger error-msg dispatch_qty'+(rowCount-1)+'_error"></span></div>\
             </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].order_no+'\
@@ -237,3 +251,99 @@ function _submitData(form_data) {
 		}
     });
 }
+
+$(document).on('click', '.submit-unpost', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to UNPOST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, UNPOST it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'dispatch/unpost',
+                data: {
+                    dispatch_no : $('#dispatch_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "post",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-dispatch').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'dispatch';
+                            }, 300);
+                            
+                        } else {
+                            // toastr.error(data.message,'Error on saving'); 
+                            showError(data.message);
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+
+$(document).on('click', '.submit-delete', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to DELETE this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, DELETE it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'dispatch',
+                data: {
+                    dispatch_no : $('#dispatch_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "DELETE",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-dispatch').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'dispatch';
+                            }, 300);
+                            
+                        } else {
+                            toastr.error(data.message,'Error on saving'); 
+                         
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\MasterData;
+use App\Models\MasterdataModel;
 use App\Models\MasterfileModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,12 +17,11 @@ class MasterDataController extends Controller
         $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
         $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
 
-        $master_list = MasterData::select('masterdata.*', 'products.product_code','products.product_name', 's.store_name','c.client_name','com.client_name as company_name')
+        $master_list = MasterdataModel::select('masterdata.*', 'products.product_code','products.product_name', 's.store_name','c.client_name','com.client_name as company_name')
                         ->leftJoin('products', 'products.product_id', '=', 'masterdata.product_id')
                         ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
                         ->leftJoin('client_list as c', 'c.id', '=', 'masterdata.customer_id')
                         ->leftJoin('client_list as com', 'com.id', '=', 'masterdata.company_id')
-                        ->orderByDesc('masterdata.created_at')
                         ->where([
                             [function ($query) use ($request, $startDate, $endDate) {
                                 if (($s = $request->status)) {
@@ -84,8 +84,8 @@ class MasterDataController extends Controller
             'masterfiles.status',
             'uw.code as uw_code',
             'ui.code as ui_code',
-            DB::raw('SUM(inv_qty) as inv_qty'),
-            DB::raw('SUM(whse_qty) as whse_qty')
+            DB::raw('SUM(masterfiles.inv_qty) as inv_qty'),
+            DB::raw('SUM(masterfiles.whse_qty) as whse_qty')
         )
         ->leftJoin('products as p','p.product_id','=','masterfiles.product_id')
         ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterfiles.storage_location_id')
@@ -109,9 +109,41 @@ class MasterDataController extends Controller
         ->orderBy('product_name','ASC')
         ->orderBy('sl.location','ASC')
         ->get();
-        echo "<pre>";
-        print_r($result);
-        echo "<pre/>";
-        die();
+        DB::beginTransaction();
+        try {
+            foreach($result as $res){
+                MasterdataModel::updateOrCreate([
+                    'customer_id' => $res->customer_id,
+                    'company_id' => $res->company_id,
+                    'store_id' => $res->store_id,
+                    'warehouse_id' => $res->warehouse_id,
+                    'product_id' => $res->product_id,
+                    'storage_location_id' => $res->storage_location_id,
+                    'item_type' => $res->item_type,
+                    'expiry_date' => $res->expiry_date,
+                    'lot_no' => $res->lot_no,
+                    'received_date' => $res->received_date
+                ],[
+                    'customer_id' => $res->customer_id,
+                    'company_id' => $res->company_id,
+                    'store_id' => $res->store_id,
+                    'warehouse_id' => $res->warehouse_id,
+                    'product_id' => $res->product_id,
+                    'storage_location_id' => $res->storage_location_id,
+                    'item_type' => $res->item_type,
+                    'inv_qty' => $res->inv_qty,
+                    'inv_uom' => $res->inv_uom,
+                    'whse_qty' => $res->whse_qty,
+                    'whse_uom' => $res->whse_uom,
+                    'expiry_date' => $res->expiry_date,
+                    'lot_no' => $res->lot_no,
+                    'received_date' => $res->received_date
+                ]);
+            }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 }

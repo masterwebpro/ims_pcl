@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\AvailableItem;
 use App\Models\MasterdataModel;
+use App\Models\MasterfileModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UOM;
+use App\Models\WdDtl;
 use App\Models\WdHdr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -334,6 +336,54 @@ class SettingsController extends Controller
         return response()->json($data);
     }
 
+    function withdrawalDetails(Request $request){
+        $result = WdDtl::select('wd_dtl.id',
+                    'wd_dtl.wd_no',
+                    'cl.client_name',
+                    'del.client_name as deliver_to',
+                    DB::raw('sum(wd_dtl.inv_qty - wd_dtl.dispatch_qty) as inv_qty'),
+                    'wd_dtl.inv_uom',
+                    'wd_hdr.order_no',
+                    'wd_hdr.order_date',
+                    'wd_hdr.po_num',
+                    'wd_hdr.sales_invoice',
+                    'wd_hdr.dr_no',
+                    'p.product_code',
+                    'p.product_name',
+                    'ui.code as ui_code',
+                    )
+                    ->leftJoin('products as p','p.product_id','=','wd_dtl.product_id')
+                    ->leftJoin('uom as ui','ui.uom_id','=','wd_dtl.inv_uom')
+                    ->leftJoin('wd_hdr','wd_hdr.wd_no','wd_dtl.wd_no')
+                    ->leftJoin('client_list as cl','cl.id','wd_hdr.customer_id')
+                    ->leftJoin('client_list as del','del.id','wd_hdr.deliver_to_id')
+                    ->where('wd_hdr.status','posted')
+                    // ->whereNull('wd_hdr.dispatch_no')
+                    ->groupBy('wd_dtl.id')
+                    ->having('inv_qty','>',0)
+                    ->orderBy('wd_hdr.order_date','ASC');
+                    if(isset($request->keyword)){
+                        $search = "%".$request->keyword."%";
+                        $result->where(function($cond)use($search){
+                            $cond->where('wd_dtl.wd_no','like',$search)
+                            ->orwhere('wd_hdr.order_no','like',$search)
+                            ->orwhere('wd_hdr.po_num','like',$search)
+                            ->orwhere('wd_hdr.sales_invoice','like',$search)
+                            ->orwhere('wd_hdr.dr_no','like',$search)
+                            ->orwhere('p.product_code','like',$search)
+                            ->orwhere('p.product_name','like',$search)
+                            ->orwhere('ui.code','like',$search);
+                        });
+                    }
+                    if($request->status)
+                        $result->where('wd_hdr.status', $request->status);
+                    if(isset($request->wddtl_id))
+                        $result->whereNotIN('wd_dtl.id', json_decode($request->wddtl_id));
+
+        $data = $result->get();
+        return response()->json($data);
+    }
+
     function getTruckType(Request $request) {
         $data = \App\Models\TruckType::select('vehicle_code','vehicle_desc')->get();
         return response()->json($data);
@@ -396,65 +446,58 @@ class SettingsController extends Controller
     }
 
     public function getAvailableStocks(Request $request) {
-        $result = MasterfileModel::select(
-                        'masterfiles.product_id',
+        $result = MasterdataModel::select(
+                        'masterdata.id as master_id',
+                        'masterdata.product_id',
                         'client_name',
                         'store_name',
                         'w.warehouse_name',
                         'product_code',
                         'product_name',
                         'sl.location',
-                        'masterfiles.whse_uom',
-                        'masterfiles.inv_uom',
-                        'masterfiles.item_type',
-                        'masterfiles.status',
+                        'masterdata.whse_uom',
+                        'masterdata.inv_uom',
+                        'masterdata.item_type',
                         'uw.code as uw_code',
                         'ui.code as ui_code',
-                        DB::raw('SUM(inv_qty) as inv_qty'),
-                        DB::raw('SUM(whse_qty) as whse_qty')
+                        DB::raw('sum(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty'),
+                        DB::raw('sum(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty'),
+                        'masterdata.lot_no',
+                        'masterdata.expiry_date',
+                        'masterdata.received_date'
                     )
-                    ->leftJoin('products as p','p.product_id','=','masterfiles.product_id')
-                    ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterfiles.storage_location_id')
-                    ->leftJoin('client_list as cl','cl.id','=','masterfiles.company_id')
-                    ->leftJoin('store_list as s','s.id','=','masterfiles.store_id')
-                    ->leftJoin('warehouses as w','w.id','=','masterfiles.warehouse_id')
-                    ->leftJoin('uom as uw','uw.uom_id','=','masterfiles.whse_uom')
-                    ->leftJoin('uom as ui','ui.uom_id','=','masterfiles.inv_uom')
-                    ->where('masterfiles.status','X')
-                    ->groupBy([
-                        'client_name',
-                        'store_name',
-                        'product_name',
-                        'masterfiles.item_type',
-                        'masterfiles.status',
-                        'masterfiles.whse_uom',
-                        'masterfiles.inv_uom'
-                    ])
-                    ->having('inv_qty','>', 0)
+                    ->leftJoin('products as p','p.product_id','=','masterdata.product_id')
+                    ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterdata.storage_location_id')
+                    ->leftJoin('client_list as cl','cl.id','=','masterdata.company_id')
+                    ->leftJoin('store_list as s','s.id','=','masterdata.store_id')
+                    ->leftJoin('warehouses as w','w.id','=','masterdata.warehouse_id')
+                    ->leftJoin('uom as uw','uw.uom_id','=','masterdata.whse_uom')
+                    ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
+                    ->groupBy('masterdata.id')
                     ->orderBy('product_name','ASC')
                     ->orderBy('sl.location','ASC');
         if(isset($request->master_id)){
-            $result->whereNotIN('masterfiles.masterfile_id', json_decode($request->master_id));
+            $result->whereNotIN('masterdata.id', json_decode($request->master_id));
         }
 
         if($request->company_id > 0){
-            $result->where('masterfiles.company_id', $request->company_id);
+            $result->where('masterdata.company_id', $request->company_id);
         }
 
         if(isset($request->warehouse_id)){
-            $result->where('masterfiles.warehouse_id', $request->warehouse_id);
+            $result->where('masterdata.warehouse_id', $request->warehouse_id);
         }
 
         if($request->customer_id > 0){
-            $result->where('masterfiles.customer_id', $request->customer_id);
+            $result->where('masterdata.customer_id', $request->customer_id);
         }
 
         if($request->store_id > 0){
-            $result->where('masterfiles.store_id', $request->store_id);
+            $result->where('masterdata.store_id', $request->store_id);
         }
 
         if($request->item_type){
-            $result->where('masterfiles.item_type', $request->item_type);
+            $result->where('masterdata.item_type', $request->item_type);
         }
 
         if(isset($request->product)){
@@ -485,5 +528,5 @@ class SettingsController extends Controller
         $record = $data->get();
         return response()->json($record);
     }
-    
+
 }

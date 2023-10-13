@@ -198,6 +198,10 @@
                                     <div class="row">
                                         <label for="colFormLabel" class="form-label">Attachment</label>
                                         @if ($pod->status != 'Delivered')
+                                            <div class="col-4">
+                                                <button type="button" class="btn btn-info add-attachment">Attach
+                                                    File</button>
+                                            </div>
                                             <div class="col-8">
                                             @if(!empty($pod->attachment))
                                             <div class="row">
@@ -208,10 +212,6 @@
                                                 @endforeach
                                             </div>
                                             @endif
-                                            </div>
-                                            <div class="col-4 end-0">
-                                                <button type="button" class="btn btn-info add-attachment">Attach
-                                                    File</button>
                                             </div>
                                         @endif
                                     </div>
@@ -234,6 +234,7 @@
                                                 <tr class="table-active">
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
+                                                    <th scope="col" class="text-center">Withdraw Quantity</th>
                                                     <th scope="col" class="text-center">Dispatch Quantity</th>
                                                     <th scope="col">Received Quantity</th>
                                                     <th scope="col">Unit</th>
@@ -259,6 +260,9 @@
                                                             <td class="ps-1 text-center">
                                                                 {{ number_format($item->inv_qty, 2) }}
                                                             </td>
+                                                            <td class="ps-1 text-center">
+                                                                {{ number_format($item->dispatch_qty, 2) }}
+                                                            </td>
                                                             <td class="ps-1 text-center w-25">
                                                                 <input type="hidden" name="wddtl_id[]" readonly
                                                                     id="wddtl_id_{{ $item->id }}"
@@ -271,7 +275,7 @@
                                                                     class="text-danger error-msg received_qty{{ $x - 2 }}_error"></span>
                                                             </td>
                                                             <td class=" ps-1">
-                                                                {{ $item->master->uom->code }}
+                                                                {{ isset($item->uom) ? $item->uom->code : ""}}
                                                             </td>
                                                         </tr>
                                                     @endforeach

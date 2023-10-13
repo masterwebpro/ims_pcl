@@ -188,7 +188,9 @@
                                                 <th scope="col">WD #</th>
                                                 {{-- <th scope="col">Client</th> --}}
                                                 <th scope="col">Deliver To</th>
-                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Product Name</th>
+                                                <th scope="col">Withdraw Quantity</th>
+                                                <th scope="col">Dispatch Quantity</th>
                                                 <th scope="col">Order No.</th>
                                                 <th scope="col">Order Date</th>
                                                 <th scope="col">DR Number</th>
@@ -201,8 +203,8 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="3" class="text-end">Total</td>
-                                                <td class="text-center" id="total">0.00</td>
+                                                <td colspan="4" class="text-end">Total</td>
+                                                <td class="text-start" id="total">0.00</td>
                                                 <td colspan="6"></td>
                                             </tr>
                                         </tfoot>
@@ -257,7 +259,9 @@
                                     <th scope="col">WD #</th>
                                     <th scope="col">Customer</th>
                                     <th scope="col">Deliver To</th>
-                                    <th scope="col">No. of Package</th>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Withdraw Quantity</th>
+                                    <th scope="col">Unit</th>
                                     <th scope="col">Order No.</th>
                                     <th scope="col">Order Date</th>
                                     <th scope="col">DR Number</th>

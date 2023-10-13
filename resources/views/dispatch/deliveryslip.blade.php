@@ -133,7 +133,7 @@
                         {{$item->sales_invoice}}
                     </td>
                     <td class="ps-1 text-end">
-                        {{ number_format($item->qty,2) }}
+                        {{ number_format($item->dispatch_qty,2) }}
                     </td>
                 </tr>
                 @endforeach
@@ -145,7 +145,7 @@
                         @php
                             $totalInvQty = 0;
                             foreach ($dispatch->items as $item) {
-                                $totalInvQty += $item->qty;
+                                $totalInvQty += $item->dispatch_qty;
                             }
                         @endphp
                         {{ number_format($totalInvQty,2) }}

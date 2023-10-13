@@ -28,10 +28,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/receive/unpost', [App\Http\Controllers\ReceiveController::class, 'unpost']);
 
     Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
+
     Route::resource('/withdraw', App\Http\Controllers\WithdrawalController::class);
+    Route::delete('/withdraw', [App\Http\Controllers\WithdrawalController::class, 'destroy']);
+    Route::post('/withdraw/unpost', [App\Http\Controllers\WithdrawalController::class, 'unpost']);
     Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
     Route::get('/withdrawalSlip/{id}', [App\Http\Controllers\WithdrawalController::class, 'withdrawalslip']);
+
     Route::resource('/dispatch', App\Http\Controllers\DispatchController::class);
+    Route::delete('/dispatch', [App\Http\Controllers\DispatchController::class, 'destroy']);
+    Route::post('/dispatch/unpost', [App\Http\Controllers\DispatchController::class, 'unpost']);
+
     Route::get('/deliverySlip/{id}', [App\Http\Controllers\DispatchController::class, 'deliveryslip']);
     Route::resource('/pod', App\Http\Controllers\PodController::class);
     Route::post('/upload-attachment', 'App\Http\Controllers\FileUploadController@upload');
@@ -81,6 +88,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/available_item', [App\Http\Controllers\SettingsController::class, 'getAvailableItem']);
     Route::get('/withdrawal_list', [App\Http\Controllers\SettingsController::class, 'getWithdrawalList']);
+    Route::get('/withdrawalDetails', [App\Http\Controllers\SettingsController::class, 'withdrawalDetails']);
     Route::get('/getTruckType', [App\Http\Controllers\SettingsController::class, 'getTruckType']);
     Route::get('/getPlateNo', [App\Http\Controllers\SettingsController::class, 'getPlateNo']);
 

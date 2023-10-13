@@ -191,8 +191,8 @@ function _stockInMasterData($masterfile) {
             DB::table('masterdata')
                 ->where('id', $record->id)
                 ->update([
-                    'inv_qty' => DB::raw('inv_qty + '.$record->inv_qty),
-                    'whse_qty' => DB::raw('whse_qty + '.$record->whse_qty),
+                    'inv_qty' => DB::raw('inv_qty + '.$params['inv_qty']),
+                    'whse_qty' => DB::raw('whse_qty + '.$params['whse_qty']),
                 ]);
 
         } else {
@@ -252,8 +252,9 @@ function _stockOutMasterData($masterfile) {
             DB::table('masterdata')
                 ->where('id', $record->id)
                 ->update([
-                    'inv_qty' => DB::raw('inv_qty - '.$record->inv_qty),
-                    'whse_qty' => DB::raw('whse_qty - '.$record->whse_qty),
+                    'inv_qty' => DB::raw('inv_qty - '.$params['inv_qty']),
+                    'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty']),
+                    'reserve_qty' => DB::raw('reserve_qty - '.$params['inv_qty']),
                 ]);
 
         } 
@@ -290,6 +291,17 @@ function _has_masterfile($params) {
     $record = $result->get();
 
     if ($record->count() > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hasDispatch($wd_no) {
+    $hasDispatch = DB::table('dispatch_dtl')->where('wd_no', $wd_no)
+        ->get();
+
+    if ($hasDispatch->count() > 0) {
         return true;
     } else {
         return false;
