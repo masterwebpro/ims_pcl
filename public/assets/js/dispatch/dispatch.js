@@ -251,3 +251,99 @@ function _submitData(form_data) {
 		}
     });
 }
+
+$(document).on('click', '.submit-unpost', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to UNPOST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, UNPOST it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'dispatch/unpost',
+                data: {
+                    dispatch_no : $('#dispatch_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "post",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-dispatch').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'dispatch';
+                            }, 300);
+                            
+                        } else {
+                            // toastr.error(data.message,'Error on saving'); 
+                            showError(data.message);
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+
+$(document).on('click', '.submit-delete', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to DELETE this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, DELETE it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'dispatch',
+                data: {
+                    dispatch_no : $('#dispatch_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "DELETE",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-dispatch').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'dispatch';
+                            }, 300);
+                            
+                        } else {
+                            toastr.error(data.message,'Error on saving'); 
+                         
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});

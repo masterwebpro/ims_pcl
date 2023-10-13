@@ -314,45 +314,56 @@ class WithdrawalController extends Controller
                     if($request->status == 'posted'){
                         $masterData = MasterdataModel::find($request->master_id[$x]);
                         $inv_qty = ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x];
-
-                        MasterfileModel::create([
-                            'ref_no'=> $twd_no,
-                            'status' => 'X',
-                            'trans_type' => 'WD',
-                            'date_received' => isset($masterData->received_date) ? $masterData->received_date : "",
-                            'item_type' => $masterData->item_type,
-                            'product_id'=>$request->product_id[$x],
-                            'storage_location_id'=> $masterData->storage_location_id,
-                            'inv_qty'=> -$inv_qty,
-                            'inv_uom'=> $masterData->inv_uom,
-                            'whse_qty'=> -$inv_qty,
-                            'whse_uom'=> $masterData->whse_uom,
-                            'warehouse_id' => $masterData->warehouse_id,
-                            'customer_id' => $masterData->customer_id,
-                            'company_id' => $masterData->company_id,
-                            'store_id' => $masterData->store_id,
-                            'ref1_no' => $wd_no,
-                            'ref1_type' => 'WD'
-                        ]);
-                        MasterfileModel::create([
-                            'ref_no'=> $twd_no,
-                            'status' => 'R',
-                            'trans_type' => 'WD',
-                            'item_type' => $masterData->item_type,
-                            'date_received' => isset($masterData->received_date) ? $masterData->received_date : "",
-                            'product_id'=>$request->product_id[$x],
-                            'storage_location_id'=>$masterData->storage_location_id,
-                            'inv_qty'=> $inv_qty,
-                            'inv_uom'=> $masterData->inv_uom,
-                            'whse_qty'=> $inv_qty,
-                            'whse_uom'=> $masterData->whse_uom,
-                            'warehouse_id' => $masterData->warehouse_id,
-                            'customer_id' => $masterData->customer_id,
-                            'company_id' => $masterData->company_id,
-                            'store_id' => $masterData->store_id,
-                            'ref1_no' => $wd_no,
-                            'ref1_type' => 'WD'
-                        ]);
+                        $reserve = $masterData->reserve_qty + $inv_qty;
+                        if($masterData->inv_qty >= $reserve){
+                            $masterData->update(['reserve_qty' => $reserve]);
+                            MasterfileModel::create([
+                                'ref_no'=> $twd_no,
+                                'status' => 'X',
+                                'trans_type' => 'WD',
+                                'date_received' => isset($masterData->received_date) ? $masterData->received_date : "",
+                                'item_type' => $masterData->item_type,
+                                'product_id'=>$request->product_id[$x],
+                                'storage_location_id'=> $masterData->storage_location_id,
+                                'inv_qty'=> -$inv_qty,
+                                'inv_uom'=> $masterData->inv_uom,
+                                'whse_qty'=> -$inv_qty,
+                                'whse_uom'=> $masterData->whse_uom,
+                                'warehouse_id' => $masterData->warehouse_id,
+                                'customer_id' => $masterData->customer_id,
+                                'company_id' => $masterData->company_id,
+                                'store_id' => $masterData->store_id,
+                                'ref1_no' => $wd_no,
+                                'ref1_type' => 'WD'
+                            ]);
+                            MasterfileModel::create([
+                                'ref_no'=> $twd_no,
+                                'status' => 'R',
+                                'trans_type' => 'WD',
+                                'item_type' => $masterData->item_type,
+                                'date_received' => isset($masterData->received_date) ? $masterData->received_date : "",
+                                'product_id'=>$request->product_id[$x],
+                                'storage_location_id'=>$masterData->storage_location_id,
+                                'inv_qty'=> $inv_qty,
+                                'inv_uom'=> $masterData->inv_uom,
+                                'whse_qty'=> $inv_qty,
+                                'whse_uom'=> $masterData->whse_uom,
+                                'warehouse_id' => $masterData->warehouse_id,
+                                'customer_id' => $masterData->customer_id,
+                                'company_id' => $masterData->company_id,
+                                'store_id' => $masterData->store_id,
+                                'ref1_no' => $wd_no,
+                                'ref1_type' => 'WD'
+                            ]);
+                        }
+                        else{
+                            DB::rollBack();
+                            return response()->json([
+                                'success'  => false,
+                                'message' => 'Line no '.($x + 1).' reserve quantity is higher than available stocks.',
+                                'data' => "Error on posting data"
+                            ]);
+                        }
                     }
                 }
             }
@@ -473,9 +484,54 @@ class WithdrawalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        DB::connection()->beginTransaction();
+
+        try 
+        {
+            $wd_no = $request->wd_no;
+            if($wd_no) {
+                WdHdr::where('wd_no', $wd_no)->delete();
+                WdDtl::where('wd_no', $wd_no)->delete();
+                
+                $audit_trail[] = [
+                    'control_no' => $wd_no,
+                    'type' => 'WD',
+                    'status' => 'deleted',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'deleted'
+                ];
+
+                AuditTrail::insert($audit_trail);
+
+                DB::connection()->commit();
+
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'deleted successfully!',
+                    'data'    => $wd_no
+                ]);
+
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
     }
 
     public function generateWdNo($type,$prefix)
@@ -528,5 +584,66 @@ class WithdrawalController extends Controller
         ]);
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download($wd->wd_no.'.pdf');
+    }
+
+    public function unpost(Request $request)
+    {
+        DB::connection()->beginTransaction();
+        try 
+        {
+            $wd_no = $request->wd_no;
+            if($wd_no) {
+                if(hasDispatch($wd_no)) {
+                    return response()->json([
+                        'success'  => false,
+                        'message' => 'Unable to unpost the transaction! Please remove it in Dispatch first.',
+                        'data'    => $wd_no
+                    ]);
+
+                } else {
+                        $wd = WdHdr::where('wd_no', $wd_no)->update(['status'=>'open']);
+                        $mster_hdr = MasterfileModel::where('ref1_no', $wd_no)->delete();
+                        $wd_dtl = WdDtl::select('master_id',DB::raw('sum(inv_qty) as inv_qty'))->where('wd_no', $wd_no)->groupBy('master_id')->get();
+                        foreach($wd_dtl as $dtl){
+                            $msterdata = MasterdataModel::finde($dtl->master_id);
+                            $msterdata->update(['reserve_qty' => $msterdata->reserve_qty - $dtl->inv_qty]);
+                        }
+
+                        $audit_trail[] = [
+                            'control_no' => $wd_no,
+                            'type' => 'WD',
+                            'status' => 'open',
+                            'created_at' => date('y-m-d h:i:s'),
+                            'updated_at' => date('y-m-d h:i:s'),
+                            'user_id' => Auth::user()->id,
+                            'data' => 'unpost'
+                        ];
+
+                        AuditTrail::insert($audit_trail);
+
+                        DB::connection()->commit();
+                        return response()->json([
+                            'success'  => true,
+                            'message' => 'Unpost successfully!',
+                            'data'    => $wd
+                        ]);
+                }
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
     }
 }

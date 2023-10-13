@@ -29,11 +29,21 @@
                             <span class="badge  fs-16 <?=$dispatch->status?> text-uppercase"><?=$dispatch->status?></span>
                         </div>
                         <div class="col-md-6 text-end">
-                            <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i
-                                class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                            Save</button>
-                            <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i
-                                class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                            <? if(in_array($dispatch->status, array('open', 'new'))) : ?>
+                                <? if (mod_access('dispatch',  'add', Auth::id())) : ?>
+                                    <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+                                <? endif ;?>
+
+                                <? if (mod_access('dispatch',  'post', Auth::id())) : ?>
+                                    <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
+                                <? endif ;?>
+
+                                <? if($dispatch->status == 'open') : ?>
+                                    <? if (mod_access('dispatch',  'delete', Auth::id())) : ?>
+                                        <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
+                                    <? endif ;?>
+                                <? endif ;?>
+                            <? endif;?>
                                 <button type="button" class="generate-deliveryslip  btn btn-danger btn-label rounded-pill"><i
                                     class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Delivery Slip</button>
                                 <a href="{{ URL::to('dispatch') }}" class="btn btn-primary btn-label rounded-pill"><i
@@ -57,7 +67,7 @@
                             <div class="row ms-3 mt-3 mx-3">
                                 <input type="hidden" name="dispatch_id" value="{{ _encode($dispatch->id) }}" id="dispatch_id">
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <input type="hidden" name="dispatch_no" value="{{ $dispatch->dispatch_no }}">
+                                    <input type="hidden" name="dispatch_no" value="{{ $dispatch->dispatch_no }}" id="dispatch_no">
                                     <label for="colFormLabel" class="form-label">Plate No <span
                                             class="text-danger">*</span></label>
                                     <select class="form-select select2" required="required" id="plate_no" name="plate_no">

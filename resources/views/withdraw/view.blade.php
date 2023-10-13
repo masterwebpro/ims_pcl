@@ -29,6 +29,11 @@
                             <span class="badge  fs-16 <?=$wd->status?> text-uppercase"><?=$wd->status?></span>
                         </div>
                         <div class="col-md-6 text-end">
+                            <? if(in_array($wd->status, array('posted'))) : ?>
+                                <? if (mod_access('withdrawal',  'unpost', Auth::id())) : ?>
+                                    <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                                <? endif ;?>
+                            <? endif;?>
                             @if ($wd->status == 'open')
                             <a href="{{ URL::to('withdraw/'._encode($wd->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -368,9 +373,13 @@
                                                 <?
                                                 $rowCount = count($wd->items);
                                                 $x=1;
+                                                $total = 0;
                                                  ?>
                                                 @if(isset($wd->items))
                                                     @foreach($wd->items as $item)
+                                                    @php
+                                                        $total += $item->inv_qty;
+                                                    @endphp
                                                     <tr id="product_{{$item->product_id}}">
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
@@ -422,8 +431,14 @@
                                                     <td colspan="8" class="text-danger text-center">No Record Found!</td>
                                                 </tr>
                                                 @endif
-
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="4" class="text-end">Total</td>
+                                                    <td class="text-center" id="total"><?=number_format($total,2)?></td>
+                                                    <td colspan="6"></td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                         <!--end table-->

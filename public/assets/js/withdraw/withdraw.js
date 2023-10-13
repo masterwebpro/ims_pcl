@@ -169,7 +169,7 @@ $(document).on('click', '#add-product', function() {
                 '+data[x].inv_qty.toFixed(2)+'\
             </td> \
             <td class="text-start fs-14"> \
-                <input type="text" class="form-control inv_qty numeric" name="inv_qty[]" data-qty="'+data[x].inv_qty+'" data-id="'+ idx +'" id="inv_qty_'+(rowCount-1)+'" value="1" placeholder="Enter Qty" /> \
+                <input type="text" class="form-control inv_qty numeric" name="inv_qty[]" data-qty="'+data[x].inv_qty+'" data-id="'+ idx +'" id="inv_qty'+(rowCount-1)+'" value="1" placeholder="Enter Qty" /> \
                 <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="text-start  fs-14"> \
@@ -192,17 +192,27 @@ $(document).on('click', '#add-product', function() {
             </tr>');
             toastr.success(data[x].product_name + ' successfully added');
         }
+        totalPackage();
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
     $('#show-items').modal('hide');
 });
 
+function totalPackage(){
+    var total = 0;
+    $("#product-list tbody tr").each(function () {
+        total += parseFloat($(this).find("input[name='inv_qty[]']").val());
+    });
+    $("#total").text(total.toFixed(2));
+    $("#qty").val(total.toFixed(2));
+}
+
 $(document).on('blur', '.inv_qty', function() {
     var id = $(this).data('id');
     var stocks = $(this).data('qty');
     var new_inv = $(this).val();
-
+    totalPackage();
     if(stocks < new_inv) {
         prefix = 'inv_qty'+id;
         $(this).val(stocks);
@@ -266,6 +276,104 @@ $(document).on('click', '.submit-posted', function (e) {
         }
     });
 });
+
+$(document).on('click', '.submit-unpost', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to UNPOST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, UNPOST it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'withdraw/unpost',
+                data: {
+                    wd_no : $('#wd_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "post",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-withdrawal').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'withdraw';
+                            }, 300);
+                            
+                        } else {
+                            // toastr.error(data.message,'Error on saving'); 
+                            showError(data.message);
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+
+$(document).on('click', '.submit-delete', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to DELETE this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, DELETE it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'withdraw',
+                data: {
+                    wd_no : $('#wd_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "DELETE",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-withdrawal').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                window.location = BASEURL+'withdraw';
+                            }, 300);
+                            
+                        } else {
+                            toastr.error(data.message,'Error on saving'); 
+                         
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+
+
 $(document).on('click', '.create-withdrawal', function (e) {
     e.preventDefault();
     $('#preloading').modal('show');

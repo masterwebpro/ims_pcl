@@ -460,8 +460,8 @@ class SettingsController extends Controller
                         'masterdata.item_type',
                         'uw.code as uw_code',
                         'ui.code as ui_code',
-                        'masterdata.inv_qty',
-                        'masterdata.whse_qty',
+                        DB::raw('sum(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty'),
+                        DB::raw('sum(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty'),
                         'masterdata.lot_no',
                         'masterdata.expiry_date',
                         'masterdata.received_date'
@@ -473,6 +473,7 @@ class SettingsController extends Controller
                     ->leftJoin('warehouses as w','w.id','=','masterdata.warehouse_id')
                     ->leftJoin('uom as uw','uw.uom_id','=','masterdata.whse_uom')
                     ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
+                    ->groupBy('masterdata.id')
                     ->orderBy('product_name','ASC')
                     ->orderBy('sl.location','ASC');
         if(isset($request->master_id)){

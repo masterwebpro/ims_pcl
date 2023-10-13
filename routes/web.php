@@ -28,10 +28,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/receive/unpost', [App\Http\Controllers\ReceiveController::class, 'unpost']);
 
     Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
+
     Route::resource('/withdraw', App\Http\Controllers\WithdrawalController::class);
+    Route::delete('/withdraw', [App\Http\Controllers\WithdrawalController::class, 'destroy']);
+    Route::post('/withdraw/unpost', [App\Http\Controllers\WithdrawalController::class, 'unpost']);
     Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
     Route::get('/withdrawalSlip/{id}', [App\Http\Controllers\WithdrawalController::class, 'withdrawalslip']);
+
     Route::resource('/dispatch', App\Http\Controllers\DispatchController::class);
+    Route::delete('/dispatch', [App\Http\Controllers\DispatchController::class, 'destroy']);
+    Route::post('/dispatch/unpost', [App\Http\Controllers\DispatchController::class, 'unpost']);
+
     Route::get('/deliverySlip/{id}', [App\Http\Controllers\DispatchController::class, 'deliveryslip']);
     Route::resource('/pod', App\Http\Controllers\PodController::class);
     Route::post('/upload-attachment', 'App\Http\Controllers\FileUploadController@upload');

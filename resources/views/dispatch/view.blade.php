@@ -29,6 +29,11 @@
                             <span class="badge  fs-16 <?=$dispatch->status?> text-uppercase"><?=$dispatch->status?></span>
                         </div>
                         <div class="col-md-6 text-end">
+                            <? if(in_array($dispatch->status, array('posted'))) : ?>
+                                <? if (mod_access('dispatch',  'unpost', Auth::id())) : ?>
+                                    <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                                <? endif ;?>
+                            <? endif;?>
                             @if ($dispatch->status == 'open')
                             <a href="{{ URL::to('dispatch/'._encode($dispatch->id).'/edit') }}" class="btn btn-success btn-label rounded-pill"><i
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
@@ -55,6 +60,7 @@
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row ms-3 mt-3 mx-3">
+                                <input type="hidden" name="dispatch_no" value="{{ $dispatch->dispatch_no }}" id="dispatch_no">
                                 <input type="hidden" name="dispatch_id" value="{{ _encode($dispatch->id) }}" id="dispatch_id">
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <label for="colFormLabel" class="form-label">Plate No <span

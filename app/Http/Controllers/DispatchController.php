@@ -199,10 +199,11 @@ class DispatchController extends Controller
                     if($request->status == 'posted'){
                         $masterData = MasterdataModel::find($wd_detail->master_id);
                         if($masterData->inv_qty >= $request->dispatch_qty[$x] && $wd_detail->inv_qty >= $request->dispatch_qty[$x]){
-                            $masterData->update([
-                                'inv_qty' => $masterData->inv_qty - $request->dispatch_qty[$x],
-                                'whse_qty' => $masterData->whse_qty - $request->dispatch_qty[$x]
-                            ]);
+                            $masterData->inv_qty = $request->dispatch_qty[$x];
+                            $masterData->whse_qty = $request->dispatch_qty[$x];
+                            $master[] = $masterData->toArray();
+                            _stockOutMasterData($master);
+                          
                             MasterfileModel::create([
                                 'ref_no'=> $wd_detail->wd_no,
                                 'status' => 'R',
@@ -352,9 +353,60 @@ class DispatchController extends Controller
      * @param  \App\Models\Dispatch  $dispatch
      * @return \Illuminate\Http\Response
      */
-    public function destroy($dispatch)
+    public function destroy(Request $request)
     {
-        //
+        DB::connection()->beginTransaction();
+
+        try 
+        {
+            $dispatch_no = $request->dispatch_no;
+            if($dispatch_no) {
+                $dispatch_dtl = DispatchDtl::where('dispatch_no', $dispatch_no)->get();
+                DispatchHdr::where('dispatch_no', $dispatch_no)->delete();
+                DispatchDtl::where('dispatch_no', $dispatch_no)->delete();
+                foreach($dispatch_dtl as $dtl){
+                    $wd_detail = WdDtl::find($dtl->wd_dtl_id);
+                    $wd_detail->update([
+                        'dispatch_qty' => $wd_detail->dispatch_qty - $dtl->qty
+                    ]);
+                }
+                $audit_trail[] = [
+                    'control_no' => $dispatch_no,
+                    'type' => 'D',
+                    'status' => 'deleted',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'deleted'
+                ];
+
+                AuditTrail::insert($audit_trail);
+
+                DB::connection()->commit();
+
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'deleted successfully!',
+                    'data'    => $dispatch_no
+                ]);
+
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
     }
 
     public function generateDispatchNo($type,$prefix)
@@ -385,5 +437,70 @@ class DispatchController extends Controller
         ]);
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download($dispatch->dispatch_no.'.pdf');
+    }
+
+    public function unpost(Request $request)
+    {
+        DB::connection()->beginTransaction();
+        try 
+        {
+            $dispatch_no = $request->dispatch_no;
+            if($dispatch_no) {
+                $dispatch = DispatchHdr::where('dispatch_no', $dispatch_no)->update(['status'=>'open']);
+                $dispatch_dtl = DispatchDtl::where('dispatch_no', $dispatch_no)->get();
+                foreach($dispatch_dtl as $dtl){
+                    $wd_detail = WdDtl::find($dtl->wd_dtl_id);
+                    $masterdata = MasterdataModel::find($wd_detail->master_id);
+                    $masterdata->update([
+                        'inv_qty' => $masterdata->inv_qty + $dtl->qty,
+                        'whse_qty' => $masterdata->inv_qty + $dtl->qty,
+                        'reserve_qty' => $masterdata->reserve_qty + $dtl->qty
+                    ]);
+                    MasterfileModel::where(function($cond)use($dtl, $masterdata){
+                        $cond->where('ref_no', $dtl->wd_no)
+                        ->where('product_id',$masterdata->product_id)
+                        ->where('customer_id',$masterdata->customer_id)
+                        ->where('warehouse_id',$masterdata->warehouse_id)
+                        ->where('company_id',$masterdata->company_id)
+                        ->where('inv_uom',$masterdata->inv_uom);
+                    })->delete();
+
+                }
+
+                $audit_trail[] = [
+                    'control_no' => $dispatch_no,
+                    'type' => 'D',
+                    'status' => 'open',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'unpost'
+                ];
+
+                AuditTrail::insert($audit_trail);
+
+                DB::connection()->commit();
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'Unpost successfully!',
+                    'data'    => $dispatch
+                ]);
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
     }
 }
