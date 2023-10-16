@@ -65,7 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/productTemplate', 'App\Http\Controllers\ProductController@productTemplate');
     Route::post('/uploadProduct', 'App\Http\Controllers\ProductController@uploadProduct');
     Route::resource('/master', App\Http\Controllers\MasterDataController::class);
-
+    
 });
 
 Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
@@ -102,6 +102,9 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAvailableStocks']);
     Route::get('/getParticulars', [App\Http\Controllers\SettingsController::class, 'getParticulars']);
     Route::get('/getAllPostedDispatch', [App\Http\Controllers\SettingsController::class, 'getAllPostedDispatch']);
+
+    Route::post('/uploadBeginningInv',  [App\Http\Controllers\SettingsController::class, 'parseBeginningInv']);
+    Route::get('/upload-beginning-inventory', [App\Http\Controllers\SettingsController::class, 'uploadBeginningInv']);
 
 });
 

@@ -5,16 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\AvailableItem;
 use App\Models\MasterdataModel;
 use App\Models\MasterfileModel;
+
+use App\Models\SeriesModel;
+use App\Models\StorageLocationModel;
+
+use App\Models\RcvHdr;
+use App\Models\RcvDtl;
+use App\Models\Products;
+use App\Models\AuditTrail;
+
+use App\Imports\ProductUpload;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UOM;
 use App\Models\WdDtl;
 use App\Models\WdHdr;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 use DataTables;
 
@@ -541,6 +554,184 @@ class SettingsController extends Controller
             }
         $record = $data->get();
         return response()->json($record);
+    }
+
+    function uploadBeginningInv() {
+        return view('master/upload');
+    }
+
+    function parseBeginningInv(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'excel_file' => 'required|mimes:xlsx,xls'
+        ],['excel_file' => 'Excel file is required']);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+        DB::connection()->beginTransaction();
+
+        if ($request->hasFile('excel_file')) {
+            try {
+                $import = new ProductUpload;
+                $data = Excel::toCollection($import, $request->file('excel_file'));
+
+                if(isset($data[0]))
+                {
+                    $prod_data = $data[0];
+                    $header =  $data[0][0];
+                    $valid_header = ['company_id', 'store_id','warehouse_id', 'product_code','location','item_type','whse_qty','whse_uom','inv_qty','inv_uom'];
+                    foreach($header as $val){
+                        if(!in_array($val,$valid_header)){
+                            return response()->json(['status' => false, 'message' => 'File upload failed, Invalid header format. Please download the correct template.']);
+                        }
+                    }
+
+                    //generate RCV and Rcv DTL
+                    $rcv_no = generateSeries('RCV');
+
+                    $series[] = [
+                        'series' => $rcv_no,
+                        'trans_type' => 'RCV',
+                        'created_at' => $this->current_datetime,
+                        'updated_at' => $this->current_datetime,
+                        'user_id' => Auth::user()->id,
+                    ];
+           
+
+                    $masterfile = [];
+
+                    // dd($prod_data);
+                    if(count($prod_data) > 1){
+                        $xdata = [];
+                        $rows = 2;
+                        for($i=1;$i< count($prod_data);$i++){
+                            $company_id = $prod_data[$i][0];
+                            $store_id = $prod_data[$i][1];
+                            $warehouse_id = $prod_data[$i][2];
+                            $product_code = $prod_data[$i][3];
+                            $location = $prod_data[$i][4];
+                            $item_type = $prod_data[$i][5];
+                            $whse_qty = $prod_data[$i][6];
+                            $whse_uom = $prod_data[$i][7];
+                            $inv_qty = $prod_data[$i][8];
+                            $inv_uom = $prod_data[$i][9];
+
+                            if(isset($prod_data[$i][0]) && isset($prod_data[$i][1]) && isset($prod_data[$i][2]) && isset($prod_data[$i][3]) && isset($prod_data[$i][4]) && isset($prod_data[$i][5])){
+                                $storage  = StorageLocationModel::select('storage_location_id as id')->where('location',$location)->first();
+
+                                $product  = Products::select('product_id')->where('product_code',$product_code)->first();
+
+                                if($product)
+                                    $product_id = $product->product_id;
+                                else
+                                    return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} product brand not found."]);
+
+
+                                if($storage) {
+                                    $storage_location_id = $storage->id;
+                                } else {
+                                    if($location == 'RA') {
+                                        $storage_location_id = NULL;
+                                    } else {
+                                        return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} storage location id brand not found."]);    
+                                    }
+                                }
+
+                                $w_uom  = UOM::select('uom_id as id')->where('code',$whse_uom)->first();
+
+                                $i_uom  = UOM::select('uom_id as id')->where('code',$inv_uom)->first();
+
+                                $item = array(
+                                    'rcv_no'=>$rcv_no,
+                                    'product_id'=>$product_id,
+                                    'item_type'=>$item_type,
+                                    'inv_qty'=>$inv_qty,
+                                    'inv_uom'=>$i_uom->id,
+                                    'whse_qty'=>$whse_qty,
+                                    'whse_uom'=>$w_uom->id,
+                                    'created_at'=>$this->current_datetime,
+                                    'updated_at'=>$this->current_datetime,
+                                );
+                
+                                $rcv_dtl = RcvDtl::create($item);
+                
+                                //add on the masterfile
+                                $masterfile[] = array(
+                                    'ref_no'=>$rcv_no,
+                                    'status'=>'X',
+                                    'trans_type'=>'RV',
+                                    'product_id'=>$product_id,
+                                    'item_type'=>$item_type,
+                                    'inv_qty'=>$inv_qty,
+                                    'inv_uom'=>$i_uom->id,
+                                    'whse_qty'=>$whse_qty,
+                                    'whse_uom'=>$w_uom->id,
+                                    'store_id'=>$store_id,
+                                    'company_id'=>$company_id,
+                                    'warehouse_id'=>$warehouse_id,
+                                    'storage_location_id'=>$storage_location_id,
+                                    'ref1_no'=>$rcv_no,
+                                    'ref1_type'=>'rcv',
+                                    'created_at'=>$this->current_datetime,
+                                    'updated_at'=>$this->current_datetime,
+                                );
+                
+                                $masterdata[] = array(
+                                    'customer_id'=>0,
+                                    'company_id'=>$company_id,
+                                    'store_id'=>$store_id,
+                                    'warehouse_id'=>$warehouse_id,
+                                    'product_id'=>$product_id,
+                                    'storage_location_id'=>$storage_location_id,
+                                    'item_type'=>$item_type,
+                                    'inv_qty'=>$inv_qty,
+                                    'inv_uom'=>$i_uom->id,
+                                    'whse_qty'=>$whse_qty,
+                                    'whse_uom'=>$w_uom->id,
+                                    'rcv_dtl_id'=>$rcv_dtl->id,
+                                );
+
+                            }else{
+                                return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} all header must have value."]);
+                            }
+                            $rows++;
+                        }
+                        $audit_trail[] = [
+                            'control_no' => $rcv_no,
+                            'type' => 'RCV',
+                            'status' => 'X',
+                            'created_at' => date('y-m-d h:i:s'),
+                            'updated_at' => date('y-m-d h:i:s'),
+                            'user_id' => Auth::user()->id,
+                        ];
+
+                        MasterfileModel::insert($masterfile);
+
+                        _stockInMasterData($masterdata);
+
+                        AuditTrail::insert($audit_trail);
+                        SeriesModel::insert($series);
+
+                        DB::commit();
+                        return response()->json([
+                            'success'  => true,
+                            'message' => 'File uploaded successfully!'
+                        ]);
+                    }
+                    else{
+                        return response()->json(['status' => false, 'message' => 'File upload failed, No data to be uploaded.']);
+                    }
+                }
+                else{
+                    return response()->json(['status' => false, 'message' => 'File upload failed, No data to be uploaded.']);
+                }
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw $th;
+            }
+        } else{
+            return response()->json(['message' => 'File upload failed'], 400);
+        }
     }
 
 }

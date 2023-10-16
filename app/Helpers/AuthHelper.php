@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use App\Models\SeriesModel;
 
 function test() {
     echo 'test';
@@ -204,7 +205,7 @@ function _stockInMasterData($masterfile) {
             //insert MASTERDATA
             $insert_data[] = array(
                 'company_id'=>$params['company_id'],
-                'customer_id'=>$params['customer_id'],
+                'customer_id'=>isset($params['customer_id']) ? $params['customer_id'] : 0,
                 'store_id'=>$params['store_id'],
                 'warehouse_id'=>$params['warehouse_id'],
                 'product_id'=>$params['product_id'],
@@ -330,4 +331,24 @@ function hasDispatch($wd_no) {
     } else {
         return false;
     }
+}
+
+function generateSeries($type)
+{
+    $data = SeriesModel::where('trans_type', '=', $type)->where('created_at', '>=', date('Y-m-01 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'));
+    $count = $data->count();
+    $count = $count + 1;
+    $date = date('ym');
+
+    $prefix = $type."-";
+
+    if($type == 'RCV') {
+        $prefix = 'R-';
+    } 
+
+    $num = str_pad((int)$count, 5, "0", STR_PAD_LEFT);
+
+    $series = $prefix . $date . "-" . $num;
+
+    return $series;
 }
