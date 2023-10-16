@@ -212,8 +212,8 @@
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
-                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal"><i class="ri-close-line label-icon align-middle rounded-pill fs-16 me-2"></i>Close</button>
-                    <button type="button"  id="receive-po-btn" class=" btn btn-warning btn-label rounded-pill"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Select</button>
+                    <button type="button" class="btn btn-danger btn-label rounded-pill" data-bs-dismiss="modal"><i class="ri-close-line label-icon align-middle rounded-pill fs-16 me-2"></i>Close</button>
+                    <button type="button"  id="receive-po-btn" class=" btn btn-success btn-label rounded-pill"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Select</button>
                 </div>
             </div>
         </div>

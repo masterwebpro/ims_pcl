@@ -132,7 +132,10 @@ class StockMovementController extends Controller
 
             $masterfile = [];
             $audit_trail=[];
-
+            $_stockInMasterdata= [];
+            $_stockOutMasterdata= [];
+            $_isReservedInMasterdata=[];
+         
             for($x=0; $x < count($request->product_id); $x++ ) {
                 $dtl[] = array(
                     'ref_no'=>$ref_no,
@@ -149,9 +152,11 @@ class StockMovementController extends Controller
                     'new_inv_uom'=>$request->new_inv_uom[$x],
                     'new_whse_qty'=>$request->new_inv_qty[$x],
                     'new_whse_uom'=>$request->new_inv_uom[$x],
-                    'ref1_no'=>$request->ref1_no[$x],
-                    'ref1_type'=>$request->ref1_type[$x],
+                    'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    // 'ref1_no'=>$request->ref1_no[$x],
+                    // 'ref1_type'=>$request->ref1_type[$x],
                 );
+               
 
                 // //add on the masterfile new location
                 $masterfile[] = array(
@@ -168,8 +173,8 @@ class StockMovementController extends Controller
                     'inv_uom'=>$request->new_inv_uom[$x],
                     'whse_qty'=>$request->new_inv_qty[$x],
                     'whse_uom'=>$request->new_inv_uom[$x],
-                    'ref1_no'=>$request->ref1_no[$x],
-                    'ref1_type'=>$request->ref1_type[$x],
+                    // 'ref1_no'=>$request->ref1_no[$x],
+                    // 'ref1_type'=>$request->ref1_type[$x],
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
                 );
@@ -189,10 +194,43 @@ class StockMovementController extends Controller
                     'inv_uom'=>$request->new_inv_uom[$x],
                     'whse_qty'=>($request->new_inv_qty[$x] * -1),
                     'whse_uom'=>$request->new_inv_uom[$x],
-                    'ref1_no'=>$request->ref1_no[$x],
-                    'ref1_type'=>$request->ref1_type[$x],
+                    // 'ref1_no'=>$request->ref1_no[$x],
+                    // 'ref1_type'=>$request->ref1_type[$x],
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime,
+                );
+
+                $_stockOutMasterdata[] = array(
+                    'customer_id'=>isset($request->customer_id) ? $request->customer_id : 0,
+                    'company_id'=>$request->company_id,
+                    'store_id'=>$request->store_id,
+                    'warehouse_id'=>$request->warehouse_id,
+                    'product_id'=>$request->product_id[$x],
+                    'storage_location_id'=>($request->old_location[$x] == 0 || $request->old_location[$x] == 'null') ? NULL : $request->old_location[$x],
+                    'item_type'=>$request->item_type[$x],
+                    'inv_qty'=>($request->new_inv_qty[$x]),
+                    'inv_uom'=>$request->new_inv_uom[$x],
+                    'whse_qty'=>($request->new_inv_qty[$x]),
+                    'whse_uom'=>$request->new_inv_uom[$x],
+                    'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    // 'expiry_date'=>$request->expiry_date,
+                    // 'lot_no'=>$request->lot_no,
+                    // 'received_date'=>date("Y-m-d", strtotime($request->date_received)), 
+                );
+
+                $_stockInMasterdata[] = array(
+                    'customer_id'=>isset($request->customer_id) ? $request->customer_id : 0,
+                    'company_id'=>$request->company_id,
+                    'store_id'=>$request->store_id,
+                    'warehouse_id'=>$request->warehouse_id,
+                    'product_id'=>$request->product_id[$x],
+                    'storage_location_id'=>$request->new_location[$x],
+                    'item_type'=>$request->item_type[$x],
+                    'inv_qty'=>($request->new_inv_qty[$x]),
+                    'inv_uom'=>$request->new_inv_uom[$x],
+                    'whse_qty'=>($request->new_inv_qty[$x]),
+                    'whse_uom'=>$request->new_inv_uom[$x],
+                    'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                 );
             }
 
@@ -222,6 +260,11 @@ class StockMovementController extends Controller
                     'user_id' => Auth::user()->id,
                     'data' => null
                 ];
+
+                _stockInMasterData($_stockInMasterdata);
+                _stockOutMasterData($_stockOutMasterdata);
+            } else {
+                // reserve the qty
             }
 
             AuditTrail::insert($audit_trail);

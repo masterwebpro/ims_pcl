@@ -11,6 +11,8 @@ class PoDtl extends Model
 
     protected $table = 'po_dtl';
 
+    public $timestamps = false;
+
     public function header()
     {
         return $this->belongsTo(PoHdr::class, 'po_num', 'po_num');

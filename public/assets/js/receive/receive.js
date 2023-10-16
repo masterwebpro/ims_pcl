@@ -120,6 +120,9 @@ $(document).on('click', '#add-product', function() {
             <span class="text-danger error-msg inv_uom'+(idx-1)+'_error"></span> \
         </td> \
         <td class="ps-1"> \
+            <input type="date" class="form-control" style="width: 150px;" name="manufacture_date[]" placeholder="Manufacture Date" /> \
+        </td> \
+        <td class="ps-1"> \
             <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" placeholder="Lot/Batch No" /> \
         </td> \
         <td class="ps-1"> \
@@ -490,3 +493,26 @@ function computeAll() {
     $("#total_inv_qty").val(total_inv_qty);
     $("#total_whse_qty").val(total_whse_qty);
 }
+
+$(document).on('click', '.split-product', function(e) {
+    e.preventDefault();
+    var id=$(this).data('id');
+ 
+    var thisRow = $( this ).closest( 'tr' )[0];
+    value = $(thisRow).find( '.whse_qty' ).val();
+    var rem  = value % 2;
+    var parent_val = (value / 2);
+    var second_val = (value / 2);
+
+    if(rem != 0 ) {
+        parent_val = (value / 2) + (rem/2);
+        second_val = (value / 2) - (rem/2);
+    } 
+
+    $(thisRow).find( '.whse_qty' ).val(parent_val);
+    $(thisRow).find( '.inv_qty' ).val(parent_val);
+    $( thisRow ).clone().insertAfter( thisRow )
+        .find( '.whse_qty' ).val(second_val)
+        .find( '.inv_qty' ).val(second_val); 
+    // $( thisRow ).clone().insertAfter( thisRow ); 
+});

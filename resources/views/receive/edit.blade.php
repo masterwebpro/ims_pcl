@@ -340,6 +340,7 @@
                                                 <th tyle="width: 50px;">WHSE UOM</th>
                                                 <th >Inv Qty</th>
                                                 <th style="width: 50px;">Inv UOM</th>
+                                                <th scope="col" >Manufacturing Date</th>
                                                 <th scope="col" >Lot/Batch</th>
                                                 <th scope="col" >Expiry Date</th>
                                                 <th scope="col" >Remarks</th>
@@ -364,7 +365,9 @@
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                     {{$x++}} </td>
                                                     <td class="text-start fs-12"> 
-                                                        {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
+                                                        <div class="product_name">{{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small></div>
+                                                        <input type="hidden" name="po_dtl_id[]" readonly id="product_id_{{$item->po_dtl_id}}" value="{{$item->po_dtl_id}}" />
+                                                        <input type="hidden" name="product_code[]" value="{{$item->product->product_code}}" />
                                                     </td>
                                                     <td class="text-start"> 
                                                         <select name="item_type[]" id="item_type_{{$x}}" class="uom uom_select form-select">
@@ -372,28 +375,36 @@
                                                             <option class="fs-8" value="damage" <?=($item->item_type == 'damage')? 'selected':''?>>Damage</option>  
                                                             <option class="fs-8" value="repair" <?=($item->item_type == 'repair')? 'selected':''?>>Repair</option>                                                            
                                                         </select>
+                                                        <input type="hidden" name="available_qty[]" readonly name="available_qty[]" id="available_qty_{{$item->product_id}}" value="{{$item->inv_qty}}" />
                                                     </td>
                                                     <td class=" ps-1">
-                                                        <input type="text" style="width: 70px;"  class="form-control text-end numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$x}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                        <input type="text" style="width: 70px;"  class="form-control text-end numeric whse_qty uom_select" name="whse_qty[]" data-id="{{$item->product_id}}" id="whse_qty_{{$item->product_id}}" value="{{$item->whse_qty}}" placeholder="Whse Qty" />
+                                                        <span class="text-danger error-msg whse_qty{{($x-2)}}_error"></span>
                                                     </td>
                                                     <td class=" ps-1">
-                                                       <select name="whse_uom[]" id="whse_uom_{{$x}}" class="uom uom_select form-select">
+                                                       <select name="whse_uom[]"  id="uom_{{$item->product_id}}" data-id="{{$item->product_id}}" class="uom whse_uom uom_select form-select">
                                                             <option value="">Select UOM</option>                                                            
                                                             @foreach($uom_list as $uom_whse)
                                                             <option value="{{$uom_whse->uom_id}}" <?=($uom_whse->uom_id == $item->whse_uom) ? 'selected': ''; ?> >{{$uom_whse->code}}</option>
                                                             @endforeach
                                                         </select>
+                                                        <span class="text-danger error-msg whse_uom{{($x-2)}}_error"></span>
                                                     </td>
                                                     <td class="ps-1">
-                                                        <input type="text" style="width: 70px;"  class="form-control inv_qty text-end numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                        <input type="text" style="width: 70px;"  class="form-control inv_qty text-end numeric uom_select" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$item->product_id}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
+                                                        <span class="text-danger error-msg inv_qty{{($x-2)}}_error"></span>
                                                     </td>
                                                     <td class=" ps-1">
-                                                        <select name="inv_uom[]" id="inv_uom_{{$x}}" class="uom uom_select form-select">
+                                                        <select name="inv_uom[]" id="inv_uom_{{$item->product_id}}" data-id="{{$item->product_id}}" class="uom uom_select form-select">
                                                             <option value="">Select UOM</option>                                                            
                                                             @foreach($uom_list as $uom)
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
+                                                        <span class="text-danger error-msg inv_uom{{($x-2)}}_error"></span>
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="date" class="form-control" style="width: 150px;" name="manufacture_date[]" value="{{$item->manufacture_date}}" placeholder="Manufacturing Date" />
                                                     </td>
                                                     <td class="ps-1">
                                                         <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />
@@ -406,6 +417,8 @@
                                                     </td>
                                                     <td>
                                                         <div class="text-center">
+                                                            <a href="javascript:void(0)" class="text-info split-product" data-id="{{$item->product_id}}"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>
+
                                                             <a href="javascript:void(0)" class="text-danger remove-product" data-id="{{$item->product_id}}">
                                                                 <i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i>
                                                             </a>

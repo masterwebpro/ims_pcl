@@ -153,6 +153,7 @@ class PurchaseOrderController extends Controller
                     'product_id'=>$request->product_id[$x],
                     'uom_id'=>$request->uom[$x],
                     'requested_qty'=>$request->qty[$x],
+                    'available_qty'=>$request->qty[$x],
                     'unit_amount'=>parseNumber(($request->unit_price[$x]) ? $request->unit_price[$x] : 0),
                     'discount'=>parseNumber(($request->discount[$x]) ? $request->discount[$x] : 0),
                     'total_amount'=>parseNumber(($request->amount[$x]) ? $request->amount[$x] : 0),
@@ -227,15 +228,5 @@ class PurchaseOrderController extends Controller
             'supplier_list'=>$supplier_list,
             'uom'=>$uom
         ]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    public function destroy($id)
-    {
-        //
     }
 }

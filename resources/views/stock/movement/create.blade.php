@@ -171,7 +171,7 @@
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
-                                                <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>
+                                                <th scope="col" class="text-center d-none" rowspan="2"> &nbsp;</th>
                                                 <th scope="col" class="text-center" rowspan="2" valign="middle">Product Deatails</th>
                                                 <th rowspan="2" class="text-center" valign="middle">Item Type</th>
                                                 <th colspan="2" class="text-center">Old Location</th>
@@ -259,8 +259,9 @@
                                     <th>Inv Uom</th>
                                     <th>Whse qty</th>
                                     <th>Whse Uom</th>
-                                    <th>Ref1 No</th>
-                                    <th>Ref1 Type</th>
+                                    <th>Rcv DTL ID</th>
+                                    <!-- <th>REF1</th>
+                                    <th>REF1_type</th> -->
                                 </tr>
                             </thead>
                             <tbody>

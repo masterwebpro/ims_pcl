@@ -174,17 +174,22 @@ function _stockInMasterData($masterfile) {
             ->where('warehouse_id', $params['warehouse_id'])
             ->where('product_id', $params['product_id']);
 
-            if(isset($params['storage_location_id']))
+            if(isset($params['storage_location_id'])) 
                 $updateData->where('storage_location_id', $params['storage_location_id']);
+            else
+                $updateData->where('storage_location_id', null);
 
-            if(isset($params['lot_no']))
-                $updateData->where('lot_no', $params['lot_no']);
+            // if(isset($params['lot_no']))
+            //     $updateData->where('lot_no', $params['lot_no']);
         
-            if(isset($params['expiry_date']))
-                $updateData->where('expiry_date', $params['expiry_date']);
+            // if(isset($params['expiry_date']))
+            //     $updateData->where('expiry_date', $params['expiry_date']);
 
-            if(isset($params['received_date']))
-                $updateData->where('received_date', $params['received_date']);
+            // if(isset($params['manufacture_date']))
+            //     $updateData->where('manufacture_date', $params['manufacture_date']);
+
+            if(isset($params['rcv_dtl_id']))
+                $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
             
             $record = $updateData->first();
 
@@ -209,9 +214,11 @@ function _stockInMasterData($masterfile) {
                 'inv_uom'=>$params['inv_uom'],
                 'whse_qty'=>$params['whse_qty'],
                 'whse_uom'=>$params['whse_uom'],
-                'expiry_date'=>isset($params['expiry_date']) ? $params['expiry_date'] : null ,
-                'lot_no'=>isset($params['lot_no']) ? $params['lot_no'] : null,
-                'received_date'=>isset($params['received_date']) ? $params['received_date'] : null
+                // 'expiry_date'=>isset($params['expiry_date']) ? $params['expiry_date'] : null ,
+                // 'lot_no'=>isset($params['lot_no']) ? $params['lot_no'] : null,
+                // 'received_date'=>isset($params['received_date']) ? $params['received_date'] : null,
+                // 'manufacture_date'=>isset($params['manufacture_date']) ? $params['manufacture_date'] : null,
+                'rcv_dtl_id'=>isset($params['rcv_dtl_id']) ? $params['rcv_dtl_id'] : null
             );
         }
     }
@@ -225,6 +232,7 @@ function _stockOutMasterData($masterfile) {
 
     foreach($masterfile as $key => $params) {
         $masterfile_id = _has_masterfile($params);
+        
         if($masterfile_id) {
 
             //search on Master
@@ -234,19 +242,27 @@ function _stockOutMasterData($masterfile) {
                 ->where('warehouse_id', $params['warehouse_id'])
                 ->where('product_id', $params['product_id']);
 
-            if(isset($params['storage_location_id']))
+            if(isset($params['storage_location_id'])) {
                 $updateData->where('storage_location_id', $params['storage_location_id']);
+            } else {
+                $updateData->where('storage_location_id', null);
+            }
+                
 
-            if(isset($params['lot_no']))
-                $updateData->where('lot_no', $params['lot_no']);
+            // if(isset($params['lot_no']))
+            //     $updateData->where('lot_no', $params['lot_no']);
         
-            if(isset($params['expiry_date']))
-                $updateData->where('expiry_date', $params['expiry_date']);
+            // if(isset($params['expiry_date']))
+            //     $updateData->where('expiry_date', $params['expiry_date']);
 
-            if(isset($params['received_date']))
-                $updateData->where('received_date', $params['received_date']);
+            // if(isset($params['manufacture_date']))
+            //     $updateData->where('manufacture_date', $params['manufacture_date']);
+
+            if(isset($params['rcv_dtl_id']))
+                $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
             
             $record = $updateData->first();
+
             
             //update MASTERDATA
             DB::table('masterdata')
@@ -256,7 +272,6 @@ function _stockOutMasterData($masterfile) {
                     'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty']),
                     'reserve_qty' => DB::raw('reserve_qty - '.$params['inv_qty']),
                 ]);
-
         } 
     }
 }
@@ -276,17 +291,26 @@ function _has_masterfile($params) {
     if(isset($params['product_id']))
         $result->where('product_id', $params['product_id']);
     
-    if(isset($params['storage_location_id']))
+    if(isset($params['storage_location_id'])) {
         $result->where('storage_location_id', $params['storage_location_id']);
+    } else {
+        $result->where('storage_location_id', null);
+    }
 
-    if(isset($params['lot_no']))
-        $result->where('lot_no', $params['lot_no']);
+    // if(isset($params['lot_no']))
+    //     $result->where('lot_no', $params['lot_no']);
 
-    if(isset($params['expiry_date']))
-        $result->where('expiry_date', $params['expiry_date']);
+    // if(isset($params['expiry_date']))
+    //     $result->where('expiry_date', $params['expiry_date']);
 
-    if(isset($params['received_date']))
-        $result->where('received_date', $params['received_date']);
+    // if(isset($params['received_date']))
+    //     $result->where('received_date', $params['received_date']);
+    
+    // if(isset($params['manufacture_date']))
+    //     $result->where('manufacture_date', $params['manufacture_date']);
+    
+    if(isset($params['rcv_dtl_id']))
+        $result->where('rcv_dtl_id', $params['rcv_dtl_id']);
 
     $record = $result->get();
 

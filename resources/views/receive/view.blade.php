@@ -329,6 +329,7 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
+                                                <th scope="col" >Manufacturing Date</th>
                                                 <th scope="col" >Lot/Batch</th>
                                                 <th scope="col" >Expiry Date</th>
                                                 <th scope="col" >Remarks</th>
@@ -353,6 +354,7 @@
                                                     {{$x++}} </td>
                                                     <td class="text-start fs-12"> 
                                                         {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
+                                                        <input type="hidden" name="po_dtl_id[]" readonly id="product_id_{{$item->po_dtl_id}}" value="{{$item->po_dtl_id}}" />
                                                     </td>
                                                     <td class="text-start fs-12"> 
                                                         <select name="item_type[]"  disabled  id="item_type_{{$x}}" class="uom uom_select form-select">
@@ -382,6 +384,9 @@
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
                                                         </select>
+                                                    </td>
+                                                    <td class="ps-1">
+                                                        <input type="date" class="form-control" disabled style="width: 150px;" name="manufacture_date[]" value="{{$item->manufacture_date}}" placeholder="Manufacturing Date" />
                                                     </td>
                                                     <td class="ps-1">
                                                         <input type="text" class="form-control" disabled style="width: 150px;" name="lot_no[]" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />

@@ -21,6 +21,8 @@ class RcvDtl extends Model
         'whse_uom',
         'lot_no',
         'expiry_date',
+        'manufacture_date',
+        'po_dtl_id',
         'remarks',
         'updated_at',
         'created_at'

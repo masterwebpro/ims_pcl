@@ -165,8 +165,8 @@ $(document).on('click', '.search-item', function() {
                             { data: 'i_code' },
                             { data: 'whse_qty' },
                             { data: 'w_code' },
-                            { data: 'ref1_no', visible: false },
-                            { data: 'ref1_type', visible: false },
+                            { data: 'rcv_dtl_id' },
+                            
                         ],
                         "pageLength": 50,
                         lengthMenu: [
@@ -208,10 +208,9 @@ $(document).on('click', '#add-product', function() {
             btn += '</div>'
 
             $('#product-list tbody').append('<tr id="product_'+(rowCount-1)+'"> \
-            <td class="text-start"> \
+            <td class="text-start d-none"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
-                <input type="hidden" name="ref1_no[]" readonly id="ref1_no_'+data[x].product_id+'" value="'+data[x].ref1_no+'" /> \
-                <input type="hidden" name="ref1_type[]" readonly id="ref1_type_'+data[x].product_id+'" value="'+data[x].ref1_type+'" /> \
+                <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id_'+data[x].rcv_dtl_id+'" value="'+data[x].rcv_dtl_id+'" /> \
             '+rowCount+' </td> \
             <td class="text-start  fs-13"> \
                 '+data[x].product_name+'<br/><small>'+data[x].product_code+'</small> \
@@ -226,7 +225,7 @@ $(document).on('click', '#add-product', function() {
             </td> \
             <td class="text-start ps-1 fs-13"> \
                 <div class="input-group"  style="width: 140px;"> \
-                    <input type="text" readonly class="form-control input-group-text numeric movement_item" name="old_inv_qty[]" data-id="'+data[x].product_id+'" id="old_inv_qty_'+(rowCount-1)+'" value="'+data[x].inv_qty+'"> \
+                    <input type="text" readonly class="form-control old_inv_qty input-group-text numeric movement_item" name="old_inv_qty[]" data-id="'+data[x].product_id+'" id="old_inv_qty_'+(rowCount-1)+'" value="'+data[x].inv_qty+'"> \
                     <input type="hidden" readonly class="form-control" name="old_inv_uom[]" data-id="'+data[x].product_id+'" id="old_inv_uom_'+(rowCount-1)+'" value="'+data[x].i_uom_id+'"> \
                     <span class="input-group-text">'+data[x].i_code+'</span> \
                 </div> \
@@ -330,104 +329,9 @@ function _submitData(form_data) {
     });
 }
 
-$(document).on('click', '.submit-delete', function (e) {
-    e.preventDefault();
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to DELETE this transaction?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, DELETE it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: BASEURL + 'stock/movement',
-                data: {
-                    ref_no : $('#ref_no').val(),
-                    _token: $('input[name=_token]').val()
-                },
-                method: "DELETE",
-                dataType: 'json',
-                beforeSend: function () {
-                    $('#preloading').modal('show');
-                    $('#submit-receive').find('span.error-msg').text('');
-                },
-                success: function (data) {
-                    if($.isEmptyObject(data.errors)) {
-                        if(data.success == true) {
-                            toastr.success(data.message); 
-                            setTimeout(function () {
-                                window.location = BASEURL+'stock/movement';
-                            }, 300);
-                            
-                        } else {
-                            toastr.error(data.message,'Error on saving'); 
-                        }
-                    } else {
-                        toastr.error('Some fields are required');
-                    }
-                },
-                complete: function() {
-                   $('#preloading').modal('hide');
-                }
-            });
-        }
-    });
-});
-
-$(document).on('click', '.submit-unpost', function (e) {
-    e.preventDefault();
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to UNPOST this transaction?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, UNPOST it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: BASEURL + 'stock/movement/unpost',
-                data: {
-                    ref_no : $('#ref_no').val(),
-                    _token: $('input[name=_token]').val()
-                },
-                method: "post",
-                dataType: 'json',
-                beforeSend: function () {
-                    $('#preloading').modal('show');
-                    $('#submit-receive').find('span.error-msg').text('');
-                },
-                success: function (data) {
-                    if($.isEmptyObject(data.errors)) {
-                        if(data.success == true) {
-                            toastr.success(data.message); 
-                            setTimeout(function () {
-                               location.reload();
-                            }, 300);
-                            
-                        } else {
-                            toastr.error(data.message,'Error on saving'); 
-                        }
-                    } else {
-                        toastr.error('Some fields are required');
-                    }
-                },
-                complete: function() {
-                   $('#preloading').modal('hide');
-                }
-            });
-        }
-    });
-});
-
-
 $(document).on('click', '.remove-product', function() {
     var id = $(this).data('id');
-    $(this).closest("tr").remove();
+    $('#product_'+id).remove();
 });
 
 $(document).on('blur', '.new_inv_qty', function() {
@@ -459,6 +363,12 @@ function scanItem(val) {
     console.log(val)
 }
 
+// $(document).on('click', '.split-product', function(e) {
+//     e.preventDefault();
+//     var thisRow = $( this ).closest( 'tr' )[0];
+//     $( thisRow ).clone().insertAfter( thisRow ).find( '.new_inv_qty' ).val('');
+// });
+
 $(document).on('click', '.split-product', function(e) {
     e.preventDefault();
     var id=$(this).data('id');
@@ -475,7 +385,9 @@ $(document).on('click', '.split-product', function(e) {
     } 
 
     $(thisRow).find( '.new_inv_qty' ).val(parent_val);
-    $( thisRow ).clone().insertAfter( thisRow ).find( '.new_inv_qty' ).val(second_val); 
+    $( thisRow ).clone().insertAfter( thisRow )
+        .find( '.new_inv_qty' ).val(second_val); 
+    // $( thisRow ).clone().insertAfter( thisRow ); 
 });
 
 
