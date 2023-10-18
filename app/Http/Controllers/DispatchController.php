@@ -193,16 +193,18 @@ class DispatchController extends Controller
                         'dispatch_no'=>$dispatch_no,
                     );
                     $dtl = DispatchDtl::create($dtl);
+                    $totDispatch = DispatchDtl::select(DB::raw('sum(qty) as dispatch_qty'))->where('wd_dtl_id',$request->wd_dtl_id[$x])->first();
                     $wd_detail = WdDtl::find($request->wd_dtl_id[$x]);
-                    $wd_detail->update(['dispatch_qty' => $request->dispatch_qty[$x]]);
+                    $wd_detail->update(['dispatch_qty' => $totDispatch->dispatch_qty]);
 
                     if($request->status == 'posted'){
                         $masterData = MasterdataModel::find($wd_detail->master_id);
                         if($masterData->inv_qty >= $request->dispatch_qty[$x] && $wd_detail->inv_qty >= $request->dispatch_qty[$x]){
-                            $masterData->inv_qty = $request->dispatch_qty[$x];
-                            $masterData->whse_qty = $request->dispatch_qty[$x];
-                            $master[] = $masterData->toArray();
-                            _stockOutMasterData($master);
+                            $masterData->update([
+                                'inv_qty' => $masterData->inv_qty - $request->dispatch_qty[$x],
+                                'whse_qty' => $masterData->whse_qty - $request->dispatch_qty[$x],
+                                'reserve_qty' => $masterData->reserve_qty - $request->dispatch_qty[$x],
+                            ]);
                           
                             MasterfileModel::create([
                                 'ref_no'=> $wd_detail->wd_no,
@@ -453,7 +455,7 @@ class DispatchController extends Controller
                     $masterdata = MasterdataModel::find($wd_detail->master_id);
                     $masterdata->update([
                         'inv_qty' => $masterdata->inv_qty + $dtl->qty,
-                        'whse_qty' => $masterdata->inv_qty + $dtl->qty,
+                        'whse_qty' => $masterdata->whse_qty + $dtl->qty,
                         'reserve_qty' => $masterdata->reserve_qty + $dtl->qty
                     ]);
                     MasterfileModel::where(function($cond)use($dtl, $masterdata){

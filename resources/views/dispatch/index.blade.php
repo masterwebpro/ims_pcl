@@ -102,7 +102,7 @@
                             <? if($dispatch_list->total() > 0 ) : ?>
                                 <? foreach($dispatch_list as $dispatch) :?>
                                     <tr>
-                                        <td class="dispatch_no">{{ $dispatch->dispatch_no}}</td>
+                                        <td class="dispatch_no"><a href="{{ URL::to('dispatch') }}/<?=_encode($dispatch->id)?>" data-id="{{$dispatch->id}}" class="link-info text-info d-inline-block">{{ $dispatch->dispatch_no}} </a></td>
                                         <td class="">{{ $dispatch->dispatch_by }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y',strtotime($dispatch->dispatch_date)) }}</td>
                                         <td class="">{{ $dispatch->trucker_name }}</td>

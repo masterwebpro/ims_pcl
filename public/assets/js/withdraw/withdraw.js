@@ -116,6 +116,7 @@ function masterfile(){
             { data: 'ui_code' },
             { data: 'lot_no' },
             { data: 'expiry_date' },
+            { data: 'manufacture_date' },
             { data: 'warehouse_name' },
             { data: 'location' },
         ],
@@ -181,6 +182,9 @@ $(document).on('click', '#add-product', function() {
             </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].expiry_date+'\
+            </td> \
+            <td class="text-start  fs-14"> \
+                '+data[x].manufacture_date+'\
             </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].warehouse_name+'\
@@ -304,13 +308,13 @@ $(document).on('click', '.submit-unpost', function (e) {
                 success: function (data) {
                     if($.isEmptyObject(data.errors)) {
                         if(data.success == true) {
-                            toastr.success(data.message); 
+                            toastr.success(data.message);
                             setTimeout(function () {
                                 window.location = BASEURL+'withdraw';
                             }, 300);
-                            
+
                         } else {
-                            // toastr.error(data.message,'Error on saving'); 
+                            // toastr.error(data.message,'Error on saving');
                             showError(data.message);
                         }
                     } else {
@@ -352,14 +356,14 @@ $(document).on('click', '.submit-delete', function (e) {
                 success: function (data) {
                     if($.isEmptyObject(data.errors)) {
                         if(data.success == true) {
-                            toastr.success(data.message); 
+                            toastr.success(data.message);
                             setTimeout(function () {
                                 window.location = BASEURL+'withdraw';
                             }, 300);
-                            
+
                         } else {
-                            toastr.error(data.message,'Error on saving'); 
-                         
+                            toastr.error(data.message,'Error on saving');
+
                         }
                     } else {
                         toastr.error('Some fields are required');

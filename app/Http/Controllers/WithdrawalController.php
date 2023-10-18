@@ -488,13 +488,13 @@ class WithdrawalController extends Controller
     {
         DB::connection()->beginTransaction();
 
-        try 
+        try
         {
             $wd_no = $request->wd_no;
             if($wd_no) {
                 WdHdr::where('wd_no', $wd_no)->delete();
                 WdDtl::where('wd_no', $wd_no)->delete();
-                
+
                 $audit_trail[] = [
                     'control_no' => $wd_no,
                     'type' => 'WD',
@@ -531,7 +531,7 @@ class WithdrawalController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }   
+        }
     }
 
     public function generateWdNo($type,$prefix)
@@ -589,7 +589,7 @@ class WithdrawalController extends Controller
     public function unpost(Request $request)
     {
         DB::connection()->beginTransaction();
-        try 
+        try
         {
             $wd_no = $request->wd_no;
             if($wd_no) {
@@ -605,7 +605,7 @@ class WithdrawalController extends Controller
                         $mster_hdr = MasterfileModel::where('ref1_no', $wd_no)->delete();
                         $wd_dtl = WdDtl::select('master_id',DB::raw('sum(inv_qty) as inv_qty'))->where('wd_no', $wd_no)->groupBy('master_id')->get();
                         foreach($wd_dtl as $dtl){
-                            $msterdata = MasterdataModel::finde($dtl->master_id);
+                            $msterdata = MasterdataModel::find($dtl->master_id);
                             $msterdata->update(['reserve_qty' => $msterdata->reserve_qty - $dtl->inv_qty]);
                         }
 
@@ -644,6 +644,6 @@ class WithdrawalController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }   
+        }
     }
 }

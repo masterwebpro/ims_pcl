@@ -30,7 +30,7 @@
                             <div class="col-lg-3 col-sm-6">
                                 <div class="search-box">
                                     <input type="text" name="q" class="form-control search"
-                                        placeholder="WD or Order Number" value="{{isset($request->q) ? $request->q : ''}}">
+                                        placeholder="Product Code / Name, Lot No, Location" value="{{isset($request->q) ? $request->q : ''}}">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
                             </div>
@@ -110,8 +110,6 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
-                                <th class="sort" data-sort="client_name">Customer Name</th>
-                                <th class="sort" data-sort="client_name">Company Name</th>
                                 <th class="sort" data-sort="store">Site Name</th>
                                 <th class="sort" data-sort="store">Warehouse</th>
                                 <th class="sort" data-sort="store">Product</th>
@@ -120,11 +118,12 @@
                                 <th class="sort" data-sort="store">Unit</th>
                                 <th class="sort" data-sort="store">Whse Qty</th>
                                 <th class="sort" data-sort="store">Unit</th>
+                                <th class="sort" data-sort="store">Reserve Qty</th>
+                                <th class="sort" data-sort="store">Location</th>
                                 <th class="sort" data-sort="store">Lot No</th>
                                 <th class="sort" data-sort="store">Expiry Date</th>
+                                <th class="sort" data-sort="status">Mfg. Date</th>
                                 <th class="sort" data-sort="withdraw_date">Received Date</th>
-                                <th class="sort" data-sort="status">Status</th>
-                                <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
 
@@ -132,18 +131,20 @@
                             <? if($master_list->total() > 0 ) : ?>
                                 <? foreach($master_list as $master) :?>
                                     <tr>
-                                        <td class="company_name">{{ $master->company_name}}</td>
-                                        <td class="client_name">{{ $master->client_name}}</td>
                                         <td class="store">{{ $master->store_name}}</td>
+                                        <td class="store">{{ $master->warehouse_name}}</td>
+                                        <td class="text-wrap"><b>{{ $master->product_code }}</b> <br/> <em> {{ $master->product_name}} <em/></td>
+                                        <td class="store">{{ $master->item_type}}</td>
+                                        <td class="store">{{ $master->inv_qty}}</td>
+                                        <td class="store">{{ $master->ui_code}}</td>
+                                        <td class="store">{{ $master->whse_qty}}</td>
+                                        <td class="store">{{ $master->uw_code}}</td>
+                                        <td class="store">{{ $master->reserve_qty}}</td>
+                                        <td class="store">{{ $master->location}}</td>
+                                        <td class="store">{{ $master->lot_no}}</td>
+                                        <td class="store">{{ $master->expiry_date}}</td>
+                                        <td class="store">{{ $master->manufacture_date}}</td>
                                         <td class="order_date">{{ date('M d, Y',strtotime($master->received_date)) }}</td>
-                                        <td class="status"><span class="badge {{ $master->status }} text-uppercase fs-11">{{ $master->status }}</span></td>
-                                        <td class="action">
-                                            <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('master') }}/<?=_encode($master->id)?>" data-id="{{$master->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <? if($master->status != 'posted') : ?>
-                                                    <a href="{{ URL::to('master') }}/<?=_encode($master->id);?>/edit" data-id="{{$master->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
-                                                <? endif; ?>
-                                        </td>
                                     </tr>
                                 <? endforeach; ?>
                             <? else :?>

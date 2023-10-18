@@ -17,11 +17,26 @@ class MasterDataController extends Controller
         $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
         $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
 
-        $master_list = MasterdataModel::select('masterdata.*', 'products.product_code','products.product_name', 's.store_name','c.client_name','com.client_name as company_name')
+        $master_list = MasterdataModel::select(
+                        'masterdata.*', 
+                        'products.product_code',
+                        'products.product_name', 
+                        's.store_name',
+                        'c.client_name',
+                        'com.client_name as company_name',
+                        'wh.warehouse_name',
+                        'uw.code as uw_code',
+                        'ui.code as ui_code',
+                        'sl.location'
+                        )
                         ->leftJoin('products', 'products.product_id', '=', 'masterdata.product_id')
+                        ->leftJoin('uom as uw','uw.uom_id','=','masterdata.whse_uom')
+                        ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
+                        ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterdata.storage_location_id')
                         ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
                         ->leftJoin('client_list as c', 'c.id', '=', 'masterdata.customer_id')
                         ->leftJoin('client_list as com', 'com.id', '=', 'masterdata.company_id')
+                        ->leftJoin('warehouses as wh', 'wh.id', '=', 'masterdata.warehouse_id')
                         ->where([
                             [function ($query) use ($request, $startDate, $endDate) {
                                 if (($s = $request->status)) {
