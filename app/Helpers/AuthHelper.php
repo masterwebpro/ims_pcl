@@ -264,14 +264,16 @@ function _stockOutMasterData($masterfile) {
             
             $record = $updateData->first();
 
-            
+            $update = array(
+               
+            );
+          
             //update MASTERDATA
             DB::table('masterdata')
                 ->where('id', $record->id)
                 ->update([
                     'inv_qty' => DB::raw('inv_qty - '.$params['inv_qty']),
-                    'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty']),
-                    'reserve_qty' => DB::raw('reserve_qty - '.$params['inv_qty']),
+                    'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty'])
                 ]);
         } 
     }

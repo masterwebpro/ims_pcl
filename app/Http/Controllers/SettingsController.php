@@ -491,7 +491,8 @@ class SettingsController extends Controller
                         DB::raw('sum(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty'),
                         'masterdata.lot_no',
                         'masterdata.expiry_date',
-                        'masterdata.received_date'
+                        'masterdata.received_date',
+                        'masterdata.manufacture_date'
                     )
                     ->leftJoin('products as p','p.product_id','=','masterdata.product_id')
                     ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterdata.storage_location_id')
@@ -596,7 +597,7 @@ class SettingsController extends Controller
                         'updated_at' => $this->current_datetime,
                         'user_id' => Auth::user()->id,
                     ];
-           
+
 
                     $masterfile = [];
 
@@ -633,7 +634,7 @@ class SettingsController extends Controller
                                     if($location == 'RA') {
                                         $storage_location_id = NULL;
                                     } else {
-                                        return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} storage location id brand not found."]);    
+                                        return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} storage location id brand not found."]);
                                     }
                                 }
 
@@ -652,9 +653,9 @@ class SettingsController extends Controller
                                     'created_at'=>$this->current_datetime,
                                     'updated_at'=>$this->current_datetime,
                                 );
-                
+
                                 $rcv_dtl = RcvDtl::create($item);
-                
+
                                 //add on the masterfile
                                 $masterfile[] = array(
                                     'ref_no'=>$rcv_no,
@@ -675,7 +676,7 @@ class SettingsController extends Controller
                                     'created_at'=>$this->current_datetime,
                                     'updated_at'=>$this->current_datetime,
                                 );
-                
+
                                 $masterdata[] = array(
                                     'customer_id'=>0,
                                     'company_id'=>$company_id,

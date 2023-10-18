@@ -234,9 +234,10 @@
                                                 <tr class="table-active">
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
-                                                    <th scope="col" class="text-center">Withdraw Quantity</th>
-                                                    <th scope="col" class="text-center">Dispatch Quantity</th>
-                                                    <th scope="col">Received Quantity</th>
+                                                    <th scope="col" class="text-center">Ordered Quantity</th>
+                                                    <th scope="col" class="text-center">Available Quantity</th>
+                                                    <th scope="col" class="text-center">Dispatched Quantity</th>
+                                                    <th scope="col">Customer Received Quantity</th>
                                                     <th scope="col">Unit</th>
                                                 </tr>
                                             </thead>
@@ -259,6 +260,9 @@
                                                             </td>
                                                             <td class="ps-1 text-center">
                                                                 {{ number_format($item->inv_qty, 2) }}
+                                                            </td>
+                                                            <td class="ps-1 text-center">
+                                                                {{ number_format(($item->inv_qty - $item->dispatch_qty), 2) }}
                                                             </td>
                                                             <td class="ps-1 text-center">
                                                                 {{ number_format($item->dispatch_qty, 2) }}

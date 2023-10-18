@@ -364,6 +364,7 @@
                                                     <th scope="col">Unit</th>
                                                     <th scope="col">Lot No</th>
                                                     <th scope="col">Expiry Date</th>
+                                                    <th scope="col">Mfg. Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     <th scope="col">Action</th>
@@ -410,6 +411,9 @@
                                                         </td>
                                                         <td class=" ps-1">
                                                             {{ ($item->master) ? $item->master->expiry_date : "" }}
+                                                        </td>
+                                                        <td class=" ps-1">
+                                                            {{ ($item->master) ? $item->master->manufacture_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
                                                             {{ ($item->master) ? $item->master->warehouse_name : "" }}
