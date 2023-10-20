@@ -354,3 +354,37 @@ function generateSeries($type)
 
     return $series;
 }
+
+function timeInterval($start,$end){
+    $startTime = new DateTime($start);
+    $endTime = new DateTime($end);
+    $interval = $startTime->diff($endTime);
+    $minutes = $interval->i + ($interval->h * 60);
+    $days = floor($minutes / (24 * 60));
+    $hours = floor($minutes / 60);
+    $remainingMinutes = $minutes % 60;
+    $text = '';
+
+    if ($days > 0) {
+        $text .= $days . ' day';
+        if ($days > 1) {
+            $text .= 's '; // Pluralize "day" if it's more than 1 day
+        }
+        $text .= ' ';
+    }
+
+    if ($hours > 0) {
+        $text .= $hours . ' hr';
+        if ($hours > 1) {
+            $text .= 's '; // Pluralize "hour" if it's more than 1 hour
+        }
+    } 
+
+    if ($remainingMinutes > 0){
+        $text .= $remainingMinutes . ' min';
+        if ($remainingMinutes > 1) {
+            $text .= 's'; // Pluralize "minute" if it's more than 1 minute
+        }
+    }
+    return $text;
+}

@@ -65,7 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/productTemplate', 'App\Http\Controllers\ProductController@productTemplate');
     Route::post('/uploadProduct', 'App\Http\Controllers\ProductController@uploadProduct');
     Route::resource('/master', App\Http\Controllers\MasterDataController::class);
-    
+
 });
 
 Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
@@ -135,6 +135,9 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/get-withdrawal-detailed', [App\Http\Controllers\ReportController::class, 'getWithdrawalDetailed']);
     Route::get('/export-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'exportWithdrawalDetailed'])->name('export-withdrawal-detailed');
     Route::get('/print-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'printPdfWithdrawalDetailed'])->name('print-withdrawal-detailed');
+
+    Route::get('/outbound-monitoring', [App\Http\Controllers\ReportController::class, 'getOutboundMonitoringIndex']);
+
 });
 
 
