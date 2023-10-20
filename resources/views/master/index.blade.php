@@ -17,11 +17,11 @@
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1">Master List</h5>
-                    <div class="flex-shrink-0">
+                    {{--  <div class="flex-shrink-0">
                         <form name="submit-master" id="submit-master">
                         <button data-status="posted" class="generate-data btn btn-success btn-label rounded-pill"><i class="ri-file-line label-icon align-middle rounded-pill fs-16 me-2"></i> Generate</button>
                         </form>
-                    </div>
+                    </div>  --}}
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">

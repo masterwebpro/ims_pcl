@@ -110,6 +110,12 @@ class DispatchController extends Controller
             'finish_time' => 'required',
             'date_departed' => 'required',
             'time_departed' => 'required',
+            'start_pick_date' => 'required',
+            'start_pick_time' => 'required',
+            'finish_pick_date' => 'required',
+            'finish_pick_time' => 'required',
+            'arrival_date' => 'required',
+            'arrival_time' => 'required',
             'wd_no.*' => 'required',
             'trucker_name' => 'required',
             'truck_type' => 'required',
@@ -124,6 +130,12 @@ class DispatchController extends Controller
             'finish_time'=>'Finish time is required',
             'date_departed'=>'Depart date is required',
             'time_departed'=>'Depart time is required',
+            'start_pick_date' => 'Start picking date is required',
+            'start_pick_time'=>'Start picking time is required',
+            'finish_pick_date' => 'Finish picking  date is required',
+            'finish_pick_time'=>'Finish picking time is required',
+            'arrival_date' => 'Arrival date is required',
+            'arrival_date'=>'Arrival time is required',
             'wd_no.*'=>'Withdrawal is required',
             'trucker_name'=>'Trucker name is required',
             'truck_type'=>'Truck type is required',
@@ -154,6 +166,10 @@ class DispatchController extends Controller
             $start = date("Y-m-d", strtotime($request->start_date))." ".date("H:i:s", strtotime($request->start_time));
             $finish = date("Y-m-d", strtotime($request->finish_date))." ".date("H:i:s", strtotime($request->finish_time));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
+            $start_pick = date("Y-m-d", strtotime($request->start_pick_date))." ".date("H:i:s", strtotime($request->start_pick_time));
+            $finish_pick = date("Y-m-d", strtotime($request->finish_pick_date))." ".date("H:i:s", strtotime($request->finish_pick_time));
+            $arrival = date("Y-m-d", strtotime($request->arrival_date))." ".date("H:i:s", strtotime($request->arrival_time));
+
             $dispatch_date = isset($request->dispatch_date) ? $request->dispatch_date : date("Y-m-d");
             $dispatch = DispatchHdr::updateOrCreate(['dispatch_no' => $dispatch_no], [
                 'dispatch_no'=>$dispatch_no,
@@ -162,6 +178,9 @@ class DispatchController extends Controller
                 'start_datetime'=> $start,
                 'finish_datetime'=> $finish,
                 'depart_datetime'=> $date_departed,
+                'start_picking_datetime'=> $start_pick,
+                'finish_picking_datetime'=> $finish_pick,
+                'arrival_datetime'=> $arrival,
                 'trucker_name' => $request->trucker_name,
                 'seal_no' => $request->seal_no,
                 'truck_type' => $request->truck_type,
@@ -205,7 +224,7 @@ class DispatchController extends Controller
                                 'whse_qty' => $masterData->whse_qty - $request->dispatch_qty[$x],
                                 'reserve_qty' => $masterData->reserve_qty - $request->dispatch_qty[$x],
                             ]);
-                          
+
                             MasterfileModel::create([
                                 'ref_no'=> $wd_detail->wd_no,
                                 'status' => 'R',
@@ -359,7 +378,7 @@ class DispatchController extends Controller
     {
         DB::connection()->beginTransaction();
 
-        try 
+        try
         {
             $dispatch_no = $request->dispatch_no;
             if($dispatch_no) {
@@ -408,7 +427,7 @@ class DispatchController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }   
+        }
     }
 
     public function generateDispatchNo($type,$prefix)
@@ -444,7 +463,7 @@ class DispatchController extends Controller
     public function unpost(Request $request)
     {
         DB::connection()->beginTransaction();
-        try 
+        try
         {
             $dispatch_no = $request->dispatch_no;
             if($dispatch_no) {
@@ -503,6 +522,6 @@ class DispatchController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }   
+        }
     }
 }

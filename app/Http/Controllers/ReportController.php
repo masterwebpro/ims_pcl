@@ -16,6 +16,8 @@ use App\Models\Products;
 use App\Exports\ExportRcvDetailed;
 use App\Exports\ExportWdDetailed;
 use App\Exports\ExportInventory;
+use App\Models\DispatchDtl;
+use App\Models\DispatchHdr;
 use App\Models\OrderType;
 use App\Models\WdHdr;
 use DataTables;
@@ -34,7 +36,7 @@ class ReportController extends Controller
     {
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
-        
+
         return view('report/stock_ledger', [
             'request'=>$request,
             'supplier_list'=>$supplier_list,
@@ -46,7 +48,7 @@ class ReportController extends Controller
     {
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
-        
+
         $validator = Validator::make($request->all(), [
             'client'=>'required',
             'store'=>'required',
@@ -99,19 +101,19 @@ class ReportController extends Controller
 
         if($request->has('rcv_no') && $request->rcv_no !='')
             $rcv->where('rcv_hdr.rcv_no', $request->rcv_no);
-        
+
         if($request->has('client')  && $request->client !='')
             $rcv->where('rcv_hdr.client_id', $request->client);
-        
+
         if($request->has('store')  && $request->store !='')
             $rcv->where('rcv_hdr.store_id', $request->store);
-        
+
         if($request->has('warehouse')  && $request->warehouse !='')
             $rcv->where('rcv_hdr.warehouse_id', $request->warehouse);
 
         if($request->has('product_code')  && $request->product_code !='')
             $rcv->where('p.product_code', $request->product_code);
-        
+
         if($request->has('item_type')  && $request->item_type !='')
             $rcv->where('rd.item_type', $request->item_type);
 
@@ -136,7 +138,7 @@ class ReportController extends Controller
 
     function exportReceivingDetailed(Request $request) {
         ob_start();
-		$file_name = 'export-receiving-detailed'.date('Ymd-His').'.xls'; 
+		$file_name = 'export-receiving-detailed'.date('Ymd-His').'.xls';
         return Excel::download(new ExportRcvDetailed($request), $file_name);
     }
 
@@ -150,19 +152,19 @@ class ReportController extends Controller
 
         if($request->has('rcv_no') && $request->rcv_no !='')
             $rcv->where('rcv_hdr.rcv_no', $request->rcv_no);
-        
+
         if($request->has('client')  && $request->client !='')
             $rcv->where('rcv_hdr.client_id', $request->client);
-        
+
         if($request->has('store')  && $request->store !='')
             $rcv->where('rcv_hdr.store_id', $request->store);
-        
+
         if($request->has('warehouse')  && $request->warehouse !='')
             $rcv->where('rcv_hdr.warehouse_id', $request->warehouse);
 
         if($request->has('product_code')  && $request->product_code !='')
             $rcv->where('p.product_code', $request->product_code);
-        
+
         if($request->has('item_type')  && $request->item_type !='')
             $rcv->where('rd.item_type', $request->item_type);
 
@@ -197,20 +199,20 @@ class ReportController extends Controller
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterfiles.inv_uom')
             ->orderBy("masterfiles.created_at")
             ->groupBy('masterfiles.product_id');
-        
-     
+
+
         if($request->has('client')  && $request->client !='')
             $rcv->where('masterfiles.company_id', $request->client);
-        
+
         if($request->has('store')  && $request->store !='')
             $rcv->where('masterfiles.store_id', $request->store);
-        
+
         if($request->has('warehouse')  && $request->warehouse !='')
             $rcv->where('masterfiles.warehouse_id', $request->warehouse);
 
         if($request->has('product_id')  && $request->product_id !='')
             $rcv->where('p.product_id', $request->product_id);
-        
+
         if($request->has('item_type')  && $request->item_type !='')
             $rcv->where('masterfiles.item_type', $request->item_type);
 
@@ -232,25 +234,25 @@ class ReportController extends Controller
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterfiles.inv_uom')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterfiles.storage_location_id')
             ->orderBy("masterfiles.created_at");
-        
+
         if($request->has('client')  && $request->client !='')
             $rcv->where('masterfiles.company_id', $request->client);
-        
+
         if($request->has('store')  && $request->store !='')
             $rcv->where('masterfiles.store_id', $request->store);
-        
+
         if($request->has('warehouse')  && $request->warehouse !='')
             $rcv->where('masterfiles.warehouse_id', $request->warehouse);
 
         if($request->has('product_id')  && $request->product_id !='')
             $rcv->where('p.product_id', $request->product_id);
-        
+
         if($request->has('item_type')  && $request->item_type !='')
             $rcv->where('masterfiles.item_type', $request->item_type);
 
         if($request->has('location')  && $request->location !='')
             $rcv->where('masterfiles.storage_location_id', $request->location);
-  
+
         $result = $rcv->get();
 
         return $result;
@@ -278,25 +280,25 @@ class ReportController extends Controller
             ->having('inv_qty',  '>', 0)
             ->orderBy('product_name')
             ->orderBy('sl.location');
-        
+
         if($request->has('client')  && $request->client !='')
             $rcv->where('masterfiles.client_id', $request->client);
-        
+
         if($request->has('store')  && $request->store !='')
             $rcv->where('masterfiles.store_id', $request->store);
-        
+
         if($request->has('warehouse')  && $request->warehouse !='')
             $rcv->where('masterfiles.warehouse_id', $request->warehouse);
 
         if($request->has('product_id')  && $request->product_id !='')
             $rcv->where('p.product_id', $request->product_id);
-        
+
         if($request->has('item_type')  && $request->item_type !='')
             $rcv->where('masterfiles.item_type', $request->item_type);
 
         if($request->has('location')  && $request->location !='')
             $rcv->where('masterfiles.storage_location_id', $request->location);
-  
+
         $result = $rcv->get();
 
 
@@ -324,23 +326,24 @@ class ReportController extends Controller
         $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', )
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
-                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom');
+                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+                ->where('wd_hdr.status','posted');
 
         if($request->has('wd_no') && $request->wd_no !='')
             $wd->where('wd_hdr.wd_no', $request->wd_no);
-        
+
         if($request->has('client')  && $request->client !='')
             $wd->where('wd_hdr.customer_id', $request->client);
-        
+
         if($request->has('store')  && $request->store !='')
             $wd->where('wd_hdr.store_id', $request->store);
-        
+
         if($request->has('warehouse')  && $request->warehouse !='')
             $wd->where('wd_hdr.warehouse_id', $request->warehouse);
 
         if($request->has('product_code')  && $request->product_code !='')
             $wd->where('p.product_code', $request->product_code);
-        
+
         if($request->has('order_type')  && $request->order_type !='')
             $wd->where('wd_hdr.order_type', $request->order_type);
 
@@ -365,7 +368,7 @@ class ReportController extends Controller
 
     function exportWithdrawalDetailed(Request $request) {
         ob_start();
-		$file_name = 'export-withdrawal-detailed'.date('Ymd-His').'.xls'; 
+		$file_name = 'export-withdrawal-detailed'.date('Ymd-His').'.xls';
         return Excel::download(new ExportWdDetailed($request), $file_name);
     }
 
@@ -376,23 +379,24 @@ class ReportController extends Controller
         $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', )
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
-                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom');
+                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+                ->where('wd_hdr.status','posted');
 
         if($request->has('wd_no') && $request->wd_no !='')
             $wd->where('wd_hdr.wd_no', $request->wd_no);
-        
+
         if($request->has('client')  && $request->client !='')
             $wd->where('wd_hdr.client_id', $request->client);
-        
+
         if($request->has('store')  && $request->store !='')
             $wd->where('wd_hdr.store_id', $request->store);
-        
+
         if($request->has('warehouse')  && $request->warehouse !='')
             $wd->where('wd_hdr.warehouse_id', $request->warehouse);
 
         if($request->has('product_code')  && $request->product_code !='')
             $wd->where('p.product_code', $request->product_code);
-        
+
         if($request->has('order_type')  && $request->order_type !='')
             $wd->where('wd_hdr.order_type', $request->order_type);
 
@@ -422,8 +426,99 @@ class ReportController extends Controller
 
     function exportInventory(Request $request) {
         ob_start();
-		$file_name = 'inventory_summary'.date('Ymd-His').'.xls'; 
+		$file_name = 'inventory_summary'.date('Ymd-His').'.xls';
         return Excel::download(new ExportInventory($request), $file_name);
+    }
+
+    public function getOutboundMonitoringIndex(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->get();
+        $data_list = DispatchDtl::select('dispatch_dtl.*',
+                        DB::raw('WEEK(dh.dispatch_date) as week_no'),
+                        'dh.dispatch_date',
+                        'dh.dispatch_by',
+                        'dh.trucker_name',
+                        'dh.truck_type',
+                        'dh.plate_no',
+                        'dh.driver',
+                        'dh.contact_no',
+                        'dh.helper',
+                        'dh.seal_no',
+                        'dh.start_datetime',
+                        'dh.finish_datetime',
+                        'dh.depart_datetime',
+                        'dh.start_picking_datetime',
+                        'dh.finish_picking_datetime',
+                        'dh.arrival_datetime',
+                        'u.name',
+                        'p.product_code',
+                        'p.product_name',
+                        'ui.code as unit',
+                        'm.lot_no',
+                        'm.expiry_date',
+                        'm.manufacture_date',
+                        'm.item_type',
+                        'wh.dr_no',
+                        'wh.po_num',
+                        'wh.order_no',
+                        'wh.sales_invoice',
+                        's.supplier_name',
+                        'cat.category_name',
+                        // 'br.brand_name',
+                         )
+        ->leftJoin('dispatch_hdr as dh', 'dh.dispatch_no', '=', 'dispatch_dtl.dispatch_no')
+        ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
+        ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'wd.wd_no')
+        ->leftJoin('masterdata as m', 'm.id', '=', 'wd.master_id')
+        ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
+        ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
+        ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+        ->leftJoin('categories as cat', 'cat.category_id', '=', 'cb.category_id')
+        // ->leftJoin('brands as br', 'br.brand_id', '=', 'cb.brand_id')
+        ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+        ->leftJoin('users as u', 'u.id', '=', 'dh.created_by')
+        ->groupBy('dispatch_dtl.id')
+        ->orderBy('dh.dispatch_date','ASC')
+        ->where('dh.status','posted')
+        ->where([
+            [function ($query) use ($request) {
+                if (($s = $request->status)) {
+                    if($s != 'all')
+                        $query->orWhere('dispatch_hdr.status', $s);
+                }
+
+                if ($request->q) {
+                    $query->where('dispatch_hdr.dispatch_no', $request->q)
+                        ->orWhere('dispatch_hdr.dispatch_by', $request->q)
+                        ->orWhere('dispatch_hdr.trucker_name', $request->q)
+                        ->orWhere('dispatch_hdr.truck_type', $request->q)
+                        ->orWhere('dispatch_hdr.plate_no', $request->q)
+                        ->orWhere('dispatch_hdr.driver', $request->q)
+                        ->orWhere('dispatch_hdr.driver', $request->q)
+                        ->orWhere('dispatch_hdr.contact_no', $request->q)
+                        ->orWhere('dispatch_hdr.helper', $request->q)
+                        ->orWhere('dispatch_hdr.seal_no', $request->q);
+                }
+
+                if ($request->filter_date && $request->dispatch_date) {
+                    if($request->filter_date == 'dispatch_date') {
+                        $query->whereBetween('dispatch_hdr.dispatch_date', [$request->dispatch_date." 00:00:00", $request->dispatch_date." 23:59:00"]);
+                    }
+                    if($request->filter_date == 'created_at') {
+                        $query->whereBetween('dispatch_hdr.created_at', [$request->created_at." 00:00:00", $request->created_at." 23:59:00"]);
+                    }
+
+                }
+
+                $query->get();
+            }]
+        ])
+        ->paginate(20);
+        return view('report/outbound_monitoring', [
+            'client_list'=>$client_list,
+            'data_list'=>$data_list,
+            'request'=>$request,
+        ]);
     }
 
 }

@@ -132,37 +132,31 @@
                                         <span class="text-danger error-msg dispatch_date_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
-                                        <label for="colFormLabel" class="form-label">Start Loading<span
-                                                class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="start_date" disabled
-                                                    name="start_date" placeholder="Start Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->start_datetime)) }}">
-                                                {{-- <input type="time" class="form-control" id="start_time"
-                                                    name="start_time" placeholder="Dispatch Date" value="{{ $dispatch->}}"> --}}
-                                            </div>
-                                            <span class="text-danger error-msg start_time_error"></span>
-                                </div>
-                                <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Finish Loading<span
+                                    <label for="colFormLabel" class="form-label">Start Picking<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="finish_date" disabled
-                                                name="finish_date" placeholder="Finish Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->finish_datetime)) }}">
-                                            {{-- <input type="time" class="form-control" id="finish_time"
-                                                name="finish_time" placeholder="Finish Time" value="{{ $dispatch->}}"> --}}
+                                            <input type="text" class="form-control" id="start_pick_date" disabled
+                                                name="start_pick_date" placeholder="Start Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->start_picking_datetime)) }}">
                                         </div>
-                                        <span class="text-danger error-msg finish_time_error"></span>
+                                        <span class="text-danger error-msg start_pick_time_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Depart Date/Time<span
+                                    <label for="colFormLabel" class="form-label">Finish Picking<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="date_departed" disabled
-                                                name="date_departed" placeholder="Departed Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->depart_datetime)) }}">
-                                            {{-- <input type="time" class="form-control" id="time_departed"
-                                                name="time_departed" placeholder="Departed Time" value="{{ $dispatch->}}"> --}}
+                                            <input type="text" class="form-control" id="finish_pick_date" disabled
+                                                name="finish_pick_date" placeholder="Finish Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->finish_picking_datetime)) }}">
                                         </div>
-                                        <span class="text-danger error-msg time_departed_error"></span>
+                                        <span class="text-danger error-msg finish_pick_time_error"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3 form-group">
+                                    <label for="colFormLabel" class="form-label">Actual Truck Arrival<span
+                                            class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="arrival_date" disabled
+                                                name="arrival_date" placeholder="Arrival Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->arrival_datetime)) }}">
+                                        </div>
+                                        <span class="text-danger error-msg arrival_time_error"></span>
                                 </div>
                             </div>
                             <div class="row ms-3 mt-3 mx-3">
@@ -172,6 +166,39 @@
                                                 value="<?=$created_by?>" placeholder="Created By">
                                             <span class="text-danger error-msg created_by_error"></span>
                                 </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <label for="colFormLabel" class="form-label">Start Loading<span
+                                            class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="start_date" disabled
+                                                name="start_date" placeholder="Start Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->start_datetime)) }}">
+                                            {{-- <input type="time" class="form-control" id="start_time"
+                                                name="start_time" placeholder="Dispatch Date" value="{{ $dispatch->}}"> --}}
+                                        </div>
+                                        <span class="text-danger error-msg start_time_error"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-3 form-group">
+                                <label for="colFormLabel" class="form-label">Finish Loading<span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="finish_date" disabled
+                                            name="finish_date" placeholder="Finish Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->finish_datetime)) }}">
+                                        {{-- <input type="time" class="form-control" id="finish_time"
+                                            name="finish_time" placeholder="Finish Time" value="{{ $dispatch->}}"> --}}
+                                    </div>
+                                    <span class="text-danger error-msg finish_time_error"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-3 form-group">
+                                <label for="colFormLabel" class="form-label">Depart Date/Time<span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="date_departed" disabled
+                                            name="date_departed" placeholder="Departed Date" value="{{ date('Y-m-d H:i:s',strtotime($dispatch->depart_datetime)) }}">
+                                        {{-- <input type="time" class="form-control" id="time_departed"
+                                            name="time_departed" placeholder="Departed Time" value="{{ $dispatch->}}"> --}}
+                                    </div>
+                                    <span class="text-danger error-msg time_departed_error"></span>
+                            </div>
                             </div>
                         </div>
                     </div>
