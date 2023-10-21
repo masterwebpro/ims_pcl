@@ -47,3 +47,12 @@ $(document).on('click','.generate-data',function(e){
 		}
     });
 });
+
+$(document).on('click', '.submit-master-xls', function(e) {
+    e.preventDefault();
+    var keyword = $('#keyword').val();
+    var customer = $('#customer').val();
+    var company = $('#company').val();
+    var filter_date = $('#filter_date').val();
+    window.location.href= BASEURL + 'reports/export-current-stocks?keyword='+keyword+'&customer='+customer+'&company='+company;
+});

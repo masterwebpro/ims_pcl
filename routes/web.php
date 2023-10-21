@@ -137,6 +137,7 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/print-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'printPdfWithdrawalDetailed'])->name('print-withdrawal-detailed');
 
     Route::get('/outbound-monitoring', [App\Http\Controllers\ReportController::class, 'getOutboundMonitoringIndex']);
+    Route::get('/export-current-stocks',[App\Http\Controllers\ReportController::class,'exportCurrentStocks'])->name('export-current-stocks');
 
 });
 

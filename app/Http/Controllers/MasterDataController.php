@@ -18,9 +18,9 @@ class MasterDataController extends Controller
         $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
 
         $master_list = MasterdataModel::select(
-                        'masterdata.*', 
+                        'masterdata.*',
                         'products.product_code',
-                        'products.product_name', 
+                        'products.product_name',
                         's.store_name',
                         'c.client_name',
                         'com.client_name as company_name',
@@ -36,47 +36,37 @@ class MasterDataController extends Controller
                         ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
                         ->leftJoin('client_list as c', 'c.id', '=', 'masterdata.customer_id')
                         ->leftJoin('client_list as com', 'com.id', '=', 'masterdata.company_id')
-                        ->leftJoin('warehouses as wh', 'wh.id', '=', 'masterdata.warehouse_id')
-                        ->where([
-                            [function ($query) use ($request, $startDate, $endDate) {
-                                if (($s = $request->status)) {
-                                    if($s != 'all')
-                                        $query->orWhere('masterdata.status', $s);
-                                }
+                        ->leftJoin('warehouses as wh', 'wh.id', '=', 'masterdata.warehouse_id');
+                        if ($request->keyword) {
+                            $master_list->where(function($query)use($request){
+                                $query->where('products.product_code', $request->keyword);
+                                $query->orWhere('products.product_name', $request->keyword);
+                                $query->orWhere('masterdata.lot_no', $request->keyword);
+                                $query->orWhere('masterdata.item_type', $request->keyword);
+                            });
+                        }
+                        if ($request->filter_date) {
+                            if($request->filter_date == 'received_date') {
+                                $master_list->whereBetween('masterdata.received_date', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+                            }
 
-                                if ($request->q) {
-                                    $query->where('products.product_code', $request->q);
-                                    $query->orWhere('products.product_name', $request->q);
-                                    $query->orWhere('masterdata.lot_no', $request->q);
-                                    $query->orWhere('masterdata.item_type', $request->q);
-                                }
+                            if($request->filter_date == 'received_date' && $startDate && $endDate)
+                            {
+                                $master_list->whereBetween('masterdata.received_date',[$startDate,$endDate]);
+                            }
+                        }
 
-                                if ($request->filter_date) {
-                                    if($request->filter_date == 'received_date') {
-                                        $query->whereBetween('masterdata.received_date', [$request->date." 00:00:00", $request->date." 23:59:00"]);
-                                    }
+                        if ($request->customer) {
+                            $master_list->where('masterdata.customer_id', $request->customer);
+                        }
 
-                                    if($request->filter_date == 'received_date' && $startDate && $endDate)
-                                    {
-                                        $query->whereBetween('masterdata.received_date',[$startDate,$endDate]);
-                                    }
-
-                                }
-
-                                if ($request->customer) {
-                                    $query->where('masterdata.customer_id', $request->customer);
-                                }
-
-                                if ($request->company) {
-                                    $query->where('masterdata.company_id', $request->company);
-                                }
-                                $query->get();
-                            }]
-                        ])
-                        ->paginate(20);
+                        if ($request->company) {
+                            $master_list->where('masterdata.company_id', $request->company);
+                        }
+        $result = $master_list->paginate(20);
         $deliver_list = Client::where('client_type','T')->get();
         $client_list = Client::where('is_enabled', '1')->get();
-        return view('master/index', ['master_list'=>$master_list, 'deliver_list'=> $deliver_list, 'client_list'=> $client_list, 'request'=> $request]);
+        return view('master/index', ['master_list'=>$result, 'deliver_list'=> $deliver_list, 'client_list'=> $client_list, 'request'=> $request]);
     }
 
     public function store(){

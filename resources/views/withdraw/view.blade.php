@@ -71,7 +71,7 @@
                                                 name="client">
                                                 <option value="">Select Client</option>
                                                 <? foreach($client_list as $client) : ?>
-                                                <option value="<?= $client->id ?>" <?=($client->id == $wd->custoemer_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
+                                                <option value="<?= $client->id ?>" <?=($client->id == $wd->customer_id) ? 'selected' : '' ?>><?= $client->client_name ?></option>
                                                 <? endforeach;?>
                                             </select>
                                             <span class="text-danger error-msg client_error"></span>
