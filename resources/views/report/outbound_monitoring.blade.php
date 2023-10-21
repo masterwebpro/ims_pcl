@@ -21,10 +21,13 @@
                 <div class="card-header border-0">
                     <div class="d-flex align-items-center">
                         <h5 class="card-title mb-0 flex-grow-1">Outbound Monitoring</h5>
+                        <div class="flex-shrink-0">
+                            <a href="#" class="submit-outbound-monitoring-xls btn btn-secondary btn-label rounded-pill end-0"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i>Export to Excel</a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body border border-dashed border-end-0 border-start-0">
-                    <form action="{{ route('dispatch.index') }}" method="GET">
+                    <form action="{{ route('reports.outbound-monitoring') }}" method="GET">
                         <div class="row g-3">
                             <div class="col-xxl-4 col-sm-12">
                                 <div class="search-box">
@@ -50,20 +53,7 @@
                                     placeholder="Select date range">
                             </div>
                             <!--end col-->
-
-                            <div class="col-xxl-3 col-sm-4">
-                                <div class="input-light">
-                                    <select class="form-control" data-choices data-choices-search-false name="status"
-                                        id="status">
-                                        <option value="">Status</option>
-                                        <option value="all" selected>All</option>
-                                        <option value="open">Open</option>
-                                        <option value="posted">Posted</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-xxl-1 col-sm-4">
+                            <div class="col-xxl-2 col-sm-4">
                                 <button type="submit" class="btn btn-primary w-100"> <i
                                         class="ri-equalizer-fill me-1 align-bottom"></i>
                                     Filters
@@ -88,7 +78,9 @@
                                     <th class="sort" data-sort="dispatch_no">SEAL NO</th>
                                     <th class="sort" data-sort="dispatch_no">PLATE NO</th>
                                     <th class="sort" data-sort="dispatch_no">DRIVER/HELPER NAME</th>
-                                    <th class="sort" data-sort="dispatch_no">PO/STO NO/INV NO</th>
+                                    <th class="sort" data-sort="dispatch_no">PO NO</th>
+                                    <th class="sort" data-sort="dispatch_no">ORDER NO</th>
+                                    <th class="sort" data-sort="dispatch_no">INV NO</th>
                                     <th class="sort" data-sort="dispatch_no">SUPPLIER</th>
                                     <th class="sort" data-sort="dispatch_no">CATEGORY</th>
                                     <th class="sort" data-sort="dispatch_no">MATERIAL NO</th>
@@ -130,6 +122,8 @@
                                     <td class="">{{ $rd->seal_no }}</td>
                                     <td class="">{{ $rd->plate_no }}</td>
                                     <td class="">{{ $rd->driver }}</td>
+                                    <td>{{ $rd->po_num }}</td>
+                                    <td>{{ $rd->order_no }}</td>
                                     <td>{{ $rd->sales_invoice }}</td>
                                     <td>{{ $rd->supplier_name }}</td>
                                     <td>{{ $rd->category_name }}</td>
@@ -138,7 +132,7 @@
                                     <td>{{ $rd->lot_no }}</td>
                                     <td>-</td>
                                     <td>-</td>
-                                    <td class="text-end">{{ number_format($rd->qty,2) }}</td>
+                                    <td class="text-end">{{ number_format($rd->qty, 2) }}</td>
                                     <td>{{ $rd->unit }}</td>
                                     <td class="manufacture_date">
                                         {{ date('m/d/Y', strtotime($rd->manufacture_date)) }}</td>
@@ -225,5 +219,5 @@
     <!-- autocomplete js -->
     <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
 
-    <script src="{{ URL::asset('/assets/js/dispatch/dispatch.js') }}"></script>
+    <script src="{{ URL::asset('/assets/js/report/report.js') }}"></script>
 @endsection

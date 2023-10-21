@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\DB;
 use App\Models\SeriesModel;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 function test() {
     echo 'test';
@@ -398,4 +401,22 @@ function timeInterval($start,$end){
         }
     }
     return $text;
+}
+
+function paginate($data, $perPage = 10, $page = null, $options = [])
+{
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    //Create a new Laravel collection from the array data
+    $collection = new Collection($data);
+
+    //Define how many items we want to be visible in each page
+
+    //Slice the collection to get the items to display in current page
+    $currentPageResults = $collection->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+    //Create our paginator and add it to the data array
+    $data['results'] = new LengthAwarePaginator($currentPageResults, count($collection), $perPage);
+
+    //Set base url for pagination links to follow e.g custom/url?page=6
+    return $data['results']->setPath(request()->url());
 }
