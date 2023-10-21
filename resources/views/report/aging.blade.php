@@ -11,7 +11,7 @@
             Reports
         @endslot
         @slot('title')
-            Outbound Monitoring
+            Aging
         @endslot
     @endcomponent
 
@@ -20,7 +20,7 @@
             <div class="card" id="tasksList">
                 <div class="card-header border-0">
                     <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">Outbound Monitoring</h5>
+                        <h5 class="card-title mb-0 flex-grow-1">Aging</h5>
                         <div class="flex-shrink-0">
                             <a href="#" class="submit-outbound-monitoring-xls btn btn-secondary btn-label rounded-pill end-0"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i>Export to Excel</a>
                         </div>
@@ -70,89 +70,25 @@
                         <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                             <thead class="table-light text-muted">
                                 <tr>
-                                    <th class="sort" data-sort="dispatch_date">WEEK NO</th>
-                                    <th class="sort" data-sort="dispatch_date">DATE DISPATCH</th>
-                                    <th class="sort" data-sort="dispatch_no">TRUCK TYPE</th>
-                                    <th class="sort" data-sort="dispatch_no">TRUCKING</th>
-                                    <th class="sort" data-sort="dispatch_no">DR NO </th>
-                                    <th class="sort" data-sort="dispatch_no">SEAL NO</th>
-                                    <th class="sort" data-sort="dispatch_no">PLATE NO</th>
-                                    <th class="sort" data-sort="dispatch_no">DRIVER/HELPER NAME</th>
-                                    <th class="sort" data-sort="dispatch_no">PO NO</th>
-                                    <th class="sort" data-sort="dispatch_no">ORDER NO</th>
-                                    <th class="sort" data-sort="dispatch_no">INV NO</th>
-                                    <th class="sort" data-sort="dispatch_no">SUPPLIER</th>
-                                    <th class="sort" data-sort="dispatch_no">CATEGORY</th>
-                                    <th class="sort" data-sort="dispatch_no">MATERIAL NO</th>
-                                    <th class="sort" data-sort="dispatch_no">MATERIAL DESCRIPTION</th>
-                                    <th class="sort" data-sort="dispatch_no">BATCH CODE</th>
-                                    <th class="sort" data-sort="dispatch_no">PACK SIZE</th>
-                                    <th class="sort" data-sort="dispatch_no">NUMBER OF (Ctn)</th>
-                                    <th class="sort" data-sort="dispatch_no">QUANTITY (in PCS) </th>
-                                    <th class="sort" data-sort="dispatch_no">UOM</th>
-                                    <th class="sort" data-sort="dispatch_no">MFG. DATE</th>
-                                    <th class="sort" data-sort="dispatch_no">EXPIRY DATE </th>
-                                    <th class="sort" data-sort="dispatch_no">MATERIAL DOC NO</th>
-                                    <th class="sort" data-sort="dispatch_no">STATUS</th>
-                                    <th class="sort" data-sort="dispatch_no">REMARKS</th>
-                                    <th class="sort" data-sort="dispatch_no">REASON OF UNENCODED</th>
-                                    <th class="sort" data-sort="dispatch_no">TIME START PICKING</th>
-                                    <th class="sort" data-sort="dispatch_no">END OF PICKING</th>
-                                    <th class="sort" data-sort="dispatch_no">ACTUAL TRUCK ARRIVAL</th>
-                                    <th class="sort" data-sort="dispatch_date">TIME START LOADING</th>
-                                    <th class="sort" data-sort="dispatch_date">END OF LOADING</th>
-                                    <th class="sort" data-sort="dispatch_date">ACTUAL TIME OUT</th>
-                                    <th class="sort" data-sort="wd_count">LOADING PERFORMANCE</th>
-                                    <th class="sort" data-sort="wd_count">DWELL TIME</th>
-                                    <th class="sort" data-sort="wd_count">PALLET USE</th>
-                                    <th class="sort" data-sort="wd_count">ENCODER</th>
-                                    <th class="sort" data-sort="wd_count">CHECKER</th>
+                                    <th class="sort" data-sort="dispatch_date">PRODUCT CODE</th>
+                                    <th class="sort" data-sort="dispatch_date">PRODUCT NAME</th>
+                                    <th class="sort" data-sort="dispatch_no">OPENING INVENTORY</th>
+                                    <th class="sort" data-sort="dispatch_no">RECEIVING</th>
+                                    <th class="sort" data-sort="dispatch_no">WITHDRAWAL</th>
+                                    <th class="sort" data-sort="dispatch_no">CLOSING INVENTORY</th>
+                                    <th class="sort" data-sort="dispatch_no">30 DAYS</th>
+                                    <th class="sort" data-sort="dispatch_no">60 DAYS</th>
+                                    <th class="sort" data-sort="dispatch_no">90 DAYS</th>
+                                    <th class="sort" data-sort="dispatch_no">120 DAYS</th>
+                                    <th class="sort" data-sort="dispatch_no">150 DAYS</th>
+                                    <th class="sort" data-sort="dispatch_no">OVER 150 DAYS</th>
                                 </tr>
                             </thead>
 
                             <tbody class="list form-check-all">
-                                <? if($data_list->total() > 0 ) : ?>
+                                {{--  <? if($data_list->total() > 0 ) : ?>
                                 <? foreach($data_list as $rd) :?>
                                 <tr>
-                                    <td>{{ $rd->week_no }}</td>
-                                    <td class="dipatch_date">{{ date('M d, Y', strtotime($rd->dispatch_date)) }}</td>
-                                    <td class="">{{ $rd->truck_type }}</td>
-                                    <td class="">{{ $rd->trucker_name }}</td>
-                                    <td>{{ $rd->dr_no }}</td>
-                                    <td class="">{{ $rd->seal_no }}</td>
-                                    <td class="">{{ $rd->plate_no }}</td>
-                                    <td class="">{{ $rd->driver }}</td>
-                                    <td>{{ $rd->po_num }}</td>
-                                    <td>{{ $rd->order_no }}</td>
-                                    <td>{{ $rd->sales_invoice }}</td>
-                                    <td>{{ $rd->supplier_name }}</td>
-                                    <td>{{ $rd->category_name }}</td>
-                                    <td>{{ $rd->product_code }}</td>
-                                    <td class="text-wrap">{{ $rd->product_name }}</td>
-                                    <td>{{ $rd->lot_no }}</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td class="text-end">{{ number_format($rd->qty, 2) }}</td>
-                                    <td>{{ $rd->unit }}</td>
-                                    <td class="manufacture_date">
-                                        {{ date('m/d/Y', strtotime($rd->manufacture_date)) }}</td>
-                                    <td class="expiry_date">
-                                        {{ date('m/d/Y', strtotime($rd->expiry_date)) }}</td>
-                                    <td>{{ $rd->dispatch_no }}</td>
-                                    <td class="text-uppercase">{{ $rd->item_type }}</td>
-                                    <td>OUTBOUND</td>
-                                    <td>-</td>
-                                    <td>{{ date('H:i A', strtotime($rd->start_picking_datetime)) }}</td>
-                                    <td>{{ date('H:i A', strtotime($rd->finish_picking_datetime)) }}</td>
-                                    <td>{{ date('H:i A', strtotime($rd->arrival_datetime)) }}</td>
-                                    <td>{{ date('H:i A', strtotime($rd->start_datetime)) }}</td>
-                                    <td>{{ date('H:i A', strtotime($rd->finish_datetime)) }}</td>
-                                    <td>{{ date('H:i A', strtotime($rd->depart_datetime)) }}</td>
-                                    <td>{{ timeInterval($rd->start_datetime, $rd->finish_datetime) }}</td>
-                                    <td>{{ timeInterval($rd->arrival_datetime, $rd->depart_datetime) }}</td>
-                                    <td>N/A</td>
-                                    <td>{{ $rd->name }}</td>
-                                    <td>{{ $rd->dispatch_by }}</td>
                                 </tr>
                                 <? endforeach; ?>
                                 <? else :?>
@@ -167,13 +103,13 @@
                                             for you search.</p>
                                     </div>
                                 </div>
-                                <? endif; ?>
+                                <? endif; ?>  --}}
                             </tbody>
                         </table>
                         <!--end table-->
                     </div>
                     <!-- Pagination -->
-                    {!! $data_list->withQueryString()->links('pagination::bootstrap-5') !!}
+                    {{--  {!! $data_list->withQueryString()->links('pagination::bootstrap-5') !!}  --}}
                 </div>
                 <!--end card-body-->
             </div>

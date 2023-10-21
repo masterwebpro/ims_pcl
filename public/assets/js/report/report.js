@@ -75,14 +75,14 @@ $(document).on('click', '.submit-receive-search', function(e) {
                             table += "<td class='text-left'>"+item.product_name+"</td>";
                             table += "<td class='text-center'>"+item.item_type+"</td>";
                             table += "<td class='text-center'>"+item.whse_qty+" / "+item.uw_code+"</td>";
-                            table += "<td class='text-center'>"+item.inv_qty+" / "+item.ui_code+"</td>";                      
+                            table += "<td class='text-center'>"+item.inv_qty+" / "+item.ui_code+"</td>";
                         table += '</tr>';
                     });
 
                     $('#item_list tbody').append(table);
-                  
+
                 } else {
-                    toastr.error(data.message,'Error on saving'); 
+                    toastr.error(data.message,'Error on saving');
                 }
             } else {
                 toastr.error('Some fields are required');
@@ -116,7 +116,7 @@ $(document).on('click', '.submit-receive-print', function(e) {
     $('#load-data').removeClass('d-none');
     $('#load-data').attr('style','min-height:500px;');
     $('#load-search').addClass('d-none');
-    
+
     e.preventDefault();
     var rcv_no = $('#rcv_no').val();
     var client = $('#client').val();
@@ -132,9 +132,9 @@ $(document).on('click', '.submit-receive-print', function(e) {
     iframe.attr('src',pdf_url);
     setTimeout(function () {
         $('#preloading').modal('hide');
-        $('#load-data').append(iframe);    
+        $('#load-data').append(iframe);
     }, 100);
-    
+
 });
 
 $(document).on('click', '.submit-withdrawal-search', function(e) {
@@ -186,14 +186,14 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                             table += "<td width='120px;'>"+item.po_num+"</td>";
                             table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
-                            table += "<td class='text-center'>"+item.inv_qty+" / "+item.ui_code+"</td>";                      
+                            table += "<td class='text-center'>"+item.inv_qty+" / "+item.ui_code+"</td>";
                         table += '</tr>';
                     });
 
                     $('#item_list tbody').append(table);
-                  
+
                 } else {
-                    toastr.error(data.message,'Error on saving'); 
+                    toastr.error(data.message,'Error on saving');
                 }
             } else {
                 toastr.error('Some fields are required');
@@ -226,7 +226,7 @@ $(document).on('click', '.submit-withdrawal-print', function(e) {
     $('#load-data').removeClass('d-none');
     $('#load-data').attr('style','min-height:500px;');
     $('#load-search').addClass('d-none');
-    
+
     e.preventDefault();
     var wd_no = $('#wd_no').val();
     var client = $('#client').val();
@@ -242,7 +242,14 @@ $(document).on('click', '.submit-withdrawal-print', function(e) {
     iframe.attr('src',pdf_url);
     setTimeout(function () {
         $('#preloading').modal('hide');
-        $('#load-data').append(iframe);    
+        $('#load-data').append(iframe);
     }, 100);
-    
+
+});
+
+$(document).on('click', '.submit-outbound-monitoring-xls', function(e) {
+    e.preventDefault();
+    var client = $('#client').val();
+    var dispatch_date = $('#dispatch_date').val();
+    window.location.href= BASEURL + 'reports/export-outbound-monitoring?client='+client+'&dispatch_date='+dispatch_date;
 });

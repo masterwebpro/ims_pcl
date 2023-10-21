@@ -138,8 +138,10 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'exportWithdrawalDetailed'])->name('export-withdrawal-detailed');
     Route::get('/print-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'printPdfWithdrawalDetailed'])->name('print-withdrawal-detailed');
 
-    Route::get('/outbound-monitoring', [App\Http\Controllers\ReportController::class, 'getOutboundMonitoringIndex']);
+    Route::get('/outbound-monitoring', [App\Http\Controllers\ReportController::class, 'getOutboundMonitoringIndex'])->name('reports.outbound-monitoring');
     Route::get('/export-current-stocks',[App\Http\Controllers\ReportController::class,'exportCurrentStocks'])->name('export-current-stocks');
+    Route::get('/export-outbound-monitoring',[App\Http\Controllers\ReportController::class,'exportOutboundMonitoring'])->name('export-outbound-monitoring');
+    Route::get('/aging', [App\Http\Controllers\ReportController::class, 'getAgingIndex']);
 
 });
 

@@ -18,6 +18,7 @@ use App\Models\Products;
 use App\Exports\ExportRcvDetailed;
 use App\Exports\ExportWdDetailed;
 use App\Exports\ExportInventory;
+use App\Exports\ExportOutboundMonitoring;
 use App\Models\DispatchDtl;
 use App\Models\DispatchHdr;
 use App\Models\OrderType;
@@ -434,6 +435,10 @@ class ReportController extends Controller
 
     public function getOutboundMonitoringIndex(Request $request)
     {
+        $dateRangeParts = explode(" to ", $request->date);
+        $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
+        $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
+
         $client_list = Client::where('is_enabled', '1')->get();
         $data_list = DispatchDtl::select('dispatch_dtl.*',
                         DB::raw('WEEK(dh.dispatch_date) as week_no'),
@@ -466,7 +471,6 @@ class ReportController extends Controller
                         'wh.sales_invoice',
                         's.supplier_name',
                         'cat.category_name',
-                        // 'br.brand_name',
                          )
         ->leftJoin('dispatch_hdr as dh', 'dh.dispatch_no', '=', 'dispatch_dtl.dispatch_no')
         ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
@@ -476,49 +480,54 @@ class ReportController extends Controller
         ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
         ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
         ->leftJoin('categories as cat', 'cat.category_id', '=', 'cb.category_id')
-        // ->leftJoin('brands as br', 'br.brand_id', '=', 'cb.brand_id')
         ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
         ->leftJoin('users as u', 'u.id', '=', 'dh.created_by')
         ->groupBy('dispatch_dtl.id')
         ->orderBy('dh.dispatch_date','ASC')
-        ->where('dh.status','posted')
-        ->where([
-            [function ($query) use ($request) {
-                if (($s = $request->status)) {
-                    if($s != 'all')
-                        $query->orWhere('dispatch_hdr.status', $s);
-                }
+        ->where('dh.status','posted');
+        if ($s = $request->status) {
+            if($s != 'all')
+                $data_list->orWhere('dispatch_hdr.status', $s);
+        }
 
-                if ($request->q) {
-                    $query->where('dispatch_hdr.dispatch_no', $request->q)
-                        ->orWhere('dispatch_hdr.dispatch_by', $request->q)
-                        ->orWhere('dispatch_hdr.trucker_name', $request->q)
-                        ->orWhere('dispatch_hdr.truck_type', $request->q)
-                        ->orWhere('dispatch_hdr.plate_no', $request->q)
-                        ->orWhere('dispatch_hdr.driver', $request->q)
-                        ->orWhere('dispatch_hdr.driver', $request->q)
-                        ->orWhere('dispatch_hdr.contact_no', $request->q)
-                        ->orWhere('dispatch_hdr.helper', $request->q)
-                        ->orWhere('dispatch_hdr.seal_no', $request->q);
-                }
+        if ($request->q) {
+            $data_list->where(function($q)use($request){
+                $q->where('dh.dispatch_no', $request->q)
+                ->orWhere('dh.dispatch_by', $request->q)
+                ->orWhere('dh.trucker_name', $request->q)
+                ->orWhere('dh.truck_type', $request->q)
+                ->orWhere('dh.plate_no', $request->q)
+                ->orWhere('dh.driver', $request->q)
+                ->orWhere('dh.driver', $request->q)
+                ->orWhere('dh.contact_no', $request->q)
+                ->orWhere('dh.helper', $request->q)
+                ->orWhere('dh.seal_no', $request->q);
+            });
+        }
 
-                if ($request->filter_date && $request->dispatch_date) {
-                    if($request->filter_date == 'dispatch_date') {
-                        $query->whereBetween('dispatch_hdr.dispatch_date', [$request->dispatch_date." 00:00:00", $request->dispatch_date." 23:59:00"]);
-                    }
-                    if($request->filter_date == 'created_at') {
-                        $query->whereBetween('dispatch_hdr.created_at', [$request->created_at." 00:00:00", $request->created_at." 23:59:00"]);
-                    }
+        if ($request->filter_date) {
+            if($request->filter_date == 'dispatch_date') {
+                $data_list->whereBetween('dh.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+            }
+            if($request->filter_date == 'created_at') {
+                $data_list->whereBetween('dh.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+            }
 
-                }
+            if($request->filter_date == 'dispatch_date' && $startDate && $endDate)
+            {
+                $data_list->whereBetween('dh.dispatch_date',[$startDate,$endDate]);
+            }
 
-                $query->get();
-            }]
-        ])
-        ->paginate(20);
+            if($request->filter_date == 'created_at' && $startDate && $endDate)
+            {
+                $data_list->whereBetween('dh.created_at',[$startDate,$endDate]);
+            }
+        }
+
+        $data = $data_list->paginate(20);
         return view('report/outbound_monitoring', [
             'client_list'=>$client_list,
-            'data_list'=>$data_list,
+            'data_list'=>$data,
             'request'=>$request,
         ]);
     }
@@ -527,5 +536,137 @@ class ReportController extends Controller
         ob_start();
 		$file_name = 'export-current-stocks'.date('Ymd-His').'.xls';
         return Excel::download(new ExportCurrentStocks($request), $file_name);
+    }
+
+    function exportOutboundMonitoring(Request $request) {
+        ob_start();
+            $data_list = DispatchDtl::select(
+                DB::raw('WEEK(dh.dispatch_date) as week_no'),
+                'dh.dispatch_date',
+                'dh.truck_type',
+                'dh.trucker_name',
+                'wh.dr_no',
+                'dh.plate_no',
+                'dh.seal_no',
+                'dh.driver',
+                'wh.po_num',
+                'wh.sales_invoice',
+                'wh.order_no',
+                's.supplier_name',
+                'cat.category_name',
+                'p.product_code',
+                'p.product_name',
+                'm.lot_no',
+                'dispatch_dtl.qty',
+                'ui.code as unit',
+                'm.manufacture_date',
+                'm.expiry_date',
+                'dispatch_dtl.dispatch_no',
+                'm.item_type',
+                'dh.start_picking_datetime',
+                'dh.finish_picking_datetime',
+                'dh.start_datetime',
+                'dh.finish_datetime',
+                'dh.depart_datetime',
+                'dh.start_picking_datetime',
+                'dh.finish_picking_datetime',
+                'dh.arrival_datetime',
+                'u.name',
+                'dh.dispatch_by',
+                )
+        ->leftJoin('dispatch_hdr as dh', 'dh.dispatch_no', '=', 'dispatch_dtl.dispatch_no')
+        ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
+        ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'wd.wd_no')
+        ->leftJoin('masterdata as m', 'm.id', '=', 'wd.master_id')
+        ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
+        ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
+        ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+        ->leftJoin('categories as cat', 'cat.category_id', '=', 'cb.category_id')
+        ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+        ->leftJoin('users as u', 'u.id', '=', 'dh.created_by')
+        ->groupBy('dispatch_dtl.id')
+        ->orderBy('dh.dispatch_date','ASC')
+        ->where('dh.status','posted');
+        if ($request->q) {
+            $query->where('dispatch_hdr.dispatch_no', $request->q)
+                ->orWhere('dispatch_hdr.dispatch_by', $request->q)
+                ->orWhere('dispatch_hdr.trucker_name', $request->q)
+                ->orWhere('dispatch_hdr.truck_type', $request->q)
+                ->orWhere('dispatch_hdr.plate_no', $request->q)
+                ->orWhere('dispatch_hdr.driver', $request->q)
+                ->orWhere('dispatch_hdr.driver', $request->q)
+                ->orWhere('dispatch_hdr.contact_no', $request->q)
+                ->orWhere('dispatch_hdr.helper', $request->q)
+                ->orWhere('dispatch_hdr.seal_no', $request->q);
+        }
+
+        if ($request->filter_date && $request->dispatch_date) {
+            if($request->filter_date == 'dispatch_date') {
+                $query->whereBetween('dispatch_hdr.dispatch_date', [$request->dispatch_date." 00:00:00", $request->dispatch_date." 23:59:00"]);
+            }
+            if($request->filter_date == 'created_at') {
+                $query->whereBetween('dispatch_hdr.created_at', [$request->created_at." 00:00:00", $request->created_at." 23:59:00"]);
+            }
+
+        }
+        $result = $data_list->get();
+        if($result)
+        {
+            $data = [];
+            foreach($result as $res){
+                $data[] = array(
+                    $res->week_no,
+                    $res->dispatch_date,
+                    $res->truck_type,
+                    $res->trucker_name,
+                    $res->dr_no,
+                    $res->seal_no,
+                    $res->plate_no,
+                    $res->driver,
+                    $res->po_num,
+                    $res->order_no,
+                    $res->sales_invoice,
+                    $res->supplier_name,
+                    $res->category_name,
+                    $res->product_code,
+                    $res->product_name,
+                    $res->lot_no,
+                    'N/A',
+                    'N/A',
+                    $res->qty,
+                    $res->unit,
+                    $res->manufacture_date,
+                    $res->expiry_date,
+                    $res->dispatch_no,
+                    strtoupper($res->item_type),
+                    "OUTBOUND",
+                    "N/A",
+                    $res->start_picking_datetime,
+                    $res->finish_picking_datetime,
+                    $res->arrival_datetime,
+                    $res->start_datetime,
+                    $res->finish_datetime,
+                    $res->depart_datetime,
+                    timeInterval($res->start_datetime, $res->finish_datetime),
+                    timeInterval($res->arrival_datetime, $res->depart_datetime),
+                    "N/A",
+                    $res->name,
+                    $res->dispatch_by
+                );
+            }
+
+        }
+		$file_name = 'export-outbound-monitoring'.date('Ymd-His').'.xls';
+        return Excel::download(new ExportOutboundMonitoring($data), $file_name);
+    }
+
+    public function getAgingIndex(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->get();
+        return view('report/aging', [
+            'client_list'=>$client_list,
+            'request'=>$request,
+            'data_list'=> [],
+        ]);
     }
 }
