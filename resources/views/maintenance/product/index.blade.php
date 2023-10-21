@@ -81,7 +81,8 @@
                         <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                             <thead class="table-light text-muted">
                                 <tr>
-                                    <th class="sort" data-sort="supplier_name">Sap Code</th>
+                                    <th class="sort" data-sort="product_id">Product Id</th>
+                                    <th class="sort" data-sort="sap_code">Sap Code</th>
                                     <th class="sort" data-sort="product_code">Product Code</th>
                                     <th class="sort" data-sort="product_name">Product Name</th>
                                     <th class="sort" data-sort="product_upc">Product UPC</th>
@@ -99,6 +100,7 @@
                                 <? if($product_list->total() > 0 ) : ?>
                                 <? foreach($product_list as $prod) :?>
                                 <tr>
+                                    <td>{{ $prod->product_id }}</td>
                                     <td>{{ $prod->sap_code }}</td>
                                     <td>{{ $prod->product_code }}</td>
                                     <td>{{ $prod->product_name }}</td>
