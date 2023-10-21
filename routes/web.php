@@ -116,6 +116,8 @@ Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
     Route::post('/movement/validate', [App\Http\Controllers\StockMovementController::class, 'getValidate']);
     Route::resource('/adjustment', App\Http\Controllers\StockAdjustmentController::class);
     Route::resource('/count-sheet', App\Http\Controllers\CountSheetController::class);
+
+    Route::resource('/transfer', App\Http\Controllers\StockTransferController::class);
 });
 
 Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {

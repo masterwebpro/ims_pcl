@@ -47,6 +47,7 @@
                                 <div class="col-lg-3 col-md-6">
                                     <h6 class="text-muted fw-medium mb-3">Supplier Name <span class="text-danger">*</span></h6>
                                     <input type="hidden" name="rcv_no" id="rcv_no" />
+                                    <input type="hidden" name="hasPo" id="hasPo" value="0" />
                                     <p class="mb-2">
                                         <select class="form-select select2" id="supplier" name="supplier">
                                             <option value="">Select Supplier</option>                                                            
@@ -312,6 +313,7 @@
                                                 <th scope="col" >WHSE UOM</th>
                                                 <th scope="col" >Inv Qty</th>
                                                 <th scope="col" >Inv UOM</th>
+                                                <th scope="col" >Manufacture Date</th>
                                                 <th scope="col" >Lot/Batch</th>
                                                 <th scope="col" >Expiry Date</th>
                                                 <th scope="col" >Remarks</th>
@@ -322,11 +324,11 @@
                                             
                                         </tbody>
                                             <tfoot>
-                                                <td colspan='3' class="fw-semibold">Total</td>
+                                                <td colspan='2' class="fw-semibold">Total</td>
                                                 <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_whse_qty" value="0" placeholder="0.00" readonly /></td>
                                                 <td class="text-end">&nbsp;</td>
                                                 <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_inv_qty" value="0" placeholder="0.00" readonly /></td>
-                                                <td colspan='4'>&nbsp;</td>
+                                                <td colspan='6'>&nbsp;</td>
                                             </tfoot>
                                         </table>
                                         
@@ -361,6 +363,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>&nbsp;</th>
+                            <th>SAP Code</th>
                             <th>Product Code</th>
                             <th>Product SKU</th>
                             <th>Product Name</th>

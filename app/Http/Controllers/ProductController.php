@@ -91,6 +91,7 @@ class ProductController extends Controller
             'uom_id' => 'required|present',
             'category_id' => 'required',
             'category_brand_id' => 'required',
+            'sap_code' => 'required',
         ], [
             'supplier_id' => 'Supplier is required',
             // 'product_code' => 'Product code  is required',
@@ -98,6 +99,7 @@ class ProductController extends Controller
             'uom_id' => 'Unit of measure is required',
             'category_id' => 'Category is required',
             'category_brand_id' => 'Brand is required',
+            'sap_code' => 'SAP Code is required',
         ]);
 
         if ($validator->fails()) {
@@ -111,6 +113,7 @@ class ProductController extends Controller
                 'product_upc'=>$request->product_upc,
                 'product_sku'=>$request->product_sku,
                 'supplier_id'=>$request->supplier_id,
+                'sap_code'=>$request->sap_code,
                 'category_brand_id'=>$request->category_brand_id,
                 'created_by' => Auth::user()->id,
                 'is_enabled'=> isset($request->is_enabled) ? 1 : 0,
@@ -125,7 +128,8 @@ class ProductController extends Controller
                 $product->update([
                     'product_code' => $product_code,
                     'product_upc' => isset($request->product_upc) ? $request->product_upc : $product_code,
-                    'product_sku' => isset($request->product_sku) ? $request->product_sku : $product_code
+                    'product_sku' => isset($request->product_sku) ? $request->product_sku : $product_code,
+                    'sap_code' => isset($request->sap_code) ? $request->sap_code : $product_code
 
                 ]);
             }

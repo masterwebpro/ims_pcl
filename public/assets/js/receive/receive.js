@@ -57,8 +57,9 @@ $(document).on('click', '#find-items', function() {
             ajax: BASEURL+"settings/products",
             columns: [
                 { data: 'product_id',  visible: false },
+                { data: 'sap_code' },
                 { data: 'product_code' },
-                { data: 'product_sku' },
+                { data: 'product_sku',  visible: false },
                 { data: 'product_name' }
             ],
         });
@@ -85,7 +86,8 @@ $(document).on('click', '#add-product', function() {
         let uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
 
         var btn = '<div class="text-center">';
-        btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+rowCount+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
+        btn += '<a href="javascript:void(0)" class="text-info split-row" data-id="'+data.product_id+'"><i class="ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-1"></i>Split</a> | ';
+        btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+rowCount+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-1"></i>Remove</a>';
         btn += '</div>'
 
         $('#product-list tbody').append('<tr id="product_'+uniqueId+'"> \
@@ -94,6 +96,7 @@ $(document).on('click', '#add-product', function() {
         '+(rowCount-1)+' </td> \
         <td class="text-start  fs-12"> \
             '+data.product_name+'<br/><small>'+data.product_code+'</small> \
+            <input type="hidden" name="product_code[]" value="'+data.product_code+'" /> \
         </td> \
         <td class="text-start"> \
             <select name="item_type[]" id="item_type_'+uniqueId+'" class="uom uom_select form-select">  \
@@ -101,26 +104,26 @@ $(document).on('click', '#add-product', function() {
                 <option value="damage">Damage</option> \
                 <option value="repair">Repair</option> \
             </select> \
-            <span class="text-danger error-msg item_type'+uniqueId+'_error"></span> \
+            <span id="item_type"  class="text-danger error-msg item_type'+(idx-1)+'_error"></span> \
         </td>  \
         <td class="text-start ps-1"> \
             <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+uniqueId+'" id="whse_qty_'+uniqueId+'" value="" placeholder="Whse Qty" /> \
-            <span class="text-danger error-msg whse_qty'+(idx-1)+'_error"></span> \
+            <span id="whse_qty" class="text-danger error-msg whse_qty'+(idx-1)+'_error"></span> \
         </td> \
             <td class="text-start ps-1"><select name="whse_uom[]" data-id="'+uniqueId+'" id="uom_'+uniqueId+'" class="uom  whse_uom uom_select form-select select2"> \
             '+uom+'</select> \
-            <span class="text-danger error-msg whse_uom'+(idx-1)+'_error"></span> \
+            <span id="whse_uom" class="text-danger error-msg whse_uom_error whse_uom'+(idx-1)+'_error"></span> \
         </td> \
         <td class="text-start ps-1"> \
             <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+uniqueId+'" id="inv_qty_'+uniqueId+'" value="" placeholder="Inv Qty" /> \
-            <span class="text-danger error-msg inv_qty'+(idx-1)+'_error"></span> \
+            <span id="inv_qty" class="text-danger error-msg inv_qty'+(idx-1)+'_error"></span> \
         <td class="text-start ps-1"> \
-            <select name="inv_uom[]" data-id="'+uniqueId+'" id="inv_uom_'+uniqueId+'" class="uom uom_select form-select select2"> \
+            <select name="inv_uom[]" data-id="'+uniqueId+'" id="inv_uom_'+uniqueId+'" class="uom uom_select inv_uom form-select select2"> \
             '+uom+'</select> \
-            <span class="text-danger error-msg inv_uom'+(idx-1)+'_error"></span> \
+            <span id="inv_uom" class="text-danger error-msg inv_uom_error inv_uom'+(idx-1)+'_error"></span> \
         </td> \
         <td class="ps-1"> \
-            <input type="date" class="form-control" style="width: 150px;" name="manufacture_date[]" placeholder="Manufacture Date" /> \
+            <input type="date" class="form-control" style="width: 150px;" name="manufacture_date[]" placeholder="Manufacturing Date" /> \
         </td> \
         <td class="ps-1"> \
             <input type="text" class="form-control" style="width: 150px;" name="lot_no[]" placeholder="Lot/Batch No" /> \
@@ -458,9 +461,14 @@ $(document).on('blur keyup', '#item_code', function(e) {
 $(document).on('keyup', '.whse_qty', function(e){
     e.preventDefault();
     var id = $(this).data('id');
+    var trid = $(this).closest('tr').attr('id'); 
     var val = $(this).val();
 
-    $('#inv_qty_'+id).val(val);
+    //$('#inv_qty_'+id).val(val);
+   // $(this).closest('input').find('.inv_qty').val(val); 
+
+//    $('#'+trid+' .inv_qty').val(val);
+    $(this).closest('tr') .find( '.inv_qty' ).val(val);
 
     computeAll();
 });
@@ -475,7 +483,9 @@ $(document).on('change', '.whse_uom', function(e){
     var id = $(this).data('id');
     var val = $(this).val();
 
-    $('#inv_uom_'+id).val(val);
+    $(this).closest('tr') .find( '.inv_uom' ).val(val);
+
+    // $('#inv_uom_'+id).val(val);
 });
 
 function computeAll() {
@@ -515,4 +525,36 @@ $(document).on('click', '.split-product', function(e) {
         .find( '.whse_qty' ).val(second_val)
         .find( '.inv_qty' ).val(second_val); 
     // $( thisRow ).clone().insertAfter( thisRow ); 
+});
+
+var cloneCount = 1;
+$(document).on('click', '.split-row', function(e) {
+    e.preventDefault();
+    var id=$(this).data('id');
+    
+    var thisRow = $( this ).closest( 'tr' )[0];
+    // $( thisRow ).clone().insertAfter( thisRow )
+    //     .find('.whse_uom_error').prop('class', 'text-danger error-msg whse_uom_error whse_uom'+cloneCount+'_error' )
+    //     .find('.inv_uom_error').prop('class', 'text-danger error-msg inv_uom_error inv_uom'+cloneCount+'_error' );
+
+    let clone = $(thisRow).clone();
+    clone.find('#whse_uom').attr("whse_uom", 'whse_uom_'+cloneCount);
+    clone.find('#whse_uom').attr("class", 'text-danger error-msg whse_uom'+cloneCount+'_error'); 
+
+    clone.find('#inv_uom').attr("inv_uom", 'inv_uom_'+cloneCount);
+    clone.find('#inv_uom').attr("class", 'text-danger error-msg inv_uom'+cloneCount+'_error'); 
+
+    clone.find('#inv_qty').attr("inv_qty", 'inv_qty_'+cloneCount);
+    clone.find('#inv_qty').attr("class", 'text-danger error-msg inv_qty'+cloneCount+'_error');
+    
+    clone.find('#whse_qty').attr("whse_qty", 'whse_qty_'+cloneCount);
+    clone.find('#whse_qty').attr("class", 'text-danger error-msg whse_qty'+cloneCount+'_error');
+
+    clone.find('#item_type').attr("item_type", 'item_type_'+cloneCount);
+    clone.find('#item_type').attr("class", 'text-danger error-msg item_type'+cloneCount+'_error');
+
+
+    $(clone).append(thisRow);
+
+    cloneCount++;
 });

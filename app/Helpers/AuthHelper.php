@@ -335,6 +335,17 @@ function hasDispatch($wd_no) {
     }
 }
 
+function _hasPo($po_num) {
+    $hasPo = DB::table('po_hdr')->where('po_num', $po_num)
+        ->get();
+
+    if ($hasPo->count() > 0) {
+        return true;
+    } else {
+        return false;
+    } 
+}
+
 function generateSeries($type)
 {
     $data = SeriesModel::where('trans_type', '=', $type)->where('created_at', '>=', date('Y-m-01 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'));

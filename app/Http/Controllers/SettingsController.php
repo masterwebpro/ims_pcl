@@ -167,7 +167,7 @@ class SettingsController extends Controller
     }
 
     public function getMasterfileData(Request $request) {
-         $result = \App\Models\MasterdataModel::select('p.product_id','p.product_code','p.product_name','masterdata.item_type', 'masterdata.rcv_dtl_id', 'sl.storage_location_id as old_location_id', 'sl.location as old_location', 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer', 'masterdata.inv_qty', 'masterdata.whse_qty')
+        $result = \App\Models\MasterdataModel::select('p.product_id','p.product_code','p.product_name','masterdata.item_type', 'masterdata.rcv_dtl_id', 'sl.storage_location_id as old_location_id', DB::raw("case when sl.location is null or sl.location = '' then 'RA' else  sl.location end as old_location"), 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer', 'masterdata.inv_qty', 'masterdata.whse_qty')
                 ->where('masterdata.warehouse_id', $request->warehouse_id)
                 ->where('masterdata.inv_qty', '>', 0)
                 ->where('masterdata.whse_qty', '>', 0)
@@ -177,29 +177,20 @@ class SettingsController extends Controller
                 ->leftJoin('uom as iu','iu.uom_id','masterdata.inv_uom')
                 ->leftJoin('rcv_dtl as rd','rd.id','masterdata.rcv_dtl_id')
                 ->leftJoin('rcv_hdr as rh','rh.rcv_no','rd.rcv_no');
-               // ->groupBy('p.product_id','p.product_code','p.product_name','masterdata.item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level');
-
-
-
-        // $result = \App\Models\MasterfileModel::select('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id as old_location_id', 'sl.location as old_location', 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer','masterfiles.ref1_no','masterfiles.ref1_type', DB::raw("SUM(inv_qty) as inv_qty"), DB::raw("SUM(inv_qty) as whse_qty"))
-        //         ->where('masterfiles.warehouse_id', $request->warehouse_id)
-        //         ->having('inv_qty', '>', 0)
-        //         ->having('whse_qty', '>', 0)
-        //         ->leftJoin('products as p','p.product_id','masterfiles.product_id')
-        //         ->leftJoin('storage_locations as sl','sl.storage_location_id','masterfiles.storage_location_id')
-        //         ->leftJoin('uom as wu','wu.uom_id','masterfiles.whse_uom')
-        //         ->leftJoin('uom as iu','iu.uom_id','masterfiles.inv_uom')
-        //         ->groupBy('p.product_id','p.product_code','p.product_name','item_type', 'sl.storage_location_id', 'sl.location', 'iu.code',  'iu.uom_id', 'wu.code', 'wu.uom_id','sl.rack', 'sl.level','masterfiles.ref1_no','masterfiles.ref1_type');
-
+           
         if($request->location) {
             if(isset($request->storage_id)) {
                 if($request->storage_id) {
                     $result->whereIn('masterdata.storage_location_id', explode(",",$request->storage_id));
                 }
             }
-        } else {
-            $result->where('masterdata.storage_location_id', null);
-        }
+
+            if($request->location == 'ra') {
+                $result->where('masterdata.storage_location_id', null);
+            } else {
+                $result->where('masterdata.storage_location_id', $request->location);
+            }
+        } 
 
         if($request->client_id)
             $result->where('masterdata.company_id', $request->client_id);
@@ -209,6 +200,10 @@ class SettingsController extends Controller
 
         if($request->rcv_no) {
             $result->where('rh.rcv_no', $request->rcv_no);
+        }
+
+        if($request->product_name) {
+            $result->where('p.product_name', 'like', '%'.$request->product_name.'%');
         }
 
 

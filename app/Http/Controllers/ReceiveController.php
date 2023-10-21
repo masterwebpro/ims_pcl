@@ -172,7 +172,9 @@ class ReceiveController extends Controller
                 SeriesModel::insert($series);
             }
 
-           
+            //check if from PO
+            $_hasPo = _hasPo($request->po_num);
+
             $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
                 
@@ -211,14 +213,16 @@ class ReceiveController extends Controller
             
             for($x=0; $x < count($request->product_id); $x++ ) {
 
-                if($request->inv_qty[$x] > $request->available_qty[$x]) {
-                    return response()->json([
-                        'success'  => false,
-                        'message' => 'Insufficient QTY for Product Code : ' .$request->product_code[$x],
-                    ]);
-                    exit;
+                if($_hasPo) {
+                    if($request->inv_qty[$x] > $request->available_qty[$x]) {
+                        return response()->json([
+                            'success'  => false,
+                            'message' => 'Insufficient QTY for Product Code : ' .$request->product_code[$x],
+                        ]);
+                        exit;
+                    }
                 }
-
+                
                 $item = array(
                     'rcv_no'=>$rcv_no,
                     'product_id'=>$request->product_id[$x],
@@ -229,7 +233,7 @@ class ReceiveController extends Controller
                     'whse_uom'=>$request->whse_uom[$x],
                     'manufacture_date'=>$request->manufacture_date[$x],
                     'lot_no'=>$request->lot_no[$x],
-                    'po_dtl_id'=>$request->po_dtl_id[$x],
+                    'po_dtl_id'=>isset($request->po_dtl_id[$x]) ? $request->po_dtl_id[$x] : 0,
                     'expiry_date'=>$request->expiry_date[$x],
                     'remarks'=>$request->item_remarks[$x],
                     'created_at'=>$this->current_datetime,
@@ -291,6 +295,7 @@ class ReceiveController extends Controller
                 'data' => null
             ];
 
+          
             if($request->status == 'posted') {
                 //add on the masterfile
                 MasterfileModel::insert($masterfile);
@@ -298,12 +303,21 @@ class ReceiveController extends Controller
                 _stockInMasterData($masterdata);
 
                 //update available qty
-                for($i=0; $i < count($request->product_id); $i++ ) {
-                    PoDtl::where('po_num', '=', $request->po_num)
-                        ->where('product_id', '=', $request->product_id[$i])
-                        ->update(['available_qty'=> DB::raw('available_qty - '.$request->inv_qty[$i])] );
-                }
+                if($_hasPo) {
+                    for($i=0; $i < count($request->product_id); $i++ ) {
+                        PoDtl::where('po_num', '=', $request->po_num)
+                            ->where('product_id', '=', $request->product_id[$i])
+                            ->update(['available_qty'=> DB::raw('available_qty - '.$request->inv_qty[$i])] );
+                    }
 
+                    //check if po_dtl is complete
+                    $qty= PoDtl::where('po_num','=',$request->po_num)->sum('available_qty');
+                    if($qty == 0) {
+                        //update PO to closed
+                        PoHdr::where('po_num', '=', $request->po_num)->update(['status'=>'closed']);
+                    }
+                }
+                
                 $audit_trail[] = [
                     'control_no' => $rcv_no,
                     'type' => 'masterfile',
@@ -313,13 +327,7 @@ class ReceiveController extends Controller
                     'user_id' => Auth::user()->id,
                     'data' => json_encode(array('comment' => 'Location: floor'))
                 ];
-
-                //check if po_dtl is complete
-                $qty= PoDtl::where('po_num','=',$request->po_num)->sum('available_qty');
-                if($qty == 0) {
-                    //update PO to closed
-                    PoHdr::where('po_num', '=', $request->po_num)->update(['status'=>'closed']);
-                }
+                
             }
 
             AuditTrail::insert($audit_trail);

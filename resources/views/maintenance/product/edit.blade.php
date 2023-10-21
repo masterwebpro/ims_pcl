@@ -79,6 +79,37 @@
                             </div>
                         </div>
                         <div class="row">
+
+                            <div class="col-6">
+                                <div class="row mb-3">
+                                    <div class="col-lg-3">
+                                        <label for="product_name" class="form-label">Product
+                                            Name
+                                            <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="url" class="form-control" id="product_name"
+                                        value="{{ $product->product_name }}"
+                                            name="product_name" placeholder="Enter Product Name">
+                                        <span class="text-danger error-msg product_name_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="row mb-3">
+                                    <div class="col-lg-3">
+                                        <label for="sap_code" class="form-label">SAP Code <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control" id="sap_code"  value="{{ $product->sap_code }}" name="sap_code" placeholder="Enter Product SAP Code">
+                                        <span class="text-danger error-msg sap_code_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
@@ -104,21 +135,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <div class="col-lg-3">
-                                        <label for="product_name" class="form-label">Product
-                                            Name
-                                            <span class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        <input type="url" class="form-control" id="product_name"
-                                        value="{{ $product->product_name }}"
-                                            name="product_name" placeholder="Enter Product Name">
-                                        <span class="text-danger error-msg product_name_error"></span>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                           
 
                             <div class="col-6">
                                 <div class="row mb-3">

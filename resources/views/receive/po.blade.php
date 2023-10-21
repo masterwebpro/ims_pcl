@@ -47,6 +47,7 @@
                                 <div class="col-lg-3 col-md-6">
                                     <h6 class="text-muted mb-3">Supplier Name</h6>
                                     <input type="hidden" name="rcv_no" id="rcv_no" />
+                                    <input type="hidden" name="hasPo" id="hasPo" value="1" />
                                     <p class="mb-2">
                                         <input type="hidden" name="supplier" id="supplier" value="<?=$po->supplier_id?>" />
                                         <select class="form-select select2" disabled required="required" id="supplier1" name="supplier1">
@@ -394,10 +395,10 @@
                                                         </td>
                                                         <td>
                                                             <div class="text-center">
-                                                                <a href="javascript:void(0)" class="text-info split-product" data-id="{{$item->product_id}}"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>
+                                                                <a href="javascript:void(0)" class="text-info split-product" data-id="{{$item->product_id}}"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-1"></i>Split</a> | 
 
                                                                 <a href="javascript:void(0)" class="text-danger remove-product" data-id="{{$item->product_id}}">
-                                                                    <i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i>
+                                                                    <i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-1"></i>Remove
                                                                 </a>
                                                             </div>
                                                         </td>
@@ -411,11 +412,11 @@
                                             @endif
                                         </tbody>
                                         <tfoot>
-                                                <td colspan='3' class="fw-semibold">Total</td>
+                                                <td colspan='2' class="fw-semibold">Total</td>
                                                 <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_whse_qty" value="{{$total_whse_qty}}" placeholder="0.00" readonly /></td>
                                                 <td class="text-end">&nbsp;</td>
                                                 <td class="text-end fw-medium"><input type="text" class="form-control border-0 text-end" id="total_inv_qty" value="{{$total_inv_qty}}" placeholder="0.00" readonly /></td>
-                                                <td colspan='4'>&nbsp;</td>
+                                                <td colspan='6'>&nbsp;</td>
                                             </tfoot>
                                         </table>
                                         
