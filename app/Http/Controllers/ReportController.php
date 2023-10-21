@@ -21,6 +21,7 @@ use App\Exports\ExportInventory;
 use App\Exports\ExportOutboundMonitoring;
 use App\Models\DispatchDtl;
 use App\Models\DispatchHdr;
+use App\Models\MasterdataModel;
 use App\Models\OrderType;
 use App\Models\WdHdr;
 use DataTables;
@@ -663,10 +664,47 @@ class ReportController extends Controller
     public function getAgingIndex(Request $request)
     {
         $client_list = Client::where('is_enabled', '1')->get();
+        $data = MasterdataModel::select(
+                'p.product_code',
+                'p.product_name', 
+                // DB::raw('sum(masterdata.inv_qty - masterdata.reserve_qty) as total'),
+                'masterdata.inv_qty',
+                // 'masterdata.reserve_qty',
+                'masterdata.received_date',
+                DB::raw('DATEDIFF(now(),masterdata.received_date) as diff_days')
+                )
+                ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+                ->groupBy(['masterdata.product_id','masterdata.received_date'])
+                ->get();
+        $xdata = array();
+        foreach($data as $res){
+            $product_code = $res->product_code;
+            if(!isset($xdata[$product_code]))
+            {
+                $xdata[$product_code]['days30'] = ($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] = ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] = ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] = ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] = ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] = ($res->diff_days > 150) ? $res->inv_qty : 0;
+                $xdata[$product_code] = $res;
+            }
+            else{
+                $xdata[$product_code]['inv_qty'] += $res->inv_qty;
+                $xdata[$product_code]['days30'] += ($res->diff_days <= 30) ? $res->inv_qty : 0;;
+                $xdata[$product_code]['days60'] += ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] += ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] += ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] += ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] += ($res->diff_days > 150) ? $res->inv_qty : 0;
+            }
+        }
+       
+        $result = paginate($xdata,20);
         return view('report/aging', [
             'client_list'=>$client_list,
             'request'=>$request,
-            'data_list'=> [],
+            'data_list'=> $result,
         ]);
     }
 }

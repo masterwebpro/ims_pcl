@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="card-body border border-dashed border-end-0 border-start-0">
-                    <form action="{{ route('reports.outbound-monitoring') }}" method="GET">
+                    <form action="{{ route('reports.aging') }}" method="GET">
                         <div class="row g-3">
                             <div class="col-xxl-4 col-sm-12">
                                 <div class="search-box">
@@ -41,16 +41,15 @@
                             <div class="col-xxl-2 col-sm-4">
                                 <div class="input-light">
                                     <select class="form-control" name="filter_date" id="filter_date">
-                                        <option value="dispatch_date">Dispatch Date</option>
-                                        <option value="created_at">Created Date</option>
+                                        <option value="filter_date">As of Date</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="col-xxl-2 col-sm-4">
-                                <input type="text" class="form-control" name="date" id="date_picker"
-                                    data-provider="flatpickr" data-date-format="Y-d-m" data-range-date="true"
-                                    placeholder="Select date range">
+                                <input type="text" class="form-control" name="date" id="date_picker" value="<?=date('Y-m-d')?>"
+                                    data-provider="flatpickr" data-date-format="Y-m-d" 
+                                    placeholder="Select date">
                             </div>
                             <!--end col-->
                             <div class="col-xxl-2 col-sm-4">
@@ -70,12 +69,8 @@
                         <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                             <thead class="table-light text-muted">
                                 <tr>
-                                    <th class="sort" data-sort="dispatch_date">PRODUCT CODE</th>
-                                    <th class="sort" data-sort="dispatch_date">PRODUCT NAME</th>
-                                    <th class="sort" data-sort="dispatch_no">OPENING INVENTORY</th>
-                                    <th class="sort" data-sort="dispatch_no">RECEIVING</th>
-                                    <th class="sort" data-sort="dispatch_no">WITHDRAWAL</th>
-                                    <th class="sort" data-sort="dispatch_no">CLOSING INVENTORY</th>
+                                    <th class="sort" data-sort="dispatch_date">PRODUCT</th>
+                                    <th class="sort" data-sort="dispatch_no">INVENTORY</th>
                                     <th class="sort" data-sort="dispatch_no">30 DAYS</th>
                                     <th class="sort" data-sort="dispatch_no">60 DAYS</th>
                                     <th class="sort" data-sort="dispatch_no">90 DAYS</th>
@@ -86,9 +81,20 @@
                             </thead>
 
                             <tbody class="list form-check-all">
-                                {{--  <? if($data_list->total() > 0 ) : ?>
+                                <? if($data_list->total() > 0 ) : ?>
                                 <? foreach($data_list as $rd) :?>
                                 <tr>
+                                    <td>
+                                        <b>{{ $rd->product_code }} </b><br/>
+                                        <span class="text-wrap"><em>{{ $rd->product_name }}</em></span>
+                                    </td>
+                                    <td class="text-end">{{ number_format($rd->inv_qty,2) }}</td>
+                                    <td class="text-end">{{ number_format($rd->days30,2) }} </td>
+                                    <td class="text-end">{{ number_format($rd->days60,2) }} </td>
+                                    <td class="text-end">{{ number_format($rd->days90,2) }} </td>
+                                    <td class="text-end">{{ number_format($rd->days120,2) }} </td>
+                                    <td class="text-end">{{ number_format($rd->days150,2) }} </td>
+                                    <td class="text-end">{{ number_format($rd->over150days,2) }} </td>
                                 </tr>
                                 <? endforeach; ?>
                                 <? else :?>
@@ -103,13 +109,13 @@
                                             for you search.</p>
                                     </div>
                                 </div>
-                                <? endif; ?>  --}}
+                                <? endif; ?>
                             </tbody>
                         </table>
                         <!--end table-->
                     </div>
                     <!-- Pagination -->
-                    {{--  {!! $data_list->withQueryString()->links('pagination::bootstrap-5') !!}  --}}
+                    {!! $data_list->withQueryString()->links('pagination::bootstrap-5') !!}
                 </div>
                 <!--end card-body-->
             </div>
