@@ -87,10 +87,12 @@
                                 <th class="sort" data-sort="dispatch_no">Plate No.</th>
                                 <th class="sort" data-sort="dispatch_no">Seal No.</th>
                                 <th class="sort" data-sort="dispatch_no">Driver Name</th>
+                                <th class="sort" data-sort="dispatch_date">Start Picking</th>
+                                <th class="sort" data-sort="dispatch_date">Finish Picking</th>
                                 <th class="sort" data-sort="dispatch_date">Start Loading</th>
                                 <th class="sort" data-sort="dispatch_date">Finish Loading</th>
+                                <th class="sort" data-sort="dispatch_date">Arrival Date</th>
                                 <th class="sort" data-sort="dispatch_date">Depart Date</th>
-                                <th class="sort" data-sort="wd_count">No. of Withdrawal</th>
                                 <th class="sort" data-sort="wd_count">Created By</th>
                                 <th class="sort" data-sort="wd_count">Created At</th>
                                 <th class="sort" data-sort="status">Status</th>
@@ -110,10 +112,12 @@
                                         <td class="">{{ $dispatch->plate_no }}</td>
                                         <td class="">{{ $dispatch->seal_no }}</td>
                                         <td class="">{{ $dispatch->driver }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->start_picking_datetime)) }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->finish_picking_datetime)) }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->start_datetime)) }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->finish_datetime)) }}</td>
+                                        <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->arrival_datetime)) }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->depart_datetime)) }}</td>
-                                        <td class="">{{ $dispatch->items_count }}</td>
                                         <td class="">{{ $dispatch->name }}</td>
                                         <td class="dipatch_date">{{ date('M d, Y H:i:s',strtotime($dispatch->created_at)) }}</td>
                                         <td class="status"><span class="badge {{ $dispatch->status }} text-uppercase fs-11">{{ $dispatch->status }}</span></td>

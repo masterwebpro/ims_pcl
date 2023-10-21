@@ -47,7 +47,7 @@ class WithdrawalController extends Controller
         $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
         $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
 
-        $wd_list = WdHdr::select('wd_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name','com.client_name as company_name', 'u.name')
+        $wd_list = WdHdr::select('wd_hdr.*', 'cl.client_name as deliver_to', 's.store_name','c.client_name as customer_name','com.client_name as company_name', 'u.name')
         ->leftJoin('client_list as cl', 'cl.id', '=', 'wd_hdr.deliver_to_id')
         ->leftJoin('store_list as s', 's.id', '=', 'wd_hdr.store_id')
         ->leftJoin('client_list as c', 'c.id', '=', 'wd_hdr.customer_id')
@@ -103,6 +103,10 @@ class WithdrawalController extends Controller
             }]
         ])
         ->paginate(20);
+        // echo "<pre>";
+        // print_r($wd_list);
+        // echo "</pre>";
+        // die();
         $deliver_list = Client::where('client_type','T')->get();
         $client_list = Client::where('is_enabled', '1')->get();
         return view('withdraw/index', ['wd_list'=>$wd_list, 'deliver_list'=> $deliver_list, 'client_list'=> $client_list, 'request'=> $request]);

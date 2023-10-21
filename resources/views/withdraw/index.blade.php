@@ -121,17 +121,17 @@
                         <thead class="table-light text-muted">
                             <tr>
                                 <th class="sort" data-sort="id">WD #</th>
+                                <th class="sort" data-sort="id">WD Date</th>
                                 <th class="sort" data-sort="wd_type">WD Type</th>
                                 <th class="sort" data-sort="order_no">DR Number</th>
                                 <th class="sort" data-sort="order_no">Order Number</th>
                                 <th class="sort" data-sort="order_type">Order Type</th>
                                 <th class="sort" data-sort="id">PO Number</th>
                                 <th class="sort" data-sort="id">Sales Invoice</th>
-                                {{-- <th class="sort" data-sort="client_name">Company Name</th> --}}
                                 <th class="sort" data-sort="client_name">Customer Name</th>
                                 <th class="sort" data-sort="supplier_name">Deliver To</th>
                                 <th class="sort" data-sort="store">Site Name</th>
-                                <th class="sort" data-sort="withdraw_date">Withdrawal Date</th>
+                                {{--  <th class="sort" data-sort="withdraw_date">Withdrawal Date</th>  --}}
                                 <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="action">Action</th>
@@ -152,9 +152,8 @@
                                         <td class="order_type">{{ $withdraw->order_type}}</td>
                                         <td class="po_num">{{ $withdraw->po_num}}</td>
                                         <td class="sales_invoice">{{ $withdraw->sales_invoice}}</td>
-                                        {{-- <td class="company_name">{{ $withdraw->company_name}}</td> --}}
-                                        <td class="client_name">{{ $withdraw->client_name}}</td>
-                                        <td>{{ $withdraw->deliver_to}}</td>
+                                        <td class="client_name">{{ $withdraw->customer_name }}</td>
+                                        <td>{{ $withdraw->deliver_to }}</td>
                                         <td class="store">{{ $withdraw->store_name}}</td>
                                         <td class="order_date">{{ date('M d, Y',strtotime($withdraw->created_at)) }}</td>
                                         <td class="status"><span class="badge {{ $withdraw->status }} text-uppercase fs-11">{{ $withdraw->status }}</span></td>

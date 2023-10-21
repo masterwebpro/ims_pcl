@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Exports\ExportCurrentStocks;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -521,4 +523,9 @@ class ReportController extends Controller
         ]);
     }
 
+    function exportCurrentStocks(Request $request) {
+        ob_start();
+		$file_name = 'export-current-stocks'.date('Ymd-His').'.xls';
+        return Excel::download(new ExportCurrentStocks($request), $file_name);
+    }
 }
