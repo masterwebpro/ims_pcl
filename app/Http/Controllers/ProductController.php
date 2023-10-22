@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CategoryAttribute;
 use App\Models\CategoryBrand;
+use App\Models\Client;
 use App\Models\ProductAttribute;
 use App\Models\ProductPrice;
 use App\Models\Products;
@@ -71,9 +72,10 @@ class ProductController extends Controller
     public function create()
     {
         $supplier_list = Supplier::all();
+        $client_list = Client::where('client_type', 'C')->get();
         $category = Category::all();
         $uom = UOM::all();
-        return view('maintenance/product/create',['supplier_list' => $supplier_list, 'category' => $category, 'uom' => $uom]);
+        return view('maintenance/product/create',['supplier_list' => $supplier_list, 'category' => $category, 'client_list'=>$client_list, 'uom' => $uom]);
     }
 
     /**
@@ -90,6 +92,7 @@ class ProductController extends Controller
             'product_name' => 'required',
             'uom_id' => 'required|present',
             'category_id' => 'required',
+            'customer_id' => 'required',
             'category_brand_id' => 'required',
             'sap_code' => 'required',
         ], [
@@ -98,6 +101,7 @@ class ProductController extends Controller
             'product_name' => 'Product name  is required',
             'uom_id' => 'Unit of measure is required',
             'category_id' => 'Category is required',
+            'customer_id' => 'Customer is required',
             'category_brand_id' => 'Brand is required',
             'sap_code' => 'SAP Code is required',
         ]);
@@ -114,6 +118,7 @@ class ProductController extends Controller
                 'product_upc'=>$request->product_upc,
                 'product_sku'=>$request->product_sku,
                 'supplier_id'=>$request->supplier_id,
+                'customer_id'=>$request->customer_id,
                 'sap_code'=>$request->sap_code,
                 'category_brand_id'=>$request->category_brand_id,
                 'created_by' => Auth::user()->id,
@@ -130,7 +135,8 @@ class ProductController extends Controller
                     'product_code' => $product_code,
                     'product_upc' => isset($request->product_upc) ? $request->product_upc : $product_code,
                     'product_sku' => isset($request->product_sku) ? $request->product_sku : $product_code,
-                    'sap_code' => isset($request->sap_code) ? $request->sap_code : $product_code
+                    'sap_code' => isset($request->sap_code) ? $request->sap_code : $product_code,
+                    'customer_id' => isset($request->customer_id) ? $request->customer_id : 0,
 
                 ]);
             }
@@ -246,10 +252,13 @@ class ProductController extends Controller
         $uom = UOM::all();
         $prod_uom = ProductUom::where('product_id',$product->product_id)->pluck('uom_id');
         $price = ProductPrice::where('product_id',$product->product_id)->first();
+        $client_list = Client::where('client_type', 'C')->get();
+
         return view('maintenance/product/edit',
         [
             'product' => $product,
             'supplier_list' => $supplier_list,
+            'client_list' => $client_list,
             'category' => $category,
             'brand' => $brand,
             'uom' => $uom,
