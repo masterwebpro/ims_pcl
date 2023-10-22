@@ -392,7 +392,7 @@
                                                             <span class="badge bg-success text-capitalize">{{ isset($item->master) ? $item->master->item_type : ''}} </span>
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ isset($item->master) ? date('M d, Y', strtotime($item->master->received_date)) : '' }}
+                                                            {{ isset($item->receiving) ? date('M d, Y', strtotime($item->receiving->received_date)) : '' }}
                                                         </td>
                                                         {{-- @if ($wd->status == 'open')
                                                         <td class="ps-1 text-center">
@@ -407,13 +407,13 @@
                                                             {{ ($item->uom) ? $item->uom->code : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master) ? $item->master->lot_no : "" }}
+                                                            {{ ($item->receiving) ? $item->receiving->lot_no : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master) ? $item->master->expiry_date : "" }}
+                                                            {{ ($item->receiving) ? $item->receiving->expiry_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master) ? $item->master->manufacture_date : "" }}
+                                                            {{ ($item->receiving) ? $item->receiving->manufacture_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
                                                             {{ ($item->master) ? $item->master->warehouse_name : "" }}

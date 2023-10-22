@@ -248,8 +248,23 @@ $(document).on('click', '.submit-withdrawal-print', function(e) {
 });
 
 $(document).on('click', '.submit-outbound-monitoring-xls', function(e) {
+    $('#preloading').modal('show');
     e.preventDefault();
     var client = $('#client').val();
     var dispatch_date = $('#dispatch_date').val();
     window.location.href= BASEURL + 'reports/export-outbound-monitoring?client='+client+'&dispatch_date='+dispatch_date;
+    setTimeout(function () {
+        $('#preloading').modal('hide');
+    }, 100);
+});
+
+$(document).on('click', '.submit-aging-xls', function(e) {
+    $('#preloading').modal('show');
+    e.preventDefault();
+    var client = $('#client').val();
+    var dispatch_date = $('#dispatch_date').val();
+    window.location.href= BASEURL + 'reports/export-aging?client='+client+'&dispatch_date='+dispatch_date;
+    setTimeout(function () {
+        $('#preloading').modal('hide');
+    }, 100);
 });

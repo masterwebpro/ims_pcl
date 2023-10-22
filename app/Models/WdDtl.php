@@ -40,4 +40,11 @@ class WdDtl extends Model
     {
         return $this->hasMany(WdDtlItemize::class, 'wd_dtl_id', 'id');
     }
+
+    public function receiving()
+    {
+        return $this->belongsTo(RcvDtl::class, 'rcv_dtl_id', 'id')
+                ->select('rcv_dtl.id','rcv_dtl.lot_no','rcv_dtl.expiry_date','rcv_dtl.manufacture_date','rh.date_received as received_date')
+                ->leftJoin('rcv_hdr as rh','rh.rcv_no','rcv_dtl.rcv_no');
+    }
 }

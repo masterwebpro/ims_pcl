@@ -281,6 +281,7 @@ class WithdrawalController extends Controller
                         'wd_no'=>$wd_no,
                         'product_id'=>$request->product_id[$x],
                         'master_id'=>$request->master_id[$x],
+                        'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                         'inv_qty'=> ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x],
                         'inv_uom'=>$request->inv_uom[$x],
                         'created_at'=>$this->current_datetime,

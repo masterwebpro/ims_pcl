@@ -396,6 +396,7 @@
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                             <input type="hidden" name="master_id[]" readonly id="master_id" value="{{$item->master_id}}" />
+                                                            <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id" value="{{ $item->rcv_dtl_id }}" />
                                                             <input type="hidden" name="inv_uom[]" readonly id="inv_uom_{{$item->inv_uom}}" value="{{$item->inv_uom}}" />
                                                             <input type="hidden" name="is_serialize[]" readonly value="{{ ($item->product) ? $item->product->is_serialize : 0 }}" />
                                                         {{$x++}} </td>
@@ -409,7 +410,7 @@
                                                             <span class="badge {{$type}} text-capitalize">{{ isset($item->master) ? $item->master->item_type : ""}} </span>
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ isset($item->master) ? date('M d, Y', strtotime($item->master->received_date)) : '' }}
+                                                            {{ isset($item->receiving) ? date('M d, Y', strtotime($item->receiving->received_date)) : '' }}
                                                         </td>
                                                         <td class="ps-1 text-center">
                                                             {{ ($item->master) ? number_format($item->master->inv_qty,2) : ""}}
@@ -422,13 +423,13 @@
                                                             {{ ($item->uom) ? $item->uom->code : ""}}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master) ? $item->master->lot_no : "" }}
+                                                            {{ ($item->receiving) ? $item->receiving->lot_no : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master) ? $item->master->expiry_date : "" }}
+                                                            {{ ($item->receiving) ? $item->receiving->expiry_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
-                                                            {{ ($item->master) ? $item->master->manufacture_date : "" }}
+                                                            {{ ($item->receiving) ? $item->receiving->manufacture_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">
                                                             {{ ($item->master) ? $item->master->warehouse_name : ""}}
