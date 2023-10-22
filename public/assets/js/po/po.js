@@ -31,8 +31,15 @@ $(document).on('click', '#find-items', function() {
         new DataTable("#show-items-list",{
             order: [[1, 'desc']],
             paging: true,
+            ajax: {
+                url :BASEURL+"settings/products",
+                data : {
+                    supplier_id: ''
+                }
+            },
+
         //    ajax: BASEURL+"settings/products/"+supplier_id+'/get',
-            ajax: BASEURL+"settings/products",
+            // ajax: BASEURL+"settings/products",
             columns: [
                 { data: 'product_id',  visible: false },
                 { data: 'sap_code' },
@@ -40,6 +47,11 @@ $(document).on('click', '#find-items', function() {
                 { data: 'product_sku' },
                 { data: 'product_name' }
             ],
+            "pageLength": 25,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ]
         });
 //    } else {
 //        showError("Please select supplier name.");

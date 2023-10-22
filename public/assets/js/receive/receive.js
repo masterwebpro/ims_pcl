@@ -68,11 +68,43 @@ $(document).on('click', '#find-items', function() {
     // }
 });
 
+var rowIdx = 0; 
+
 $(document).on('click', '.remove-product', function() {
-    var id = $(this).data('id');
-    // $('#product_'+id).remove();
-    $(this).closest("tr").remove();
+    var child = $(this).closest('tr').nextAll(); 
+    child.each(function () { 
+        // Getting <tr> id. 
+        var id = $(this).attr('id'); 
+    
+        // Getting the <p> inside the .row-index class. 
+        var item_type = $(this).children('.c_item_type').children('span#item_type'); 
+        var whse_qty = $(this).children('.c_whse_qty').children('span#whse_qty'); 
+        var whse_uom = $(this).children('.c_whse_uom').children('span#whse_uom'); 
+        var inv_qty = $(this).children('.c_inv_qty').children('span#inv_qty'); 
+        var inv_uom = $(this).children('.c_inv_uom').children('span#inv_uom'); 
+    
+        // Gets the row number from <tr> id. 
+        var dig = parseInt(id.substring(1)); 
+    
+        // Modifying row index. 
+        item_type.attr("class", `text-danger error-msg acct_code item_type${dig - 1}_error`);
+        whse_qty.attr("class", `text-danger error-msg whse_qty${dig - 1}_error`);
+        whse_uom.attr("class", `text-danger error-msg whse_uom${dig - 1}_error`);
+        inv_qty.attr("class", `text-danger error-msg inv_qty${dig - 1}_error`);
+        inv_uom.attr("class", `text-danger error-msg inv_uom${dig - 1}_error`);
+          
+          // Modifying row id. 
+          $(this).attr('id', `R${dig - 1}`); 
+        }); 
+    
+        // Removing the current row. 
+        $(this).closest('tr').remove(); 
+    
+        // Decreasing total number of rows by 1. 
+        rowIdx--; 
 });
+
+
 
 $(document).on('click', '#add-product', function() {
     var table = $('#show-items-list').DataTable();
@@ -90,7 +122,7 @@ $(document).on('click', '#add-product', function() {
         btn += '<a href="javascript:void(0)" class="text-danger remove-product" data-id="'+rowCount+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-1"></i>Remove</a>';
         btn += '</div>'
 
-        $('#product-list tbody').append('<tr id="product_'+uniqueId+'"> \
+        $('#product-list tbody').append('<tr id="R'+rowIdx+'"> \
         <td class="text-start d-none"> \
             <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
         '+(rowCount-1)+' </td> \
@@ -98,29 +130,29 @@ $(document).on('click', '#add-product', function() {
             '+data.product_name+'<br/><small>'+data.product_code+'</small> \
             <input type="hidden" name="product_code[]" value="'+data.product_code+'" /> \
         </td> \
-        <td class="text-start"> \
+        <td class="text-start c_item_type"> \
             <select name="item_type[]" id="item_type_'+uniqueId+'" class="uom uom_select form-select">  \
                 <option value="good">Good</option>  \
                 <option value="damage">Damage</option> \
                 <option value="repair">Repair</option> \
             </select> \
-            <span id="item_type"  class="text-danger error-msg item_type'+(idx-1)+'_error"></span> \
+            <span id="item_type"  class="text-danger error-msg item_type'+(rowIdx)+'_error"></span> \
         </td>  \
-        <td class="text-start ps-1"> \
+        <td class="text-start ps-1 c_whse_qty"> \
             <input type="text" class="form-control numeric whse_qty uom_select" name="whse_qty[]" data-id="'+uniqueId+'" id="whse_qty_'+uniqueId+'" value="" placeholder="Whse Qty" /> \
-            <span id="whse_qty" class="text-danger error-msg whse_qty'+(idx-1)+'_error"></span> \
+            <span id="whse_qty" class="text-danger error-msg whse_qty'+(rowIdx)+'_error"></span> \
         </td> \
-            <td class="text-start ps-1"><select name="whse_uom[]" data-id="'+uniqueId+'" id="uom_'+uniqueId+'" class="uom  whse_uom uom_select form-select select2"> \
+        <td class="text-start ps-1 c_whse_uom"><select name="whse_uom[]" data-id="'+uniqueId+'" id="uom_'+uniqueId+'" class="uom  whse_uom uom_select form-select select2"> \
             '+uom+'</select> \
-            <span id="whse_uom" class="text-danger error-msg whse_uom_error whse_uom'+(idx-1)+'_error"></span> \
+            <span id="whse_uom" class="text-danger error-msg whse_uom_error whse_uom'+(rowIdx)+'_error"></span> \
         </td> \
-        <td class="text-start ps-1"> \
+        <td class="text-start ps-1 c_inv_qty"> \
             <input type="text" class="form-control inv_qty numeric uom_select" name="inv_qty[]" data-id="'+uniqueId+'" id="inv_qty_'+uniqueId+'" value="" placeholder="Inv Qty" /> \
-            <span id="inv_qty" class="text-danger error-msg inv_qty'+(idx-1)+'_error"></span> \
-        <td class="text-start ps-1"> \
+            <span id="inv_qty" class="text-danger error-msg inv_qty'+(rowIdx)+'_error"></span> \
+        <td class="text-start ps-1 c_inv_uom"> \
             <select name="inv_uom[]" data-id="'+uniqueId+'" id="inv_uom_'+uniqueId+'" class="uom uom_select inv_uom form-select select2"> \
             '+uom+'</select> \
-            <span id="inv_uom" class="text-danger error-msg inv_uom_error inv_uom'+(idx-1)+'_error"></span> \
+            <span id="inv_uom" class="text-danger error-msg inv_uom_error inv_uom'+(rowIdx)+'_error"></span> \
         </td> \
         <td class="ps-1"> \
             <input type="date" class="form-control" style="width: 150px;" name="manufacture_date[]" placeholder="Manufacturing Date" /> \
@@ -137,7 +169,7 @@ $(document).on('click', '#add-product', function() {
         <td>'+btn+'</td> \
         </tr>');
 
-
+        rowIdx++; 
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
@@ -300,6 +332,11 @@ $(document).on('click', '.receive-po', function (e) {
             { data: 'customer_name'},
             { data: 'created_by' }
         ],
+        "pageLength": 25,
+        lengthMenu: [
+            [10, 25, 50, -1],
+            [10, 25, 50, 'All']
+        ]
     });
 });
 
@@ -530,31 +567,66 @@ $(document).on('click', '.split-product', function(e) {
 var cloneCount = 1;
 $(document).on('click', '.split-row', function(e) {
     e.preventDefault();
-    var id=$(this).data('id');
-    
+
     var thisRow = $( this ).closest( 'tr' )[0];
-    // $( thisRow ).clone().insertAfter( thisRow )
-    //     .find('.whse_uom_error').prop('class', 'text-danger error-msg whse_uom_error whse_uom'+cloneCount+'_error' )
-    //     .find('.inv_uom_error').prop('class', 'text-danger error-msg inv_uom_error inv_uom'+cloneCount+'_error' );
 
-    let clone = $(thisRow).clone();
-    clone.find('#whse_uom').attr("whse_uom", 'whse_uom_'+cloneCount);
-    clone.find('#whse_uom').attr("class", 'text-danger error-msg whse_uom'+cloneCount+'_error'); 
+    var prev = $(this).closest('tr').prev();
 
-    clone.find('#inv_uom').attr("inv_uom", 'inv_uom_'+cloneCount);
-    clone.find('#inv_uom').attr("class", 'text-danger error-msg inv_uom'+cloneCount+'_error'); 
+    id = $(thisRow).attr('id');
+    var dig = parseInt(id.substring(1)); 
+    var cloneCount = dig + 1;
 
-    clone.find('#inv_qty').attr("inv_qty", 'inv_qty_'+cloneCount);
-    clone.find('#inv_qty').attr("class", 'text-danger error-msg inv_qty'+cloneCount+'_error');
     
-    clone.find('#whse_qty').attr("whse_qty", 'whse_qty_'+cloneCount);
-    clone.find('#whse_qty').attr("class", 'text-danger error-msg whse_qty'+cloneCount+'_error');
+    
+    value = $(thisRow).find( '.whse_qty' ).val();
+    var rem  = value % 2;
+    var parent_val = (value / 2);
+    var second_val = (value / 2);
 
-    clone.find('#item_type').attr("item_type", 'item_type_'+cloneCount);
-    clone.find('#item_type').attr("class", 'text-danger error-msg item_type'+cloneCount+'_error');
+    if(rem != 0 ) {
+        parent_val = (value / 2) + (rem/2);
+        second_val = (value / 2) - (rem/2);
+    } 
+
+    $(thisRow).find( '.whse_qty' ).val(parent_val);
+    $(thisRow).find( '.inv_qty' ).val(parent_val);
+
+    
+    clone = $( thisRow ).clone().insertAfter( thisRow ).attr('id', `R${cloneCount}`);
+
+    var item_type = $(clone).children('.c_item_type').children('span#item_type'); 
+    var whse_qty = $(clone).children('.c_whse_qty').children('span#whse_qty'); 
+    var whse_uom = $(clone).children('.c_whse_uom').children('span#whse_uom'); 
+    var inv_qty = $(clone).children('.c_inv_qty').children('span#inv_qty'); 
+    var inv_uom = $(clone).children('.c_inv_uom').children('span#inv_uom'); 
+
+    // // Modifying row index. 
+    item_type.attr("class", `text-danger error-msg item_type${cloneCount}_error`);
+    whse_qty.attr("class", `text-danger error-msg whse_qty${cloneCount}_error`);
+    whse_uom.attr("class", `text-danger error-msg whse_uom${cloneCount}_error`);
+    inv_qty.attr("class", `text-danger error-msg inv_qty${cloneCount}_error`);
+    inv_uom.attr("class", `text-danger error-msg inv_uom${cloneCount}_error`);
+
+    var child = $(thisRow).nextAll(); 
+    idx = cloneCount;
+    child.each(function () { 
+        var item_type = $(this).children('.c_item_type').children('span#item_type'); 
+        var whse_qty = $(this).children('.c_whse_qty').children('span#whse_qty'); 
+        var whse_uom = $(this).children('.c_whse_uom').children('span#whse_uom'); 
+        var inv_qty = $(this).children('.c_inv_qty').children('span#inv_qty'); 
+        var inv_uom = $(this).children('.c_inv_uom').children('span#inv_uom'); 
+       
+        // Modifying row index. 
+        item_type.attr("class", `text-danger error-msg acct_code item_type${idx}_error`);
+        whse_qty.attr("class", `text-danger error-msg whse_qty${idx}_error`);
+        whse_uom.attr("class", `text-danger error-msg whse_uom${idx}_error`);
+        inv_qty.attr("class", `text-danger error-msg inv_qty${idx}_error`);
+        inv_uom.attr("class", `text-danger error-msg inv_uom${idx}_error`);
+          
+        // // Modifying row id. 
+        $(this).attr('id', `R${idx}`); 
+        idx ++;
+    }); 
 
 
-    $(clone).append(thisRow);
-
-    cloneCount++;
 });
