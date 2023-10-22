@@ -116,14 +116,14 @@ $(document).on('click', '.submit-inventory', function(e) {
                             // table += "<td class='text-center'>"+item.whse_qty+"</td>";
                             // table += "<td class='text-center'>"+item.uw_code+"</td>";
 
-                            table += "<td class='text-center'>"+item.inv_qty+"</td>";
+                            table += "<td class='text-end'>"+number_format(item.inv_qty)+"</td>";
                             table += "<td class='text-center'>"+item.ui_code+"</td>";                                           
                         table += '</tr>';                        
                     });
 
                     table += "<tr>";
                     table += "<th colspan=10' class='fw-medium'>Total</th>";
-                    table += "<th class='text-center'>"+total_qty+"</th>";
+                    table += "<th class='text-center fw-bold'>"+number_format(total_qty)+"</th>";
                     table += "<th class='text-center'>&nbsp;</th>";
                     table += "</tr>"; 
                             

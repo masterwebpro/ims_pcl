@@ -73,7 +73,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                     table += '<tr>';
                         table += "<td colspan='8' class='fw-medium'>Begginning Qty</td>";
                     
-                        table += "<td class='text-center'>"+beggining_balance+"</td>";                      
+                        table += "<td class='text-end fw-bold'>"+beggining_balance+"</td>";                      
                     table += '</tr>';
 
                     var remaining = beggining_balance;
@@ -121,17 +121,17 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                             table += "<td class='text-center' width='80px;'>"+location+"</td>";
                             table += "<td class='text-center' width='120px;'>"+item.item_type+"</td>";
 
-                            table += "<td class='text-center'>"+rcv_qty+"</td>";
-                            table += "<td class='text-center'>"+transfer_qty+"</td>";
-                            table += "<td class='text-center'>"+withdraw_qty+"</td>";
-                            table += "<td class='text-center'>"+parseInt(remaining)+"</td>";                      
+                            table += "<td class='text-end'>"+rcv_qty+"</td>";
+                            table += "<td class='text-end'>"+transfer_qty+"</td>";
+                            table += "<td class='text-end'>"+withdraw_qty+"</td>";
+                            table += "<td class='text-end'>"+parseInt(remaining)+"</td>";                      
                         table += '</tr>';                        
                     });
 
                     table += '<tr>';
                         table += "<td colspan='8' class='fw-medium'>Remaining Qty</td>";
                     
-                        table += "<td class='text-center'>"+parseInt(remaining)+"</td>";                      
+                        table += "<td class='text-end fw-bold'>"+number_format(parseInt(remaining))+"</td>";                      
                     table += '</tr>';
 
                     $('#masterfile_list tbody').html(table);
