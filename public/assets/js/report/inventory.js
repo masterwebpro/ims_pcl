@@ -91,6 +91,7 @@ $(document).on('click', '.submit-inventory', function(e) {
                     var res = data.result;
                     var table = '';
                     var total_qty  = 0;
+                    var i = 0;
                     res.forEach(function(item) {
                         //get the first 2 character
                         var location = (item.location != null) ? item.location : 'RA';
@@ -100,9 +101,11 @@ $(document).on('click', '.submit-inventory', function(e) {
                         var lot_no = (item.lot_no) ? item.lot_no : '-';
 
                         total_qty += item.inv_qty; 
+                        i++;
                        
                         table += '<tr>';
                             // table += "<td width='120px;'>"+item.client_name+"</td>";
+                            table += "<td width='120px;'>"+i+"</td>";
                             table += "<td width='120px;'>"+item.store_name+"</td>";
                             table += "<td width='120px;'>"+item.warehouse_name+"</td>";
                             table += "<td class='text-center'>"+sap_code+"</td>";

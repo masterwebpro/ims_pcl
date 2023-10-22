@@ -121,6 +121,7 @@
                             <thead  class="table-light">
                                 <tr>
                                     <!-- <th class="fw-medium text-center">Client</th> -->
+                                    <th class="fw-medium text-center">#</th>
                                     <th class="fw-medium text-center">Site</th>
                                     <th class="fw-medium text-center">Warehouse</th>
                                     <th class="fw-medium text-center">Sap Code</th>
