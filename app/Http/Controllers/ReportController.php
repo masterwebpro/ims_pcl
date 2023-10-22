@@ -19,6 +19,7 @@ use App\Exports\ExportRcvDetailed;
 use App\Exports\ExportWdDetailed;
 use App\Exports\ExportInventory;
 use App\Exports\ExportOutboundMonitoring;
+use App\Exports\ExportAging;
 use App\Models\DispatchDtl;
 use App\Models\DispatchHdr;
 use App\Models\MasterdataModel;
@@ -461,9 +462,9 @@ class ReportController extends Controller
                         'p.product_code',
                         'p.product_name',
                         'ui.code as unit',
-                        'm.lot_no',
-                        'm.expiry_date',
-                        'm.manufacture_date',
+                        'rd.lot_no',
+                        'rd.expiry_date',
+                        'rd.manufacture_date',
                         'm.item_type',
                         'wh.dr_no',
                         'wh.po_num',
@@ -476,6 +477,7 @@ class ReportController extends Controller
         ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
         ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'wd.wd_no')
         ->leftJoin('masterdata as m', 'm.id', '=', 'wd.master_id')
+        ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
         ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
         ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
         ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
@@ -556,11 +558,11 @@ class ReportController extends Controller
                 'cat.category_name',
                 'p.product_code',
                 'p.product_name',
-                'm.lot_no',
+                'rd.lot_no',
                 'dispatch_dtl.qty',
                 'ui.code as unit',
-                'm.manufacture_date',
-                'm.expiry_date',
+                'rd.manufacture_date',
+                'rd.expiry_date',
                 'dispatch_dtl.dispatch_no',
                 'm.item_type',
                 'dh.start_picking_datetime',
@@ -578,6 +580,7 @@ class ReportController extends Controller
         ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
         ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'wd.wd_no')
         ->leftJoin('masterdata as m', 'm.id', '=', 'wd.master_id')
+        ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
         ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
         ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
         ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
@@ -588,7 +591,7 @@ class ReportController extends Controller
         ->orderBy('dh.dispatch_date','ASC')
         ->where('dh.status','posted');
         if ($request->q) {
-            $query->where('dispatch_hdr.dispatch_no', $request->q)
+            $data_list->where('dispatch_hdr.dispatch_no', $request->q)
                 ->orWhere('dispatch_hdr.dispatch_by', $request->q)
                 ->orWhere('dispatch_hdr.trucker_name', $request->q)
                 ->orWhere('dispatch_hdr.truck_type', $request->q)
@@ -602,10 +605,10 @@ class ReportController extends Controller
 
         if ($request->filter_date && $request->dispatch_date) {
             if($request->filter_date == 'dispatch_date') {
-                $query->whereBetween('dispatch_hdr.dispatch_date', [$request->dispatch_date." 00:00:00", $request->dispatch_date." 23:59:00"]);
+                $data_list->whereBetween('dispatch_hdr.dispatch_date', [$request->dispatch_date." 00:00:00", $request->dispatch_date." 23:59:00"]);
             }
             if($request->filter_date == 'created_at') {
-                $query->whereBetween('dispatch_hdr.created_at', [$request->created_at." 00:00:00", $request->created_at." 23:59:00"]);
+                $data_list->whereBetween('dispatch_hdr.created_at', [$request->created_at." 00:00:00", $request->created_at." 23:59:00"]);
             }
 
         }
@@ -663,18 +666,28 @@ class ReportController extends Controller
     public function getAgingIndex(Request $request)
     {
         $client_list = Client::where('is_enabled', '1')->get();
-        $data = MasterdataModel::select(
+        $result = MasterdataModel::select(
                 'p.product_code',
-                'p.product_name', 
-                // DB::raw('sum(masterdata.inv_qty - masterdata.reserve_qty) as total'),
+                'p.product_name',
                 'masterdata.inv_qty',
-                // 'masterdata.reserve_qty',
-                'masterdata.received_date',
-                DB::raw('DATEDIFF(now(),masterdata.received_date) as diff_days')
+                'rh.date_received',
+                DB::raw('DATEDIFF(now(),rh.date_received) as diff_days')
                 )
+                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
+                ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rd.rcv_no')
                 ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
-                ->groupBy(['masterdata.product_id','masterdata.received_date'])
-                ->get();
+                ->groupBy(['masterdata.product_id','rh.date_received']);
+                if ($request->q) {
+                    $result->where(function($q)use($request){
+                        $q->where('p.product_code', $request->q)
+                        ->orWhere('p.product_name', $request->q);
+                    });
+                }
+                if($request->filter_date == 'filter_date') {
+                    $result->whereBetween('rh.date_received', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+                }
+
+        $data  = $result->get();
         $xdata = array();
         foreach($data as $res){
             $product_code = $res->product_code;
@@ -698,12 +711,78 @@ class ReportController extends Controller
                 $xdata[$product_code]['over150days'] += ($res->diff_days > 150) ? $res->inv_qty : 0;
             }
         }
-       
+
         $result = paginate($xdata,20);
         return view('report/aging', [
             'client_list'=>$client_list,
             'request'=>$request,
             'data_list'=> $result,
         ]);
+    }
+
+    function exportAging(Request $request) {
+        ob_start();
+        $file_name = 'export-aging'.date('Ymd-His').'.xls';
+        $result = MasterdataModel::select(
+            'p.product_code',
+            'p.product_name',
+            'masterdata.inv_qty',
+            'rh.date_received',
+            DB::raw('DATEDIFF(now(),rh.date_received) as diff_days')
+            )
+            ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
+            ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rd.rcv_no')
+            ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+            ->groupBy(['masterdata.product_id','rh.date_received']);
+            if ($request->q) {
+                $result->where(function($q)use($request){
+                    $q->where('p.product_code', $request->q)
+                    ->orWhere('p.product_name', $request->q);
+                });
+            }
+            if($request->filter_date == 'filter_date') {
+                $result->whereBetween('rh.date_received', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+            }
+
+        $data  = $result->get();
+        $xdata = array();
+        foreach($data as $res){
+            $product_code = $res->product_code;
+            if(!isset($xdata[$product_code]))
+            {
+                $xdata[$product_code]['days30'] = ($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] = ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] = ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] = ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] = ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] = ($res->diff_days > 150) ? $res->inv_qty : 0;
+                $xdata[$product_code] = $res;
+            }
+            else{
+                $xdata[$product_code]['inv_qty'] += $res->inv_qty;
+                $xdata[$product_code]['days30'] += ($res->diff_days <= 30) ? $res->inv_qty : 0;;
+                $xdata[$product_code]['days60'] += ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] += ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] += ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] += ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] += ($res->diff_days > 150) ? $res->inv_qty : 0;
+            }
+        }
+        $data = array();
+        foreach($xdata as $res){
+            $data[] = array(
+                $res['product_code'],
+                $res['product_name'],
+                number_format($res['inv_qty'],2,'.',''),
+                number_format($res['days30'],2,'.',''),
+                number_format($res['days60'],2,'.',''),
+                number_format($res['days90'],2,'.',''),
+                number_format($res['days120'],2,'.',''),
+                number_format($res['days150'],2,'.',''),
+                number_format($res['over150days'],2,'.','')
+            );
+        }
+
+        return Excel::download(new ExportAging($data), $file_name);
     }
 }

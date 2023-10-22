@@ -177,7 +177,7 @@ class SettingsController extends Controller
                 ->leftJoin('uom as iu','iu.uom_id','masterdata.inv_uom')
                 ->leftJoin('rcv_dtl as rd','rd.id','masterdata.rcv_dtl_id')
                 ->leftJoin('rcv_hdr as rh','rh.rcv_no','rd.rcv_no');
-           
+
         if($request->location) {
             if(isset($request->storage_id)) {
                 if($request->storage_id) {
@@ -190,7 +190,7 @@ class SettingsController extends Controller
             } else {
                 $result->where('masterdata.storage_location_id', $request->location);
             }
-        } 
+        }
 
         if($request->client_id)
             $result->where('masterdata.company_id', $request->client_id);
@@ -484,11 +484,13 @@ class SettingsController extends Controller
                         'ui.code as ui_code',
                         DB::raw('sum(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty'),
                         DB::raw('sum(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty'),
-                        'masterdata.lot_no',
-                        'masterdata.expiry_date',
-                        'masterdata.received_date',
-                        'masterdata.manufacture_date'
+                        'rd.lot_no',
+                        'rd.expiry_date',
+                        'rh.date_received as received_date',
+                        'rd.manufacture_date'
                     )
+                    ->leftJoin('rcv_dtl as rd','rd.id','=','masterdata.rcv_dtl_id')
+                    ->leftJoin('rcv_hdr as rh','rh.rcv_no','=','rd.rcv_no')
                     ->leftJoin('products as p','p.product_id','=','masterdata.product_id')
                     ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterdata.storage_location_id')
                     ->leftJoin('client_list as cl','cl.id','=','masterdata.company_id')
@@ -532,6 +534,15 @@ class SettingsController extends Controller
             });
         }
         $record = $result->get();
+        if($record){
+            foreach($record as &$rec){
+                $rec->lot_no =  $rec->lot_no != null ? $rec->lot_no : "";
+                $rec->location =  $rec->location != null ? $rec->location : "";
+                $rec->expiry_date =  ($rec->expiry_date != null &&  $rec->expiry_date != '0000-00-00 00:00:00') ? date('Y/m/d',strtotime($rec->expiry_date)) : "";
+                $rec->received_date =  ($rec->received_date != null  &&  $rec->received_date != '0000-00-00 00:00:00') ? date('Y/m/d',strtotime($rec->received_date)) : "";
+                $rec->manufacture_date =  ($rec->manufacture_date != null   &&  $rec->manufacture_date != '0000-00-00 00:00:00') ? date('Y/m/d',strtotime($rec->manufacture_date)) : "";
+            }
+        }
         return response()->json($record);
     }
 

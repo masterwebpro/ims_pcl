@@ -102,11 +102,11 @@
                                     <th class="sort" data-sort="dispatch_date">TIME START LOADING</th>
                                     <th class="sort" data-sort="dispatch_date">END OF LOADING</th>
                                     <th class="sort" data-sort="dispatch_date">ACTUAL TIME OUT</th>
-                                    <th class="sort" data-sort="wd_count">LOADING PERFORMANCE</th>
-                                    <th class="sort" data-sort="wd_count">DWELL TIME</th>
-                                    <th class="sort" data-sort="wd_count">PALLET USE</th>
-                                    <th class="sort" data-sort="wd_count">ENCODER</th>
-                                    <th class="sort" data-sort="wd_count">CHECKER</th>
+                                    <th class="sort">LOADING PERFORMANCE</th>
+                                    <th class="sort">DWELL TIME</th>
+                                    <th class="sort">PALLET USE</th>
+                                    <th class="sort">ENCODER</th>
+                                    <th class="sort">CHECKER</th>
                                 </tr>
                             </thead>
 
@@ -135,9 +135,9 @@
                                     <td class="text-end">{{ number_format($rd->qty, 2) }}</td>
                                     <td>{{ $rd->unit }}</td>
                                     <td class="manufacture_date">
-                                        {{ date('m/d/Y', strtotime($rd->manufacture_date)) }}</td>
+                                        {{ ($rd->manufacture_date != null || $rd->manufacture_date != '0000-00-00') ? date('m/d/Y', strtotime($rd->manufacture_date)) : '' }}</td>
                                     <td class="expiry_date">
-                                        {{ date('m/d/Y', strtotime($rd->expiry_date)) }}</td>
+                                        {{ ($rd->expiry_date != null || $rd->expiry_date != '0000-00-00') ? date('m/d/Y', strtotime($rd->expiry_date)) : ''}}</td>
                                     <td>{{ $rd->dispatch_no }}</td>
                                     <td class="text-uppercase">{{ $rd->item_type }}</td>
                                     <td>OUTBOUND</td>

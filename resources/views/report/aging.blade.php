@@ -22,7 +22,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="card-title mb-0 flex-grow-1">Aging</h5>
                         <div class="flex-shrink-0">
-                            <a href="#" class="submit-outbound-monitoring-xls btn btn-secondary btn-label rounded-pill end-0"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i>Export to Excel</a>
+                            <a href="#" class="submit-aging-xls btn btn-secondary btn-label rounded-pill end-0"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i>Export to Excel</a>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
 
                             <div class="col-xxl-2 col-sm-4">
                                 <input type="text" class="form-control" name="date" id="date_picker" value="<?=date('Y-m-d')?>"
-                                    data-provider="flatpickr" data-date-format="Y-m-d" 
+                                    data-provider="flatpickr" data-date-format="Y-m-d"
                                     placeholder="Select date">
                             </div>
                             <!--end col-->
