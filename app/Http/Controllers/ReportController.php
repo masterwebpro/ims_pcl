@@ -14,9 +14,6 @@ use App\Models\Store;
 use App\Models\RcvHdr;
 use App\Models\RcvDtl;
 use App\Models\Products;
-use App\Models\MasterdataModel;
-
-
 
 use App\Exports\ExportRcvDetailed;
 use App\Exports\ExportWdDetailed;
