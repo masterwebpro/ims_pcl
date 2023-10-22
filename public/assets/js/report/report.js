@@ -4,26 +4,26 @@ $(document).ready(function () {
     if ( $( "#store_id" ).length ) {
         client_id = $("#client" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(client_id, store_id);
-        populateWarehouse(store_id, '');
+        populateStore(client_id, store_id,'store');
+        populateWarehouse(store_id, '', 'warehouse');
     }
 
     if ( $( "#warehouse_id" ).length ) {
         warehouse_id = $("#warehouse_id" ).val();
         store_id = $("#store_id" ).val();
-        populateWarehouse(store_id, warehouse_id);
+        populateWarehouse(store_id, warehouse_id, 'warehouse');
     }
 
 });
 
 $(document).on('change', '#client', function() {
     var client_id = $(this).val();
-    populateStore(client_id, '');
+    populateStore(client_id, '', 'store');
 });
 
 $(document).on('change', '#store', function() {
     var store_id = $(this).val();
-    populateWarehouse(store_id, '');
+    populateWarehouse(store_id, '', 'warehouse');
 });
 
 //receiveing detailed

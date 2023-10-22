@@ -5,8 +5,8 @@ $(document).ready(function () {
         client_id = $("#client_id" ).val();
         store_id = $("#store_id" ).val();
         warehouse_id = $("#warehouse_id" ).val();
-        populateStore(client_id, store_id);
-        populateWarehouse(store_id, warehouse_id);
+        populateStore(client_id, store_id, 'store');
+        populateWarehouse(store_id, warehouse_id, 'warehouse');
     }
 
 
@@ -14,12 +14,12 @@ $(document).ready(function () {
 
 $(document).on('change', '#client', function() {
     var client_id = $(this).val();
-    populateStore(client_id, '');
+    populateStore(client_id, '','store');
 });
 
 $(document).on('change', '#store', function() {
     var store_id = $(this).val();
-    populateWarehouse(store_id, '');
+    populateWarehouse(store_id, '', 'warehouse');
 });
 
 $(document).on('click', '.submit-location', function (e) {

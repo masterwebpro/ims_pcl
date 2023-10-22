@@ -14,6 +14,11 @@ const data = {
     cache: true
 }
 
+$(document).ready(function () {
+    $(".select2").select2();
+});
+
+
 if($("#product_holder").length) {
 
     var autoCompletePoNum = new autoComplete({
@@ -85,26 +90,44 @@ $(document).on('click', '.submit-inventory', function(e) {
                 if(data.success == true) {
                     var res = data.result;
                     var table = '';
+                    var total_qty  = 0;
                     res.forEach(function(item) {
                         //get the first 2 character
                         var location = (item.location != null) ? item.location : 'RA';
+                        var sap_code = (item.sap_code) ? item.sap_code : '-';
+                        var mfg_date = (item.manufacture_date) ? item.manufacture_date : '-';
+                        var exp_date = (item.expiry_date) ? item.expiry_date : '-';
+                        var lot_no = (item.lot_no) ? item.lot_no : '-';
+
+                        total_qty += item.inv_qty; 
                        
                         table += '<tr>';
                             // table += "<td width='120px;'>"+item.client_name+"</td>";
-                            // table += "<td width='120px;'>"+item.store_name+"</td>";
-                            // table += "<td width='120px;'>"+item.warehouse_name+"</td>";
-                        
+                            table += "<td width='120px;'>"+item.store_name+"</td>";
+                            table += "<td width='120px;'>"+item.warehouse_name+"</td>";
+                            table += "<td class='text-center'>"+sap_code+"</td>";
                             table += "<td class='text-center'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
+                            table += "<td class='text-left'>"+lot_no+"</td>";
+                            table += "<td class='text-left'>"+mfg_date+"</td>";
+                            table += "<td class='text-left'>"+exp_date+"</td>";
                             table += "<td class='text-center' width='120px;'>"+item.item_type+"</td>";
                             table += "<td class='text-center' width='80px;'>"+location+"</td>";
-                            table += "<td class='text-center'>"+item.whse_qty+"</td>";
-                            table += "<td class='text-center'>"+item.uw_code+"</td>";
+                            // table += "<td class='text-center'>"+item.whse_qty+"</td>";
+                            // table += "<td class='text-center'>"+item.uw_code+"</td>";
 
                             table += "<td class='text-center'>"+item.inv_qty+"</td>";
                             table += "<td class='text-center'>"+item.ui_code+"</td>";                                           
                         table += '</tr>';                        
                     });
+
+                    table += "<tr>";
+                    table += "<th colspan=10' class='fw-medium'>Total</th>";
+                    table += "<th class='text-center'>"+total_qty+"</th>";
+                    table += "<th class='text-center'>&nbsp;</th>";
+                    table += "</tr>"; 
+                            
+                            
 
                     $('#inventory_list tbody').html(table);
                 } else {
@@ -126,12 +149,12 @@ $(document).on('click', '.submit-inventory', function(e) {
 
 $(document).on('change', '#company', function() {
     var company_id = $(this).val();
-    populateStore(company_id, '');
+    populateStore(company_id, '', 'store');
 });
 
 $(document).on('change', '#store', function() {
     var store_id = $(this).val();
-    populateWarehouse(store_id, '');
+    populateWarehouse(store_id, '', 'warehouse');
 });
 
 

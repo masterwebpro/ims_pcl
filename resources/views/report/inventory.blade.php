@@ -116,19 +116,23 @@
         <div class="col-xxl-12">
             <div class="card" id="demo">
                 <div class="card-body p-4 ">
-                    <div class="row ">
-                        <table id="inventory_list" style="font-size: 11px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
+                    <div class="row table-responsive">
+                        <table id="inventory_list" style="font-size: 11px;"  width="100%"  class="table table-striped align-middle table-nowrap mb-0 table-bordered table-hover align-middle">
                             <thead  class="table-light">
                                 <tr>
-                                    <!-- <th class="fw-medium text-center">Client</th>
+                                    <!-- <th class="fw-medium text-center">Client</th> -->
                                     <th class="fw-medium text-center">Site</th>
-                                    <th class="fw-medium text-center">Warehouse</th> -->
+                                    <th class="fw-medium text-center">Warehouse</th>
+                                    <th class="fw-medium text-center">Sap Code</th>
                                     <th class="fw-medium text-center">Product Code</th>
                                     <th class="fw-medium text-center">Product Name</th>
+                                    <th class="fw-medium text-center">Batch/Lot No</th>
+                                    <th class="fw-medium text-center">MFG Date</th>
+                                    <th class="fw-medium text-center">Exp Date</th>
                                     <th class="fw-medium text-center">Item Type</th>
                                     <th class="fw-medium text-center">Location</th>
-                                    <th class="fw-medium text-center">Whse QTY</th>
-                                    <th class="fw-medium text-center">Whse UOM</th>
+                                    <!-- <th class="fw-medium text-center">Whse QTY</th>
+                                    <th class="fw-medium text-center">Whse UOM</th> -->
                                     <th class="fw-medium text-center">Inv QTY</th>
                                     <th class="fw-medium text-center">Inv UOM</th>
                                 </tr>

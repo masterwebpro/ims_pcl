@@ -4,12 +4,12 @@ $(document).ready(function () {
 
 $(document).on('change', '#client', function() {
     var client_id = $(this).val();
-    populateStore(client_id, '');
+    populateStore(client_id, '', 'store');
 });
 
 $(document).on('change', '#store', function() {
     var store_id = $(this).val();
-    populateWarehouse(store_id, '');
+    populateWarehouse(store_id, '', 'warehouse');
 });
 
 $(document).on('change', '#warehouse', function() {

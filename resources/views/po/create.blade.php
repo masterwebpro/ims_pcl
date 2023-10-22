@@ -212,6 +212,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>&nbsp;</th>
+                            <th>SAP Code</th>
                             <th>Product Code</th>
                             <th>Product SKU</th>
                             <th>Product Name</th>

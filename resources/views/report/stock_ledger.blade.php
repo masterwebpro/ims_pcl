@@ -98,8 +98,8 @@
                                 <div class="col-lg-6 col-md-6">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">&nbsp;</h6>
                                     <a href="#" class="submit-stock-ledger btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</a>
-                                    <a href="#" class="submit-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
-                                    <a href="#" class="submit-print btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
+                                    <!-- <a href="#" class="submit-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
+                                    <a href="#" class="submit-print btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a> -->
                                 </div>
                                  <!--end col-->
                             </div>

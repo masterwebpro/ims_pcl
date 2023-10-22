@@ -4,7 +4,7 @@ $(document).ready(function () {
     if ( $( "#store_id" ).length ) {
         client_id = $("#client_id" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(client_id, store_id);
+        populateStore(client_id, store_id, 'store');
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 $(document).on('change', '#client', function() {
     var client_id = $(this).val();
-    populateStore(client_id, '');
+    populateStore(client_id, '', 'store');
 });
 
 $(document).on('click', '.submit-warehouse', function (e) {

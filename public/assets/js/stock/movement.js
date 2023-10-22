@@ -14,14 +14,14 @@ $(document).ready(function () {
     if ( $( "#store_id" ).length ) {
         company_id = $("#company_id" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(company_id, store_id);
-        populateWarehouse(store_id, '');
+        populateStore(company_id, store_id, 'store');
+        populateWarehouse(store_id, '', 'warehouse');
     }
 
     if ( $( "#warehouse_id" ).length ) {
         warehouse_id = $("#warehouse_id" ).val();
         store_id = $("#store_id" ).val();
-        populateWarehouse(store_id, warehouse_id);
+        populateWarehouse(store_id, warehouse_id, 'warehouse');
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
@@ -37,12 +37,12 @@ $(document).on('click', '.create-movement', function() {
 
 $(document).on('change', '#company', function() {
     var company_id = $(this).val();
-    populateStore(company_id, '');
+    populateStore(company_id, '', 'store');
 });
 
 $(document).on('change', '#store', function() {
     var store_id = $(this).val();
-    populateWarehouse(store_id, '');
+    populateWarehouse(store_id, '', 'warehouse');
 });
 
 $(document).on('change', '#rack', function() {

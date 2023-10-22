@@ -25,7 +25,7 @@ $(document).ready(function() {
 
     function addCategory(){
         var category = $('#sub_category').val();
-        populateStore(category, '');
+        populateStore(category, '', '');
 
         var dataObject = {
             category_name: category,
@@ -119,7 +119,7 @@ $(document).ready(function() {
 
 $(document).on('change', '#parent_id', function() {
     var parent_id = $(this).val();
-    populateStore(parent_id, '');
+    populateStore(parent_id, '', '');
 });
 
 

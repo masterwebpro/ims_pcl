@@ -4,7 +4,7 @@ $(document).ready(function () {
     if ( $( "#store_id" ).length ) {
         company_id = $("#company" ).val();
         store_id = $("#store_id" ).val();
-        populateStore(company_id, store_id);
+        populateStore(company_id, store_id, 'store');
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 $(document).on('change', '#company', function() {
     var company_id = $(this).val();
-    populateStore(company_id, '');
+    populateStore(company_id, '', 'store');
 });
 
 $(document).on('click', '#find-items', function() {
@@ -35,6 +35,7 @@ $(document).on('click', '#find-items', function() {
             ajax: BASEURL+"settings/products",
             columns: [
                 { data: 'product_id',  visible: false },
+                { data: 'sap_code' },
                 { data: 'product_code' },
                 { data: 'product_sku' },
                 { data: 'product_name' }
@@ -65,8 +66,9 @@ $(document).on('click', '#add-product', function() {
         </td> \
         <td class="text-start  fs-14"> \
             <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
-            '+data.product_name+'<br/><small>'+data.product_code+'</small> \
+            '+data.product_name+'<br/><small>'+data.sap_code+'</small> \
             <input type="hidden" readonly class="form-control" name="product_code[]" data-id="'+data.product_id+'" id="product_code_'+data.product_id+'" value="'+data.product_code+'" placeholder="Code" /> \
+            <input type="hidden" readonly class="form-control" name="sap_code[]" data-id="'+data.product_id+'" id="sap_code_'+data.product_id+'" value="'+data.sap_code+'" placeholder="Code" /> \
             <input type="hidden" readonly class="form-control" name="product_name[]" data-id="'+data.product_id+'" id="product_name_'+data.product_id+'" value="'+data.product_name+'" placeholder="Sku" /> \
         </td> \
         <td class="text-start ps-1">\
