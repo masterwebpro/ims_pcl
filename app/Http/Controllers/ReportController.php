@@ -56,13 +56,11 @@ class ReportController extends Controller
         $validator = Validator::make($request->all(), [
             'client'=>'required',
             'store'=>'required',
-            'warehouse'=>'required',
             'product_id' => 'required',
             'item_type' => 'required',
         ], [
             'client'=>'Client  is required',
             'store'=>'Store is required',
-            'warehouse'=>'Warehouse is required',
             'product_id'=>'Product is required',
             'item_type'=>'Item type is required'
         ]);
