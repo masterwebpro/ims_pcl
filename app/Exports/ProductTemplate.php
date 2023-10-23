@@ -27,6 +27,7 @@ class ProductTemplate implements WithMultipleSheets, WithTitle
     {
         $sheets = [];
         $sheets[] = new HeaderSheet($this->data['header'],'Header');
+        $sheets[] = new CustomerSheet($this->data['customer'],'Customer List');
         $sheets[] = new SupplierSheet($this->data['supplier'],'Supplier List');
         $sheets[] = new CategoryBrandSheet($this->data['category_brand'],'Category Brand List');
         $sheets[] = new UnitSheet($this->data['unit'],'Unit of Measurement');

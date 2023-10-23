@@ -29,16 +29,42 @@
                 <div class="card-body border border-dashed border-end-0 border-start-0">
                     <form action="{{ route('reports.aging') }}" method="GET">
                         <div class="row g-3">
-                            <div class="col-xxl-4 col-sm-12">
+                            <div class="col-lg-3 col-sm-12">
                                 <div class="search-box">
                                     <input type="text" name="q" class="form-control search"
                                         placeholder="Search for tasks or something...">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
                             </div>
+                            <div class="col-lg-3 col-sm-6">
+                                <select class="form-select select2" id="customer" name="customer">
+                                    <option value="">Select Customer</option>
+                                    <? foreach($client_list as $customer) : ?>
+                                        <? if($customer->client_type == 'C') : ?>
+                                            <option value="<?=$customer->id?>" <?=($request->customer == $customer->id) ? 'selected': ''?> ><?=$customer->client_name?></option>
+                                        <? endif;?>
+                                    <? endforeach;?>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-sm-6">
+                                <select class="form-select select2" id="company" name="company">
+                                    <option value="">Select Company</option>
+                                    <? foreach($client_list as $company) : ?>
+                                        <? if($company->client_type == 'O') : ?>
+                                            <option value="<?=$company->id?>"  <?=($request->company == $company->id) ? 'selected': ''?> ><?=$company->client_name?></option>
+                                        <? endif;?>
+                                    <? endforeach;?>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-sm-6">
+                                <button type="submit" class="btn btn-primary w-100"> <i
+                                        class="ri-equalizer-fill me-1 align-bottom"></i>
+                                    Filters
+                                </button>
+                            </div>
                             <!--end col-->
 
-                            <div class="col-xxl-2 col-sm-4">
+                            <div class="col-lg-3 col-sm-4">
                                 <div class="input-light">
                                     <select class="form-control" name="filter_date" id="filter_date">
                                         <option value="filter_date">As of Date</option>
@@ -46,18 +72,13 @@
                                 </div>
                             </div>
 
-                            <div class="col-xxl-2 col-sm-4">
-                                <input type="text" class="form-control" name="date" id="date_picker" value="<?=date('Y-m-d')?>"
+                            <div class="col-lg-3 col-sm-4">
+                                <input type="text" class="form-control" name="date" id="date_picker" value=""
                                     data-provider="flatpickr" data-date-format="Y-m-d"
                                     placeholder="Select date">
                             </div>
                             <!--end col-->
-                            <div class="col-xxl-2 col-sm-4">
-                                <button type="submit" class="btn btn-primary w-100"> <i
-                                        class="ri-equalizer-fill me-1 align-bottom"></i>
-                                    Filters
-                                </button>
-                            </div>
+
                             <!--end col-->
                         </div>
                         <!--end row-->

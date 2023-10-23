@@ -683,10 +683,15 @@ class ReportController extends Controller
                         ->orWhere('p.product_name', $request->q);
                     });
                 }
-                if($request->filter_date == 'filter_date') {
+                if($request->filter_date == 'filter_date' && $request->date) {
                     $result->whereBetween('rh.date_received', [$request->date." 00:00:00", $request->date." 23:59:59"]);
                 }
-
+                if($request->customer ){
+                    $result->where('masterdata.customer_id', $request->customer);
+                }
+                if($request->company){
+                    $result->where('masterdata.company_id', $request->company);
+                }
         $data  = $result->get();
         $xdata = array();
         foreach($data as $res){
@@ -740,8 +745,15 @@ class ReportController extends Controller
                     ->orWhere('p.product_name', $request->q);
                 });
             }
-            if($request->filter_date == 'filter_date') {
+            if($request->date) {
                 $result->whereBetween('rh.date_received', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+            }
+
+            if($request->customer ){
+                $result->where('masterdata.customer_id', $request->customer);
+            }
+            if($request->company){
+                $result->where('masterdata.company_id', $request->company);
             }
 
         $data  = $result->get();

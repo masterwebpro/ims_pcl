@@ -87,11 +87,13 @@
                                     <th class="sort" data-sort="product_name">Product Name</th>
                                     <th class="sort" data-sort="product_upc">Product UPC</th>
                                     <th class="sort" data-sort="product_sku">Product SKU</th>
+                                    <th class="sort" data-sort="product_sku">Customer</th>
+                                    <th class="sort" data-sort="product_sku">Supplier</th>
                                     <th class="sort" data-sort="category_name">Category</th>
                                     <th class="sort" data-sort="brand_name">Brand</th>
-                                    <th class="sort" data-sort="created_by">Update By</th>
+                                    {{--  <th class="sort" data-sort="created_by">Update By</th>  --}}
                                     <th class="sort" data-sort="updated_at">Update Date</th>
-                                    <th class="sort" data-sort="created_at">Created Date</th>
+                                    {{--  <th class="sort" data-sort="created_at">Created Date</th>  --}}
                                     <th class="sort" data-sort="action">Action</th>
                                 </tr>
                             </thead>
@@ -103,14 +105,16 @@
                                     <td>{{ $prod->product_id }}</td>
                                     <td>{{ $prod->sap_code }}</td>
                                     <td>{{ $prod->product_code }}</td>
-                                    <td>{{ $prod->product_name }}</td>
+                                    <td class="text-wrap">{{ $prod->product_name }}</td>
                                     <td>{{ $prod->product_upc }}</td>
                                     <td>{{ $prod->product_sku }}</td>
+                                    <td>{{ $prod->customer_name }}</td>
+                                    <td>{{ $prod->supplier_name }}</td>
                                     <td>{{ $prod->category_brand['category_name'] }}</td>
                                     <td>{{ $prod->category_brand['brand_name'] }}</td>
-                                    <td>{{ $prod->updated_by }}</td>
+                                    {{--  <td>{{ $prod->updated_by }}</td>  --}}
                                     <td>{{ date('M d, Y H:i:s', strtotime($prod->updated_at)) }}</td>
-                                    <td class="created_at">{{ date('M d, Y', strtotime($prod->created_at)) }}</td>
+                                    {{--  <td class="created_at">{{ date('M d, Y', strtotime($prod->created_at)) }}</td>  --}}
                                     <td class="action">
                                         <div class="hstack gap-3 fs-12">
                                             <a href="{{ URL::to('maintenance/product') }}/<?= _encode($prod->product_id) ?>"

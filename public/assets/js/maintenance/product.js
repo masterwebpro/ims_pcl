@@ -97,7 +97,7 @@ $(document).on('click','#downloadTemplate', function (e) {
             var a = document.createElement('a');
             var url = window.URL.createObjectURL(data);
             a.href = url;
-            a.download = 'excel_template.xlsx';
+            a.download = 'product_template.xlsx';
             document.body.append(a);
             a.click();
             window.URL.revokeObjectURL(url);
