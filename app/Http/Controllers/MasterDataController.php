@@ -18,25 +18,33 @@ class MasterDataController extends Controller
         $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
 
         $master_list = MasterdataModel::select(
-                        'masterdata.*',
+                        'masterdata.inv_qty',
+                        'masterdata.whse_qty',
+                        'masterdata.reserve_qty',
+                        'rh.date_received as received_date',
+                        'rd.lot_no',
+                        'rd.expiry_date',
+                        'rd.manufacture_date',
                         'products.product_code',
                         'products.product_name',
                         's.store_name',
-                        'c.client_name',
-                        'com.client_name as company_name',
                         'wh.warehouse_name',
                         'uw.code as uw_code',
                         'ui.code as ui_code',
                         'sl.location'
+                        // 'com.client_name as company_name',
+                        // 'c.client_name',
                         )
+                        ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
+                        ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rd.rcv_no')
                         ->leftJoin('products', 'products.product_id', '=', 'masterdata.product_id')
                         ->leftJoin('uom as uw','uw.uom_id','=','masterdata.whse_uom')
                         ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
                         ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterdata.storage_location_id')
                         ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
-                        ->leftJoin('client_list as c', 'c.id', '=', 'masterdata.customer_id')
-                        ->leftJoin('client_list as com', 'com.id', '=', 'masterdata.company_id')
                         ->leftJoin('warehouses as wh', 'wh.id', '=', 'masterdata.warehouse_id');
+                        // ->leftJoin('client_list as c', 'c.id', '=', 'masterdata.customer_id')
+                        // ->leftJoin('client_list as com', 'com.id', '=', 'masterdata.company_id')
                         if ($request->keyword) {
                             $master_list->where(function($query)use($request){
                                 $query->where('products.product_code', $request->keyword);
