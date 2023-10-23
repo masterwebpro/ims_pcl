@@ -230,13 +230,13 @@
                             <p class="fw-medium" id="billing-name">
                                 <select class="form-select select3" id="location" name="location">
                                     <option value="">No Location</option>  
+                                    <option value="ra">Receiving Area</option>  
                                     <? foreach($locations as $location) : ?>
                                          <option value="<?=$location->storage_location_id?>"><?=$location->location?></option>  
                                     <? endforeach;?>
                                 </select>
                             </p>
                         </div>
-
 
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">&nbsp;</h6>

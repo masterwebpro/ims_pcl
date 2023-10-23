@@ -62,7 +62,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-3">
+
+                                <div class="col-2">
                                     <div class="form-check form-switch form-switch-primary form-switch-lg"
                                         dir="ltr">
                                         <input type="checkbox" class="form-check-input" id="is_serialize"
@@ -70,7 +71,7 @@
                                         <label for="is_serialize">Serialize</label>
                                     </div>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-2">
                                     <div class="form-check form-switch form-switch-success form-switch-lg"
                                         dir="ltr">
                                         <input type="checkbox" class="form-check-input" name="is_enabled"
@@ -93,6 +94,27 @@
                                     </div>
                                 </div>
 
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="customer_id" class="form-label">Customer
+                                                Name <span class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <select class="form-control select2" name="customer_id"
+                                                id="customer_id">
+                                                <option value="">Select Customer Name
+                                                </option>
+                                                <? foreach($client_list as $client) : ?>
+                                                <option value="<?= $client->id ?>">
+                                                    <?= $client->client_name ?></option>
+                                                <? endforeach;?>
+                                            </select>
+                                            <span class="text-danger error-msg customer_id_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-6">
                                     <div class="row mb-3">
                                         <div class="col-lg-3">

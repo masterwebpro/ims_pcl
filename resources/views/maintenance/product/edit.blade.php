@@ -99,6 +99,25 @@
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
+                                        <label for="supplier_id" class="form-label">Customer Name<span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <select class="form-control" data-choices name="customer_id"
+                                            id="customer_id">
+                                            <option value="">Select Client Name
+                                            </option>
+                                            <? foreach($client_list as $client) : ?>
+                                                <option value="<?=$client->id?>" <?=($client->id == $product->customer_id) ? 'selected' : ''?> ><?=$client->client_name?></option>
+                                            <? endforeach;?>
+                                        </select>
+                                        <span class="text-danger error-msg customer_id_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="row mb-3">
+                                    <div class="col-lg-3">
                                         <label for="sap_code" class="form-label">SAP Code <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-lg-9">

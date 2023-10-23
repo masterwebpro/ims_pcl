@@ -8,7 +8,6 @@
 <link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 
-
 @endsection
 @section('content')
 @component('components.breadcrumb')

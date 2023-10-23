@@ -39,7 +39,11 @@ class SettingsController extends Controller
     }
 
     function getProducts(Request $request) {
-        $products = \App\Models\Products::all();
+        $products = \App\Models\Products::select('*');
+        if($request->supplier_id) {
+            $products->where('supplier_id', $request->supplier_id);
+        }
+        $products->get();
         return Datatables::of($products)->addIndexColumn()->make();
     }
 
