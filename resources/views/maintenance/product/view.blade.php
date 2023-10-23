@@ -97,6 +97,25 @@
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
+                                        <label for="customer_id" class="form-label">Customer
+                                            Name <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <select class="form-control select2" name="customer_id" disabled
+                                            id="customer_id">
+                                            <option value="">Select Customer Name
+                                            </option>
+                                            <? foreach($client_list as $client) : ?>
+                                            <option value="<?=$client->id?>" <?=($client->id == $product->customer_id) ? 'selected' : ''?> ><?=$client->client_name?></option>
+                                            <? endforeach;?>
+                                        </select>
+                                        <span class="text-danger error-msg customer_id_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row mb-3">
+                                    <div class="col-lg-3">
                                         <label for="product_upc" class="form-label">Product
                                             UPC</label>
                                     </div>
@@ -159,6 +178,24 @@
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
+                                        <label for="uom_id" class="form-label">Product UOM <span
+                                                class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <select class="form-control" name="uom_id[]" data-choices disabled
+                                            data-choices-removeItem multiple id="uom_id">
+                                            <option value="">Select Unit of Measure </option>
+                                            <? foreach($uom as $un) : ?>
+                                            <option value="<?= $un->uom_id ?>" <?=(in_array($un->uom_id,$prod_uom)) ? 'selected' : ''?> ><?= $un->code ?> -
+                                                <?= $un->uom_desc ?></option>
+                                            <? endforeach;?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row mb-3">
+                                    <div class="col-lg-3">
                                         <label for="brand_id" class="form-label">Brand
                                             <span class="text-danger">*</span></label>
                                     </div>
@@ -172,27 +209,6 @@
                                             <? endforeach;?>
                                         </select>
                                         <div class="invalid-feedback">Please Select Brand</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <div class="col-lg-3">
-                                        <label for="uom_id" class="form-label">Product UOM <span
-                                                class="text-danger">*</span></label>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        <select class="form-control" name="uom_id[]" data-choices disabled
-                                            data-choices-removeItem multiple id="uom_id">
-                                            <option value="">Select Unit of Measure </option>
-                                            <? foreach($uom as $un) : ?>
-                                            <option value="<?= $un->uom_id ?>" <?=(in_array($un->uom_id,$prod_uom)) ? 'selected' : ''?> ><?= $un->code ?> -
-                                                <?= $un->uom_desc ?></option>
-                                            <? endforeach;?>
-                                        </select>
                                     </div>
                                 </div>
                             </div>

@@ -31,7 +31,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $product_list = Products::select('products.*','u.name as updated_by','sup.supplier_name')
+        $product_list = Products::select('products.*','u.name as updated_by','sup.supplier_name','cl.client_name as customer_name')
+                        ->leftJoin('client_list as cl','cl.id','products.customer_id')
                         ->leftJoin('users as u','u.id','products.created_by')
                         ->leftJoin('suppliers as sup','sup.id','products.supplier_id')
                         ->with('category_brand')
@@ -115,8 +116,8 @@ class ProductController extends Controller
                 'sap_code'=> isset($request->sap_code) ? $request->sap_code : $request->product_code,
                 'product_code'=> isset($request->product_code) ? $request->product_code : "TEMP_CODE",
                 'product_name'=>$request->product_name,
-                'product_upc'=>$request->product_upc,
-                'product_sku'=>$request->product_sku,
+                'product_upc'=> isset($request->product_upc) ? $request->product_upc :  $request->product_code,
+                'product_sku'=> isset($request->product_sku) ? $request->product_sku :  $request->product_code,
                 'supplier_id'=>$request->supplier_id,
                 'customer_id'=>$request->customer_id,
                 'sap_code'=>$request->sap_code,
@@ -222,6 +223,7 @@ class ProductController extends Controller
         $prod_category = CategoryBrand::where('category_brand_id',$product->category_brand_id)->first();
         $prod_uom = ProductUom::where('product_id',$product->product_id)->pluck('uom_id');
         $price = ProductPrice::where('product_id',$product->product_id)->first();
+        $client_list = Client::where('client_type', 'C')->get();
         return view('maintenance/product/view',
         [
             'product' => $product,
@@ -232,7 +234,8 @@ class ProductController extends Controller
             'category' => $category,
             'price' => $price,
             'prod_category' => $prod_category,
-            'prod_uom' => $prod_uom->toArray()
+            'prod_uom' => $prod_uom->toArray(),
+            'client_list' => $client_list
         ]);
     }
 
@@ -293,6 +296,12 @@ class ProductController extends Controller
 
     public function productTemplate()
     {
+        $customer_list = Client::select('client_code','client_name')->where('client_type','C')->get()->toArray();
+        $customer[] = ['CUSTOMER CODE', 'CUSTOMER NAME'];
+        foreach ($customer_list as $key => $value){
+            $customer[] = [$value['client_code'],$value['client_name']];
+        }
+
         $supplier_list = Supplier::select('supplier_code','supplier_name')->get()->toArray();
         $supplier[] = ['SUPPLIER CODE', 'SUPPLIER NAME'];
         foreach ($supplier_list as $key => $value){
@@ -314,10 +323,11 @@ class ProductController extends Controller
         }
         $data = [
             'header' => [
-                ['SUPPLIER CODE','SAP CODE','PRODUCT CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT'],
-                ['TAMSONS-S', 'TNB224576', 'TNB224576','FUIDMASTER 507A Flush Valve 2', 'Tampsons','FLUIDMASTER','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
-                ['T-ACCU-001', 'TNB224577', 'TNB224577','5 STAR PNEUMATIC DOOR CLOSER - BRONZE', 'SBMCI','BARS','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
+                ['CUSTOMER CODE','SUPPLIER CODE','SAP CODE','PRODUCT CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT'],
+                ['TAMSONS-C','TAMSONS-S', 'TNB224576', 'TNB224576','FUIDMASTER 507A Flush Valve 2', 'Tampsons','FLUIDMASTER','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
+                ['SOLID','T-ACCU-001', 'TNB224577', 'TNB224577','5 STAR PNEUMATIC DOOR CLOSER - BRONZE', 'SBMCI','BARS','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
             ],
+            'customer' => $customer,
             'supplier' => $supplier,
             'category_brand' => $category_brand,
             'unit' => $unit
@@ -343,7 +353,7 @@ class ProductController extends Controller
                 {
                     $prod_data = $data[0];
                     $header =  $data[0][0];
-                    $valid_header = ['SUPPLIER CODE', 'SAP CODE', 'PRODUCT CODE','PRODUCT NAME', 'CATEGORY','BRAND','UNIT'];
+                    $valid_header = ['CUSTOMER CODE','SUPPLIER CODE', 'SAP CODE', 'PRODUCT CODE','PRODUCT NAME', 'CATEGORY','BRAND','UNIT'];
                     foreach($header as $val){
                         if(!in_array($val,$valid_header)){
                             return response()->json(['status' => false, 'message' => 'File upload failed, Invalid header format. Please download the correct template.']);
@@ -353,19 +363,27 @@ class ProductController extends Controller
                         $xdata = [];
                         $rows = 2;
                         for($i=1;$i< count($prod_data);$i++){
-                            if(isset($prod_data[$i][0]) && isset($prod_data[$i][1]) && isset($prod_data[$i][2]) && isset($prod_data[$i][3]) && isset($prod_data[$i][4]) && isset($prod_data[$i][5]) && isset($prod_data[$i][6])){
-                                $supplier   =     Supplier::select('id')->where('supplier_code',$prod_data[$i][0])->orWhere('supplier_name',$prod_data[$i][0])->first();
+                            if(isset($prod_data[$i][0]) && isset($prod_data[$i][1]) && isset($prod_data[$i][2]) && isset($prod_data[$i][3]) && isset($prod_data[$i][4]) && isset($prod_data[$i][5]) && isset($prod_data[$i][6]) && isset($prod_data[$i][7])){
+                                $customer   =     Client::select('id')->where('client_code',$prod_data[$i][0])->orWhere('client_name',$prod_data[$i][0])->first();
+                                $supplier   =     Supplier::select('id')->where('supplier_code',$prod_data[$i][1])->orWhere('supplier_name',$prod_data[$i][1])->first();
                                 $category   =     CategoryBrand::select('category_brands.*')
                                                 ->leftJoin('categories as cat','cat.category_id','category_brands.category_id')
                                                 ->leftJoin('brands as br','br.brand_id','category_brands.brand_id')
-                                                ->where('category_name',$prod_data[$i][4])
-                                                ->where('brand_name',$prod_data[$i][5])
+                                                ->where('category_name',$prod_data[$i][5])
+                                                ->where('brand_name',$prod_data[$i][6])
                                                 ->first();
 
                                 $xdata[$i]['is_enabled'] = 1;
                                 $xdata[$i]['is_serialize'] = 0;
 
-                                $uom = UOM::select('uom_id','code','uom_desc as name')->where('code',$prod_data[$i][6])->orWhere('uom_desc',$prod_data[$i][6])->first();
+                                $uom = UOM::select('uom_id','code','uom_desc as name')->where('code',$prod_data[$i][7])->orWhere('uom_desc',$prod_data[$i][7])->first();
+                                if($supplier){
+                                    $xdata[$i]['customer_id'] = $customer['id'];
+                                }
+                                else{
+                                    return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} customer name is not found."]);
+                                }
+
                                 if($supplier){
                                     $xdata[$i]['supplier_id'] = $supplier['id'];
                                 }
@@ -373,11 +391,11 @@ class ProductController extends Controller
                                     return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} supplier name is not found."]);
                                 }
 
-                                $xdata[$i]['sap_code'] = $prod_data[$i][1];
-                                $xdata[$i]['product_code'] = $prod_data[$i][2];
+                                $xdata[$i]['sap_code'] = $prod_data[$i][2];
+                                $xdata[$i]['product_code'] = $prod_data[$i][3];
 
                                 if(isset($prod_data[$i][1])){
-                                    $xdata[$i]['product_name'] = $prod_data[$i][3];
+                                    $xdata[$i]['product_name'] = $prod_data[$i][4];
                                 }
                                 else{
                                     return response()->json(['status' => false, 'message' => "File upload failed, Row no {$rows} product name is required."]);
@@ -385,7 +403,7 @@ class ProductController extends Controller
                                 if($category)
                                 {
                                     $xdata[$i]['category_brand_id'] = $category['category_brand_id'];
-                                    $xdata[$i]['category'] = $prod_data[$i][3];
+                                    $xdata[$i]['category'] = $prod_data[$i][5];
                                     $xdata[$i]['category_id'] = $category['category_id'];
                                 }
                                 else{

@@ -127,7 +127,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-6">
                                 <div class="row mb-3">
@@ -154,8 +154,8 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                           
+
+
 
                             <div class="col-6">
                                 <div class="row mb-3">
