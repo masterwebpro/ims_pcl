@@ -72,6 +72,7 @@
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Transaction Date <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control" placeholder="Transaction Date"  value="{{$transfer_hdr->trans_date}}"  name="transaction_date" id="transaction_date">
+                                            <span class="text-danger error-msg transaction_date_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -89,6 +90,7 @@
                                         <div class="mb-3">
                                             <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" placeholder="Requested By"  value="{{$transfer_hdr->requested_by}}" name="requested_by" id="requested_by">
+                                            <span class="text-danger error-msg requested_by_error"></span>
                                         </div>
                                     </div>
                                 

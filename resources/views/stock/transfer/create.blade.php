@@ -71,6 +71,7 @@
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Transaction Date <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control" placeholder="Transaction Date" name="transaction_date" id="transaction_date">
+                                            <span class="text-danger error-msg transaction_date_error"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -88,6 +89,7 @@
                                         <div class="mb-3">
                                             <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" placeholder="Requested By" name="requested_by" id="requested_by">
+                                            <span class="text-danger error-msg requested_by_error"></span>
                                         </div>
                                     </div>
                                 
@@ -226,7 +228,7 @@
                                 <th>Inv Uom</th>
                                 <th>Whse qty</th>
                                 <th>Whse Uom</th>
-                                <th>Rcv DTL ID</th>
+                                <th class="d-none">Rcv DTL ID</th>
                                 <!-- <th>REF1</th>
                                 <th>REF1_type</th> -->
                             </tr>

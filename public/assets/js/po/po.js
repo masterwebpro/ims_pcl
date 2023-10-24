@@ -49,7 +49,7 @@ $(document).on('click', '#find-items', function() {
                 { data: 'product_sku' },
                 { data: 'product_name' }
             ],
-            "pageLength": 10,
+            "pageLength": 25,
             lengthMenu: [
                 [10, 25, 50, -1],
                 [10, 25, 50, 'All']

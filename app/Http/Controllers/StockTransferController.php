@@ -9,7 +9,7 @@ use App\Models\SeriesModel;
 use App\Models\Warehouse;
 use App\Models\AuditTrail;
 use App\Models\MasterfileModel;
-
+use App\Models\Products;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -170,9 +170,12 @@ class StockTransferController extends Controller
                     ]);
                 }
 
+                $product = Products::where('product_id',$request->product_id[$x])->first();
+
                 // //add on the masterfile new location
                 $masterfile[] = array(
                     'ref_no'=>$ref_no,
+                    'customer_id'=>$product->customer_id,
                     'store_id'=>$warehouse->store_id,
                     'company_id'=>$warehouse->client_id,
                     'warehouse_id'=>$request->dest_warehouse[$x],
@@ -185,13 +188,15 @@ class StockTransferController extends Controller
                     'inv_uom'=>$request->dest_inv_uom[$x],
                     'whse_qty'=>$request->dest_inv_qty[$x],
                     'whse_uom'=>$request->dest_inv_uom[$x],
-                    'created_at'=>$this->current_datetime,
-                    'updated_at'=>$this->current_datetime,
+                    'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
+                    'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
+                    
                 );
 
                 //deduct from old
                 $masterfile[] = array(
                     'ref_no'=>$ref_no,
+                    'customer_id'=>$product->customer_id,
                     'store_id'=>$request->source_site,
                     'company_id'=>$request->source_company,
                     'warehouse_id'=>$request->source_warehouse[$x],
@@ -204,17 +209,16 @@ class StockTransferController extends Controller
                     'inv_uom'=>$request->source_inv_uom[$x],
                     'whse_qty'=>($request->source_inv_qty[$x] * -1),
                     'whse_uom'=>$request->source_inv_uom[$x],
-                    'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
-                    'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
+                    'created_at'=>$this->current_datetime,
+                    'updated_at'=>$this->current_datetime
                 );
 
                 $_stockOutMasterdata[] = array(
-                    'customer_id'=>isset($request->customer_id) ? $request->customer_id : 0,
+                    'customer_id'=>$product->customer_id,
                     'company_id'=>$request->source_company,
                     'store_id'=>$request->source_site,
                     'warehouse_id'=>$request->source_warehouse[$x],
                     'product_id'=>$request->product_id[$x],
-
                     'storage_location_id'=>($request->source_location[$x] == 0 || $request->source_location[$x] == 'null') ? NULL : $request->source_location[$x],
                     'item_type'=>$request->item_type[$x],
                     'inv_qty'=>($request->dest_inv_qty[$x]),
@@ -225,7 +229,7 @@ class StockTransferController extends Controller
                 );
 
                 $_stockInMasterdata[] = array(
-                    'customer_id'=>isset($request->customer_id) ? $request->customer_id : 0,
+                    'customer_id'=>$product->customer_id,
                     'company_id'=>$warehouse->client_id,
                     'store_id'=>$warehouse->store_id,
                     'warehouse_id'=>$request->dest_warehouse[$x],

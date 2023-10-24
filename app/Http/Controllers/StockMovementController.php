@@ -8,6 +8,7 @@ use App\Models\MvDtl;
 use App\Models\SeriesModel;
 use App\Models\AuditTrail;
 use App\Models\MasterfileModel;
+use App\Models\Products;
 
 use App\Http\Controllers\SettingsController;
 
@@ -156,11 +157,14 @@ class StockMovementController extends Controller
                     // 'ref1_no'=>$request->ref1_no[$x],
                     // 'ref1_type'=>$request->ref1_type[$x],
                 );
-               
+
+                //
+                $product = Products::where('product_id',$request->product_id[$x])->first();
 
                 // //add on the masterfile new location
                 $masterfile[] = array(
                     'ref_no'=>$ref_no,
+                    'customer_id'=>$product->customer_id,
                     'store_id'=>$request->store_id,
                     'company_id'=>$request->company_id,
                     'warehouse_id'=>$request->warehouse_id,
@@ -175,14 +179,16 @@ class StockMovementController extends Controller
                     'whse_uom'=>$request->new_inv_uom[$x],
                     // 'ref1_no'=>$request->ref1_no[$x],
                     // 'ref1_type'=>$request->ref1_type[$x],
-                    'created_at'=>$this->current_datetime,
-                    'updated_at'=>$this->current_datetime,
+                    'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
+                    'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
+
                 );
 
                 //deduct from old
                 $masterfile[] = array(
                     'ref_no'=>$ref_no,
                     'store_id'=>$request->store_id,
+                    'customer_id'=>$product->customer_id,
                     'company_id'=>$request->company_id,
                     'warehouse_id'=>$request->warehouse_id,
                     'storage_location_id'=>$request->old_location[$x],
@@ -194,14 +200,12 @@ class StockMovementController extends Controller
                     'inv_uom'=>$request->new_inv_uom[$x],
                     'whse_qty'=>($request->new_inv_qty[$x] * -1),
                     'whse_uom'=>$request->new_inv_uom[$x],
-                    // 'ref1_no'=>$request->ref1_no[$x],
-                    // 'ref1_type'=>$request->ref1_type[$x],
-                    'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
-                    'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
+                    'created_at'=>$this->current_datetime,
+                    'updated_at'=>$this->current_datetime
                 );
 
                 $_stockOutMasterdata[] = array(
-                    'customer_id'=>isset($request->customer_id) ? $request->customer_id : 0,
+                    'customer_id'=>$product->customer_id,
                     'company_id'=>$request->company_id,
                     'store_id'=>$request->store_id,
                     'warehouse_id'=>$request->warehouse_id,
@@ -219,7 +223,7 @@ class StockMovementController extends Controller
                 );
 
                 $_stockInMasterdata[] = array(
-                    'customer_id'=>isset($request->customer_id) ? $request->customer_id : 0,
+                    'customer_id'=>$product->customer_id,
                     'company_id'=>$request->company_id,
                     'store_id'=>$request->store_id,
                     'warehouse_id'=>$request->warehouse_id,
@@ -263,9 +267,7 @@ class StockMovementController extends Controller
 
                 _stockInMasterData($_stockInMasterdata);
                 _stockOutMasterData($_stockOutMasterdata);
-            } else {
-                // reserve the qty
-            }
+            } 
 
             AuditTrail::insert($audit_trail);
 

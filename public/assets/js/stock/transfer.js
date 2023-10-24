@@ -52,10 +52,18 @@ $(document).on('change', '#dest_company', function() {
 
 
 $(document).on('click', '.add-item', function() {
-    $('#show-items').modal('show'); 
-    if ($.fn.DataTable.isDataTable("#show-items-list")) {
-        $('#show-items-list').DataTable().clear().destroy();
+
+    var source_site = $('#source_site').val();
+
+    if(source_site) {
+        $('#show-items').modal('show'); 
+        if ($.fn.DataTable.isDataTable("#show-items-list")) {
+            $('#show-items-list').DataTable().clear().destroy();
+        }
+    } else {
+        showError("Please select source site.");
     }
+    
 });
 
 
@@ -102,7 +110,7 @@ $(document).on('click', '.search-item', function() {
                 { data: 'i_code' },
                 { data: 'whse_qty' },
                 { data: 'w_code' },
-                { data: 'rcv_dtl_id' },
+                { data: 'rcv_dtl_id', visible: false},
                 
             ],
             "pageLength": 25,
@@ -168,7 +176,7 @@ $(document).on('click', '#add-product', function() {
             </td> \
             <td class="text-center ps-1 fs-13"> \
                 <select style="width: 150px;" name="dest_warehouse[]" data-id="'+(rowCount-1)+'" id="dest_warehouse_'+(rowCount-1)+'" class="form-select dest_warehouse select2"><option value="">Select Warehouse</option></select> \
-                <span class="text-danger error-msg dest_warehouse_'+(rowCount-1)+'_error"></span> \
+                <span class="text-danger error-msg dest_warehouse'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="text-start ps-1"><select style="width: 100px;" name="dest_location[] id="dest_location_'+(rowCount-1)+'" class="form-select dest_location select2"><option value="">Select Location</option></select> \
                 <span class="text-danger error-msg dest_location'+(rowCount-1)+'_error"></span> \
