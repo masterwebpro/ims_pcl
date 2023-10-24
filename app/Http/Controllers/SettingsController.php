@@ -43,6 +43,12 @@ class SettingsController extends Controller
         if($request->supplier_id) {
             $products->where('supplier_id', $request->supplier_id);
         }
+        if($request->customer_id) {
+            $products->where('customer_id', $request->customer_id);
+        }
+        if($request->is_enabled) {
+            $products->where('is_enabled', $request->is_enabled);
+        }
         $products->get();
         return Datatables::of($products)->addIndexColumn()->make();
     }
