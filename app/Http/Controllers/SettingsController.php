@@ -59,7 +59,7 @@ class SettingsController extends Controller
 
     function getProductBySupplier(Request $request, $supplier_id) {
         $products = \App\Models\Products::where('supplier_id', $supplier_id)->get();
-        return Datatables::of($products)->addIndexColumn()->make();
+        return Datatables::of($products)->addIndexColumn()->make(true);
     }
 
     function getPostedPo(Request $request) {

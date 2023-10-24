@@ -30,6 +30,8 @@ $(document).on('click', '#find-items', function() {
         }
         new DataTable("#show-items-list",{
             order: [[1, 'desc']],
+            processing: true,
+            serverSide: true,
             paging: true,
             ajax: {
                 url :BASEURL+"settings/products",

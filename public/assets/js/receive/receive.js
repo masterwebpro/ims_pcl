@@ -58,6 +58,8 @@ $(document).on('click', '#find-items', function() {
                 [10, 25, 50, -1],
                 [10, 25, 50, 'All']
             ],
+            processing: true,
+            serverSide: true,
             ajax: {
                 url :BASEURL+"settings/products",
                 data : {
