@@ -46,7 +46,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" name="ref_no" id="ref_no">
+                                            <input type="hidden" class="form-control" name="ref_no" id="ref_no">
                                             <label for="firstNameinput" class="form-label">Source Company <span class="text-danger">*</span></label>
                                             <select class="form-select select2 source_company" id="source_company" name="source_company">
                                                 <option value="">Select Source Company</option>                                                            

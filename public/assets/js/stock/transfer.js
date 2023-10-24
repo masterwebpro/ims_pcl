@@ -302,9 +302,9 @@ function _submitData(form_data) {
                 if(data.success == true) {
                     if(data.data.status == 'open') {
                         showSuccess(data.message);
-                        // setTimeout(function () {
-						// 	window.location = BASEURL+'stock/tre/'+data.id+'/edit';
-						// }, 300);
+                        setTimeout(function () {
+							window.location = BASEURL+'stock/transfer/'+data.id+'/edit';
+						}, 300);
                     } else {
                         toastr.success(data.message); 
                         setTimeout(function () {

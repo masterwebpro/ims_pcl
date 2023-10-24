@@ -217,10 +217,10 @@ class StockTransferController extends Controller
 
                     'storage_location_id'=>($request->source_location[$x] == 0 || $request->source_location[$x] == 'null') ? NULL : $request->source_location[$x],
                     'item_type'=>$request->item_type[$x],
-                    'inv_qty'=>($request->source_inv_qty[$x]),
-                    'inv_uom'=>$request->source_inv_uom[$x],
-                    'whse_qty'=>($request->source_inv_qty[$x]),
-                    'whse_uom'=>$request->source_inv_uom[$x],
+                    'inv_qty'=>($request->dest_inv_qty[$x]),
+                    'inv_uom'=>$request->dest_inv_uom[$x],
+                    'whse_qty'=>($request->dest_inv_qty[$x]),
+                    'whse_uom'=>$request->dest_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                 );
 
