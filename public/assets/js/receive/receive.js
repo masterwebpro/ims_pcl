@@ -53,6 +53,11 @@ $(document).on('click', '#find-items', function() {
         new DataTable("#show-items-list",{
             order: [[3, 'asc']],
             paging: true,
+            "pageLength": 10,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ],
             ajax: {
                 url :BASEURL+"settings/products",
                 data : {
