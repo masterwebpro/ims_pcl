@@ -420,3 +420,12 @@ function paginate($data, $perPage = 10, $page = null, $options = [])
     //Set base url for pagination links to follow e.g custom/url?page=6
     return $data['results']->setPath(request()->url());
 }
+
+function _getWarehouseDtl($warehouse_id) {
+    $warehouse = DB::table('warehouses')->where('id', $warehouse_id)->first();
+    if ($warehouse) {
+        return $warehouse;
+    } else {
+        return false;
+    } 
+}

@@ -196,8 +196,8 @@ class StockMovementController extends Controller
                     'whse_uom'=>$request->new_inv_uom[$x],
                     // 'ref1_no'=>$request->ref1_no[$x],
                     // 'ref1_type'=>$request->ref1_type[$x],
-                    'created_at'=>$this->current_datetime,
-                    'updated_at'=>$this->current_datetime,
+                    'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
+                    'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
                 );
 
                 $_stockOutMasterdata[] = array(

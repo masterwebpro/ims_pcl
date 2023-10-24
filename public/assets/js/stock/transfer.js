@@ -5,18 +5,22 @@ $(document).ready(function () {
         dropdownParent: $("#show-items")
     });
 
-    // if ( $( "#store_id" ).length ) {
-    //     company_id = $("#company_id" ).val();
-    //     store_id = $("#store_id" ).val();
-    //     populateStore(company_id, store_id);
-    //     populateWarehouse(store_id, '');
-    // }
+    if ( $( "#store_id" ).length ) {
+        company_id = $("#source_company" ).val();
+        store_id = $("#store_id" ).val();
+        populateStore(company_id, store_id, 'source_site');
+    }
 
-    // if ( $( "#warehouse_id" ).length ) {
-    //     warehouse_id = $("#warehouse_id" ).val();
-    //     store_id = $("#store_id" ).val();
-    //     populateWarehouse(store_id, warehouse_id);
-    // }
+    var ref_no = $('#ref_no').val();
+
+    if(ref_no) {
+        $("table#product-list").find('.destWarehouseId').each(function () {
+            warehouse_id = $(this).val();
+            var id = $(this).data('id');
+            location_id = $("#location_"+id ).val();
+            populateLocation('dest_location_'+id, warehouse_id, location_id);
+        });    
+    }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
         //$('#show-items-list tbody tr').removeClass('selected')
@@ -256,6 +260,28 @@ $(document).on('click', '.submit-open', function (e) {
     form_data.append("status", 'open');
 
     _submitData(form_data);
+});
+
+$(document).on('click', '.submit-posted', function (e) {
+    e.preventDefault();
+   
+    var form_data = new FormData(document.getElementById("submit-transfer"));
+    form_data.append("_token", $('input[name=_token]').val());
+    form_data.append("status", 'posted');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to POST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Post it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            _submitData(form_data);
+        }
+    });
 });
 
 function _submitData(form_data) {
