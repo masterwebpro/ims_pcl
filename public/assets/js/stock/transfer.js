@@ -5,18 +5,22 @@ $(document).ready(function () {
         dropdownParent: $("#show-items")
     });
 
-    // if ( $( "#store_id" ).length ) {
-    //     company_id = $("#company_id" ).val();
-    //     store_id = $("#store_id" ).val();
-    //     populateStore(company_id, store_id);
-    //     populateWarehouse(store_id, '');
-    // }
+    if ( $( "#store_id" ).length ) {
+        company_id = $("#source_company" ).val();
+        store_id = $("#store_id" ).val();
+        populateStore(company_id, store_id, 'source_site');
+    }
 
-    // if ( $( "#warehouse_id" ).length ) {
-    //     warehouse_id = $("#warehouse_id" ).val();
-    //     store_id = $("#store_id" ).val();
-    //     populateWarehouse(store_id, warehouse_id);
-    // }
+    var ref_no = $('#ref_no').val();
+
+    if(ref_no) {
+        $("table#product-list").find('.destWarehouseId').each(function () {
+            warehouse_id = $(this).val();
+            var id = $(this).data('id');
+            location_id = $("#location_"+id ).val();
+            populateLocation('dest_location_'+id, warehouse_id, location_id);
+        });    
+    }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
         //$('#show-items-list tbody tr').removeClass('selected')
@@ -48,10 +52,18 @@ $(document).on('change', '#dest_company', function() {
 
 
 $(document).on('click', '.add-item', function() {
-    $('#show-items').modal('show'); 
-    if ($.fn.DataTable.isDataTable("#show-items-list")) {
-        $('#show-items-list').DataTable().clear().destroy();
+
+    var source_site = $('#source_site').val();
+
+    if(source_site) {
+        $('#show-items').modal('show'); 
+        if ($.fn.DataTable.isDataTable("#show-items-list")) {
+            $('#show-items-list').DataTable().clear().destroy();
+        }
+    } else {
+        showError("Please select source site.");
     }
+    
 });
 
 
@@ -98,7 +110,7 @@ $(document).on('click', '.search-item', function() {
                 { data: 'i_code' },
                 { data: 'whse_qty' },
                 { data: 'w_code' },
-                { data: 'rcv_dtl_id' },
+                { data: 'rcv_dtl_id', visible: false},
                 
             ],
             "pageLength": 25,
@@ -164,7 +176,7 @@ $(document).on('click', '#add-product', function() {
             </td> \
             <td class="text-center ps-1 fs-13"> \
                 <select style="width: 150px;" name="dest_warehouse[]" data-id="'+(rowCount-1)+'" id="dest_warehouse_'+(rowCount-1)+'" class="form-select dest_warehouse select2"><option value="">Select Warehouse</option></select> \
-                <span class="text-danger error-msg dest_warehouse_'+(rowCount-1)+'_error"></span> \
+                <span class="text-danger error-msg dest_warehouse'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="text-start ps-1"><select style="width: 100px;" name="dest_location[] id="dest_location_'+(rowCount-1)+'" class="form-select dest_location select2"><option value="">Select Location</option></select> \
                 <span class="text-danger error-msg dest_location'+(rowCount-1)+'_error"></span> \
@@ -258,6 +270,28 @@ $(document).on('click', '.submit-open', function (e) {
     _submitData(form_data);
 });
 
+$(document).on('click', '.submit-posted', function (e) {
+    e.preventDefault();
+   
+    var form_data = new FormData(document.getElementById("submit-transfer"));
+    form_data.append("_token", $('input[name=_token]').val());
+    form_data.append("status", 'posted');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to POST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Post it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            _submitData(form_data);
+        }
+    });
+});
+
 function _submitData(form_data) {
     $.ajax({
         url: BASEURL + 'stock/transfer',
@@ -276,9 +310,9 @@ function _submitData(form_data) {
                 if(data.success == true) {
                     if(data.data.status == 'open') {
                         showSuccess(data.message);
-                        // setTimeout(function () {
-						// 	window.location = BASEURL+'stock/tre/'+data.id+'/edit';
-						// }, 300);
+                        setTimeout(function () {
+							window.location = BASEURL+'stock/transfer/'+data.id+'/edit';
+						}, 300);
                     } else {
                         toastr.success(data.message); 
                         setTimeout(function () {

@@ -38,18 +38,28 @@ class SettingsController extends Controller
         return response()->json($data);
     }
 
+   
     function getProducts(Request $request) {
-        $products = \App\Models\Products::select('*');
-        if($request->supplier_id) {
-            $products->where('supplier_id', $request->supplier_id);
-        }
-        $products->get();
+        $products = \App\Models\Products::select('product_id','sap_code','product_sku','product_code','product_name')
+        ->where('is_enabled', $request->is_enabled)
+        ->where('customer_id', $request->customer_id)
+        ->get();
+        // if($request->supplier_id) {
+        //     $products->where('supplier_id', $request->supplier_id);
+        // }
+        // if($request->customer_id) {
+        //     $products->where('customer_id', $request->customer_id);
+        // }
+        // if($request->is_enabled) {
+        //     $products->where('is_enabled', $request->is_enabled);
+        // }
+        // $products->get();
         return Datatables::of($products)->addIndexColumn()->make();
     }
 
     function getProductBySupplier(Request $request, $supplier_id) {
         $products = \App\Models\Products::where('supplier_id', $supplier_id)->get();
-        return Datatables::of($products)->addIndexColumn()->make();
+        return Datatables::of($products)->addIndexColumn()->make(true);
     }
 
     function getPostedPo(Request $request) {

@@ -45,6 +45,18 @@
                                 <thead class="table-light text-muted">
                                     <tr>
                                         <th class="text-center" data-sort="" rowspan="2">Reference No</th>
+                                        <!-- <th class="text-center" >Source Company</th> -->
+                                        <th class="text-center" >Source Site</th>
+                                        <th class="text-center" >Transaction Date</th>
+                                        <th class="text-center" >DR No</th>
+                                        <th class="text-center" >Requested by</th>
+                                        <th class="text-center" >Created By</th>
+                                        <th class="text-center" >Created Date</th>
+                                        <th class="text-center" >Action</th>
+                                    </tr>
+
+                                    <!-- <tr>
+                                        <th class="text-center" data-sort="" rowspan="2">Reference No</th>
                                         <th class="text-center" colspan="3">Source</th>
                                         <th class="text-center" colspan="3">Destination</th>
                                         <th class="text-center" rowspan="2">Created By</th>
@@ -58,7 +70,7 @@
                                         <th class="sort text-center" data-sort="">Company</th>
                                         <th class="sort text-center" data-sort="">Site</th>
                                         <th class="sort text-center" data-sort="">Warehouse</th>
-                                    </tr>
+                                    </tr> -->
                                 </thead>
             
                                 <tbody class="list form-check-all">
@@ -66,17 +78,18 @@
                                         <? foreach($active_list as $active) :?>
                                             <tr>
                                                 <td class="rcv_no">{{ $active->ref_no}}</td>
-                                                <td class="po_num">{{ isset($active->company->client_name) ? $active->company->client_name : ''}}</td>
-                                                <td class="sales_invoice">{{ $active->store->store_name}}</td>
-                                                <td>{{ $active->warehouse->warehouse_name}}</td>
-                                                
-                                                <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
+                                                <!-- <td class="company">{{ $active->company->client_name}}</td> -->
+                                                <td class="rcv_no">{{ $active->store->store_name}}</td>
+                                                <td class="text-center">{{ date("M d, Y", strtotime($active->trans_date))}}</td>
+                                                <td class="rcv_no">{{ $active->dr_no}}</td>
+                                                <td class="rcv_no">{{ $active->requested_by}}</td>
                                                 <td>{{ $active->user_create->name}}</td>
+                                                <td class="text-center">{{ date("M d, Y", strtotime($active->created_at))}}</td>
                                                 <td class="action">
                                                     <div class="hstack gap-3 fs-12">
-                                                        <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                        <a href="{{ URL::to('stock/transfer') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
                                                         <? if($active->status != 'posted') : ?>
-                                                            <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                            <a href="{{ URL::to('stock/transfer') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                                         <? endif; ?>
                                                 </td>
                                             </tr>
@@ -105,19 +118,14 @@
                                 <thead class="table-light text-muted">
                                     <tr>
                                         <th class="text-center" data-sort="" rowspan="2">Reference No</th>
-                                        <th class="text-center" colspan="3">Source</th>
-                                        <th class="text-center" colspan="3">Destination</th>
-                                        <th class="text-center" rowspan="2">Created By</th>
-                                        <th class="text-center" rowspan="2">Created Date</th>
-                                        <th class="text-center" data-sort="" rowspan="2">Action</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="sort text-center" data-sort="">Company</th>
-                                        <th class="sort text-center" data-sort="">Site</th>
-                                        <th class="sort text-center" data-sort="">Warehouse</th>
-                                        <th class="sort text-center" data-sort="">Company</th>
-                                        <th class="sort text-center" data-sort="">Site</th>
-                                        <th class="sort text-center" data-sort="">Warehouse</th>
+                                        <!-- <th class="text-center" >Source Company</th> -->
+                                        <th class="text-center" >Source Site</th>
+                                        <th class="text-center" >Transaction Date</th>
+                                        <th class="text-center" >DR No</th>
+                                        <th class="text-center" >Requested by</th>
+                                        <th class="text-center" >Created By</th>
+                                        <th class="text-center" >Created Date</th>
+                                        <th class="text-center" >Action</th>
                                     </tr>
                                 </thead>
             
@@ -126,12 +134,13 @@
                                         <? foreach($posted_list as $active) :?>
                                             <tr>
                                                 <td class="rcv_no">{{ $active->ref_no}}</td>
-                                                <td class="po_num">{{ isset($active->company->client_name) ? $active->company->client_name : ''}}</td>
-                                                <td class="sales_invoice">{{ $active->store->store_name}}</td>
-                                                <td>{{ $active->warehouse->warehouse_name}}</td>
-                                                
-                                                <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
+                                                <!-- <td class="company">{{ $active->company->client_name}}</td> -->
+                                                <td class="rcv_no">{{ $active->store->store_name}}</td>
+                                                <td class="text-center">{{ date("M d, Y", strtotime($active->trans_date))}}</td>
+                                                <td class="rcv_no">{{ $active->dr_no}}</td>
+                                                <td class="rcv_no">{{ $active->requested_by}}</td>
                                                 <td>{{ $active->user_create->name}}</td>
+                                                <td class="text-center">{{ date("M d, Y", strtotime($active->created_at))}}</td>
                                                 <td class="action">
                                                     <div class="hstack gap-3 fs-12">
                                                         <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>

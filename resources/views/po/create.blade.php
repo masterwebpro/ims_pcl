@@ -73,7 +73,7 @@
 
                             <div class="row">
                                 <div class="col-md-4 form-group">
-                                    <label for="client_id" class="form-label">Customer Name</label>
+                                    <label for="client_id" class="form-label">Customer Name <span class="text-danger">*</span></label>
                                     <input type="hidden" value="" class="customer_id" name="customer_id" id="customer_id" />
                                     <select class="form-select select2" required="required" id="customer" name="customer">
                                         <option value="">Select Customer</option>

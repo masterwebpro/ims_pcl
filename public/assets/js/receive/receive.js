@@ -40,11 +40,11 @@ $(document).on('change', '#store', function() {
 
 $(document).on('click', '#find-items', function() {
    
-    var sup_id = $('#supplier').val();
+    var customer_id = $('#customer').val();
 
     // var supplier_id = (sup_id != '') ? sup_id : 0;
 
-    //if(supplier_id) {   
+    if(customer_id) {   
 
         $('#show-items').modal('show'); 
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
@@ -53,8 +53,22 @@ $(document).on('click', '#find-items', function() {
         new DataTable("#show-items-list",{
             order: [[3, 'asc']],
             paging: true,
+            "pageLength": 25,
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ],
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url :BASEURL+"settings/products",
+                data : {
+                    customer_id: customer_id,
+                    is_enabled: 1,
+                }
+            },
             //ajax: BASEURL+"settings/products/"+supplier_id+'/get',
-            ajax: BASEURL+"settings/products",
+            // ajax: BASEURL+"settings/products",
             columns: [
                 { data: 'product_id',  visible: false },
                 { data: 'sap_code' },
@@ -63,9 +77,9 @@ $(document).on('click', '#find-items', function() {
                 { data: 'product_name' }
             ],
         });
-    // } else {
-    //     alert("Supplier Name required");
-    // }
+    } else {
+        showError("Please select customer name.");
+    }
 });
 
 var rowIdx = 0; 

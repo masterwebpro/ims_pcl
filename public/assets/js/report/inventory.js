@@ -125,7 +125,7 @@ $(document).on('click', '.submit-inventory', function(e) {
                     });
 
                     table += "<tr>";
-                    table += "<th colspan=10' class='fw-medium'>Total</th>";
+                    table += "<th colspan='11' class='fw-medium'>Total</th>";
                     table += "<th class='text-center fw-bold'>"+number_format(total_qty)+"</th>";
                     table += "<th class='text-center'>&nbsp;</th>";
                     table += "</tr>"; 
