@@ -19,6 +19,7 @@ use App\Exports\ExportRcvDetailed;
 use App\Exports\ExportWdDetailed;
 use App\Exports\ExportInventory;
 use App\Exports\ExportOutboundMonitoring;
+use App\Exports\ExportInboundMonitoring;
 use App\Exports\ExportAging;
 use App\Models\DispatchDtl;
 use App\Models\DispatchHdr;
@@ -507,7 +508,7 @@ class ReportController extends Controller
             });
         }
 
-        if ($request->filter_date) {
+        if ($request->filter_date && $request->date) {
             if($request->filter_date == 'dispatch_date') {
                 $data_list->whereBetween('dh.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:00"]);
             }
@@ -524,6 +525,14 @@ class ReportController extends Controller
             {
                 $data_list->whereBetween('dh.created_at',[$startDate,$endDate]);
             }
+
+        }
+
+        if($request->customer ){
+            $data_list->where('wh.customer_id', $request->customer);
+        }
+        if($request->company){
+            $data_list->where('wh.company_id', $request->company);
         }
 
         $data = $data_list->paginate(20);
@@ -603,14 +612,20 @@ class ReportController extends Controller
                 ->orWhere('dispatch_hdr.seal_no', $request->q);
         }
 
-        if ($request->filter_date && $request->dispatch_date) {
+        if ($request->filter_date && $request->date) {
             if($request->filter_date == 'dispatch_date') {
-                $data_list->whereBetween('dispatch_hdr.dispatch_date', [$request->dispatch_date." 00:00:00", $request->dispatch_date." 23:59:00"]);
+                $data_list->whereBetween('dispatch_hdr.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:00"]);
             }
             if($request->filter_date == 'created_at') {
                 $data_list->whereBetween('dispatch_hdr.created_at', [$request->created_at." 00:00:00", $request->created_at." 23:59:00"]);
             }
 
+        }
+        if($request->customer ){
+            $data_list->where('wh.customer_id', $request->customer);
+        }
+        if($request->company){
+            $data_list->where('wh.company_id', $request->company);
         }
         $result = $data_list->get();
         if($result)
@@ -644,12 +659,12 @@ class ReportController extends Controller
                     strtoupper($res->item_type),
                     "OUTBOUND",
                     "N/A",
-                    $res->start_picking_datetime,
-                    $res->finish_picking_datetime,
-                    $res->arrival_datetime,
-                    $res->start_datetime,
-                    $res->finish_datetime,
-                    $res->depart_datetime,
+                    date('H:i A', strtotime($res->start_picking_datetime)),
+                    date('H:i A', strtotime($res->finish_picking_datetime)),
+                    date('H:i A', strtotime($res->arrival_datetime)),
+                    date('H:i A', strtotime($res->start_datetime)),
+                    date('H:i A', strtotime($res->finish_datetime)),
+                    date('H:i A', strtotime($res->depart_datetime)),
                     timeInterval($res->start_datetime, $res->finish_datetime),
                     timeInterval($res->arrival_datetime, $res->depart_datetime),
                     "N/A",
@@ -796,5 +811,229 @@ class ReportController extends Controller
         }
 
         return Excel::download(new ExportAging($data), $file_name);
+    }
+
+    public function getInboundMonitoringIndex(Request $request)
+    {
+        $dateRangeParts = explode(" to ", $request->date);
+        $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
+        $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
+
+        $client_list = Client::where('is_enabled', '1')->get();
+        $data_list = RcvDtl::select('rcv_dtl.*',
+                        DB::raw('WEEK(rh.date_received) as week_no'),
+                        'rh.date_received',
+                        'rh.received_by',
+                        // 'rh.trucker_name',
+                        'tt.vehicle_code',
+                        'tt.vehicle_desc',
+                        'rh.plate_no',
+                        // 'rh.driver',
+                        // 'rh.contact_no',
+                        // 'rh.helper',
+                        // 'rh.seal_no',
+                        // 'rh.start_datetime',
+                        // 'rh.finish_datetime',
+                        'rh.date_departed',
+                        // 'rh.start_unloading',
+                        // 'rh.finish_unloading',
+                        'rh.date_arrived',
+                        'u.name',
+                        'p.product_code',
+                        'p.product_name',
+                        'ui.code as unit',
+                        'rh.po_num',
+                        'rh.sales_invoice',
+                        's.supplier_name',
+                        'cat.category_name',
+                         )
+        ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rcv_dtl.rcv_no')
+        ->leftJoin('products as p', 'p.product_id', '=', 'rcv_dtl.product_id')
+        ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
+        ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+        ->leftJoin('categories as cat', 'cat.category_id', '=', 'cb.category_id')
+        ->leftJoin('uom as ui', 'ui.uom_id', '=', 'rcv_dtl.inv_uom')
+        ->leftJoin('users as u', 'u.id', '=', 'rh.created_by')
+        ->leftJoin('truck_type as tt', 'tt.id', '=', 'rh.truck_type')
+        ->groupBy('rcv_dtl.id')
+        ->orderBy('rh.date_received','ASC')
+        ->where('rh.status','posted');
+
+        if ($request->q) {
+            $data_list->where(function($q)use($request){
+                $q->where('rh.rcv_no', $request->q)
+                ->orWhere('rh.received_by', $request->q)
+                ->orWhere('rh.vehicle_code', $request->q)
+                ->orWhere('rh.vehicle_desc', $request->q)
+                ->orWhere('rcv_dtl.product_code', $request->q)
+                ->orWhere('rcv_dtl.product_name', $request->q)
+                ->orWhere('rh.plate_no', $request->q);
+            });
+        }
+
+        if($request->filter_date == 'received_date' && $request->date) {
+            $data_list->whereBetween('rh.date_received', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+        }
+        if($request->filter_date == 'created_at' && $request->date) {
+            $data_list->whereBetween('rd.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+        }
+        if($request->date){
+            if($request->filter_date == 'received_date' && $startDate && $endDate)
+            {
+                $data_list->whereBetween('rh.date_received',[$startDate,$endDate]);
+            }
+
+            if($request->filter_date == 'created_at' && $startDate && $endDate)
+            {
+                $data_list->whereBetween('rd.created_at',[$startDate,$endDate]);
+            }
+        }
+
+         if($request->customer ){
+            $data_list->where('rh.customer_id', $request->customer);
+        }
+        if($request->company){
+            $data_list->where('rh.company_id', $request->company);
+        }
+
+        $data = $data_list->paginate(20);
+        return view('report/inbound_monitoring', [
+            'client_list'=>$client_list,
+            'data_list'=>$data,
+            'request'=>$request,
+        ]);
+    }
+
+    public function exportInboundMonitoring(Request $request)
+    {
+        ob_start();
+        $dateRangeParts = explode(" to ", $request->date);
+        $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
+        $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
+
+        $data_list = RcvDtl::select('rcv_dtl.*',
+                        DB::raw('WEEK(rh.date_received) as week_no'),
+                        'rh.date_received',
+                        'rh.received_by',
+                        // 'rh.trucker_name',
+                        'tt.vehicle_code',
+                        'tt.vehicle_desc',
+                        'rh.plate_no',
+                        // 'rh.driver',
+                        // 'rh.contact_no',
+                        // 'rh.helper',
+                        // 'rh.seal_no',
+                        // 'rh.start_datetime',
+                        // 'rh.finish_datetime',
+                        'rh.date_departed',
+                        'rh.remarks as remark',
+                        // 'rh.start_unloading',
+                        // 'rh.finish_unloading',
+                        'rh.date_arrived',
+                        'rh.remarks as remark',
+                        'u.name',
+                        'p.product_code',
+                        'p.product_name',
+                        'ui.code as unit',
+                        'rh.po_num',
+                        'rh.sales_invoice',
+                        's.supplier_name',
+                        'cat.category_name',
+                         )
+        ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rcv_dtl.rcv_no')
+        ->leftJoin('products as p', 'p.product_id', '=', 'rcv_dtl.product_id')
+        ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
+        ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+        ->leftJoin('categories as cat', 'cat.category_id', '=', 'cb.category_id')
+        ->leftJoin('uom as ui', 'ui.uom_id', '=', 'rcv_dtl.inv_uom')
+        ->leftJoin('users as u', 'u.id', '=', 'rh.created_by')
+        ->leftJoin('truck_type as tt', 'tt.id', '=', 'rh.truck_type')
+        ->groupBy('rcv_dtl.id')
+        ->orderBy('rh.date_received','ASC')
+        ->where('rh.status','posted');
+
+        if ($request->q) {
+            $data_list->where(function($q)use($request){
+                $q->where('rh.rcv_no', $request->q)
+                ->orWhere('rh.received_by', $request->q)
+                ->orWhere('rh.vehicle_code', $request->q)
+                ->orWhere('rh.vehicle_desc', $request->q)
+                ->orWhere('rcv_dtl.product_code', $request->q)
+                ->orWhere('rcv_dtl.product_name', $request->q)
+                ->orWhere('rh.plate_no', $request->q);
+            });
+        }
+
+        if($request->filter_date == 'received_date' && $request->date) {
+            $data_list->whereBetween('rh.date_received', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+        }
+        if($request->filter_date == 'created_at' && $request->date) {
+            $data_list->whereBetween('rd.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+        }
+        if($request->date){
+            if($request->filter_date == 'received_date' && $startDate && $endDate)
+            {
+                $data_list->whereBetween('rh.date_received',[$startDate,$endDate]);
+            }
+
+            if($request->filter_date == 'created_at' && $startDate && $endDate)
+            {
+                $data_list->whereBetween('rd.created_at',[$startDate,$endDate]);
+            }
+        }
+
+        if($request->customer ){
+            $data_list->where('rh.customer_id', $request->customer);
+        }
+        if($request->company){
+            $data_list->where('rh.company_id', $request->company);
+        }
+
+        $result = $data_list->get();
+        if($result)
+        {
+            $data = [];
+            foreach($result as $res){
+                $data[] = array(
+                    $res->week_no,
+                    $res->date_received,
+                    $res->vehicle_code,
+                    '-',
+                    '-',
+                    $res->plate_no,
+                    $res->driver,
+                    $res->po_num,
+                    $res->sales_invoice,
+                    $res->supplier_name,
+                    $res->category_name,
+                    $res->product_code,
+                    $res->product_name,
+                    $res->lot_no,
+                    'N/A',
+                    'N/A',
+                    $res->inv_qty,
+                    $res->unit,
+                    $res->manufacture_date,
+                    $res->expiry_date,
+                    $res->dispatch_no,
+                    strtoupper($res->item_type),
+                    $res->remark,
+                    "N/A",
+                    "-",
+                    date('H:i A', strtotime($res->date_arrived)),
+                    '-',
+                    '-',
+                    date('H:i A', strtotime($res->date_departed)),
+                    '-',
+                    timeInterval($res->date_arrived, $res->date_departed),
+                    "N/A",
+                    $res->name,
+                    $res->received_by
+                );
+            }
+
+        }
+		$file_name = 'export-inbound-monitoring'.date('Ymd-His').'.xls';
+        return Excel::download(new ExportInboundMonitoring($data), $file_name);
     }
 }

@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class ExportOutboundMonitoring implements FromCollection, ShouldAutoSize, WithHeadings
+class ExportInboundMonitoring implements FromCollection, ShouldAutoSize, WithHeadings
 {
     use Exportable;
     /**
@@ -29,15 +29,13 @@ class ExportOutboundMonitoring implements FromCollection, ShouldAutoSize, WithHe
     {
         return [
             'WEEK NO',
-            'DATE DISPATCH',
+            'DATE RECEIVED',
             'TRUCK TYPE',
             'TRUCKING',
-            'DR NO',
             'SEAL NO',
             'PLATE NO',
             'DRIVER/HELPER',
             'PO NO',
-            'ORDER NO',
             'INV NO',
             'SUPPLIER',
             'CATEGORY',
@@ -54,11 +52,10 @@ class ExportOutboundMonitoring implements FromCollection, ShouldAutoSize, WithHe
             'STATUS',
             'REMARKS',
             'REASON OF UNENCODED',
-            'TIME START PICKING',
-            'END OF PICKING',
+            'DAMAGE EMAIL',
             'ACTUAL TRUCK ARRIVAL',
-            'TIME START LOADING',
-            'END OF LOADING',
+            'TIME START UNLOADING',
+            'END OF UNLOADING',
             'ACTUAL TIME OUT',
             'LOADING PERFORMANCE',
             'DWELL TIME',
