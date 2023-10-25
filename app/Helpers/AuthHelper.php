@@ -5,6 +5,7 @@ use App\Models\SeriesModel;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 
 function test() {
     echo 'test';
@@ -420,3 +421,76 @@ function paginate($data, $perPage = 10, $page = null, $options = [])
     //Set base url for pagination links to follow e.g custom/url?page=6
     return $data['results']->setPath(request()->url());
 }
+
+
+function getWeeksInMonth($year, $month) {
+    $weeksInMonth = [];
+
+    // Create Carbon instances for the first and last day of the specified month
+    $firstDayOfMonth = Carbon::create($year, $month, 1);
+    $lastDayOfMonth = $firstDayOfMonth->copy()->endOfMonth();
+
+    // Calculate the number of weeks in the month
+    $totalWeeks = $firstDayOfMonth->diffInWeeks($lastDayOfMonth) + 1;
+
+    // Iterate through each week and get start and end dates
+    $currentDate = $firstDayOfMonth->copy();
+    for ($weekNumber = 1; $weekNumber <= $totalWeeks; $weekNumber++) {
+        $startOfWeek = $currentDate->copy();
+        $endOfWeek = $startOfWeek->copy()->endOfWeek()->subDay();
+
+        $end_date = $endOfWeek->addWeek()->toDateString();
+        if ($end_date > $lastDayOfMonth) {
+            $end_date = $lastDayOfMonth->toDateString();
+        }
+        $weeksInMonth[] = [
+            'week_number' => $weekNumber,
+            'start_date' => $startOfWeek->toDateString(),
+            'end_date' => $end_date,
+        ];
+
+        $currentDate->addWeek();
+    }
+
+    return $weeksInMonth;
+}
+
+function getWorkWeeksInCurrentMonth($year,$month) {
+    // $currentDate = Carbon::now(); // Get the current date
+
+    // $year = $currentDate->year;
+    // $month = $currentDate->month;
+    $workWeeks = [];
+
+    $firstDayOfMonth = Carbon::create($year, $month, 1);
+    $lastDayOfMonth =  $firstDayOfMonth->copy()->endOfMonth();
+
+    // Initialize the start_date to the first day of the current month
+    $start_date = $firstDayOfMonth;
+
+    while ($start_date <= $lastDayOfMonth) {
+        $end_date = $start_date->copy()->endOfWeek();
+
+        // Make sure the end_date does not exceed the last day of the current month
+        if ($end_date > $lastDayOfMonth) {
+            $end_date = $lastDayOfMonth;
+        }
+
+        // Check if the current week contains weekdays (Monday to Friday)
+        $isWorkWeek = $start_date->isWeekday() && $end_date->isWeekday();
+
+        if ($isWorkWeek) {
+            $workWeeks[] = [
+                'start_date' => $start_date->toDateString(),
+                'end_date' => $end_date->toDateString(),
+            ];
+        }
+
+        // Move to the start of the next week
+        $start_date->addWeek();
+    }
+
+    print_r($workWeeks);
+}
+
+

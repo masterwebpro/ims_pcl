@@ -146,6 +146,9 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
 
 });
 
+Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
+    Route::get('/dispatch-count', [App\Http\Controllers\DashboardController::class,'getDispatchCount']);
+});
 
 
 Route::get('/setting/suppliers/getdata', [App\Http\Controllers\SuppliersController::class, 'getDataTableData'])->name('getdata');
