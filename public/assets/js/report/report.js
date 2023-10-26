@@ -250,9 +250,11 @@ $(document).on('click', '.submit-withdrawal-print', function(e) {
 $(document).on('click', '.submit-outbound-monitoring-xls', function(e) {
     $('#preloading').modal('show');
     e.preventDefault();
-    var client = $('#client').val();
-    var dispatch_date = $('#dispatch_date').val();
-    window.location.href= BASEURL + 'reports/export-outbound-monitoring?client='+client+'&dispatch_date='+dispatch_date;
+    var customer = $('#customer').val();
+    var company = $('#company').val();
+    var date = $('#date_picker').val();
+    var filter_date = $('#filter_date').val();
+    window.location.href= BASEURL + 'reports/export-outbound-monitoring?customer='+customer+'&company='+company+'&date='+date+'&filter_date='+filter_date;
     setTimeout(function () {
         $('#preloading').modal('hide');
     }, 100);
@@ -264,7 +266,21 @@ $(document).on('click', '.submit-aging-xls', function(e) {
     var client = $('#customer').val();
     var company = $('#company').val();
     var date = $('#date_picker').val();
-    window.location.href= BASEURL + 'reports/export-aging?client='+client+'&company='+company+'&date='+date;
+    var filter_date = $('#filter_date').val();
+    window.location.href= BASEURL + 'reports/export-aging?customer='+client+'&company='+company+'&date='+date+'&filter_date='+filter_date;
+    setTimeout(function () {
+        $('#preloading').modal('hide');
+    }, 100);
+});
+
+$(document).on('click', '.submit-inbound-monitoring-xls', function(e) {
+    $('#preloading').modal('show');
+    e.preventDefault();
+    var customer = $('#customer').val();
+    var company = $('#company').val();
+    var date = $('#date_picker').val();
+    var filter_date = $('#filter_date').val();
+    window.location.href= BASEURL + 'reports/export-inbound-monitoring?customer='+customer+'&company='+company+'&date='+date+'&filter_date='+filter_date;
     setTimeout(function () {
         $('#preloading').modal('hide');
     }, 100);

@@ -5,6 +5,7 @@ use App\Models\SeriesModel;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 
 function test() {
     echo 'test';
@@ -34,15 +35,15 @@ function clean($user_string)
 {
     // Removes special chars wothout A to Z and 0 to 9.
     $user_string = preg_replace("/[^a-zA-Z0-9\s]/", "", $user_string);
-    
+
     // Then changes spaces for unserscores
     $user_string = preg_replace('/\s/', '-', $user_string);
-    
+
     // Finally encode it ready for use
     $user_string = urlencode($user_string);
 
     return $user_string;
- 
+
 }
 
 function _encryptKey()
@@ -94,16 +95,16 @@ function _decode(string $string) {
     $key    = hash('sha256', _privateKey());
     $ivalue = substr(hash('sha256', _secretKey()), 0, 16); // sha256 is hash_hmac_algo
     return openssl_decrypt(base64_decode($string), _encryptMethod(), $key, 0, $ivalue);
-    
+
 }
 
-function elipsis($string, $limit, $repl = '...') 
+function elipsis($string, $limit, $repl = '...')
 {
-  if(strlen($string) > $limit) 
+  if(strlen($string) > $limit)
   {
-    return substr($string, 0, $limit) . $repl; 
+    return substr($string, 0, $limit) . $repl;
   }
-  else 
+  else
   {
     return $string;
   }
@@ -111,10 +112,10 @@ function elipsis($string, $limit, $repl = '...')
 
 /**
  * This will parse the money string
- * 
+ *
  * For example 1, 234, 456.00 will be converted to 123456.00
- * 
- * @return 
+ *
+ * @return
  */
 function parseNumber(string $money) : float
 {
@@ -153,7 +154,7 @@ function hasPendingMovement($ref_no, $type) {
     $hasPendingMovement = DB::table('mv_dtl')->where('ref1_no', $ref_no)
         ->where('ref1_type', $type)
         ->get();
-        
+
     if ($hasPendingMovement->count() > 0) {
         return true;
     } else {
@@ -178,14 +179,14 @@ function _stockInMasterData($masterfile) {
             ->where('warehouse_id', $params['warehouse_id'])
             ->where('product_id', $params['product_id']);
 
-            if(isset($params['storage_location_id'])) 
+            if(isset($params['storage_location_id']))
                 $updateData->where('storage_location_id', $params['storage_location_id']);
             else
                 $updateData->where('storage_location_id', null);
 
             // if(isset($params['lot_no']))
             //     $updateData->where('lot_no', $params['lot_no']);
-        
+
             // if(isset($params['expiry_date']))
             //     $updateData->where('expiry_date', $params['expiry_date']);
 
@@ -194,7 +195,7 @@ function _stockInMasterData($masterfile) {
 
             if(isset($params['rcv_dtl_id']))
                 $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
-            
+
             $record = $updateData->first();
 
             DB::table('masterdata')
@@ -236,7 +237,7 @@ function _stockOutMasterData($masterfile) {
 
     foreach($masterfile as $key => $params) {
         $masterfile_id = _has_masterfile($params);
-        
+
         if($masterfile_id) {
 
             //search on Master
@@ -251,11 +252,11 @@ function _stockOutMasterData($masterfile) {
             } else {
                 $updateData->where('storage_location_id', null);
             }
-                
+
 
             // if(isset($params['lot_no']))
             //     $updateData->where('lot_no', $params['lot_no']);
-        
+
             // if(isset($params['expiry_date']))
             //     $updateData->where('expiry_date', $params['expiry_date']);
 
@@ -264,13 +265,13 @@ function _stockOutMasterData($masterfile) {
 
             if(isset($params['rcv_dtl_id']))
                 $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
-            
+
             $record = $updateData->first();
 
             $update = array(
-               
+
             );
-          
+
             //update MASTERDATA
             DB::table('masterdata')
                 ->where('id', $record->id)
@@ -278,25 +279,25 @@ function _stockOutMasterData($masterfile) {
                     'inv_qty' => DB::raw('inv_qty - '.$params['inv_qty']),
                     'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty'])
                 ]);
-        } 
+        }
     }
 }
 
 function _has_masterfile($params) {
     $result = DB::table('masterdata')->select('*');
-             
+
     if(isset($params['company_id']))
         $result->where('company_id', $params['company_id']);
-    
+
     if(isset($params['store_id']))
         $result->where('store_id', $params['store_id']);
-    
+
     if(isset($params['warehouse_id']))
         $result->where('warehouse_id', $params['warehouse_id']);
-    
+
     if(isset($params['product_id']))
         $result->where('product_id', $params['product_id']);
-    
+
     if(isset($params['storage_location_id'])) {
         $result->where('storage_location_id', $params['storage_location_id']);
     } else {
@@ -311,10 +312,10 @@ function _has_masterfile($params) {
 
     // if(isset($params['received_date']))
     //     $result->where('received_date', $params['received_date']);
-    
+
     // if(isset($params['manufacture_date']))
     //     $result->where('manufacture_date', $params['manufacture_date']);
-    
+
     if(isset($params['rcv_dtl_id']))
         $result->where('rcv_dtl_id', $params['rcv_dtl_id']);
 
@@ -346,7 +347,7 @@ function _hasPo($po_num) {
         return true;
     } else {
         return false;
-    } 
+    }
 }
 
 function generateSeries($type)
@@ -360,7 +361,7 @@ function generateSeries($type)
 
     if($type == 'RCV') {
         $prefix = 'R-';
-    } 
+    }
 
     $num = str_pad((int)$count, 5, "0", STR_PAD_LEFT);
 
@@ -392,7 +393,7 @@ function timeInterval($start,$end){
         if ($hours > 1) {
             $text .= 's '; // Pluralize "hour" if it's more than 1 hour
         }
-    } 
+    }
 
     if ($remainingMinutes > 0){
         $text .= $remainingMinutes . ' min';
@@ -421,11 +422,44 @@ function paginate($data, $perPage = 10, $page = null, $options = [])
     return $data['results']->setPath(request()->url());
 }
 
+
+function getWeeksInMonth($year, $month) {
+    $weeksInMonth = [];
+
+    // Create Carbon instances for the first and last day of the specified month
+    $firstDayOfMonth = Carbon::create($year, $month, 1);
+    $lastDayOfMonth = $firstDayOfMonth->copy()->endOfMonth();
+
+    // Calculate the number of weeks in the month
+    $totalWeeks = $firstDayOfMonth->diffInWeeks($lastDayOfMonth) + 1;
+
+    // Iterate through each week and get start and end dates
+    $currentDate = $firstDayOfMonth->copy();
+    for ($weekNumber = 1; $weekNumber <= $totalWeeks; $weekNumber++) {
+        $startOfWeek = $currentDate->copy();
+        $endOfWeek = $startOfWeek->copy()->endOfWeek()->subDay();
+
+        $end_date = $endOfWeek->addWeek()->toDateString();
+        if ($end_date > $lastDayOfMonth) {
+            $end_date = $lastDayOfMonth->toDateString();
+        }
+        $weeksInMonth[] = [
+            'week_number' => $weekNumber,
+            'start_date' => $startOfWeek->toDateString(),
+            'end_date' => $end_date,
+        ];
+
+        $currentDate->addWeek();
+    }
+
+    return $weeksInMonth;
+}
+
 function _getWarehouseDtl($warehouse_id) {
     $warehouse = DB::table('warehouses')->where('id', $warehouse_id)->first();
     if ($warehouse) {
         return $warehouse;
     } else {
         return false;
-    } 
+    }
 }
