@@ -91,14 +91,11 @@
         <thead class="bg-dark">
             <tr class="text-capitalize">
                 <th scope="col">#</th>
-                {{--  <th scope="col">Deliver To</th>  --}}
                 <th scope="col">Item Name</th>
                 <th scope="col">WD No.</th>
                 <th scope="col">Order No.</th>
                 <th scope="col">Order Date</th>
                 <th scope="col" class="text-center">DR No.</th>
-                {{--  <th scope="col" class="text-center">PO No.</th>  --}}
-                {{--  <th scope="col" class="text-center">S.I No.</th>  --}}
                 <th scope="col" class="text-center">Quantity</th>
             </tr>
         </thead>
@@ -112,9 +109,6 @@
                 <tr id="product_{{$item->wd_no}}">
                     <td class="align-top">
                     {{$x++}} </td>
-                    {{--  <td class="align-top fs-14">
-                        {{$item->deliver_to}}
-                    </td>  --}}
                     <td class="align-top fs-14">
                         {{$item->product_name}}
                     </td>
@@ -130,12 +124,6 @@
                     <td class="text-start fs-14">
                         {{$item->dr_no}}
                     </td>
-                    {{--  <td class="text-start fs-14">
-                        {{$item->po_num}}
-                    </td>
-                    <td class="text-start fs-14">
-                        {{$item->sales_invoice}}
-                    </td>  --}}
                     <td class="ps-1 text-end">
                         {{ number_format($item->dispatch_qty,2) }}
                     </td>
