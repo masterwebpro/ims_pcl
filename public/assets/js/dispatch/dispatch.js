@@ -80,8 +80,8 @@ function withdrawal(){
             { data: 'order_no' },
             { data: 'order_date' },
             { data: 'dr_no' },
-            { data: 'po_num' },
-            { data: 'sales_invoice' },
+            //{ data: 'po_num' },
+            //{ data: 'sales_invoice' },
         ],
     });
 }
@@ -116,9 +116,6 @@ $(document).on('click', '#add-withdrawal', function() {
             <td class="text-start  fs-14"> \
                 '+data[x].wd_no+'\
             </td> \
-            <td class="text-start fs-14"> \
-                '+ data[x].deliver_to +' \
-            </td> \
             <td class="text-start fs-14 text-wrap"> \
                 '+ data[x].product_name +' \
             </td> \
@@ -141,12 +138,6 @@ $(document).on('click', '#add-withdrawal', function() {
             </td> \
             <td class="text-start  fs-14"> \
                 '+data[x].dr_no+'\
-            </td> \
-            <td class="text-start  fs-14"> \
-                '+data[x].po_num+'\
-            </td> \
-            <td class="text-start  fs-14"> \
-                '+data[x].sales_invoice+'\
             </td> \
             <td>'+btn+'</td> \
             </tr>');
@@ -279,13 +270,13 @@ $(document).on('click', '.submit-unpost', function (e) {
                 success: function (data) {
                     if($.isEmptyObject(data.errors)) {
                         if(data.success == true) {
-                            toastr.success(data.message); 
+                            toastr.success(data.message);
                             setTimeout(function () {
                                 window.location = BASEURL+'dispatch';
                             }, 300);
-                            
+
                         } else {
-                            // toastr.error(data.message,'Error on saving'); 
+                            // toastr.error(data.message,'Error on saving');
                             showError(data.message);
                         }
                     } else {
@@ -327,14 +318,14 @@ $(document).on('click', '.submit-delete', function (e) {
                 success: function (data) {
                     if($.isEmptyObject(data.errors)) {
                         if(data.success == true) {
-                            toastr.success(data.message); 
+                            toastr.success(data.message);
                             setTimeout(function () {
                                 window.location = BASEURL+'dispatch';
                             }, 300);
-                            
+
                         } else {
-                            toastr.error(data.message,'Error on saving'); 
-                         
+                            toastr.error(data.message,'Error on saving');
+
                         }
                     } else {
                         toastr.error('Some fields are required');

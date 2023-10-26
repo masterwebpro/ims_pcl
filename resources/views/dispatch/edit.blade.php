@@ -236,7 +236,7 @@
                                             <tr class="table-active">
                                                 <th scope="col" style="width: 10px;">#</th>
                                                 <th scope="col">WD #</th>
-                                                <th scope="col">Deliver To</th>
+                                                {{--  <th scope="col">Deliver To</th>  --}}
                                                 <th scope="col">Product Name</th>
                                                 <th scope="col">Withdraw Quantity</th>
                                                 <th scope="col">Dispatch Quantity</th>
@@ -244,8 +244,8 @@
                                                 <th scope="col">Order Date</th>
                                                 <th scope="col">DR Number</th>
                                                 <th scope="col">PO Number</th>
-                                                <th scope="col">Sales Invoice</th>
-                                                <th scope="col">Action</th>
+                                                {{--  <th scope="col">Sales Invoice</th>
+                                                <th scope="col">Action</th>  --}}
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -267,9 +267,9 @@
                                                     <td class="text-start fs-14">
                                                         {{$item->wd_no}}
                                                     </td>
-                                                    <td class="text-start fs-14">
+                                                    {{--  <td class="text-start fs-14">
                                                         {{$item->deliver_to}}
-                                                    </td>
+                                                    </td>  --}}
                                                     <td class="text-start fs-14">
                                                         {{$item->product_name}}
                                                     </td>
@@ -295,12 +295,12 @@
                                                     <td class="text-start fs-14">
                                                         {{$item->dr_no}}
                                                     </td>
-                                                    <td class="text-start fs-14">
+                                                    {{--  <td class="text-start fs-14">
                                                         {{$item->po_num}}
                                                     </td>
                                                     <td class="text-start fs-14">
                                                         {{$item->sales_invoice}}
-                                                    </td>
+                                                    </td>  --}}
                                                     <td>
                                                         <div class="text-center text-align-justify">
                                                             <button type="button" class="btn btn-danger mx-2 btn-icon waves-effect waves-light remove-withdrawal" data-id="{{$x}}"><i class="ri-delete-bin-5-fill"></i></button>
@@ -316,7 +316,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="4" class="text-end">Total</td>
+                                                <td colspan="3" class="text-end">Total</td>
                                                 <td class="text-center" id="total"><?=number_format($total,2)?></td>
                                                 <td colspan="6"></td>
                                             </tr>
@@ -378,8 +378,8 @@
                                     <th scope="col">Order No.</th>
                                     <th scope="col">Order Date</th>
                                     <th scope="col">DR Number</th>
-                                    <th scope="col">PO Number</th>
-                                    <th scope="col">Sales Invoice</th>
+                                    {{--  <th scope="col">PO Number</th>
+                                    <th scope="col">Sales Invoice</th>  --}}
                                 </tr>
                             </thead>
                             <tbody>

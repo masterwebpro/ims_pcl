@@ -220,15 +220,15 @@
                                                 <th scope="col" style="width: 10px;">#</th>
                                                 <th scope="col">WD #</th>
                                                 {{-- <th scope="col">Client</th> --}}
-                                                <th scope="col">Deliver To</th>
+                                                {{--  <th scope="col">Deliver To</th>  --}}
                                                 <th scope="col">Product Name</th>
                                                 <th scope="col">Withdraw Quantity</th>
                                                 <th scope="col">Dispatch Quantity</th>
                                                 <th scope="col">Order No.</th>
                                                 <th scope="col">Order Date</th>
                                                 <th scope="col">DR Number</th>
-                                                <th scope="col">PO Number</th>
-                                                <th scope="col">Sales Invoice</th>
+                                                {{--  <th scope="col">PO Number</th>  --}}
+                                                {{--  <th scope="col">Sales Invoice</th>  --}}
                                                 <th scope="col" class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -298,8 +298,8 @@
                                     <th scope="col">Order No.</th>
                                     <th scope="col">Order Date</th>
                                     <th scope="col">DR Number</th>
-                                    <th scope="col">PO Number</th>
-                                    <th scope="col">Sales Invoice</th>
+                                    {{--  <th scope="col">PO Number</th>  --}}
+                                    {{--  <th scope="col">Sales Invoice</th>  --}}
                                 </tr>
                             </thead>
                             <tbody>

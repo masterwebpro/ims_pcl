@@ -217,15 +217,15 @@
                                             <tr class="table-active">
                                                 <th scope="col" style="width: 10px;">#</th>
                                                 <th scope="col">WD #</th>
-                                                <th scope="col">Deliver To</th>
+                                                {{--  <th scope="col">Deliver To</th>  --}}
                                                 <th scope="col">Product Name</th>
                                                 <th scope="col">Withdraw Quantity</th>
                                                 <th scope="col">Dispatch Quantity</th>
                                                 <th scope="col">Order No.</th>
                                                 <th scope="col">Order Date</th>
                                                 <th scope="col">DR Number</th>
-                                                <th scope="col">PO Number</th>
-                                                <th scope="col">Sales Invoice</th>
+                                                {{--  <th scope="col">PO Number</th>  --}}
+                                                {{--  <th scope="col">Sales Invoice</th>  --}}
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -247,9 +247,9 @@
                                                     <td class="text-start fs-14">
                                                         {{$item->wd_no}}
                                                     </td>
-                                                    <td class="text-start fs-14">
+                                                    {{--  <td class="text-start fs-14">
                                                         {{$item->deliver_to}}
-                                                    </td>
+                                                    </td>  --}}
                                                     <td class="text-start fs-14 text-wrap">
                                                         {{$item->product_name}}
                                                     </td>
@@ -275,12 +275,12 @@
                                                     <td class="text-start fs-14">
                                                         {{$item->dr_no}}
                                                     </td>
-                                                    <td class="text-start fs-14">
+                                                    {{--  <td class="text-start fs-14">
                                                         {{$item->po_num}}
                                                     </td>
                                                     <td class="text-start fs-14">
                                                         {{$item->sales_invoice}}
-                                                    </td>
+                                                    </td>  --}}
                                                 </tr>
                                                 @endforeach
                                                 @else
@@ -291,7 +291,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="4" class="text-end">Total</td>
+                                                <td colspan="3" class="text-end">Total</td>
                                                 <td class="text-left" id="total"><?=number_format($total,2)?></td>
                                                 <td colspan="6"></td>
                                             </tr>

@@ -518,12 +518,12 @@ class ReportController extends Controller
 
             if($request->filter_date == 'dispatch_date' && $startDate && $endDate)
             {
-                $data_list->whereBetween('dh.dispatch_date',[$startDate,$endDate]);
+                $data_list->whereBetween('dh.dispatch_date',[$startDate." 00:00:00",$endDate." 23:59:00"]);
             }
 
             if($request->filter_date == 'created_at' && $startDate && $endDate)
             {
-                $data_list->whereBetween('dh.created_at',[$startDate,$endDate]);
+                $data_list->whereBetween('dh.created_at',[$startDate." 00:00:00",$endDate." 23:59:00"]);
             }
 
         }
