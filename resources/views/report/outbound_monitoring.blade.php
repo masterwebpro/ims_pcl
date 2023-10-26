@@ -75,7 +75,7 @@
 
                             <div class="col-lg-3 col-sm-4">
                                 <input type="text" class="form-control" name="date" id="date_picker"
-                                    data-provider="flatpickr" data-date-format="Y-d-m" data-range-date="true"
+                                    data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true"
                                     placeholder="Select date range">
                             </div>
                         </div>
