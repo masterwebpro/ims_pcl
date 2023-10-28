@@ -143,9 +143,9 @@
                                                 <td class="text-center">{{ date("M d, Y", strtotime($active->created_at))}}</td>
                                                 <td class="action">
                                                     <div class="hstack gap-3 fs-12">
-                                                        <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                        <a href="{{ URL::to('stock/transfer') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
                                                         <? if($active->status != 'posted') : ?>
-                                                            <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                            <a href="{{ URL::to('stock/transfer') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                                         <? endif; ?>
                                                 </td>
                                             </tr>

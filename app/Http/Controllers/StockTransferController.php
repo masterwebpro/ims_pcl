@@ -299,7 +299,22 @@ class StockTransferController extends Controller
 
     public function show($id)
     {
-        //
+        $transfer_hdr = TransferHdr::select('*')->where('id', _decode($id))->first();
+        $client_list = Client::where('is_enabled', '1')->get();
+
+        $transfer_dtl = TransferDtl::select('*')->where('ref_no', $transfer_hdr->ref_no)->get();
+
+        $warehouses = Warehouse::where('store_id',$transfer_hdr->source_store_id)->get();
+
+        // $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
+
+        return view('stock/transfer/show', [
+            'client_list'=>$client_list, 
+            'transfer_hdr'=> $transfer_hdr,
+            'transfer_dtl'=> $transfer_dtl,
+            'warehouses'=>$warehouses,
+            // 'location'=>$location,
+        ]);
     }
 
     public function edit($id)
@@ -322,14 +337,210 @@ class StockTransferController extends Controller
         ]);
     }
 
-    
-    public function update(Request $request, $id)
+    public function destroy(Request $request)
     {
-        //
+        DB::connection()->beginTransaction();
+        try 
+        {
+            $ref_no = $request->ref_no;
+            if($ref_no) {
+                $rcv = TransferHdr::where('ref_no', $ref_no)->delete();
+                $rcv_dtl = TransferDtl::where('ref_no', $ref_no)->delete();
+               
+                $audit_trail[] = [
+                    'control_no' => $ref_no,
+                    'type' => 'ST',
+                    'status' => 'deleted',
+                    'created_at' => date('y-m-d h:i:s'),
+                    'updated_at' => date('y-m-d h:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'deleted'
+                ];
+
+                AuditTrail::insert($audit_trail);
+
+                DB::connection()->commit();
+
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'deleted successfully!',
+                    'data'    => $rcv
+                ]);
+
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }  
     }
 
-    public function destroy($id)
-    {
-        //
+    public function unpost(Request $request) {
+        
+        DB::connection()->beginTransaction();
+        try 
+        {
+
+            $ref_no = $request->ref_no;
+            $transfer_dtl = TransferDtl::where('ref_no', $ref_no)->get();
+            $transfer_hdr = TransferHdr::where('ref_no', $ref_no)->first();
+
+            $masterfile = [];
+            $_stockOutMasterdata = [];
+            $_stockInMasterdata = [];
+
+            foreach($transfer_dtl as $transfer) {
+            
+                $product = Products::where('product_id',$transfer->product_id)->first();
+
+                //get company ID
+                $warehouse = _getWarehouseDtl($transfer->dest_warehouse_id);
+
+                // dd($warehouse);
+                if(!$warehouse) {
+                    return response()->json([
+                        'success'  => false,
+                        'message' => 'Unknown warehouse. Please try again.',
+                    ]);
+                }
+
+                // //add on the masterfile new location
+                $masterfile[] = array(
+                    'ref_no'=>$ref_no,
+                    'customer_id'=>$product->customer_id,
+                
+                    'store_id'=>$transfer_hdr->source_store_id,
+                    'company_id'=>$transfer_hdr->source_company_id,
+
+                    'warehouse_id'=>$transfer->source_warehouse_id,
+                    'storage_location_id'=>$transfer->source_storage_location_id,
+                    'product_id'=>$transfer->product_id,
+                    'item_type'=>$transfer->source_item_type,
+                    'trans_type'=>'ST',
+                    'status'=>'X',
+                    'inv_qty'=>$transfer->source_inv_qty,
+                    'inv_uom'=>$transfer->source_inv_uom,
+                    'whse_qty'=>$transfer->source_inv_qty,
+                    'whse_uom'=>$transfer->source_inv_uom,
+                    'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
+                    'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
+                    
+                );
+
+
+                //deduct from old
+                $masterfile[] = array(
+                    'ref_no'=>$ref_no,
+                    'customer_id'=>$product->customer_id,
+                    'store_id'=>$warehouse->store_id,
+                    'company_id'=>$warehouse->client_id,
+                    'warehouse_id'=>$transfer->dest_warehouse_id,
+                    'storage_location_id'=>$transfer->dest_storage_location_id,
+                    'trans_type'=>'ST',
+                    'status'=>'X',
+                    'product_id'=>$transfer->product_id,
+                    'item_type'=>$transfer->dest_item_type,
+                    'inv_qty'=>($transfer->dest_inv_qty * -1),
+                    'inv_uom'=>$transfer->dest_inv_uom,
+                    'whse_qty'=>($transfer->dest_inv_qty * -1),
+                    'whse_uom'=>$transfer->dest_inv_uom,
+                    'created_at'=>$this->current_datetime,
+                    'updated_at'=>$this->current_datetime
+                );
+
+            
+                //deduct the qty to dest
+                $_stockOutMasterdata[] = array(
+                    'company_id'=>$warehouse->client_id,
+                    'customer_id'=>$product->customer_id,
+                    'store_id'=>$warehouse->store_id,
+                    'warehouse_id'=>$transfer->dest_warehouse_id,
+                    'product_id'=>$transfer->product_id,
+                    'storage_location_id'=>($transfer->dest_storage_location_id == 0 || $transfer->dest_storage_location_id == 'null') ? NULL : $transfer->dest_storage_location_id,
+                    'item_type'=>$transfer->dest_item_type,
+                    'inv_qty'=>($transfer->dest_inv_qty),
+                    'inv_uom'=>$transfer->dest_inv_uom,
+                    'whse_qty'=>($transfer->dest_inv_qty),
+                    'whse_uom'=>$transfer->dest_inv_uom,
+                    'rcv_dtl_id'=>$transfer->rcv_dtl_id,
+                );
+
+                // add the qty to source
+                $_stockInMasterdata[] = array(
+                    'company_id'=>$transfer_hdr->source_company_id,
+                    'store_id'=>$transfer_hdr->source_store_id,
+                    'customer_id'=>$product->customer_id,
+                    'warehouse_id'=>$transfer->source_warehouse_id,
+                    'product_id'=>$transfer->product_id,
+                    'storage_location_id'=>$transfer->source_storage_location_id,
+                    'item_type'=>$transfer->source_item_type,
+                    'inv_qty'=>$transfer->source_inv_qty,
+                    'inv_uom'=>$request->source_inv_uom,
+                    'whse_qty'=>$transfer->source_inv_qty,
+                    'whse_uom'=>$request->source_inv_uom,
+                    'rcv_dtl_id'=>$transfer->rcv_dtl_id,
+                );
+            }
+
+            $audit_trail[] = [
+                'control_no' => $ref_no,
+                'type' => 'ST',
+                'status' => 'open',
+                'created_at' => date('y-m-d h:i:s'),
+                'updated_at' => date('y-m-d h:i:s'),
+                'user_id' => Auth::user()->id,
+                'data' => null
+            ];
+
+            MasterfileModel::insert($masterfile);
+                
+            $audit_trail[] = [
+                'control_no' => $ref_no,
+                'type' => 'masterfile',
+                'status' => 'open',
+                'created_at' => date('y-m-d h:i:s'),
+                'updated_at' => date('y-m-d h:i:s'),
+                'user_id' => Auth::user()->id,
+                'data' => null
+            ];
+
+            _stockInMasterData($_stockInMasterdata);
+            _stockOutMasterData($_stockOutMasterdata);
+        
+
+            AuditTrail::insert($audit_trail);
+
+            //update header to open
+            TransferHdr::where('ref_no', $ref_no)->update(['status'=>'open']);
+            
+            DB::connection()->commit();
+
+            return response()->json([
+                'success'  => true,
+                'message' => 'Saved successfully!',
+                'data'    => $transfer,
+                'id'=> _encode($transfer->id)
+            ]);
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        } 
+
     }
 }
+     

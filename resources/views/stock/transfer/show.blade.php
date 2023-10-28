@@ -24,43 +24,12 @@
         <span class="badge border border-secondary text-secondary fs-18 text-primary text-uppercase"><?=$transfer_hdr->status?></span>
     </div>
     <div class="text-end mb-4  col-6">
-        <? if(in_array($transfer_hdr->status, array('open', 'new'))) : ?>
-            <? if (mod_access('transfer',  'add', Auth::id())) : ?>
-                <button data-status="open" class="submit-open btn btn-success btn-label rounded-pill"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
+        <? if(in_array($transfer_hdr->status, array('posted'))) : ?>
+            <? if (mod_access('transfer',  'unpost', Auth::id())) : ?>
+                <button type="button" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
             <? endif ;?>
-
-            <? if (mod_access('transfer', 'post', Auth::id())) : ?>
-                <button data-status="posted" class="submit-posted  btn btn-info btn-label rounded-pill"><i class="ri-lock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Post</button>
-            <? endif ;?>
-
-            <? if($transfer_hdr->status == 'open') : ?>
-                <? if (mod_access('transfer',  'delete', Auth::id())) : ?>
-                    <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
-                <? endif ;?>
-            <? endif ;?>
-        <? endif;?>  
-        
-        <a href="{{ URL::to('stock/transfer') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>   
-    </div>
-    <!--end col-->
-</div>
-<!--end row-->
-
-
-<div class="row justify-content-center">
-    <div class="col-xxl-12">
-        <div class="card" id="tasksList">
-            <div class="card-header border-0">
-                <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1"><?=$transfer_hdr->ref_no?> </h5>
-                    
-                    <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--end card-->
+        <? endif;?>
+        <a href="{{ URL::to('stock/transfer') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
     </div>
     <!--end col-->
 </div>
@@ -79,7 +48,7 @@
                                         <div class="mb-3">
                                             <input type="hidden" class="form-control" name="ref_no" id="ref_no" value="{{$transfer_hdr->ref_no}}">
                                             <label for="source_company" class="form-label">Source Company <span class="text-danger">*</span></label>
-                                            <select class="form-select select2 source_company" id="source_company" name="source_company">
+                                            <select class="form-select select2 source_company" disabled id="source_company" name="source_company">
                                                 <option value="">Select Source Company</option>                                                            
                                                 <? foreach($client_list as $company) : ?>
                                                     <option value="<?=$company->id?>" <?=($company->id == $transfer_hdr->source_company_id) ? 'selected': ''; ?> ><?=$company->client_name?></option>
@@ -92,7 +61,7 @@
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Source Site Name <span class="text-danger">*</span></label>
                                             <input type="hidden" class="form-control" name="store_id" id="store_id" value="{{$transfer_hdr->source_store_id}}">
-                                            <select class="form-select select2 source_site" name="source_site" id="source_site">
+                                            <select class="form-select select2 source_site" disabled name="source_site" id="source_site">
                                                 <option value="">Select Source Site</option>                                                            
                                             </select>
                                             <span class="text-danger error-msg source_site_error"></span>
@@ -102,7 +71,7 @@
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Transaction Date <span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control" placeholder="Transaction Date"  value="{{$transfer_hdr->trans_date}}"  name="transaction_date" id="transaction_date">
+                                            <input type="date" class="form-control" placeholder="Transaction Date" disabled  value="{{$transfer_hdr->trans_date}}"  name="transaction_date" id="transaction_date">
                                             <span class="text-danger error-msg transaction_date_error"></span>
                                         </div>
                                     </div>
@@ -113,14 +82,14 @@
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="firstNameinput" class="form-label">DR Num</label>
-                                            <input type="text" class="form-control" placeholder="DR num"  value="{{$transfer_hdr->dr_no}}"  name="dr_no" id="dr_no">
+                                            <input type="text" class="form-control" placeholder="DR num"  disabled value="{{$transfer_hdr->dr_no}}"  name="dr_no" id="dr_no">
                                         </div>
                                     </div>
                                   
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" placeholder="Requested By"  value="{{$transfer_hdr->requested_by}}" name="requested_by" id="requested_by">
+                                            <input type="text" class="form-control" placeholder="Requested By" disabled  value="{{$transfer_hdr->requested_by}}" name="requested_by" id="requested_by">
                                             <span class="text-danger error-msg requested_by_error"></span>
                                         </div>
                                     </div>
@@ -128,7 +97,7 @@
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="remarks" class="form-label">Remarks</label>
-                                            <input type="text" class="form-control" name="remarks"  value="{{$transfer_hdr->remarks}}" placeholder="Remarks" id="remarks">
+                                            <input type="text" class="form-control" name="remarks" disabled  value="{{$transfer_hdr->remarks}}" placeholder="Remarks" id="remarks">
                                         </div>
                                     </div>
                                    
@@ -150,14 +119,6 @@
                 <!--end col-->
                 <div class="col-lg-12">
                     <div class="">
-                        <div class="card-header border-0">
-                            <div class="d-flex align-items-center">
-                                <h5 class="card-title mb-0 flex-grow-1">Item List</h5>
-                                <div class="flex-shrink-0">
-                                    <a href="#" class="add-item btn btn-info btn-label rounded-pill"><i class="bx bx-plus label-icon align-middle rounded-pill fs-14 me-2"></i> Add Item</a>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-nowrap table-bordered transfer" id="product-list">
@@ -168,7 +129,7 @@
                                             <th rowspan="2" class="text-center" valign="middle">Item Type</th>
                                             <th colspan="3" class="text-center">Source Location</th>
                                             <th colspan="3" class="text-center">Destination Location</th>
-                                            <th rowspan="2" class="text-center" valign="middle">Action</th>
+                                          
                                         </tr>
                                         <tr class="table-active text-center" >
                                             <th>Warehouse</th>
@@ -215,7 +176,7 @@
                                             </td>
                                             <td class="text-center ps-1 fs-13">
                                                 <input type="hidden"  class="form-control destWarehouseId" data-id="{{$dtl->id}}" id="{{$dtl->id}}" name="destWarehouseId[]" value="{{$dtl->dest_warehouse_id}}">
-                                                <select style="width: 150px;" name="dest_warehouse[]" data-id="{{$dtl->id}}" id="dest_warehouse_{{$dtl->id}}" class="form-select dest_warehouse select2">
+                                                <select style="width: 150px;" name="dest_warehouse[]" disabled data-id="{{$dtl->id}}" id="dest_warehouse_{{$dtl->id}}" class="form-select dest_warehouse select2">
                                                     <option value="">Select Warehouse</option>
                                                     <? foreach($warehouses as $warehouse) : ?>
                                                         <option value ='{{$warehouse->id}}' <?=($warehouse->id == $dtl->dest_warehouse_id) ? 'selected': ''; ?> >{{$warehouse->warehouse_name}}</option>
@@ -225,26 +186,18 @@
                                             </td>
                                             <td class="text-start ps-1">
                                                 <input type="hidden"  class="form-control" id="location_{{$dtl->id}}" name="location[]" value="{{$dtl->dest_storage_location_id}}">
-                                                <select style="width: 100px;" name="dest_location[]" id="dest_location_{{$dtl->id}}" class="form-select dest_location select2">
+                                                <select style="width: 100px;" name="dest_location[]" disabled id="dest_location_{{$dtl->id}}" class="form-select dest_location select2">
                                                     <option value="">Select Location</option>
                                                 </select>
                                                 <span class="text-danger error-msg dest_location0_error"></span>
                                             </td>
                                             <td class="text-start ps-1">
                                                 <div class="input-group" style="width: 140px;">
-                                                    <input type="text" class="form-control new_inv_qty numeric transfer_item" name="dest_inv_qty[]" data-id="{{$dtl->id}}" id="dest_inv_qty_{{$dtl->id}}" value="{{$dtl->dest_inv_qty}}">
+                                                    <input type="text" class="form-control new_inv_qty numeric transfer_item" disabled name="dest_inv_qty[]" data-id="{{$dtl->id}}" id="dest_inv_qty_{{$dtl->id}}" value="{{$dtl->dest_inv_qty}}">
                                                     <input type="hidden" readonly="" class="form-control" name="dest_inv_uom[]" data-id="{{$dtl->id}}" id="dest_inv_uom_{{$dtl->id}}" value="{{$dtl->dest_inv_uom}}">
                                                     <span class="input-group-text">{{$dtl->dest_uom->code}}</span>
                                                 </div>
                                                 <span class="text-danger error-msg dest_inv_qty0_error"></span>
-                                            </td>
-                                            <td>
-                                                <div class="text-center">
-                                                    <!-- <a href="javascript:void(0)" class="text-info split-product" data-id="0">
-                                                        <i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>&nbsp;  -->
-                                                    <a href="javascript:void(0)" class="text-danger remove-product" data-id="0">
-                                                        <i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
-                                                </div>
                                             </td>
                                         </tr>
                                         <? $i++; endforeach; ?>
