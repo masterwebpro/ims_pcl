@@ -270,6 +270,7 @@ $(document).on('click', '.submit-open', function (e) {
     _submitData(form_data);
 });
 
+
 $(document).on('click', '.submit-posted', function (e) {
     e.preventDefault();
    
@@ -341,3 +342,100 @@ $(document).on('click', '.remove-product', function() {
     // $('#product_'+id).remove();
     $(this).closest("tr").remove();
 });
+
+$(document).on('click', '.submit-delete', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to DELETE this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, DELETE it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'stock/transfer',
+                data: {
+                    ref_no : $('#ref_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "DELETE",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-transfer').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message);
+                            setTimeout(function () {
+                                window.location = BASEURL+'stock/transfer';
+                            }, 300);
+
+                        } else {
+                            toastr.error(data.message,'Error on saving');
+
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+
+$(document).on('click', '.submit-unpost', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to UNPOST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, UNPOST it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'stock/transfer/unpost',
+                data: {
+                    ref_no : $('#ref_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "post",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-transfer').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message);
+                            setTimeout(function () {
+                                window.location = BASEURL+'stock/transfer';
+                            }, 300);
+
+                        } else {
+                            toastr.error(data.message,'Error on saving');
+
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+

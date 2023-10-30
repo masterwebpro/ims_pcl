@@ -118,6 +118,8 @@ Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
     Route::resource('/count-sheet', App\Http\Controllers\CountSheetController::class);
 
     Route::resource('/transfer', App\Http\Controllers\StockTransferController::class);
+    Route::delete('/transfer', [App\Http\Controllers\StockTransferController::class, 'destroy']);
+    Route::post('/transfer/unpost', [App\Http\Controllers\StockTransferController::class, 'unpost']);
 });
 
 Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
