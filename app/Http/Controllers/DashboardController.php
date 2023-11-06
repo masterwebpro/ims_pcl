@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 class DashboardController extends Controller
 {
     //
@@ -22,25 +24,74 @@ class DashboardController extends Controller
         return view('dashboard/index');
     }
 
-    public function getDispatchCount(Request $request){
-        $year = 2023;
-        $month = 10; // October
-        $workWeeks = getWorkWeeksInCurrentMonth($year, $month);
-        print_r($workWeeks);
-        die();
+    public function getInboundCount(Request $request){
+        $dateRangeParts = explode(" to ", $request->date);
+        $from = isset($dateRangeParts[0]) ? $dateRangeParts[0] : Carbon::now()->startOfMonth()->format('Y-m-d');
+        $to = isset($dateRangeParts[1]) ? $dateRangeParts[1] : Carbon::now()->endOfMonth()->format('Y-m-d');
 
-        foreach ($workWeeks as $week) {
-            echo "Start Date: {$week['start_date']}\n";
-            echo "End Date: {$week['end_date']}\n\n";
+        $type = $request->type;
+        $year = $request->year ? $request->year : date('Y');
+        try {
+            $query = "SELECT DATE_FORMAT(rcv_hdr.date_received, '%Y-%m-%d') AS rcv_date,
+                    COUNT(DISTINCT rcv_dtl.rcv_no) as transaction ,
+                    SUM(rcv_dtl.inv_qty) as quantity  from rcv_dtl
+                    LEFT JOIN rcv_hdr ON rcv_hdr.rcv_no = rcv_dtl.rcv_no
+                    WHERE rcv_hdr.status = 'posted'
+                    GROUP BY rcv_date";
+            $result = DB::select($query);
+            $start = $from;
+            $count = array();
+            $qty = array();
+            $labels = array();
+            if($type == 'daily'){
+                while (strtotime($from) <= strtotime($to)) {
+                    $transaction = array_column(array_values(array_filter($result,function($v)use($from){
+                        return (strtotime($v->rcv_date) == strtotime($from));
+                    })),'transaction');
+
+                    $quantity = array_column(array_values(array_filter($result,function($v)use($from){
+                        return (strtotime($v->rcv_date) == strtotime($from));
+                    })),'quantity');
+
+                    array_push($count, (($transaction) ? $transaction[0] : 0));
+                    array_push($qty, (($quantity) ? $quantity[0] : 0));
+                    array_push($labels, date('M d, Y',strtotime($from)));
+                    $from = date('Y-m-d', strtotime("+1 day", strtotime($from)));
+                }
+                $from = $start;
+            }
+            else{
+                for($mon = 1; $mon <= 12 ; $mon++)
+                {
+                    $year_month = date('Y',strtotime($year))."-".$mon;
+                    $transaction = array_column(array_values(array_filter($result,function($v)use($year_month){
+                        return date('Y-m',strtotime($v->rcv_date)) == date('Y-m',strtotime($year_month));
+                    })),'transaction');
+
+                    $quantity = array_column(array_values(array_filter($result,function($v)use($year_month){
+                        return date('Y-m', strtotime($v->rcv_date)) == date('Y-m', strtotime($year_month));
+                    })),'quantity');
+
+                    array_push($count, (($transaction) ? $transaction[0] : 0));
+                    array_push($qty, (($quantity) ? $quantity[0] : 0));
+
+                    $month = date("M", mktime(0, 0, 0, $mon, 10));
+                    $labels[] = $month;
+                }
+            }
+            return array(
+                "labels" => $labels,
+                "transaction" => $count,
+                "quantity" => $qty,
+                "tot_trans" => array_sum(array_values($count)),
+                "tot_qty" => array_sum(array_values($qty)),
+            );
+        } catch (\Throwable $th) {
+            throw $th;
         }
-        die();
-        // $weeksInMonth = getWeeksInMonth($year, $month);
-        // // print_r($weeksInMonth);die();
-        // foreach ($weeksInMonth as $week) {
-        //     echo "Week Number: {$week['week_number']}\n <br>";
-        //     echo "Start Date: {$week['start_date']}\n  <br>";
-        //     echo "End Date: {$week['end_date']}\n\n <br>";
-        // }
-        // die();
+    }
+
+    public function getOutboundCount(Request $request){
+
     }
 }

@@ -154,7 +154,7 @@ $(document).on('click', '#add-product', function() {
             <td class="text-start"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
                 <input type="hidden" name="master_id[]" readonly id="master_id_'+data[x].master_id+'" value="'+data[x].master_id+'" /> \
-                <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id'+data[x].rcv_dtl_id+'" value="'+data[x].rcv_dtl_id+'" /> \
+                <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id_'+data[x].rcv_dtl_id+'" value="'+data[x].rcv_dtl_id+'" /> \
                 <input type="hidden" name="available_qty[]" readonly id="available_qty_'+data[x].inv_qty+'" value="'+data[x].inv_qty+'" /> \
                 <input type="hidden" name="is_serialize[]" readonly value="'+data[x].is_serialize+'" />\
             '+rowCount+' </td> \
