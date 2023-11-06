@@ -157,10 +157,12 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::get('/getOutboundCount', [App\Http\Controllers\DashboardController::class,'getOutboundCount']);
 });
 
+Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
+    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('index');
+});
 
 Route::get('/setting/suppliers/getdata', [App\Http\Controllers\SuppliersController::class, 'getDataTableData'])->name('getdata');
 // Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
-Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('index');
 
 
 //Update User Details
