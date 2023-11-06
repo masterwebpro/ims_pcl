@@ -154,6 +154,7 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::get('/getInboundCount', [App\Http\Controllers\DashboardController::class,'getInboundCount']);
+    Route::get('/getOutboundCount', [App\Http\Controllers\DashboardController::class,'getOutboundCount']);
 });
 
 

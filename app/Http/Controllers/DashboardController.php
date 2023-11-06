@@ -43,66 +43,87 @@ class DashboardController extends Controller
         $type = $request->type;
         $year = $request->year ? $request->year : date('Y');
         try {
-            $query = "SELECT DATE_FORMAT(rcv_hdr.date_received, '%Y-%m-%d') AS rcv_date,
+            $query = "SELECT DATE_FORMAT(rcv_hdr.date_received, '%Y-%m-%d') AS date,
                     COUNT(DISTINCT rcv_dtl.rcv_no) as transaction ,
                     SUM(rcv_dtl.inv_qty) as quantity  from rcv_dtl
                     LEFT JOIN rcv_hdr ON rcv_hdr.rcv_no = rcv_dtl.rcv_no
                     WHERE rcv_hdr.status = 'posted'
-                    GROUP BY rcv_date";
+                    GROUP BY date";
             $result = DB::select($query);
-            $start = $from;
-            $count = array();
-            $qty = array();
-            $labels = array();
-            if($type == 'daily'){
-                while (strtotime($from) <= strtotime($to)) {
-                    $transaction = array_column(array_values(array_filter($result,function($v)use($from){
-                        return (strtotime($v->rcv_date) == strtotime($from));
-                    })),'transaction');
-
-                    $quantity = array_column(array_values(array_filter($result,function($v)use($from){
-                        return (strtotime($v->rcv_date) == strtotime($from));
-                    })),'quantity');
-
-                    array_push($count, (($transaction) ? $transaction[0] : 0));
-                    array_push($qty, (($quantity) ? $quantity[0] : 0));
-                    array_push($labels, date('M d, Y',strtotime($from)));
-                    $from = date('Y-m-d', strtotime("+1 day", strtotime($from)));
-                }
-                $from = $start;
-            }
-            else{
-                for($mon = 1; $mon <= 12 ; $mon++)
-                {
-                    $year_month = date('Y',strtotime($year))."-".$mon;
-                    $transaction = array_column(array_values(array_filter($result,function($v)use($year_month){
-                        return date('Y-m',strtotime($v->rcv_date)) == date('Y-m',strtotime($year_month));
-                    })),'transaction');
-
-                    $quantity = array_column(array_values(array_filter($result,function($v)use($year_month){
-                        return date('Y-m', strtotime($v->rcv_date)) == date('Y-m', strtotime($year_month));
-                    })),'quantity');
-
-                    array_push($count, (($transaction) ? $transaction[0] : 0));
-                    array_push($qty, (($quantity) ? $quantity[0] : 0));
-
-                    $month = date("M", mktime(0, 0, 0, $mon, 10));
-                    $labels[] = $month;
-                }
-            }
-            return array(
-                "labels" => $labels,
-                "transaction" => $count,
-                "quantity" => $qty,
-                "tot_trans" => array_sum(array_values($count)),
-                "tot_qty" => array_sum(array_values($qty)),
-            );
+            return $this->mapData($from,$to, $year, $type, $result);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
     public function getOutboundCount(Request $request){
+        $dateRangeParts = explode(" to ", $request->date);
+        $from = isset($dateRangeParts[0]) ? $dateRangeParts[0] : Carbon::now()->startOfMonth()->format('Y-m-d');
+        $to = isset($dateRangeParts[1]) ? $dateRangeParts[1] : Carbon::now()->endOfMonth()->format('Y-m-d');
 
+        $type = $request->type;
+        $year = $request->year ? $request->year : date('Y');
+        try {
+            $query = "SELECT DATE_FORMAT(dispatch_hdr.dispatch_date, '%Y-%m-%d') AS date,
+                    COUNT(DISTINCT dispatch_dtl.dispatch_no) as transaction ,
+                    SUM(dispatch_dtl.qty) as quantity  from dispatch_dtl
+                    LEFT JOIN dispatch_hdr ON dispatch_hdr.dispatch_no = dispatch_dtl.dispatch_no
+                    WHERE dispatch_hdr.status = 'posted'
+                    GROUP BY date";
+            $result = DB::select($query);
+            return $this->mapData($from,$to, $year, $type, $result);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    function mapData($from,$to, $year, $type, $result){
+        $start = $from;
+        $count = array();
+        $qty = array();
+        $labels = array();
+        if($type == 'daily'){
+            while (strtotime($from) <= strtotime($to)) {
+                $transaction = array_column(array_values(array_filter($result,function($v)use($from){
+                    return (strtotime($v->date) == strtotime($from));
+                })),'transaction');
+
+                $quantity = array_column(array_values(array_filter($result,function($v)use($from){
+                    return (strtotime($v->date) == strtotime($from));
+                })),'quantity');
+
+                array_push($count, (($transaction) ? $transaction[0] : 0));
+                array_push($qty, (($quantity) ? $quantity[0] : 0));
+                array_push($labels, date('M d, Y',strtotime($from)));
+                $from = date('Y-m-d', strtotime("+1 day", strtotime($from)));
+            }
+            $from = $start;
+        }
+        else{
+            for($mon = 1; $mon <= 12 ; $mon++)
+            {
+                $year_month = date('Y',strtotime($year))."-".$mon;
+                $transaction = array_column(array_values(array_filter($result,function($v)use($year_month){
+                    return date('Y-m',strtotime($v->date)) == date('Y-m',strtotime($year_month));
+                })),'transaction');
+
+                $quantity = array_column(array_values(array_filter($result,function($v)use($year_month){
+                    return date('Y-m', strtotime($v->date)) == date('Y-m', strtotime($year_month));
+                })),'quantity');
+
+                array_push($count, (($transaction) ? $transaction[0] : 0));
+                array_push($qty, (($quantity) ? $quantity[0] : 0));
+
+                $month = date("M", mktime(0, 0, 0, $mon, 10));
+                $labels[] = $month;
+            }
+        }
+        return array(
+            "labels" => $labels,
+            "transaction" => $count,
+            "quantity" => $qty,
+            "tot_trans" => array_sum(array_values($count)),
+            "tot_qty" => array_sum(array_values($qty)),
+        );
     }
 }
