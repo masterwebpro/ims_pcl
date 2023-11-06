@@ -393,9 +393,50 @@ function outboundChart(data){
 
 
 
+let myChart = new ApexCharts(document.querySelector("#apply_jobs"), {
+    series: [89],
+    chart: {
+        type: "radialBar",
+        width: 105,
+        sparkline: {
+            enabled: !0
+        }
+    },
+    dataLabels: {
+        enabled: !1
+    },
+    plotOptions: {
+        radialBar: {
+            hollow: {
+                margin: 0,
+                size: "70%"
+            },
+            track: {
+                margin: 1
+            },
+            dataLabels: {
+                show: !0,
+                name: {
+                    show: !1
+                },
+                value: {
+                    show: !0,
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    offsetY: 8
+                }
+            }
+        }
+    },
+    colors:['#F44336']
+  })
+  myChart.render();
 
 
-function getChartColorsArray(e) {
+
+
+
+function getChartColorsArray2(e) {
     if (null !== document.getElementById(e)) {
         var a = document.getElementById(e).getAttribute("data-colors");
         if (a) return (a = JSON.parse(a)).map(function(e) {
@@ -405,6 +446,7 @@ function getChartColorsArray(e) {
         console.warn("data-colors atributes not found on", e)
     }
 }
+/*
 var linechartDashedColors = getChartColorsArray("line_chart_dashed"),
     chartDonutBasicColors = (linechartDashedColors && (options = {
         chart: {
@@ -587,6 +629,7 @@ var jobListAll, searchResultList, options, chart, jobListAllData = [
             for (e of t) - 1 == e.querySelector(".candidate-name").innerHTML.toLowerCase().indexOf(a) ? e.classList.add("d-none") : e.classList.remove("d-none")
         }
     }), getChartColorsArray("total_jobs"));
+
 chartRadialbarBasicColors && (options = {
     series: [95],
     chart: {
@@ -623,8 +666,10 @@ chartRadialbarBasicColors && (options = {
         }
     },
     colors: chartRadialbarBasicColors
-}, (chart = new ApexCharts(document.querySelector("#total_jobs"), options)).render()), (chartRadialbarBasicColors = getChartColorsArray("apply_jobs")) && (options = {
-    series: [97],
+}, (
+    
+    chart = new ApexCharts(document.querySelector("#total_jobs"), options)).render()), (chartRadialbarBasicColors = getChartColorsArray("apply_jobs")) && (options = {
+    series: [99],
     chart: {
         type: "radialBar",
         width: 105,
@@ -804,3 +849,4 @@ chartRadialbarBasicColors && (options = {
     },
     colors: chartRadialbarBasicColors
 }, (chart = new ApexCharts(document.querySelector("#new_jobs_chart"), options)).render());
+*/

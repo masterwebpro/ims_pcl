@@ -10,6 +10,8 @@
 @slot('title') Dashboard @endslot
 @endcomponent
 
+<script src="{{ URL::asset('/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+
 <div class="row">
     <div class="col">
         <div class="h-100">
@@ -61,27 +63,27 @@
 
                 <? endforeach?>
 
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="card card-animate">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <p class="fw-medium text-muted mb-0">Total All Warehouse Qty</p>
-                                        <h2 class="mt-4 ff-secondary fw-semibold"><span
-                                                class="counter-value" data-target="{{$total_qty}}">0</span></h2>
-                                        <p class="mb-0 text-muted">Total qty as of today</p>
-                                    </div>
-                                    <!-- <div>
-                                        <div class="avatar-sm flex-shrink-0">
-                                            <span class="avatar-title bg-soft-info rounded-circle fs-2">
-                                                <i data-feather="users" class="text-info"></i>
-                                            </span>
-                                        </div>
-                                    </div> -->
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-animate">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p class="fw-medium text-muted mb-0">Total All Warehouse Qty</p>
+                                    <h2 class="mt-4 ff-secondary fw-semibold"><span
+                                            class="counter-value" data-target="{{$total_qty}}">0</span></h2>
+                                    <p class="mb-0 text-muted">Total qty as of today</p>
                                 </div>
-                            </div><!-- end card body -->
-                        </div> <!-- end card-->
-                    </div> <!-- end col-->
+                                <!-- <div>
+                                    <div class="avatar-sm flex-shrink-0">
+                                        <span class="avatar-title bg-soft-info rounded-circle fs-2">
+                                            <i data-feather="users" class="text-info"></i>
+                                        </span>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div><!-- end card body -->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
             </div> <!-- end col-->
         </div> <!-- end .h-100-->
 
@@ -116,7 +118,7 @@
 @endsection
 @section('script')
 <!-- apexcharts -->
-<script src="{{ URL::asset('/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+
 <script src="{{ URL::asset('/assets/libs/jsvectormap/jsvectormap.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/swiper/swiper.min.js')}}"></script>
 <script src="{{ URL::asset('/assets/js/dashboard/dashboard.js') }}"></script>
