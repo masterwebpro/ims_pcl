@@ -20,7 +20,7 @@
                             <h4 class="fs-16 mb-1">Good Morning, {{Auth::user()->name}}</h4>
                         </div>
                         <div class="mt-3 mt-lg-0">
-                           
+
                         </div>
                     </div><!-- end card header -->
                 </div>
@@ -33,13 +33,13 @@
             2. Warehouse Utilization Graph by Warehouse (# of location vs occupied)
             3. Weekly Inbound count Truck
             4. Weekly Outbound count by Dispatch -->
-      
+
             <div class="row">
-                <? 
-                $total_qty = 0; 
-                foreach($warehouse_qty as $wh) : 
+                <?
+                $total_qty = 0;
+                foreach($warehouse_qty as $wh) :
                     $total_qty += ($wh->wh_qty + $wh->reserve_qty);
-                
+
                 ?>
                     <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="card card-animate">
@@ -53,7 +53,7 @@
                                                 class="badge bg-light counter-value text-danger mb-0">0
                                             </span> with reserved qty</p>
                                     </div>
-                                    
+
                                 </div>
                             </div><!-- end card body -->
                         </div> <!-- end card-->
@@ -95,15 +95,15 @@
     <div class="col">
         <div class="h-100">
             <div class="row">
-               
+
                 <div class="col-xl-6">
-                    @include('dashboard.graphs.inbound');
+                    @include('dashboard.graphs.inbound')
                 </div>
-                <div class="col-xl-6 d-none">
-                    @include('dashboard.graphs.outbound');
+                <div class="col-xl-6">
+                    @include('dashboard.graphs.outbound')
                 </div>
 
-                
+
             </div>
 
         </div> <!-- end .h-100-->
