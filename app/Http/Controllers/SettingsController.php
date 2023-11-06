@@ -38,7 +38,7 @@ class SettingsController extends Controller
         return response()->json($data);
     }
 
-   
+
     function getProducts(Request $request) {
         $products = \App\Models\Products::select('product_id','sap_code','product_sku','product_code','product_name')
         ->where('is_enabled', $request->is_enabled)
@@ -484,6 +484,7 @@ class SettingsController extends Controller
     public function getAvailableStocks(Request $request) {
         $result = MasterdataModel::select(
                         'masterdata.id as master_id',
+                        'masterdata.rcv_dtl_id',
                         'masterdata.product_id',
                         'client_name',
                         'store_name',
