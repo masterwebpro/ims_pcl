@@ -71,7 +71,7 @@
                                     <p class="fw-medium text-muted mb-0">Total QTY All Warehouse</p>
                                     <h2 class="mt-4 ff-secondary fw-semibold"><span
                                             class="counter-value" data-target="{{$total_qty}}">0</span></h2>
-                                    <p class="mb-0 text-muted">Total qty as of today (<?=date('m/d/Y')?>)</p>
+                                    <p class="mb-0 text-muted">Total qty as of today <span class="text-success">(<?=date('m/d/Y')?>)</span></p>
                                 </div>
                                 <!-- <div>
                                     <div class="avatar-sm flex-shrink-0">
