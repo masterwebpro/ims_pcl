@@ -109,7 +109,7 @@
             <div class="d-flex align-items-center">
                 <div class="flex-grow-1 overflow-hidden">
                     <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total WH Utilization</p>
-                    <h4 class="fs-22 fw-semibold ff-secondary mb-0"><span class="counter-value" data-target="120">0</span> / {{$total_location}}</h4>
+                    <h4 class="fs-22 fw-semibold ff-secondary mb-0"><span class="counter-value" data-target="{{$total_occupied}}">0</span> / {{$total_location}}</h4>
                 </div>
                 <div class="flex-shrink-0">
                     <div id="warehouse" data-colors='["--vz-success"]' class="apex-charts" dir="ltr"></div>
