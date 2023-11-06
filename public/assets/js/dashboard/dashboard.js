@@ -391,50 +391,7 @@ function outboundChart(data){
 }
 
 
-
-
-let myChart = new ApexCharts(document.querySelector("#apply_jobs"), {
-    series: [89],
-    chart: {
-        type: "radialBar",
-        width: 105,
-        sparkline: {
-            enabled: !0
-        }
-    },
-    dataLabels: {
-        enabled: !1
-    },
-    plotOptions: {
-        radialBar: {
-            hollow: {
-                margin: 0,
-                size: "70%"
-            },
-            track: {
-                margin: 1
-            },
-            dataLabels: {
-                show: !0,
-                name: {
-                    show: !1
-                },
-                value: {
-                    show: !0,
-                    fontSize: "16px",
-                    fontWeight: 600,
-                    offsetY: 8
-                }
-            }
-        }
-    },
-    colors:['#F44336']
-  })
-  myChart.render();
-
-
-
-
+/*
 
 function getChartColorsArray2(e) {
     if (null !== document.getElementById(e)) {
@@ -446,7 +403,7 @@ function getChartColorsArray2(e) {
         console.warn("data-colors atributes not found on", e)
     }
 }
-/*
+
 var linechartDashedColors = getChartColorsArray("line_chart_dashed"),
     chartDonutBasicColors = (linechartDashedColors && (options = {
         chart: {

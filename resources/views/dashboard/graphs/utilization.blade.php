@@ -1,8 +1,10 @@
 <? 
     $total_location = 0;
+    $total_occupied = 0;
     $i=0; 
     foreach($location_cnt as $location) : 
         $total_location += $location->cnt_location;
+        $total_occupied += $location->occupied;
     
     ?>
 
@@ -74,7 +76,7 @@
                         },
                         value: {
                             show: !0,
-                            fontSize: "16px",
+                            fontSize: "14px",
                             fontWeight: 600,
                             offsetY: 8
                         }
@@ -110,9 +112,65 @@
                     <h4 class="fs-22 fw-semibold ff-secondary mb-0"><span class="counter-value" data-target="120">0</span> / {{$total_location}}</h4>
                 </div>
                 <div class="flex-shrink-0">
-                    <div id="apply_jobs" data-colors='["--vz-success"]' class="apex-charts" dir="ltr"></div>
+                    <div id="warehouse" data-colors='["--vz-success"]' class="apex-charts" dir="ltr"></div>
                 </div>
             </div>
         </div><!-- end card body -->
     </div><!-- end card -->
+
+    <?
+         $oveall_series = number_format(($total_occupied / $total_location) * 100,2);
+
+         if($oveall_series < 70) {
+             $overall_color = '#0ab39c';
+         }
+         if($oveall_series >= 70 && $series < 85) {
+             $overall_color = '#f7b84b';
+         }
+         if($oveall_series >= 85) {
+             $overall_color = '#f06548';
+         } 
+    
+    ?>
+    <script>
+        
+        let warehouse = new ApexCharts(document.querySelector("#warehouse"), {
+            series: [<?=$oveall_series?>],
+            chart: {
+                type: "radialBar",
+                width: 105,
+                sparkline: {
+                    enabled: !0
+                }
+            },
+            dataLabels: {
+                enabled: !1
+            },
+            plotOptions: {
+                radialBar: {
+                    hollow: {
+                        margin: 0,
+                        size: "70%"
+                    },
+                    track: {
+                        margin: 1
+                    },
+                    dataLabels: {
+                        show: !0,
+                        name: {
+                            show: !1
+                        },
+                        value: {
+                            show: !0,
+                            fontSize: "14px",
+                            fontWeight: 600,
+                            offsetY: 8
+                        }
+                    }
+                }
+            },
+            colors:['<?=$overall_color?>']
+        })
+        warehouse.render();
+    </script>
 </div><!-- end col -->
