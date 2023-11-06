@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Validator;
+
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -20,8 +25,14 @@ class DashboardController extends Controller
 
        // Auth::user()->avatar
 
+    $warehouse_qty = DB::table('masterdata')
+        ->select('warehouses.warehouse_name', 'masterdata.warehouse_id', DB::raw("sum(inv_qty) as wh_qty"), DB::raw("sum(reserve_qty) as reserve_qty"))
+        ->leftJoin('warehouses','warehouses.id','=','masterdata.warehouse_id')
+        ->groupBy('warehouses.warehouse_name','masterdata.warehouse_id')
+        ->orderBy('warehouses.warehouse_name','asc')
+        ->get();
 
-        return view('dashboard/index');
+        return view('dashboard/index', compact('warehouse_qty'));
     }
 
     public function getInboundCount(Request $request){

@@ -17,7 +17,8 @@ use App\Http\Controllers\FileUploadController;
 Auth::routes();
 //Language Translation
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
-Route::get('/dashboard/2', [App\Http\Controllers\DashboardController::class, 'index'])->name('index');
+
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('index');
 
 
 Route::group(['middleware' => 'auth'], function () {
@@ -157,7 +158,9 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
 
 
 Route::get('/setting/suppliers/getdata', [App\Http\Controllers\SuppliersController::class, 'getDataTableData'])->name('getdata');
-Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
+// Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
+Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('index');
+
 
 //Update User Details
 Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
