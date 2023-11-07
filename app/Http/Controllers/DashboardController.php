@@ -37,7 +37,7 @@ class DashboardController extends Controller
             ->groupBy('warehouses.warehouse_name','storage_locations.warehouse_id')
             ->get();
 
-        
+
         return view('dashboard/index', compact('warehouse_qty', 'location_cnt'));
     }
 
@@ -98,8 +98,8 @@ class DashboardController extends Controller
                     return (strtotime($v->date) == strtotime($from));
                 })),'quantity');
 
-                array_push($count, (($transaction) ? $transaction[0] : 0));
-                array_push($qty, (($quantity) ? $quantity[0] : 0));
+                array_push($count, (($transaction) ? array_sum($transaction) : 0));
+                array_push($qty, (($quantity) ? array_sum($quantity) : 0));
                 array_push($labels, date('M d, Y',strtotime($from)));
                 $from = date('Y-m-d', strtotime("+1 day", strtotime($from)));
             }
@@ -117,8 +117,8 @@ class DashboardController extends Controller
                     return date('Y-m', strtotime($v->date)) == date('Y-m', strtotime($year_month));
                 })),'quantity');
 
-                array_push($count, (($transaction) ? $transaction[0] : 0));
-                array_push($qty, (($quantity) ? $quantity[0] : 0));
+                array_push($count, (($transaction) ? array_sum($transaction) : 0));
+                array_push($qty, (($quantity) ? array_sum($quantity) : 0));
 
                 $month = date("M", mktime(0, 0, 0, $mon, 10));
                 $labels[] = $month;
