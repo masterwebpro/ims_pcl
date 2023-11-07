@@ -292,6 +292,7 @@
                                     <th scope="col">WD #</th>
                                     <th scope="col">Customer</th>
                                     <th scope="col">Deliver To</th>
+                                    <th scope="col">SAP Code</th>
                                     <th scope="col">Product Name</th>
                                     <th scope="col">Withdraw Quantity</th>
                                     <th scope="col">Unit</th>

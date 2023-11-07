@@ -159,7 +159,8 @@ $(document).on('click', '#add-product', function() {
                 <input type="hidden" name="is_serialize[]" readonly value="'+data[x].is_serialize+'" />\
             '+rowCount+' </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].product_name+'<br/><small>'+data[x].product_code+'</small> \
+                <small><b>'+((data[x].sap_code) ? data[x].sap_code : data[x].product_code)+'</b></small><br/>\
+                '+data[x].product_name+'\
             </td> \
             <td class="text-center ps-1 fs-13"> \
                 <span class="badge '+ itemType +' text-capitalize">'+data[x].item_type+'</span> \

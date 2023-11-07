@@ -55,10 +55,10 @@ function withdrawal(){
     });
 
     new DataTable("#show-withdrawal-list",{
-        order: [[1, 'asc'],[5,'asc']],
+        order: [[1, 'asc'],[6,'asc']],
         paging: true,
         columnDefs : [
-            { targets: [5], className: 'dt-body-right' },
+            { targets: [6], className: 'dt-body-right' },
         ],
         ajax: {
             url : BASEURL+"settings/withdrawalDetails",
@@ -74,6 +74,7 @@ function withdrawal(){
             { data: 'wd_no' },
             { data: 'client_name' },
             { data: 'deliver_to' },
+            { data: 'sap_code' },
             { data: 'product_name' },
             { data: 'inv_qty' , render: $.fn.dataTable.render.number( ',', '.', 2), class : 'text-center'},
             { data: 'ui_code' },
@@ -117,8 +118,9 @@ $(document).on('click', '#add-withdrawal', function() {
                 '+data[x].wd_no+'\
             </td> \
             <td class="text-start fs-14 text-wrap"> \
-                '+ data[x].product_name +' \
-            </td> \
+                <b>'+((data[x].sap_code) ?  data[x].sap_code :  data[x].product_code)  +' </b><br/>\
+                <span>'+ data[x].product_name +' </span>\
+            </br> \
             <td class="text-start fs-14"> \
                 <div class="input-group">\
                 <input type="text" class="form-control inv_qty numeric w-50" data-qty="'+data[x].inv_qty+'" data-id="'+ idx +'" id="inv_qty'+(rowCount-1)+'" value="'+ data[x].inv_qty +'" readonly placeholder="Enter Qty" /> \

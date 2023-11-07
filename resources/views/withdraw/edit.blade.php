@@ -401,7 +401,8 @@
                                                             <input type="hidden" name="is_serialize[]" readonly value="{{ ($item->product) ? $item->product->is_serialize : 0 }}" />
                                                         {{$x++}} </td>
                                                         <td class="text-start fs-14">
-                                                            {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
+                                                            <b>{{$item->product->product_code}}</b><br/>
+                                                            {{$item->product->product_name}}
                                                         </td>
                                                         <td class=" ps-1">
                                                             @php
