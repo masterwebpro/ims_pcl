@@ -23,16 +23,22 @@ class DashboardController extends Controller
 
     function index() {
 
-       // Auth::user()->avatar
+        $warehouse_qty = DB::table('masterdata')
+            ->select('warehouses.warehouse_name', 'masterdata.warehouse_id', DB::raw("sum(inv_qty) as wh_qty"), DB::raw("sum(reserve_qty) as reserve_qty"))
+            ->leftJoin('warehouses','warehouses.id','=','masterdata.warehouse_id')
+            ->groupBy('warehouses.warehouse_name','masterdata.warehouse_id')
+            ->orderBy('warehouses.warehouse_name','asc')
+            ->get();
 
-    $warehouse_qty = DB::table('masterdata')
-        ->select('warehouses.warehouse_name', 'masterdata.warehouse_id', DB::raw("sum(inv_qty) as wh_qty"), DB::raw("sum(reserve_qty) as reserve_qty"))
-        ->leftJoin('warehouses','warehouses.id','=','masterdata.warehouse_id')
-        ->groupBy('warehouses.warehouse_name','masterdata.warehouse_id')
-        ->orderBy('warehouses.warehouse_name','asc')
-        ->get();
+    //warehouse utilization
+        $location_cnt = DB::table('storage_locations')
+            ->select('warehouses.warehouse_name','warehouse_id', DB::raw("count(location) as cnt_location"), DB::raw("(SELECT  count(DISTINCT storage_location_id) FROM masterdata WHERE masterdata.warehouse_id = storage_locations.warehouse_id) as occupied") )
+            ->leftJoin('warehouses','warehouses.id','=','storage_locations.warehouse_id')
+            ->groupBy('warehouses.warehouse_name','storage_locations.warehouse_id')
+            ->get();
 
-        return view('dashboard/index', compact('warehouse_qty'));
+        
+        return view('dashboard/index', compact('warehouse_qty', 'location_cnt'));
     }
 
     public function getInboundCount(Request $request){
