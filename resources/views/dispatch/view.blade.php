@@ -251,6 +251,7 @@
                                                         {{$item->deliver_to}}
                                                     </td>  --}}
                                                     <td class="text-start fs-14 text-wrap">
+                                                        <b>{{ ($item->sap_code) ? $item->sap_code : $item->product_code }}</b> <br/>
                                                         {{$item->product_name}}
                                                     </td>
                                                     <td class="ps-1 text-center">

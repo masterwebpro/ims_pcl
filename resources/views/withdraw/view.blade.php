@@ -386,7 +386,8 @@
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                         {{$x++}} </td>
                                                         <td class="text-start fs-14">
-                                                            {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
+                                                            <b>{{$item->product->product_code}}</b><br/>
+                                                            {{$item->product->product_name}}
                                                         </td>
                                                         <td class=" ps-1">
                                                             <span class="badge bg-success text-capitalize">{{ isset($item->master) ? $item->master->item_type : ''}} </span>

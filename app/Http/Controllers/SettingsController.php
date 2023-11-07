@@ -248,6 +248,7 @@ class SettingsController extends Controller
                         'store_name',
                         'w.warehouse_name',
                         'product_code',
+                        'sap_code',
                         'product_name',
                         'sl.location',
                         'masterfiles.whse_uom',
@@ -309,6 +310,7 @@ class SettingsController extends Controller
             $keyword = '%'.$request->product.'%';
             $result->where(function($cond)use($keyword){
                 $cond->where('product_code','like',$keyword)
+                ->orwhere('sap_code','like',$keyword)
                 ->orwhere('product_name','like',$keyword)
                 ->orwhere('product_sku','like',$keyword);
             });
@@ -321,6 +323,7 @@ class SettingsController extends Controller
         $item_code = $request->item_code;
         $products = \App\Models\Products::select('*')
             ->orWhere('product_code', $item_code)
+            ->orWhere('sap_code', $item_code)
             ->orWhere('product_sku', $item_code)
             ->orWhere('product_upc', $item_code)
             ->first();
@@ -385,6 +388,7 @@ class SettingsController extends Controller
                     'wd_hdr.sales_invoice',
                     'wd_hdr.dr_no',
                     'p.product_code',
+                    'p.sap_code',
                     'p.product_name',
                     'ui.code as ui_code',
                     )
@@ -490,6 +494,7 @@ class SettingsController extends Controller
                         'store_name',
                         'w.warehouse_name',
                         'product_code',
+                        'sap_code',
                         'product_name',
                         'sl.location',
                         'masterdata.whse_uom',
