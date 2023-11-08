@@ -28,6 +28,7 @@ class DispatchHdr extends Model
                     'wd_hdr.po_num',
                     'wd_hdr.sales_invoice',
                     'wd_hdr.dr_no',
+                    'p.sap_code',
                     'p.product_code',
                     'p.product_name',
                     )
