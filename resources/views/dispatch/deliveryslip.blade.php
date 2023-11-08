@@ -91,6 +91,7 @@
         <thead class="bg-dark">
             <tr class="text-capitalize">
                 <th scope="col">#</th>
+                <th scope="col">SAP Code</th>
                 <th scope="col">Item Name</th>
                 <th scope="col">WD No.</th>
                 <th scope="col">Order No.</th>
@@ -109,6 +110,9 @@
                 <tr id="product_{{$item->wd_no}}">
                     <td class="align-top">
                     {{$x++}} </td>
+                     <td class="align-top fs-14">
+                        {{($item->sap_code) ? $item->sap_code : $item->product_code }}
+                    </td>
                     <td class="align-top fs-14">
                         {{$item->product_name}}
                     </td>
@@ -130,7 +134,7 @@
                 </tr>
                 @endforeach
                 <tr id="product_{{$item->product_id}}">
-                    <td class="text-end" colspan="6">
+                    <td class="text-end" colspan="7">
                         TOTAL
                     </td>
                     <td class="text-end fs-14">
