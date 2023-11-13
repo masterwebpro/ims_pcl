@@ -98,7 +98,7 @@ class ProductController extends Controller
             'category_id' => 'required',
             'customer_id' => 'required',
             'category_brand_id' => 'required',
-            'sap_code' => 'required',
+            // 'sap_code' => 'required',
         ], [
             'supplier_id' => 'Supplier is required',
             // 'product_code' => 'Product code  is required',
@@ -107,7 +107,7 @@ class ProductController extends Controller
             'category_id' => 'Category is required',
             'customer_id' => 'Customer is required',
             'category_brand_id' => 'Brand is required',
-            'sap_code' => 'SAP Code is required',
+            // 'sap_code' => 'SAP Code is required',
         ]);
 
         if ($validator->fails()) {
@@ -115,15 +115,18 @@ class ProductController extends Controller
         }
         DB::connection()->beginTransaction();
         try {
+
+            $sap_code = isset($request->sap_code) ? (($request->sap_code) ? $request->sap_code : "TEMP_CODE") : "TEMP_CODE";
+            // dd($sap_code);
+
             $product = Products::updateOrCreate(['product_id' => $request->product_id], [
-                'sap_code'=> isset($request->sap_code) ? $request->sap_code : $request->product_code,
+                'sap_code'=> $sap_code,
                 'product_code'=> isset($request->product_code) ? $request->product_code : "TEMP_CODE",
                 'product_name'=>$request->product_name,
                 'product_upc'=> isset($request->product_upc) ? $request->product_upc :  $request->product_code,
                 'product_sku'=> isset($request->product_sku) ? $request->product_sku :  $request->product_code,
                 'supplier_id'=>$request->supplier_id,
                 'customer_id'=>$request->customer_id,
-                'sap_code'=>$request->sap_code,
                 'category_brand_id'=>$request->category_brand_id,
                 'created_by' => Auth::user()->id,
                 'is_enabled'=> isset($request->is_enabled) ? 1 : 0,
@@ -131,15 +134,15 @@ class ProductController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
-            if(!isset($request->product_id) && $product->product_code == 'TEMP_CODE'){
+            if((!isset($request->product_id) && $product->product_code == 'TEMP_CODE') || $request->sap_code == null){
                 $cat_name = substr($request->category,0,1);
                 $seq_name = substr(preg_replace('/[^a-zA-Z]/', '', $request->product_name),0,2);
-                $product_code = $cat_name.$seq_name.str_pad($product->product_id, 6, '0', STR_PAD_LEFT);
+                $product_code = strtoupper($cat_name.$seq_name.str_pad($product->product_id, 6, '0', STR_PAD_LEFT));
                 $product->update([
                     'product_code' => $product_code,
                     'product_upc' => isset($request->product_upc) ? $request->product_upc : $product_code,
                     'product_sku' => isset($request->product_sku) ? $request->product_sku : $product_code,
-                    'sap_code' => isset($request->sap_code) ? $request->sap_code : $product_code,
+                    'sap_code' =>  $product_code,
                     'customer_id' => isset($request->customer_id) ? $request->customer_id : 0,
 
                 ]);

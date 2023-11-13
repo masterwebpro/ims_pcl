@@ -194,7 +194,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
            
-            <div class="modal-body">
+            <div class="modal-body table-responsive">
                 <table class="table align-middle table-nowrap" id="po-table" width="100%">
                     <thead class="table-light text-muted">
                         <tr>

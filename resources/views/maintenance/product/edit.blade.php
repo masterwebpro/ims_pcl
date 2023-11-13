@@ -118,7 +118,7 @@
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
-                                        <label for="sap_code" class="form-label">SAP Code <span class="text-danger">*</span></label>
+                                        <label for="sap_code" class="form-label">SAP Code</label>
                                     </div>
                                     <div class="col-lg-9">
                                         <input type="text" class="form-control" id="sap_code"  value="{{ $product->sap_code }}" name="sap_code" placeholder="Enter Product SAP Code">
@@ -126,9 +126,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
@@ -136,11 +134,14 @@
                                     </div>
                                     <div class="col-lg-9">
                                         <input type="hidden" name="product_id" id="product_id" value="{{ $product->product_id }}">
-                                        <input type="text" class="form-control" id="product_code" readonly
+                                        <input type="text" class="form-control" id="product_code"
                                             name="product_code" placeholder="Enter Product Code" value="{{ $product->product_code }}" >
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">

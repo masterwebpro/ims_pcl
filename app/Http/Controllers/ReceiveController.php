@@ -227,9 +227,9 @@ class ReceiveController extends Controller
                     'rcv_no'=>$rcv_no,
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
-                    'inv_qty'=>$request->inv_qty[$x],
+                    'inv_qty'=>clean($request->inv_qty[$x]),
                     'inv_uom'=>$request->inv_uom[$x],
-                    'whse_qty'=>$request->whse_qty[$x],
+                    'whse_qty'=>clean($request->whse_qty[$x]),
                     'whse_uom'=>$request->whse_uom[$x],
                     'manufacture_date'=>$request->manufacture_date[$x],
                     'lot_no'=>$request->lot_no[$x],
@@ -250,9 +250,9 @@ class ReceiveController extends Controller
                     'date_received'=>date("Y-m-d H:i:s", strtotime($request->date_received)),
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
-                    'inv_qty'=>$request->inv_qty[$x],
+                    'inv_qty'=>clean($request->inv_qty[$x]),
                     'inv_uom'=>$request->inv_uom[$x],
-                    'whse_qty'=>$request->whse_qty[$x],
+                    'whse_qty'=>clean($request->whse_qty[$x]),
                     'whse_uom'=>$request->whse_uom[$x],
                     'store_id'=>$request->store,
                     'customer_id'=>$request->customer,
@@ -273,9 +273,9 @@ class ReceiveController extends Controller
                     'product_id'=>$request->product_id[$x],
                     'storage_location_id'=>null,
                     'item_type'=>$request->item_type[$x],
-                    'inv_qty'=>$request->inv_qty[$x],
+                    'inv_qty'=>clean($request->inv_qty[$x]),
                     'inv_uom'=>$request->inv_uom[$x],
-                    'whse_qty'=>$request->whse_qty[$x],
+                    'whse_qty'=>clean($request->whse_qty[$x]),
                     'whse_uom'=>$request->whse_uom[$x],
                     // 'expiry_date'=>$request->expiry_date[$x],
                     // 'manufacture_date'=>$request->manufacture_date[$x],
@@ -307,7 +307,7 @@ class ReceiveController extends Controller
                     for($i=0; $i < count($request->product_id); $i++ ) {
                         PoDtl::where('po_num', '=', $request->po_num)
                             ->where('product_id', '=', $request->product_id[$i])
-                            ->update(['available_qty'=> DB::raw('available_qty - '.$request->inv_qty[$i])] );
+                            ->update(['available_qty'=> DB::raw('available_qty - '.clean($request->inv_qty[$i]))] );
                     }
 
                     //check if po_dtl is complete
