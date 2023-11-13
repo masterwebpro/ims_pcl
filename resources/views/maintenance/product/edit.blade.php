@@ -118,7 +118,7 @@
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
-                                        <label for="sap_code" class="form-label">SAP Code <span class="text-danger">*</span></label>
+                                        <label for="sap_code" class="form-label">SAP Code</label>
                                     </div>
                                     <div class="col-lg-9">
                                         <input type="text" class="form-control" id="sap_code"  value="{{ $product->sap_code }}" name="sap_code" placeholder="Enter Product SAP Code">
