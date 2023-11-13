@@ -131,10 +131,10 @@ class ProductController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
-            if(!isset($request->product_id) && $product->product_code == 'TEMP_CODE'){
+            if((!isset($request->product_id) && $product->product_code == 'TEMP_CODE') || $request->sap_code == null){
                 $cat_name = substr($request->category,0,1);
                 $seq_name = substr(preg_replace('/[^a-zA-Z]/', '', $request->product_name),0,2);
-                $product_code = $cat_name.$seq_name.str_pad($product->product_id, 6, '0', STR_PAD_LEFT);
+                $product_code = strtoupper($cat_name.$seq_name.str_pad($product->product_id, 6, '0', STR_PAD_LEFT));
                 $product->update([
                     'product_code' => $product_code,
                     'product_upc' => isset($request->product_upc) ? $request->product_upc : $product_code,
