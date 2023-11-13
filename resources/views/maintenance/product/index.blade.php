@@ -86,8 +86,8 @@
                                     <th class="sort" data-sort="sap_code">Sap Code</th>
                                     <th class="sort" data-sort="product_code">Product Code</th>
                                     <th class="sort" data-sort="product_name">Product Name</th>
-                                    <th class="sort" data-sort="product_upc">Product UPC</th>
-                                    <th class="sort" data-sort="product_sku">Product SKU</th>
+                                    {{--  <th class="sort" data-sort="product_upc">Product UPC</th>  --}}
+                                    {{--  <th class="sort" data-sort="product_sku">Product SKU</th>  --}}
                                     <th class="sort" data-sort="product_sku">Customer</th>
                                     <th class="sort" data-sort="product_sku">Supplier</th>
                                     <th class="sort" data-sort="category_name">Category</th>
@@ -107,8 +107,8 @@
                                     <td>{{ $prod->sap_code }}</td>
                                     <td>{{ $prod->product_code }}</td>
                                     <td class="text-wrap">{{ $prod->product_name }}</td>
-                                    <td>{{ $prod->product_upc }}</td>
-                                    <td>{{ $prod->product_sku }}</td>
+                                    {{--  <td>{{ $prod->product_upc }}</td>  --}}
+                                    {{--  <td>{{ $prod->product_sku }}</td>  --}}
                                     <td>{{ $prod->customer_name }}</td>
                                     <td>{{ $prod->supplier_name }}</td>
                                     <td>{{ isset($prod->category_brand) ? $prod->category_brand['category_name'] : "" }}</td>
