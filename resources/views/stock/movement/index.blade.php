@@ -53,6 +53,7 @@
                                         <th class="sort" data-sort="warehouse">Warehouse</th>
                                         <th class="sort" data-sort="status">Status</th>
                                         <th class="sort" data-sort="created_by">Created By</th>
+                                        <th class="sort" data-sort="created_at">Created Date</th>
                                         <th class="sort" data-sort="action">Action</th>
                                     </tr>
                                 </thead>
@@ -68,6 +69,7 @@
                                                 
                                                 <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
                                                 <td>{{ $active->user_create->name}}</td>
+                                                <td class="created_at">{{ date('M d, Y h:iA', strtotime($active->created_at))}}</td>
                                                 <td class="action">
                                                     <div class="hstack gap-3 fs-12">
                                                         <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
@@ -102,6 +104,7 @@
                                         <th class="sort" data-sort="warehouse">Warehouse</th>
                                         <th class="sort" data-sort="status">Status</th>
                                         <th class="sort" data-sort="created_by">Created By</th>
+                                        <th class="sort" data-sort="created_at">Created Date</th>
                                         <th class="sort" data-sort="action">Action</th>
                                     </tr>
                                 </thead>
@@ -117,6 +120,7 @@
                                                 
                                                 <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
                                                 <td>{{ $active->user_create->name}}</td>
+                                                <td class="created_at">{{ date('M d, Y h:iA', strtotime($active->created_at))}}</td>
                                                 <td class="action">
                                                     <div class="hstack gap-3 fs-12">
                                                         <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
