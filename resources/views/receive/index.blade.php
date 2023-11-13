@@ -132,9 +132,10 @@
                                 <th class="sort" data-sort="id">Invoice #</th>
                                 <th class="sort" data-sort="supplier_name">Supplier Name</th>
                                 <th class="sort" data-sort="customer_name">Customer Name</th>
-                                <th class="sort" data-sort="company_name">Company Name</th>
+                                <th class="sort d-none" data-sort="company_name">Company Name</th>
                                 <th class="sort" data-sort="store">Site</th>
                                 <th class="sort" data-sort="status">Status</th>
+                                <th class="sort" data-sort="created_date">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
                             </tr>
                         </thead>
@@ -148,9 +149,10 @@
                                         <td class="sales_invoice">{{ $receive->sales_invoice}}</td>
                                         <td>{{ $receive->supplier_name}}</td>
                                         <td class="customer_name">{{ $receive->customer->client_name}}</td>
-                                        <td class="company_name">{{ $receive->company->client_name}}</td>
+                                        <td class="company_name d-none">{{ $receive->company->client_name}}</td>
                                         <td class="store">{{ $receive->store_name}}</td>
                                         <td class="status"><span class="badge {{ $receive->status }} text-uppercase fs-11">{{ $receive->status }}</span></td>
+                                        <td class="created_at">{{ date('M d, Y h:iA', strtotime($receive->created_at))}}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
                                                 <a href="{{ URL::to('receive') }}/<?=_encode($receive->id)?>" data-id="{{$receive->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
