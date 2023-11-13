@@ -126,6 +126,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <div class="col-lg-3">
+                                            <label for="product_code" class="form-label">Product Code</label>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="product_code"
+                                                name="product_code" placeholder="Enter Product Code" value="" >
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="col-6">
                                     <div class="row mb-3">
