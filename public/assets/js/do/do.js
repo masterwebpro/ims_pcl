@@ -29,7 +29,7 @@ $(document).ready(function () {
 
 $(document).on('change', '#company', function() {
     var company_id = $(this).val();
-    populateStore(company_id, '');
+    populateStore(company_id, '','store');
 });
 
 $(document).on('change', '#store', function() {

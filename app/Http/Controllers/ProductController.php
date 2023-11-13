@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportProduct;
 use App\Exports\ProductTemplate;
 use App\Http\Controllers\Controller;
 use App\Imports\ProductUpload;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use Product;
+
 class ProductController extends Controller
 {
     /**
@@ -447,5 +450,46 @@ class ProductController extends Controller
             return response()->json(['message' => 'File upload failed'], 400);
         }
 
+    }
+
+    public function exportProduct(Request $request)
+    {
+        ob_start();
+        $data = [
+                ['CUSTOMER','SUPPLIER','PRODUCT ID','SAP CODE','PRODUCT CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT'],
+            ];
+
+        $product = Products::select('products.*','u.name as updated_by','sup.supplier_name','cl.client_name as customer_name')
+                ->leftJoin('client_list as cl','cl.id','products.customer_id')
+                ->leftJoin('users as u','u.id','products.created_by')
+                ->leftJoin('suppliers as sup','sup.id','products.supplier_id')
+                ->with('category_brand');
+                if (isset($request->q)) {
+                    $product->where('u.name','like', '%'.$request->q.'%');
+                    $product->orWhere('products.product_name','like', '%'.$request->q.'%');
+                    $product->orWhere('products.product_upc','like', '%'.$request->q.'%');
+                    $product->orWhere('products.product_sku','like', '%'.$request->q.'%');
+                }
+                if (isset($request->filter_date)) {
+                    if($request->filter_date == 'created_at' && $request->date ) {
+                        $product->whereBetween('products.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+                    }
+                }
+        $prod    =    $product->get();
+
+        foreach ($prod as $key => $value) {
+            $data[] = array(
+                $value->customer_name,
+                $value->supplier_name,
+                $value->product_id,
+                $value->sap_code,
+                $value->product_code,
+                $value->product_name,
+                isset($value->category_brand) ? $value->category_brand['category_name'] : "",
+                isset($value->category_brand) ? $value->category_brand['brand_name'] : "",
+                isset($value->unit) ? $value->unit['code'] : ""
+            );
+        }
+        return Excel::download(new ExportProduct($data), 'product_list.xlsx');
     }
 }

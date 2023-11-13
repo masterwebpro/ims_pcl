@@ -25,6 +25,7 @@
                                     class="ri-add-line align-bottom me-1"></i> Create Product</a>
                             <button class="btn btn-info upload-product"><i class="ri-upload-line align-bottom me-1"></i>
                                 Upload Product</button>
+                            <a href="#" class="submit-product-xls btn btn-secondary btn-label"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
                         </div>
                     </div>
                 </div>
@@ -55,7 +56,7 @@
                             </div>
                             <!--end col-->
 
-                            <div class="col-xxl-3 col-sm-4">
+                            <div class="col-xxl-2 col-sm-4">
                                 <div class="input-light">
                                     <select class="form-control" data-choices data-choices-search-false name="status"
                                         id="status">
@@ -64,7 +65,7 @@
                                 </div>
                             </div>
                             <!--end col-->
-                            <div class="col-xxl-1 col-sm-4">
+                            <div class="col-xxl-2 col-sm-4">
                                 <button type="submit" class="btn btn-primary w-100"> <i
                                         class="ri-equalizer-fill me-1 align-bottom"></i>
                                     Filters
@@ -110,8 +111,8 @@
                                     <td>{{ $prod->product_sku }}</td>
                                     <td>{{ $prod->customer_name }}</td>
                                     <td>{{ $prod->supplier_name }}</td>
-                                    <td>{{ $prod->category_brand['category_name'] }}</td>
-                                    <td>{{ $prod->category_brand['brand_name'] }}</td>
+                                    <td>{{ isset($prod->category_brand) ? $prod->category_brand['category_name'] : "" }}</td>
+                                    <td>{{ isset($prod->category_brand) ? $prod->category_brand['brand_name'] : "" }}</td>
                                     {{--  <td>{{ $prod->updated_by }}</td>  --}}
                                     <td>{{ date('M d, Y H:i:s', strtotime($prod->updated_at)) }}</td>
                                     {{--  <td class="created_at">{{ date('M d, Y', strtotime($prod->created_at)) }}</td>  --}}
