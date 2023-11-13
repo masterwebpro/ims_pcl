@@ -86,7 +86,7 @@ class TruckerController extends Controller
 
         DB::connection()->beginTransaction();
         try {
-            $trucker = Trucker::updateOrCreate(['id' => $request->trucker_id], [
+            $trucker = Trucker::updateOrCreate(['id' => isset($request->trucker_id) ? $request->trucker_id : null], [
                 'trucker_name'=>$request->trucker_name,
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
@@ -97,10 +97,10 @@ class TruckerController extends Controller
                     $plate = array(
                         'vehicle_type' => $request->vehicle_type[$x],
                         'plate_no' => $request->plate_no[$x],
-                        'trucker_id'=>$request->trucker_id,
+                        'trucker_id'=> isset($request->trucker_id) ? $request->trucker_id[$x] :$trucker->id,
                     );
                     PlateNoList::updateOrCreate([
-                        'id' => $request->id[$x]
+                        'id' => isset($request->id[$x]) ? $request->id[$x] : null
                     ],$plate);
                 }
             }
