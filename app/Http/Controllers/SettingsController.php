@@ -519,6 +519,7 @@ class SettingsController extends Controller
                     ->leftJoin('uom as uw','uw.uom_id','=','masterdata.whse_uom')
                     ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
                     ->groupBy('masterdata.id')
+                    ->orderBy('rh.date_received','ASC')
                     ->orderBy('product_name','ASC')
                     ->orderBy('sl.location','ASC');
         if(isset($request->master_id)){

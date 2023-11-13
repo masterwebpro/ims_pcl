@@ -152,6 +152,36 @@ $(document).on('click','#uploadProduct', function (e) {
     });
 });
 
+$(document).on('click','.submit-product-xls', function (e) {
+    e.preventDefault();
+    $.ajax({
+        url: BASEURL + 'reports/export-product',
+        method: 'GET',
+        xhrFields: {
+            responseType: 'blob'
+        },
+        beforeSend: function () {
+            $('#preloading').modal('show');
+        },
+        success: function (data) {
+            var a = document.createElement('a');
+            var url = window.URL.createObjectURL(data);
+            a.href = url;
+            a.download = 'product_list.xlsx';
+            document.body.append(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            $('#templateMessage').html('Excel template downloaded successfully.');
+        },
+        error: function (error) {
+            $('#templateMessage').html('Error downloading Excel template.');
+        },
+        complete: function() {
+            $('#preloading').modal('hide');
+        }
+    });
+});
+
 
 
 

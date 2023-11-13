@@ -149,6 +149,8 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-current-stocks',[App\Http\Controllers\ReportController::class,'exportCurrentStocks'])->name('export-current-stocks');
     Route::get('/aging', [App\Http\Controllers\ReportController::class, 'getAgingIndex'])->name('reports.aging');
     Route::get('/export-aging', [App\Http\Controllers\ReportController::class, 'exportAging'])->name('export-aging');
+    Route::get('/export-product', [App\Http\Controllers\ProductController::class,'exportProduct'])->name('export-product');
+
 
 });
 

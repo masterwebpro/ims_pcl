@@ -42,6 +42,7 @@
                                 <div class="col-md-3 form-group">
                                     <label for="trucker_id" class="form-label">Trucker Name <span class="text-danger">*</span></label>
                                     <input type="hidden" class="form-control" name="trucker_id" id="trucker_id" value="{{ $trucker->trucker_id }}">
+                                    <input type="hidden" class="form-control" name="id" id="id" value="{{ $trucker->id }}">
                                     <input type="text" class="form-control" required="required" name="trucker_name" id="trucker_name" value="{{ $trucker->trucker_name }}" placeholder="Enter Trucker Name">
                                 </div>
 

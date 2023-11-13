@@ -97,13 +97,10 @@ class TruckerController extends Controller
                     $plate = array(
                         'vehicle_type' => $request->vehicle_type[$x],
                         'plate_no' => $request->plate_no[$x],
-                        'trucker_id'=>$trucker->id,
+                        'trucker_id'=>$request->trucker_id,
                     );
                     PlateNoList::updateOrCreate([
-                        'plate_no' => $request->plate_no[$x],
-                        'vehicle_type' => $request->vehicle_type[$x],
-                        'trucker_id' => $trucker->id,
-                        'is_enabled' => isset($request->is_enabled) ? $request->is_enabled[$x] : 1
+                        'id' => $request->id[$x]
                     ],$plate);
                 }
             }

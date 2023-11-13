@@ -20,4 +20,11 @@ class Products extends Model
             ->leftJoin('categories','categories.category_id','category_brands.category_id')
             ->leftJoin('brands','brands.brand_id','category_brands.brand_id');
     }
+
+    public function unit()
+    {
+        return $this->hasOne(ProductUom::class, 'product_id', 'product_id')
+        ->select('product_uom.*','uom.code','uom.uom_desc')
+        ->leftJoin('uom','uom.uom_id','product_uom.uom_id');
+    }
 }
