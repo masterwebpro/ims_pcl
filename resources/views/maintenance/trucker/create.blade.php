@@ -56,50 +56,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row ">
-                            <div class="col-lg-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-nowrap" id="truck-list">
-                                            <thead>
-                                                <tr class="table-active">
-                                                    <th scope="col">Vehicle Type</th>
-                                                    <th scope="col">Plate No.</th>
-                                                    <th scope="col" class="text-center"> <button type="button" id="add-row" class="btn btn-info btn-label rounded-pill"><i
-                                                        class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>
-                                                    Add</button></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="truck">
-                                                <tr>
-                                                    <td>
-                                                        <select class="form-select select2 truck_type" required="required" id="vehicle_type" name="vehicle_type[]">
-                                                            <option value="">Select Vehicle Type</option>
-                                                            <? foreach($truck_type as $truck) : ?>
-                                                            <option value="<?=$truck->vehicle_code?>" ><?="(".$truck->vehicle_code.") ".$truck->vehicle_desc?></option>
-                                                            <? endforeach;?>
-                                                        </select>
-                                                        <span class="text-danger error-msg vehicle_type0_error"></span>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" class="form-control" id="plate_no"
-                                                            name="plate_no[]" placeholder="Enter Plate No.">
-                                                        <span class="text-danger error-msg plate_no0_error"></span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="text-center">
-                                                            <button type="button" class="remove-row btn btn-icon btn-danger remove-truck mx-2 waves-effect waves-light">
-                                                                <i class="ri-delete-bin-5-fill"></i>
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <!--end table-->
-                                    </div>
-                            </div>
-                            <!--end col-->
-                        </div>
                     </div>
                 </div>
             </form>

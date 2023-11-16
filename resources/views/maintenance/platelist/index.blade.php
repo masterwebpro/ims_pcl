@@ -14,14 +14,14 @@
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">All Trucker List</h5>
+                    <h5 class="card-title mb-0 flex-grow-1">All Plate No List</h5>
                     <div class="flex-shrink-0">
-                        <a href="{{ URL::to('maintenance/trucker/create') }}"class="btn btn-info add-po" ><i class="ri-add-line align-bottom me-1"></i> Create Trucker</a>
+                        <a href="{{ URL::to('maintenance/plate/create') }}"class="btn btn-info add-po" ><i class="ri-add-line align-bottom me-1"></i> Create Plate No</a>
                     </div>
                 </div>
             </div>
             <div class="card-body border border-dashed border-end-0 border-start-0">
-                <form action="{{ route('trucker.index') }}" method="GET">
+                <form action="{{ route('plate.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-xxl-4 col-sm-12">
                             <div class="search-box">
@@ -74,6 +74,8 @@
                         <thead class="table-light text-muted">
                             <tr>
                                 <th class="sort" data-sort="code">Trucker Name</th>
+                                <th class="sort" data-sort="trk_desc">Plate No</th>
+                                <th class="sort" data-sort="convertion_pc">Vehicle Type</th>
                                 <th class="sort" data-sort="convertion_pc">Enable</th>
                                 <th class="sort" data-sort="created_at">Created Date</th>
                                 <th class="sort" data-sort="action">Action</th>
@@ -85,6 +87,8 @@
                                 <? foreach($trucker_list as $trk) : ?>
                                     <tr>
                                         <td class="id">{{ $trk->trucker_name }}</td>
+                                        <td class="project_name">{{ $trk->plate_no}}</td>
+                                        <td>{{ $trk->vehicle_type}}</td>
                                         <td>
                                             <div class="form-check form-switch form-switch form-switch-success">
                                                 <input class="form-check-input" type="checkbox" role="switch" id="SwitchCheck9" name="enable"  <?=($trk->is_enabled == 1) ? "checked" : "";?>  disabled>
@@ -93,8 +97,8 @@
                                         <td class="created_at">{{ date('M d, Y', strtotime($trk->created_at)) }}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('maintenance/trucker') }}/<?=_encode($trk->id);?>" data-id="{{$trk->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                <a href="{{ URL::to('maintenance/trucker') }}/<?=_encode($trk->id);?>/edit" data-id="{{$trk->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                <a href="{{ URL::to('maintenance/plate') }}/<?=_encode((isset($trk->id) ? $trk->id : 0));?>" data-id="{{$trk->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <a href="{{ URL::to('maintenance/plate') }}/<?=_encode((isset($trk->id) ? $trk->id : 0));?>/edit" data-id="{{$trk->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                         </td>
                                     </tr>
                                 <? endforeach; ?>

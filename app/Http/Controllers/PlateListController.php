@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Trucker;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Trucker;
 use App\Models\PlateNoList;
 use App\Models\TruckType;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class TruckerController extends Controller
+class PlateListController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,11 +19,14 @@ class TruckerController extends Controller
      */
     public function index(Request $request)
     {
-        $trucker_list = Trucker::select('trucker_list.*')
+        $trucker_list = PlateNoList::select('plate_no_list.*','trucker_list.trucker_name')
+                    ->leftJoin('trucker_list','trucker_list.id','plate_no_list.trucker_id')
                 ->where([
                     [function ($query) use ($request) {
                         if (($s = $request->q)) {
                             $query->orWhere('trucker_list.trucker_name','like', '%'.$s.'%');
+                            $query->orWhere('plate_no_list.plate_no','like', '%'.$s.'%');
+                            $query->orWhere('plate_no_list.vehicle_type', 'like', '%' . $s . '%');
                             $query->get();
                         }
                     }]
@@ -39,9 +42,10 @@ class TruckerController extends Controller
                         $query->get();
                     }]
                 ])
+                ->groupBy('plate_no_list.id')
                 ->orderByDesc('created_at')
                 ->paginate(20);
-        return view('maintenance/trucker/index', ['trucker_list' => $trucker_list]);
+        return view('maintenance/platelist/index', ['trucker_list' => $trucker_list]);
     }
 
     /**
@@ -52,9 +56,11 @@ class TruckerController extends Controller
     public function create()
     {
         $truck_type = TruckType::all();
+        $trucker = Trucker::all();
 
-        return view('maintenance/trucker/create', [
-            'truck_type' => $truck_type
+        return view('maintenance/platelist/create', [
+            'truck_type' => $truck_type,
+            'trucker' => $trucker
         ]);
     }
 
@@ -67,9 +73,13 @@ class TruckerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'trucker_name' => 'required|present',
+            'trucker_id' => 'required|present',
+            'vehicle_type.*' => 'required|present',
+            'plate_no.*' => 'required|present'
         ], [
-            'trucker_name' => 'Trucker name is required',
+            'trucker_id' => 'Trucker name is required',
+            'vehicle_type.*' => 'Vehicle type is required',
+            'plate_no.*' => 'Plate no is required',
         ]);
 
         if ($validator->fails()) {
@@ -78,18 +88,25 @@ class TruckerController extends Controller
 
         DB::connection()->beginTransaction();
         try {
-            $trucker = Trucker::updateOrCreate(['id' => isset($request->id) ? $request->id : null], [
-                'trucker_name'=>$request->trucker_name,
-                'is_enabled'=>$request->is_enabled,
-            ]);
+            if(isset($request->plate_no)){
+                for($x=0; $x < count($request->plate_no); $x++ ) {
+                    $plate = array(
+                        'vehicle_type' => $request->vehicle_type[$x],
+                        'plate_no' => $request->plate_no[$x],
+                        'trucker_id'=> $request->trucker_id,
+                        'is_enabled'=> $request->is_enabled,
+                    );
+                    PlateNoList::updateOrCreate([
+                        'id' => isset($request->id[$x]) ? $request->id[$x] : null
+                    ],$plate);
+                }
+            }
 
             DB::connection()->commit();
 
             return response()->json([
                 'success'  => true,
                 'message' => 'Saved successfully!',
-                'data'    => $trucker,
-                'id'=> _encode($trucker->id)
             ]);
 
         }
@@ -112,9 +129,15 @@ class TruckerController extends Controller
      */
     public function show($id)
     {
-        $trucker = Trucker::find(_decode($id));
-        return view('maintenance/trucker/view', [
-            'trucker'=>$trucker
+        $plate_list = PlateNoList::select('plate_no_list.*','tl.trucker_name','tl.id as trucker_id')->where('plate_no_list.id',_decode($id))
+                    ->leftJoin('trucker_list as tl','tl.id','=','plate_no_list.trucker_id')
+                    ->first();
+        $truck_type = TruckType::all();
+        $trucker = Trucker::all();
+        return view('maintenance/platelist/view', [
+            'plate_list'=>$plate_list,
+            'truck_type' => $truck_type,
+            'trucker' => $trucker
         ]);
     }
 
@@ -126,9 +149,16 @@ class TruckerController extends Controller
      */
     public function edit($id)
     {
-        $trucker = Trucker::find(_decode($id));
-        return view('maintenance/trucker/edit', [
-            'trucker'=>$trucker
+        $plate_list = PlateNoList::select('plate_no_list.*','tl.trucker_name','tl.id as trucker_id')->where('plate_no_list.id',_decode($id))
+                    ->leftJoin('trucker_list as tl','tl.id','=','plate_no_list.trucker_id')
+                    ->first();
+        $truck_type = TruckType::all();
+        $trucker = Trucker::all();
+
+        return view('maintenance/platelist/edit', [
+            'plate_list'=>$plate_list,
+            'truck_type' => $truck_type,
+            'trucker' => $trucker
         ]);
     }
 
