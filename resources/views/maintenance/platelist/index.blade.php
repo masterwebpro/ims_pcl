@@ -17,6 +17,7 @@
                     <h5 class="card-title mb-0 flex-grow-1">All Plate No List</h5>
                     <div class="flex-shrink-0">
                         <a href="{{ URL::to('maintenance/plate/create') }}"class="btn btn-info add-po" ><i class="ri-add-line align-bottom me-1"></i> Create Plate No</a>
+                        <a href="{{ URL::to('maintenance/trucker/create') }}"class="btn btn-success" ><i class="ri-add-line align-bottom me-1"></i> Create Trucker</a>
                     </div>
                 </div>
             </div>
