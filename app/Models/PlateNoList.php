@@ -11,4 +11,8 @@ class PlateNoList extends Model
     protected $table = 'plate_no_list';
     protected $primaryKey = 'id';
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'is_enabled' => 'boolean'
+    ];
 }
