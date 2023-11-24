@@ -28,7 +28,7 @@
                 <div class="flex-shrink-0">
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                         <button type="button" data-status="open" class="btn btn-success btn-label rounded-pill submit-trucker"><i class="ri-check-double-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save</button>
-                        <a  href="{{ URL::to('maintenance/trucker') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
+                        <a  href="{{ URL::to('maintenance/plate') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
                 </div>
             </div><!-- end card header -->
@@ -39,16 +39,39 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row mb-4">
-                                <div class="col-md-6 form-group">
-                                    <label for="trucker_id" class="form-label">Trucker Name <span class="text-danger">*</span></label>
-                                    <input type="hidden" class="form-control" name="id" id="id" value="{{ $trucker->id }}">
-                                    <input type="text" class="form-control" required="required" name="trucker_name" id="trucker_name" value="{{ $trucker->trucker_name }}" placeholder="Enter Trucker Name">
+                                <div class="col-md-3 form-group">
+                                    <input type="hidden" class="form-control" name="id" id="id" value="{{ $plate_list->id }}">
+                                    <label for="trucker_id" class="form-label">Trucker Name <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select select2 truck_type" required="required" id="trucker_id" name="trucker_id">
+                                        <option value="">Select Truck Name</option>
+                                        <? foreach($trucker as $trk) : ?>
+                                            <option value="<?=$trk->id?>" <?=($trk->id == $plate_list->trucker_id) ? 'selected' : ''?>><?=$trk->trucker_name?></option>
+                                        <? endforeach;?>
+                                    </select>
+                                    <span class="text-danger error-msg trucker_id_error"></span>
                                 </div>
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-3 form-group">
+                                    <label for="vehicle_type" class="form-label">Vehicle Type <span class="text-danger">*</span></label>
+                                    <select class="form-select select2 truck_type" required="required" id="vehicle_type" name="vehicle_type[]">
+                                        <option value="">Select Vehicle Type</option>
+                                        <? foreach($truck_type as $truck) : ?>
+                                        <option value="<?=$truck->vehicle_code?>" <?=($truck->vehicle_code == $plate_list->vehicle_type) ? 'selected' : ''?> ><?="(".$truck->vehicle_code.") ".$truck->vehicle_desc?></option>
+                                        <? endforeach;?>
+                                    </select>
+                                    <span class="text-danger error-msg vehicle_type0_error"></span>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <label for="plate_no" class="form-label">Plate No <span class="text-danger">*</span></label>
+                                    <input type="text" id="plate_no" required="required"  name="plate_no[]" class="form-control" value="{{ $plate_list->plate_no }}" placeholder="Enter Plate No">
+                                    <span class="text-danger error-msg plate_no0_error"></span>
+                                </div>
+                                <div class="col-md-3 form-group">
                                     <label for="is_enabled" class="form-label">Enable </label>
                                     <div class="form-check form-switch form-switch-success form-switch-md" dir="ltr">
                                         <input type="checkbox" class="form-check-input" id="is_enabled"
-                                            name="is_enabled" <?=(($trucker->is_enabled == 1) ? 'checked' : '') ?>>
+                                            name="is_enabled" <?=(($plate_list->is_enabled == 1) ? 'checked' : '') ?>>
                                     </div>
                                 </div>
                             </div>
@@ -75,6 +98,6 @@
 <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-<script src="{{ URL::asset('/assets/js/maintenance/trucker.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/maintenance/plate.js') }}"></script>
 
 @endsection

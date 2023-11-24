@@ -11,4 +11,7 @@ class Trucker extends Model
     protected $table = 'trucker_list';
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'is_enabled' => 'boolean'
+    ];
 }

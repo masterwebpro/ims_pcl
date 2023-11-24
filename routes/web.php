@@ -61,6 +61,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/maintenance/attributes', App\Http\Controllers\AttributesController::class);
     Route::resource('/maintenance/trucker', App\Http\Controllers\TruckerController::class);
     Route::resource('/maintenance/particulars', App\Http\Controllers\ParticularController::class);
+    Route::resource('/maintenance/plate', App\Http\Controllers\PlateListController::class);
+
 
     Route::resource('/users', App\Http\Controllers\UsersController::class);
     Route::get('/productTemplate', 'App\Http\Controllers\ProductController@productTemplate');
