@@ -54,7 +54,7 @@
                                         <th class="sort" data-sort="status">Status</th>
                                         <th class="sort" data-sort="created_by">Created By</th>
                                         <th class="sort" data-sort="created_at">Created Date</th>
-                                        <th class="sort" data-sort="action">Action</th>
+                                        <!-- <th class="sort" data-sort="action">Action</th> -->
                                     </tr>
                                 </thead>
             
@@ -62,7 +62,7 @@
                                     <? if($active_list->total() > 0 ) : ?>
                                         <? foreach($active_list as $active) :?>
                                             <tr>
-                                                <td class="rcv_no">{{ $active->ref_no}}</td>
+                                                <td class="rcv_no"><a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block">{{ $active->ref_no}}</a></td>
                                                 <td class="po_num">{{ isset($active->company->client_name) ? $active->company->client_name : ''}}</td>
                                                 <td class="sales_invoice">{{ $active->store->store_name}}</td>
                                                 <td>{{ $active->warehouse->warehouse_name}}</td>
@@ -70,13 +70,13 @@
                                                 <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
                                                 <td>{{ $active->user_create->name}}</td>
                                                 <td class="created_at">{{ date('M d, Y h:iA', strtotime($active->created_at))}}</td>
-                                                <td class="action">
+                                                <!-- <td class="action">
                                                     <div class="hstack gap-3 fs-12">
-                                                        <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
-                                                        <? if($active->status != 'posted') : ?>
-                                                            <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
-                                                        <? endif; ?>
-                                                </td>
+                                                        <a href="{{ URL::to('stock/movement') }}/<?#=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                        <? #if($active->status != 'posted') : ?>
+                                                            <a href="{{ URL::to('stock/movement') }}/<?#=_encode($active->id);?>/edit" data-id="{{$active->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
+                                                        <? #endif; ?>
+                                                </td> -->
                                             </tr>
                                         <? endforeach; ?>
                                     <? else :?>
@@ -105,7 +105,7 @@
                                         <th class="sort" data-sort="status">Status</th>
                                         <th class="sort" data-sort="created_by">Created By</th>
                                         <th class="sort" data-sort="created_at">Created Date</th>
-                                        <th class="sort" data-sort="action">Action</th>
+                                        <th class="sort d-none" data-sort="action">Action</th>
                                     </tr>
                                 </thead>
             
@@ -113,7 +113,7 @@
                                     <? if($posted_list->total() > 0 ) : ?>
                                         <? foreach($posted_list as $active) :?>
                                             <tr>
-                                                <td class="rcv_no">{{ $active->ref_no}}</td>
+                                                <td class="rcv_no"><a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block">{{ $active->ref_no}}</a> </td>
                                                 <td class="po_num">{{ isset($active->company->client_name) ? $active->company->client_name : ''}}</td>
                                                 <td class="sales_invoice">{{ $active->store->store_name}}</td>
                                                 <td>{{ $active->warehouse->warehouse_name}}</td>
@@ -121,7 +121,7 @@
                                                 <td class="status"><span class="badge {{ $active->status }} text-uppercase fs-11">{{ $active->status }}</span></td>
                                                 <td>{{ $active->user_create->name}}</td>
                                                 <td class="created_at">{{ date('M d, Y h:iA', strtotime($active->created_at))}}</td>
-                                                <td class="action">
+                                                <td class="action d-none">
                                                     <div class="hstack gap-3 fs-12">
                                                         <a href="{{ URL::to('stock/movement') }}/<?=_encode($active->id)?>" data-id="{{$active->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
                                                         <? if($active->status != 'posted') : ?>

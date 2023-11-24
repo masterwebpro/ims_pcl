@@ -454,6 +454,54 @@ class StockMovementController extends Controller
                 //remove on masterfiles
                 $mster_hdr = MasterfileModel::where('ref_no', $ref_no)->delete();
 
+                //get all rcvdtl_id in mvdtl
+                $rcvdtl_id_list = MvDtl::where('ref_no', $ref_no)->get();
+                $mv = MvHdr::where('ref_no', $ref_no)->first();
+
+                $_stockOutMasterdata = [];
+                $_stockInMasterdata = [];
+
+                foreach($rcvdtl_id_list as $rec) {
+                    $data[] = $rec->rcv_dtl_id;
+                    //deduct the qty to dest
+
+                    $product = Products::where('product_id',$rec->product_id)->first();
+
+                    $_stockOutMasterdata[] = array(
+                        'company_id'=>$mv->company_id,
+                        'customer_id'=>$product->customer_id,
+                        'store_id'=>$mv->store_id,
+                        'warehouse_id'=>$mv->warehouse_id,
+                        'product_id'=>$rec->product_id,
+                        'storage_location_id'=>($rec->new_storage_location_id == 0 || $rec->new_storage_location_id == 'null') ? NULL : $rec->new_storage_location_id,
+                        'item_type'=>$rec->new_item_type,
+                        'inv_qty'=>($rec->new_inv_qty),
+                        'inv_uom'=>$rec->new_inv_uom,
+                        'whse_qty'=>($rec->new_inv_qty),
+                        'whse_uom'=>$rec->new_inv_uom,
+                        'rcv_dtl_id'=>$rec->rcv_dtl_id,
+                    );
+
+                    $_stockInMasterdata[] = array(
+                        'company_id'=>$mv->company_id,
+                        'customer_id'=>$product->customer_id,
+                        'store_id'=>$mv->store_id,
+                        'warehouse_id'=>$mv->warehouse_id,
+                        'product_id'=>$rec->product_id,
+                        'storage_location_id'=>($rec->old_storage_location_id == 0 || $rec->old_storage_location_id == 'null') ? NULL : $rec->old_storage_location_id,
+                        'item_type'=>$rec->old_item_type,
+                        'inv_qty'=>($rec->old_inv_qty),
+                        'inv_uom'=>$rec->old_inv_uom,
+                        'whse_qty'=>($rec->old_inv_qty),
+                        'whse_uom'=>$rec->old_inv_uom,
+                        'rcv_dtl_id'=>$rec->rcv_dtl_id,
+                    );
+                    
+                }
+
+                _stockInMasterData($_stockInMasterdata);
+                _stockOutMasterData($_stockOutMasterdata);
+
                  
                 $audit_trail[] = [
                     'control_no' => $ref_no,
