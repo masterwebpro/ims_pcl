@@ -23,6 +23,9 @@ Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'inde
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('/po', App\Http\Controllers\PurchaseOrderController::class);
+    Route::post('/po/unpost', [App\Http\Controllers\PurchaseOrderController::class, 'unpost']);
+
+
     Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
     Route::get('/receive/{id}/create', [App\Http\Controllers\ReceiveController::class, 'receivePo']);
     Route::delete('/receive', [App\Http\Controllers\ReceiveController::class, 'destroy']);

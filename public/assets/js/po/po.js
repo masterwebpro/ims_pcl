@@ -306,3 +306,55 @@ $(document).on('blur keyup', '#item_code', function(e) {
 
     }
 });
+
+$(document).on('click', '.unpost-po', function (e) {
+    e.preventDefault();
+    var po_id = $('#po_id').val();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to UNPOST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, UNPOST it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'po/unpost',
+                data: {
+                    po_id : po_id,
+                    _token: $('input[name=_token]').val()
+                },
+                method: "post",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    // $('#submit-receive').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message); 
+                            setTimeout(function () {
+                                // window.location = BASEURL+'po';
+                                location.reload();
+                            }, 300);
+                            
+                        } else {
+                            // toastr.error(data.message,'Error on saving'); 
+                            showError(data.message);
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+
+
+});
