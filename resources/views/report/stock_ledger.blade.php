@@ -132,6 +132,7 @@
                                     <th class="fw-medium text-center">Received QTY</th>
                                     <th class="fw-medium text-center">Transfer QTY</th>
                                     <th class="fw-medium text-center">Withdraw QTY</th>
+                                    <th class="fw-medium text-center">Reserve QTY</th>
                                     <th class="fw-medium text-center">Balance</th>
                                 </tr>
                             </thead>

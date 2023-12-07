@@ -41,7 +41,8 @@ class ReportController extends Controller
     public function getStockLedgerIndex(Request $request)
     {
         $supplier_list = Supplier::all();
-        $client_list = Client::where('is_enabled', '1')->get();
+        // $client_list = Client::where('is_enabled', '1')->get();
+        $client_list = Client::where('client_type','O')->where('is_enabled', '1')->get();
 
         return view('report/stock_ledger', [
             'request'=>$request,
