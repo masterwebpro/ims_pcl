@@ -130,7 +130,7 @@ class ProductController extends Controller
                 'category_brand_id'=>$request->category_brand_id,
                 'created_by' => Auth::user()->id,
                 'is_enabled'=> isset($request->is_enabled) ? 1 : 0,
-                'is_serialize'=>isset($request->is_serialize) ? 1 : 0,
+                'is_serialize'=>(isset($request->is_serialize) && $request->is_serialize == 1) ? 1 : 0,
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
