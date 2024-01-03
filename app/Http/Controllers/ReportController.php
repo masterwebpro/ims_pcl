@@ -61,12 +61,8 @@ class ReportController extends Controller
             'store'=>'required',
             'product_id' => 'required',
             'item_type' => 'required',
-        ], [
-            'client'=>'Client  is required',
-            'store'=>'Store is required',
-            'product_id'=>'Product is required',
-            'item_type'=>'Item type is required'
-        ]);
+            'date_range' => 'required',
+        ], ['*'=>'This field is required' ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -205,7 +201,6 @@ class ReportController extends Controller
             ->orderBy("masterfiles.created_at")
             ->groupBy('masterfiles.product_id');
 
-
         if($request->has('client')  && $request->client !='')
             $rcv->where('masterfiles.company_id', $request->client);
 
@@ -224,7 +219,19 @@ class ReportController extends Controller
         if($request->has('location')  && $request->location !='')
             $rcv->where('masterfiles.storage_location_id', $request->location);
 
-        $rcv->where('masterfiles.created_at', '<', date('Y-01-01 00:00:00'));
+        
+        $date_split = explode(" to ",$request->date_range);
+
+        $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
+
+        if(isset($date_split[1])) {
+            $to = date('Y-m-d',  strtotime($date_split[1]))." 23:59:59";
+        } else {
+            $to = date('Y-m-d',  strtotime($date_split[0]))." 23:59:59";
+        }
+
+        
+        $rcv->where('masterfiles.created_at', '<', $from);
 
         $data = $rcv->get();
 
@@ -232,8 +239,20 @@ class ReportController extends Controller
     }
 
     function getStockLedgerResult($request) {
+
+        $date_split = explode(" to ",$request->date_range);
+
+        $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
+
+        if(isset($date_split[1])) {
+            $to = date('Y-m-d',  strtotime($date_split[1]))." 23:59:59";
+        } else {
+            $to = date('Y-m-d',  strtotime($date_split[0]))." 23:59:59";
+        }
+
+
         $rcv = MasterfileModel::select('masterfiles.*','sl.location')
-            ->whereBetween('masterfiles.created_at', [date('Y-01-01 00:00:00'), date('Y-m-d 23:59:59')])
+            ->whereBetween('masterfiles.created_at', [$from, $to])
             ->leftJoin('products as p', 'p.product_id', '=', 'masterfiles.product_id')
             ->leftJoin('uom as uw', 'uw.uom_id', '=', 'masterfiles.whse_uom')
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterfiles.inv_uom')

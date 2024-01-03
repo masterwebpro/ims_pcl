@@ -39,6 +39,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
     var item_type = $('#item_type').val();
     var product_id = $('#product_id').val();
     var location = $('#location').val();
+    var date_range = $('#date_picker').val();
    
     $.ajax({
         url: BASEURL + 'reports/getStockLedger',
@@ -50,6 +51,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
             item_type:item_type,
             product_id:product_id,
             location:location,
+            date_range: date_range
         },
         dataType: 'json',
         beforeSend: function () {
@@ -65,9 +67,9 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                    
                     beggining_balance= 0;
                     
-                    if(data.beg_balance) {
-                        if(data.beg_balance.inv_qty)
-                            beggining_balance = data.beg_balance.inv_qty;
+                    if(data.beg_balance[0]) {
+                        if(data.beg_balance[0].inv_qty)
+                            beggining_balance = data.beg_balance[0].inv_qty;
                     }
 
                     table += '<tr>';
