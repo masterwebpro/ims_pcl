@@ -73,7 +73,7 @@
                             </div>
                             <div class="row">
 
-                                <div class="col-lg-6 col-md-6">
+                                <div class="col-lg-4 col-md-4">
                                     <h6 class="text-muted text-uppercase fw-semibold">Date Covered <span class="text-danger">*</span></h6>
                                         <input type="text" class="form-control" name="date" id="date_picker"
                                         data-provider="flatpickr" data-date-format="Y-m-d" value="<?=isset($request->date) ? $request->date : date("Y-m-d", strtotime("-3 months"))." to ".date('Y-m-d')?>" data-range-date="true"
@@ -83,7 +83,7 @@
                                   
                                 </div>
                                 
-                                 <div class="col-lg-4 col-md-4 ">
+                                 <div class="col-lg-5 col-md-4 ">
                                     <h6 class="text-muted text-uppercase fw-semibold">Products <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <input type="hidden" class="form-control" name="product_id" id="product_id">
@@ -92,7 +92,7 @@
                                      </p>
                                 </div>
                                  <!--end col-->
-                                 <div class="col-lg-2 col-md-2">
+                                 <div class="col-lg-2 col-md-4">
                                     <h6 class="text-muted text-uppercase fw-semibold ">Item Type <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="item_type" name="item_type">
