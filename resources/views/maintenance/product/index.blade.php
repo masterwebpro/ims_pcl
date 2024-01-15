@@ -103,9 +103,15 @@
                                 <? if($product_list->total() > 0 ) : ?>
                                 <? foreach($product_list as $prod) :?>
                                 <tr>
-                                    <td>{{ $prod->product_id }}</td>
-                                    <td>{{ $prod->sap_code }}</td>
-                                    <td>{{ $prod->product_code }}</td>
+                                    <td><a href="{{ URL::to('maintenance/product') }}/<?= _encode($prod->product_id) ?>"
+                                                data-id="{{ $prod->product_id }}"
+                                                class="link-info text-info d-inline-block">{{ $prod->product_id }}</a></td>
+                                    <td><a href="{{ URL::to('maintenance/product') }}/<?= _encode($prod->product_id) ?>"
+                                                data-id="{{ $prod->product_id }}"
+                                                class="link-info text-info d-inline-block">{{ $prod->sap_code }}</a></td>
+                                    <td><a href="{{ URL::to('maintenance/product') }}/<?= _encode($prod->product_id) ?>"
+                                                data-id="{{ $prod->product_id }}"
+                                                class="link-info text-info d-inline-block">{{ $prod->product_code }}</a></td>
                                     <td class="text-wrap">{{ $prod->product_name }}</td>
                                     {{--  <td>{{ $prod->product_upc }}</td>  --}}
                                     {{--  <td>{{ $prod->product_sku }}</td>  --}}

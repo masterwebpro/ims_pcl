@@ -134,7 +134,7 @@
                             <? if($po_list->total() > 0 ) : ?>
                                 <? foreach($po_list as $po) :?>
                                     <tr>
-                                        <td class="id">{{ $po->po_num}}</td>
+                                        <td class="id"><a href="{{ URL::to('po') }}/<?=_encode($po->id)?>" data-id="{{$po->id}}" class="link-info text-info d-inline-block">{{ $po->po_num}}</a></td>
                                         <td class="project_name">{{ $po->po_date}}</td>
                                         <td>{{ $po->supplier_name}}</td>
                                         <td class="client_name">{{ $po->customer_name}}</td>
