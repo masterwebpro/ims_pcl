@@ -144,7 +144,7 @@
                             <? if($receive_list->total() > 0 ) : ?>
                                 <? foreach($receive_list as $receive) :?>
                                     <tr>
-                                        <td class="rcv_no">{{ $receive->rcv_no}}</td>
+                                        <td class="rcv_no"><a href="{{ URL::to('receive') }}/<?=_encode($receive->id);?>/edit" data-id="{{$receive->id}} " class="link-info edit-po">{{ $receive->rcv_no}}</a></td>
                                         <td class="po_num">{{ $receive->po_num}}</td>
                                         <td class="sales_invoice">{{ $receive->sales_invoice}}</td>
                                         <td>{{ $receive->supplier_name}}</td>
