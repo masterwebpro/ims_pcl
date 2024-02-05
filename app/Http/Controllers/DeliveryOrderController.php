@@ -351,7 +351,7 @@ class DeliveryOrderController extends Controller
 
         $num = str_pad((int)$count, 5, "0", STR_PAD_LEFT);
 
-        $series = "D-" . $date . "-" . $num;
+        $series = "DO-" . $date . "-" . $num;
 
         return $series;
     }

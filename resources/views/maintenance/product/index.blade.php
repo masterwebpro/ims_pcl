@@ -32,7 +32,7 @@
                 <div class="card-body border border-dashed border-end-0 border-start-0">
                     <form action="{{ route('product.index') }}" method="GET">
                         <div class="row g-3">
-                            <div class="col-xxl-4 col-sm-12">
+                            <div class="col-lg-4 col-sm-6">
                                 <div class="search-box">
                                     <input type="text" name="q" class="form-control search"
                                         placeholder="Search for tasks or something...">
@@ -41,7 +41,7 @@
                             </div>
                             <!--end col-->
 
-                            <div class="col-xxl-2 col-sm-4">
+                            <div class="col-lg-4 col-sm-6">
                                 <div class="input-light">
                                     <select class="form-control" name="filter_date" id="filter_date">
                                         <option value="created_at">Created Date</option>
@@ -49,14 +49,25 @@
                                 </div>
                             </div>
 
-                            <div class="col-xxl-2 col-sm-4">
+                            <div class="col-lg-4 col-sm-6">
                                 <input type="text" class="form-control" name="date" id="date_picker"
                                     data-provider="flatpickr" data-date-format="Y-d-m" data-range-date="true"
                                     placeholder="Select date range">
                             </div>
                             <!--end col-->
-
-                            <div class="col-xxl-2 col-sm-4">
+                            <div class="col-lg-4 col-sm-6">
+                                <select class="form-select select2" id="customer" name="customer">
+                                    <option value="">Select Customer</option>
+                                    <? foreach($client_list as $customer) : ?>
+                                    <? if($customer->client_type == 'C') : ?>
+                                    <option value="<?= $customer->id ?>"
+                                        <?= $request->customer == $customer->id ? 'selected' : '' ?>>
+                                        <?= $customer->client_name ?></option>
+                                    <? endif;?>
+                                    <? endforeach;?>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-sm-6">
                                 <div class="input-light">
                                     <select class="form-control" data-choices data-choices-search-false name="status"
                                         id="status">
@@ -65,7 +76,7 @@
                                 </div>
                             </div>
                             <!--end col-->
-                            <div class="col-xxl-2 col-sm-4">
+                            <div class="col-lg-4 col-sm-6">
                                 <button type="submit" class="btn btn-primary w-100"> <i
                                         class="ri-equalizer-fill me-1 align-bottom"></i>
                                     Filters
@@ -84,7 +95,7 @@
                                 <tr>
                                     <th class="sort" data-sort="product_id">Product Id</th>
                                     <th class="sort" data-sort="sap_code">Sap Code</th>
-                                    <th class="sort" data-sort="product_code">Product Code</th>
+                                    {{--  <th class="sort" data-sort="product_code">Product Code</th>  --}}
                                     <th class="sort" data-sort="product_name">Product Name</th>
                                     {{--  <th class="sort" data-sort="product_upc">Product UPC</th>  --}}
                                     {{--  <th class="sort" data-sort="product_sku">Product SKU</th>  --}}
@@ -109,9 +120,9 @@
                                     <td><a href="{{ URL::to('maintenance/product') }}/<?= _encode($prod->product_id) ?>"
                                                 data-id="{{ $prod->product_id }}"
                                                 class="link-info text-info d-inline-block">{{ $prod->sap_code }}</a></td>
-                                    <td><a href="{{ URL::to('maintenance/product') }}/<?= _encode($prod->product_id) ?>"
+                                    {{--  <td><a href="{{ URL::to('maintenance/product') }}/<?= _encode($prod->product_id) ?>"
                                                 data-id="{{ $prod->product_id }}"
-                                                class="link-info text-info d-inline-block">{{ $prod->product_code }}</a></td>
+                                                class="link-info text-info d-inline-block">{{ $prod->product_code }}</a></td>  --}}
                                     <td class="text-wrap">{{ $prod->product_name }}</td>
                                     {{--  <td>{{ $prod->product_upc }}</td>  --}}
                                     {{--  <td>{{ $prod->product_sku }}</td>  --}}

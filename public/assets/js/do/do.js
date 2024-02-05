@@ -52,8 +52,11 @@ $(document).on('click', '#find-items', function() {
         new DataTable("#show-items-list",{
             order: [[1, 'desc']],
             paging: true,
+              columnDefs : [
+                { targets: [4], className: 'dt-body-right' },
+            ],
             ajax: {
-                url : BASEURL+"settings/getAvailableStocks",
+                url : BASEURL+"settings/getAvailableItems",
                 data : {
                     customer_id : customer_id,
                     store_id : store_id,
@@ -64,9 +67,9 @@ $(document).on('click', '#find-items', function() {
             },
             columns: [
                 { data: 'product_id',  visible: false },
+                { data: 'sap_code' },
                 { data: 'product_code' },
                 { data: 'product_name' },
-                //{ data: 'product_sku' },
                 { data: 'inv_qty' },
                 { data: 'ui_code' },
             ],
@@ -99,7 +102,10 @@ $(document).on('click', '#add-product', function() {
                 <input type="hidden" name="inv_uom[]" readonly id="inv_uom'+data[x].inv_uom+'" value="'+data[x].inv_uom+'" /> \
             '+rowCount+' </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].product_name+'<br/><small>'+data[x].product_code+'</small> \
+                '+data[x].product_name+'<br/><small><em><b>'+((data[x].sap_code) ? data[x].sap_code : data[x].product_code )+'</b></em></small> \
+            </td> \
+            <td class="text-center  fs-14"> \
+                '+data[x].inv_qty.toFixed(2)+'\
             </td> \
             <td class="text-start ps-1"> \
                 <input type="text" class="form-control inv_qty numeric uom_select w-100" name="inv_qty[]" data-id="'+data[x].product_id+'" id="inv_qty_'+(rowCount-1)+'" value="1" placeholder="Order Quantity" /> \

@@ -58,13 +58,21 @@ class ProductController extends Controller
                                         $query->whereBetween('products.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
                                     }
                                 }
-
+                                if ($request->customer) {
+                                    $query->where('customer_id', $request->customer);
+                                }
                                 $query->get();
                             }]
                         ])
                         ->orderByDesc('products.created_at')
                         ->paginate(20);
-        return view('maintenance/product/index', ['product_list' => $product_list]);
+        $client_list = Client::where('client_type', 'C')->get();
+
+        return view('maintenance/product/index', [
+            'product_list' => $product_list,
+            'client_list' => $client_list,
+            'request' => $request
+        ]);
 
     }
 
@@ -98,7 +106,7 @@ class ProductController extends Controller
             'category_id' => 'required',
             'customer_id' => 'required',
             'category_brand_id' => 'required',
-            // 'sap_code' => 'required',
+            'sap_code' => 'required',
         ], [
             'supplier_id' => 'Supplier is required',
             // 'product_code' => 'Product code  is required',
@@ -107,7 +115,7 @@ class ProductController extends Controller
             'category_id' => 'Category is required',
             'customer_id' => 'Customer is required',
             'category_brand_id' => 'Brand is required',
-            // 'sap_code' => 'SAP Code is required',
+            'sap_code' => 'SAP Code is required',
         ]);
 
         if ($validator->fails()) {
@@ -125,6 +133,7 @@ class ProductController extends Controller
                 'product_name'=>$request->product_name,
                 'product_upc'=> isset($request->product_upc) ? $request->product_upc :  $request->product_code,
                 'product_sku'=> isset($request->product_sku) ? $request->product_sku :  $request->product_code,
+                'model'=> isset($request->model) ? $request->model :  $request->model,
                 'supplier_id'=>$request->supplier_id,
                 'customer_id'=>$request->customer_id,
                 'category_brand_id'=>$request->category_brand_id,
@@ -477,6 +486,9 @@ class ProductController extends Controller
                     if($request->filter_date == 'created_at' && $request->date ) {
                         $product->whereBetween('products.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
                     }
+                }
+                if (isset($request->customer)) {
+                    $product->where('products.customer_id',$request->customer);
                 }
         $prod    =    $product->get();
 

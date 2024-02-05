@@ -365,7 +365,7 @@
                                                             <input type="hidden" name="inv_uom[]" readonly id="inv_uom{{$x}}" value="{{$item->inv_uom}}" />
                                                         {{$x++}} </td>
                                                         <td class="text-start fs-14">
-                                                            {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
+                                                            {{ ($item->product) ? $item->product->product_name : "" }}<br/><small><em><b>{{ ($item->product) ? $item->product->sap_code : $item->product->product_code }}</b></em></small>
                                                         </td>
                                                         <td class="ps-1">
                                                             <input type="text"  class="form-control inv_qty numeric uom_select w-100" name="inv_qty[]" data-id="{{$item->product_id}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
@@ -424,6 +424,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th>&nbsp;</th>
+                                <th>SAP Code</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
                                 <th>Available Stocks</th>

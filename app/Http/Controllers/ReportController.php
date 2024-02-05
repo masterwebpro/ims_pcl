@@ -104,7 +104,7 @@ class ReportController extends Controller
             $rcv->where('rcv_hdr.rcv_no', $request->rcv_no);
 
         if($request->has('client')  && $request->client !='')
-            $rcv->where('rcv_hdr.client_id', $request->client);
+            $rcv->where('rcv_hdr.customer_id', $request->client);
 
         if($request->has('store')  && $request->store !='')
             $rcv->where('rcv_hdr.store_id', $request->store);
@@ -307,7 +307,7 @@ class ReportController extends Controller
             ->orderBy('sl.location');
 
         if($request->has('client')  && $request->client !='')
-            $rcv->where('masterdata.client_id', $request->client);
+            $rcv->where('masterdata.customer_id', $request->client);
 
         if($request->has('store')  && $request->store !='')
             $rcv->where('masterdata.store_id', $request->store);

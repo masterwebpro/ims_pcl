@@ -23,13 +23,14 @@ class ExportRcvDetailed implements FromCollection, WithHeadings
             ->leftJoin('rcv_dtl as rd', 'rd.rcv_no', '=', 'rcv_hdr.rcv_no')
             ->leftJoin('products as p', 'p.product_id', '=', 'rd.product_id')
             ->leftJoin('uom as uw', 'uw.uom_id', '=', 'rd.whse_uom')
-            ->leftJoin('uom as ui', 'ui.uom_id', '=', 'rd.inv_uom');
+            ->leftJoin('uom as ui', 'ui.uom_id', '=', 'rd.inv_uom')
+            ->where('rcv_hdr.status','posted');
 
         if($this->request->rcv_no !='')
             $rcv->where('rcv_hdr.rcv_no', $this->request->rcv_no);
 
         if($this->request->has('client')  && $this->request->client !='')
-            $rcv->where('rcv_hdr.client_id', $this->request->client);
+            $rcv->where('rcv_hdr.customer_id', $this->request->client);
 
         if($this->request->has('store')  && $this->request->store !='')
             $rcv->where('rcv_hdr.store_id', $this->request->store);

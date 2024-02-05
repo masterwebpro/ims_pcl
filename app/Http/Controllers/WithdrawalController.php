@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AuditTrail;
 use App\Models\Client;
+use App\Models\DoHdr;
 use App\Models\MasterdataModel;
 use App\Models\MasterfileModel;
 use App\Models\OrderType;
 use App\Models\SeriesModel;
 use App\Models\Store;
 use App\Models\Supplier;
+use App\Models\TruckType;
 use App\Models\UOM;
 use App\Models\Warehouse;
 use App\Models\WdDtl;
@@ -126,13 +128,6 @@ class WithdrawalController extends Controller
         $deliver_list = Client::where('client_type','T')->get();
         $warehouse_list = Warehouse::all();
         $uom = UOM::all();
-        // $location = [
-        //     "rack" => "",
-        //     "layer"=> ""
-        // ];
-
-        // $location = (new SettingsController)->getLocationPerWarehouse($warehouse);
-
 
         return view('withdraw/create', [
             'company_list'=>$company_list,
@@ -145,7 +140,6 @@ class WithdrawalController extends Controller
             'wd_type' => $this->wd_type,
             'created_by' => Auth::user()->name,
             'today' => date('m/d/Y'),
-            // 'location' => $location,
         ]);
     }
 
@@ -650,5 +644,51 @@ class WithdrawalController extends Controller
                 'data'    => $e->getMessage()
             ]);
         }
+    }
+
+    public function withdrawDo($do_id)
+    {
+        $do_id = _decode($do_id);
+
+        $do = DoHdr::where('id', $do_id)->first();
+
+        if($do) {
+            $uom_list = UOM::all();
+            $truck_type_list = TruckType::all();
+            $store_list = Store::all();
+            $supplier_list = Supplier::all();
+            $client_list = Client::where('is_enabled', '1')->get();
+            $warehouse_list = Warehouse::all();
+            $order_type = OrderType::all();
+            $store_list = Store::all();
+            $company_list = Client::where('client_type','O')->get();
+            $client_list = Client::where('client_type','C')->get();
+            $deliver_list = Client::where('client_type','T')->get();
+            $warehouse_list = Warehouse::all();
+            $uom = UOM::all();
+
+            return view('withdraw/create', [
+                'company_list'=>$company_list,
+                'client_list'=>$client_list,
+                'store_list'=>$store_list,
+                'deliver_list'=>$deliver_list,
+                'order_type'=>$order_type,
+                'warehouse_list'=>$warehouse_list,
+                'uom'=>$uom,
+                'wd_type' => $this->wd_type,
+                'created_by' => Auth::user()->name,
+                'today' => date('m/d/Y'),
+            ]);
+            return view('receive/po', [
+                'do'=>$do,
+                'client_list'=>$client_list,
+                'supplier_list'=>$supplier_list,
+                'truck_type_list'=>$truck_type_list,
+                'uom_list'=>$uom_list
+            ]);
+        } else {
+            return view('error/no-found');
+        }
+
     }
 }

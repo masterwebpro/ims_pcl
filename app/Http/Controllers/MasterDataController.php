@@ -42,7 +42,8 @@ class MasterDataController extends Controller
                         ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
                         ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterdata.storage_location_id')
                         ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
-                        ->leftJoin('warehouses as wh', 'wh.id', '=', 'masterdata.warehouse_id');
+                        ->leftJoin('warehouses as wh', 'wh.id', '=', 'masterdata.warehouse_id')
+                        ->where('masterdata.inv_qty','>',0);
                         // ->leftJoin('client_list as c', 'c.id', '=', 'masterdata.customer_id')
                         // ->leftJoin('client_list as com', 'com.id', '=', 'masterdata.company_id')
                         if ($request->keyword) {
