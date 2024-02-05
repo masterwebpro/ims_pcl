@@ -205,10 +205,10 @@ class StockTransferController extends Controller
                     'status'=>'X',
                     'product_id'=>$request->product_id[$x],
                     'item_type'=>$request->item_type[$x],
-                    'inv_qty'=>($request->source_inv_qty[$x] * -1),
-                    'inv_uom'=>$request->source_inv_uom[$x],
-                    'whse_qty'=>($request->source_inv_qty[$x] * -1),
-                    'whse_uom'=>$request->source_inv_uom[$x],
+                    'inv_qty'=>($request->dest_inv_qty[$x] * -1),
+                    'inv_uom'=>$request->dest_inv_uom[$x],
+                    'whse_qty'=>($request->dest_inv_qty[$x] * -1),
+                    'whse_uom'=>$request->dest_inv_uom[$x],
                     'created_at'=>$this->current_datetime,
                     'updated_at'=>$this->current_datetime
                 );

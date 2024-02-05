@@ -15,12 +15,20 @@
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1">PO Number : {{ $po->po_num}}</h5>
+                    <input type="hidden" id="po_id" value="{{$po->id}}" />
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
                         <? if( $po->status != 'posted') : ?>
                             <a href="{{ URL::to('po') }}/<?=_encode($po->id)?>/edit" class="btn btn-success btn-label rounded-pill"><i class="ri-edit-line label-icon align-middle rounded-pill fs-16 me-2"></i> Edit</a>
                         <? else : ?>
                             <a href="javascript:window.print()" class="btn btn-warning btn-label d-print-none d-none rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a>
                         <? endif;?>
+
+                        <? if(in_array($po->status, array('posted'))) : ?>
+                            <? if (mod_access('po',  'unpost', Auth::id())) : ?>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill unpost-po"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                            <? endif ;?>
+                        <? endif;?>
+                        
                         <a href="{{ URL::to('po') }}" class="btn btn-primary btn-label rounded-pill d-print-none"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                     </div>
                 </div>
@@ -196,5 +204,6 @@
 
 <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/po/po.js') }}"></script>
 
 @endsection

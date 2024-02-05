@@ -392,3 +392,51 @@ $(document).on('click', '.split-product', function(e) {
 
 
 
+$(document).on('click', '.submit-unpost', function (e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to UNPOST this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, UNPOST it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'stock/movement/unpost',
+                data: {
+                    ref_no : $('#ref_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "post",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-movement').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message);
+                            setTimeout(function () {
+                                window.location = BASEURL+'stock/movement';
+                            }, 300);
+
+                        } else {
+                            toastr.error(data.message,'Error on saving');
+
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});

@@ -27,8 +27,8 @@
                     <div class="col-lg-12">
                         <div class="card-body p-4 ">
                             <div class="row g-3">
-                                <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
+                                <div class="col-lg-3 col-md-3 mb-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="client" name="client">
                                             <option value="">Select Client</option>                                                            
@@ -41,7 +41,7 @@
                                 </div>
                                 <!--end col-->
                                 <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="store" name="store">
                                             <option value="">Select Store/Warehouse</option>                                                            
@@ -71,10 +71,20 @@
                                 </div>
                                  <!--end col-->
                             </div>
-                            <div class="row mt-1">
+                            <div class="row">
+
+                                <div class="col-lg-4 col-md-4">
+                                    <h6 class="text-muted text-uppercase fw-semibold">Date Covered <span class="text-danger">*</span></h6>
+                                        <input type="text" class="form-control" name="date" id="date_picker"
+                                        data-provider="flatpickr" data-date-format="Y-m-d" value="<?=isset($request->date) ? $request->date : date("Y-m-d", strtotime("-3 months"))." to ".date('Y-m-d')?>" data-range-date="true"
+                                        placeholder="Select date range" data-maxDate="<?=date('Y-m-d')?>"
+                                       >
+                                        <span class="text-danger error-msg date_range_error"></span>
+                                  
+                                </div>
                                 
-                                 <div class="col-lg-4 col-md-4">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Products</h6>
+                                 <div class="col-lg-5 col-md-4 ">
+                                    <h6 class="text-muted text-uppercase fw-semibold">Products <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <input type="hidden" class="form-control" name="product_id" id="product_id">
                                         <input type="text" class="form-control" dir="ltr" spellcheck=false autocomplete="off" autocapitalize="off" name="product_holder" id="product_holder" value="" placeholder="Type PO Name or Code">
@@ -82,8 +92,8 @@
                                      </p>
                                 </div>
                                  <!--end col-->
-                                 <div class="col-lg-2 col-md-2">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Item Type</h6>
+                                 <div class="col-lg-2 col-md-4">
+                                    <h6 class="text-muted text-uppercase fw-semibold ">Item Type <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="item_type" name="item_type">
                                             <option value="good">Good</option>   
@@ -96,7 +106,7 @@
                                  <!--end col-->
 
                                 <div class="col-lg-6 col-md-6">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">&nbsp;</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold ">&nbsp;</h6>
                                     <a href="#" class="submit-stock-ledger btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</a>
                                     <!-- <a href="#" class="submit-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
                                     <a href="#" class="submit-print btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print</a> -->
@@ -131,7 +141,8 @@
                                     <th class="fw-medium text-center">Type</th>
                                     <th class="fw-medium text-center">Received QTY</th>
                                     <th class="fw-medium text-center">Transfer QTY</th>
-                                    <th class="fw-medium text-center">Withdraw QTY</th>
+                                    <th class="fw-medium text-center">Withdrawal QTY</th>
+                                    <th class="fw-medium text-center">Reserved QTY</th>
                                     <th class="fw-medium text-center">Balance</th>
                                 </tr>
                             </thead>

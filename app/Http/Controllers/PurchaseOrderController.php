@@ -229,4 +229,54 @@ class PurchaseOrderController extends Controller
             'uom'=>$uom
         ]);
     }
+
+    public function unpost(Request $request)
+    {
+        DB::connection()->beginTransaction();
+        try 
+        {
+            $po_id = $request->po_id;
+            $po = PoHdr::where('id',$po_id)->first();
+         
+            if($po) {
+
+                $po_details = PoHdr::where('id', $po_id)->update(['status'=>'open']);
+
+                $audit_trail[] = [
+                    'control_no' => $po->po_num,
+                    'type' => 'PO',
+                    'status' => 'open',
+                    'created_at' => date('y-m-d H:i:s'),
+                    'updated_at' => date('y-m-d H:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'data' => 'unpost'
+                ];
+
+                AuditTrail::insert($audit_trail);
+
+                DB::connection()->commit();
+                return response()->json([
+                    'success'  => true,
+                    'message' => 'Unpost successfully!',
+                    'data'    => $po
+                ]);
+         
+            } else {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Unable to process request. Please try again.',
+                    'data'    => $e->getMessage()
+                ]);
+            }
+
+        }
+        catch(\Throwable $e)
+        {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }   
+    }
 }

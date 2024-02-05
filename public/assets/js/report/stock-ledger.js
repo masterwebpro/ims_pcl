@@ -39,6 +39,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
     var item_type = $('#item_type').val();
     var product_id = $('#product_id').val();
     var location = $('#location').val();
+    var date_range = $('#date_picker').val();
    
     $.ajax({
         url: BASEURL + 'reports/getStockLedger',
@@ -50,6 +51,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
             item_type:item_type,
             product_id:product_id,
             location:location,
+            date_range: date_range
         },
         dataType: 'json',
         beforeSend: function () {
@@ -65,13 +67,13 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                    
                     beggining_balance= 0;
                     
-                    if(data.beg_balance) {
-                        if(data.beg_balance.inv_qty)
-                            beggining_balance = data.beg_balance.inv_qty;
+                    if(data.beg_balance[0]) {
+                        if(data.beg_balance[0].inv_qty)
+                            beggining_balance = data.beg_balance[0].inv_qty;
                     }
 
                     table += '<tr>';
-                        table += "<td colspan='8' class='fw-medium'>Begginning Qty</td>";
+                        table += "<td colspan='9' class='fw-medium'>Begginning Qty</td>";
                     
                         table += "<td class='text-end fw-bold'>"+beggining_balance+"</td>";                      
                     table += '</tr>';
@@ -80,6 +82,9 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
 
                     res.forEach(function(item) {
                         //get the first 2 character
+
+                
+                        var type = item.ref_no.split("-");
                        
                         rcv_qty = 0;
                         if(item.trans_type == 'RV')
@@ -90,8 +95,30 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                             transfer_qty = item.inv_qty;
 
                         withdraw_qty = 0;
-                        if(item.trans_type == 'WD')
-                            withdraw_qty = item.inv_qty;
+                        reserved_qty = 0;
+                        if(item.trans_type == 'WD') {
+                            if(item.inv_qty > 0) { //positive
+                                if(type[1] == 'TWD') {
+                                    withdraw_qty = item.inv_qty;
+                                } else {
+                                    reserved_qty = item.inv_qty;
+                                }
+                                // reserved_qty = item.inv_qty;
+                            } else {
+                                if(type[1] == 'TWD') {
+                                    reserved_qty = item.inv_qty;
+                                } else {
+                                    if(type[0] == 'W') {
+                                        reserved_qty = item.inv_qty;
+                                    } else {
+                                        withdraw_qty = item.inv_qty;
+                                    }
+                                    
+                                }   
+                                
+                            }
+                        }
+                            
 
                         if(item.trans_type == 'SM') {
                             if(item.inv_qty < 0) {
@@ -102,7 +129,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                             
                         }
 
-                        balance = remaining + (parseInt(rcv_qty) + parseInt(transfer_qty) + parseInt(withdraw_qty));
+                        balance = remaining + (parseInt(rcv_qty) + parseInt(transfer_qty) + parseInt(withdraw_qty) + parseInt(reserved_qty)) ;
                         remaining =+ balance;
 
                         if(rcv_qty == 0)
@@ -111,25 +138,48 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                             transfer_qty = '';
                         if(withdraw_qty == 0)
                             withdraw_qty = '';
+
+                        if(reserved_qty == 0) {
+                            reserved_qty = ''
+                        }
+                        if(type[0] == 'R')
+                            remarks = 'Received';
+                        else if(type[0] == 'ST')
+                            remarks = 'Stock Transfer';
+                        else if(type[0] == 'SM')
+                            remarks = 'Putaway';
+                        else if(type[0] == 'W')
+                            remarks = 'Dispatched';
+                        else if(type[0] == 'TWD') {
+                            if(item.inv_qty >= 0)
+                                remarks = 'Reserved';
+                            else
+                                remarks = 'Withdrawn';
+                        }   
+                            
+                        else
+                            remarks = '';
+
                             
                         var location = (item.location != null) ? item.location : 'RA';
                           
                         table += '<tr>';
                             table += "<td width='120px;'>"+moment(new Date(item.created_at)).format("DD MMM YYYY")+"</td>";
                             table += "<td width='120px;'>"+item.ref_no+"</td>";
-                            table += "<td width='120px;'></td>";
+                            table += "<td width='120px;'>"+remarks+"</td>";
                             table += "<td class='text-center' width='80px;'>"+location+"</td>";
                             table += "<td class='text-center' width='120px;'>"+item.item_type+"</td>";
 
                             table += "<td class='text-end'>"+rcv_qty+"</td>";
                             table += "<td class='text-end'>"+transfer_qty+"</td>";
                             table += "<td class='text-end'>"+withdraw_qty+"</td>";
+                            table += "<td class='text-end'>"+reserved_qty+"</td>";
                             table += "<td class='text-end'>"+parseInt(remaining)+"</td>";                      
                         table += '</tr>';                        
                     });
 
                     table += '<tr>';
-                        table += "<td colspan='8' class='fw-medium'>Remaining Qty</td>";
+                        table += "<td colspan='9' class='fw-medium'>Remaining Qty</td>";
                     
                         table += "<td class='text-end fw-bold'>"+number_format(parseInt(remaining))+"</td>";                      
                     table += '</tr>';
