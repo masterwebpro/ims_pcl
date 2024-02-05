@@ -97,6 +97,17 @@
                             <div class="col-6">
                                 <div class="row mb-3">
                                     <div class="col-lg-3">
+                                        <label for="model" class="form-label">Model</label>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="url" class="form-control" id="model" value="<?=$product->model?>" readonly
+                                            name="model" placeholder="Enter Product Model">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row mb-3">
+                                    <div class="col-lg-3">
                                         <label for="customer_id" class="form-label">Customer
                                             Name <span class="text-danger">*</span></label>
                                     </div>

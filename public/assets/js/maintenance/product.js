@@ -154,9 +154,13 @@ $(document).on('click','#uploadProduct', function (e) {
 
 $(document).on('click','.submit-product-xls', function (e) {
     e.preventDefault();
+    var customer_id = $("#customer").val();
     $.ajax({
         url: BASEURL + 'reports/export-product',
         method: 'GET',
+        data: {
+            customer : customer_id
+        },
         xhrFields: {
             responseType: 'blob'
         },

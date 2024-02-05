@@ -21,22 +21,23 @@ class ExportWdDetailed implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $wd = WdHdr::select('wd_hdr.withdraw_date','wd_hdr.wd_no', 'wd_hdr.order_no','wd_hdr.order_type','wd_hdr.dr_no','wd_hdr.sales_invoice','wd_hdr.po_num', 'p.product_code', 'p.product_name', 'wd.inv_qty', 'ui.code as ui_code' )
+        $wd = WdHdr::select('wd_hdr.withdraw_date','wd_hdr.wd_no', 'wd_hdr.order_no','wd_hdr.order_type','wd_hdr.dr_no','wd_hdr.sales_invoice','wd_hdr.po_num', 'p.product_code', 'p.product_name', 'wd.inv_qty', 'ui.code as ui_code','wd.dispatch_qty' )
             ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
             ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
-            ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom');
+            ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+            ->where('wd_hdr.status','posted');
 
         if($this->request->wd_no !='')
             $wd->where('wd_hdr.wd_no', $this->request->wd_no);
 
         if($this->request->has('client')  && $this->request->client !='')
-            $wd->where('wd_hdr.client_id', $this->request->client);
+            $wd->where('wd_hdr.customer_id', $this->request->client);
 
         if($this->request->has('store')  && $this->request->store !='')
             $wd->where('wd_hdr.store_id', $this->request->store);
 
-        if($this->request->has('warehouse')  && $this->request->warehouse !='')
-            $wd->where('wd_hdr.warehouse_id', $this->request->warehouse);
+        // if($this->request->has('warehouse')  && $this->request->warehouse !='')
+        //     $wd->where('wd_hdr.warehouse_id', $this->request->warehouse);
 
         if($this->request->has('product_code')  && $this->request->product_code !='')
             $wd->where('p.product_code', $this->request->product_code);
@@ -72,7 +73,8 @@ class ExportWdDetailed implements FromCollection, WithHeadings
         'Product Code',
 		'Product Description',
         'Inv Qty',
-        'UOM'
+        'UOM',
+        'Dispatch Qty'
        ];
 	}
 }

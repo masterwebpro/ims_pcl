@@ -324,13 +324,9 @@
                                                 <tr class="table-active">
                                                     <th scope="col" style="width: 10px;">#</th>
                                                     <th scope="col">Product</th>
-                                                    {{-- <th scope="col">Item Type</th> --}}
-                                                    {{-- <th scope="col">WHSE Qty</th>
-                                                    <th scope="col">WHSE UOM</th> --}}
+                                                    <th scope="col">Available Quantity</th>
                                                     <th scope="col">Order Quantity</th>
                                                     <th scope="col">Unit</th>
-                                                    {{-- <th scope="col">Lot/Batch #</th> --}}
-                                                    {{-- <th scope="col">Expiry Date</th> --}}
                                                     <th scope="col" class="text-center">Action</th>
                                                 </tr>
                                             </thead>
@@ -372,9 +368,9 @@
                         <thead class="table-light">
                             <tr>
                                 <th>&nbsp;</th>
+                                <th>SAP Code</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
-                                {{-- <th>Product SKU</th> --}}
                                 <th>Available Stocks</th>
                                 <th>Unit</th>
                             </tr>

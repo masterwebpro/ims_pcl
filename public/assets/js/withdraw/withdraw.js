@@ -218,13 +218,13 @@ $(document).on('blur', '.inv_qty', function() {
     var id = $(this).data('id');
     var stocks = $(this).data('qty');
     var new_inv = $(this).val();
-    totalPackage();
     if(stocks < new_inv) {
         prefix = 'inv_qty'+id;
         $(this).val(stocks);
         $('#submit-withdrawal').find('span.'+prefix.replace('.','')+'_error').text('Insufficient Qty');
         $('.'+prefix+'_error').text('');
     }
+    totalPackage();
 });
 
 $(document).on('click', '.submit-open', function (e) {
@@ -692,6 +692,21 @@ $(document).on('click', '.withdraw-do', function (e) {
             { data: 'created_by' }
         ],
     });
+});
+
+$(document).on('click', '#withdraw-do-btn', function (e) {
+    e.preventDefault();
+    var table = $('#do-table').DataTable();
+    var data = ( table.rows('.selected').data()[0]);
+    if (table.rows('.selected').data().length > 0) {
+        $('#preloading').modal('show');
+        rec = _encode(data.id);
+        setTimeout(function () {
+            window.location = BASEURL+'withdraw/'+rec.responseText+'/create';
+        }, 300);
+    } else {
+        alert("Please select a DO Number");
+    }
 });
 
 
