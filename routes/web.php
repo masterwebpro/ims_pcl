@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('/withdraw', App\Http\Controllers\WithdrawalController::class);
     Route::delete('/withdraw', [App\Http\Controllers\WithdrawalController::class, 'destroy']);
+    Route::get('/withdraw/{id}/create', [App\Http\Controllers\WithdrawalController::class, 'withdrawDo']);
     Route::post('/withdraw/unpost', [App\Http\Controllers\WithdrawalController::class, 'unpost']);
     Route::get('/picklist/{id}', [App\Http\Controllers\WithdrawalController::class, 'picklist']);
     Route::get('/withdrawalSlip/{id}', [App\Http\Controllers\WithdrawalController::class, 'withdrawalslip']);
@@ -103,6 +104,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/getAllPostedDO', [App\Http\Controllers\SettingsController::class, 'getAllPostedDo']);
     Route::get('/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAvailableStocks']);
+    Route::get('/getAvailableItems', [App\Http\Controllers\SettingsController::class, 'getAvailableItems']);
     Route::get('/getParticulars', [App\Http\Controllers\SettingsController::class, 'getParticulars']);
     Route::get('/getAllPostedDispatch', [App\Http\Controllers\SettingsController::class, 'getAllPostedDispatch']);
 
