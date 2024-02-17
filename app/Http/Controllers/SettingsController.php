@@ -518,6 +518,7 @@ class SettingsController extends Controller
                     ->leftJoin('warehouses as w','w.id','=','masterdata.warehouse_id')
                     ->leftJoin('uom as uw','uw.uom_id','=','masterdata.whse_uom')
                     ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
+                    ->havingRaw('sum(masterdata.inv_qty - masterdata.reserve_qty) > 0')
                     ->groupBy('masterdata.id')
                     ->orderBy('rh.date_received','ASC')
                     ->orderBy('product_name','ASC')
