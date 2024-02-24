@@ -42,7 +42,12 @@ class UsersController extends Controller
             ])
             ->orderByDesc('created_at')
             ->paginate(20);
-        return view('users/index', ['user_list' => $user_list]);
+
+        if (mod_access('users', 'view', Auth::id())) {
+            return view('users/index', ['user_list' => $user_list]);
+        } else {
+            return view('error/no-access');
+        } 
     }
 
     public function create()
@@ -55,7 +60,13 @@ class UsersController extends Controller
 
         $is_create = true;
 
-        return view('users/create', compact('permissions', 'user_list', 'roles', 'is_create'));
+        if (mod_access('users', 'add', Auth::id())) {
+            return view('users/create', compact('permissions', 'user_list', 'roles', 'is_create'));
+        } else {
+            return view('error/no-access');
+        } 
+
+       
     }
 
     public function store(Request $request)
@@ -225,17 +236,23 @@ class UsersController extends Controller
 
         $is_create = false;
 
-        return view('users/edit', compact(
-            'permissions', 
-            'user', 
-            'user_list', 
-            'roles', 
-            'is_create',
-            'menu_list', 
-            'user_menu_access',
-            'user_module_access',
-            'modules')
-        );
+        if (mod_access('users', 'edit', Auth::id())) {
+            return view('users/edit', compact(
+                'permissions', 
+                'user', 
+                'user_list', 
+                'roles', 
+                'is_create',
+                'menu_list', 
+                'user_menu_access',
+                'user_module_access',
+                'modules')
+            );
+        } else {
+            return view('error/no-access');
+        } 
+
+        
     }
 
     public function getUserMenu($user_id=0)

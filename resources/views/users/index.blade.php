@@ -11,6 +11,11 @@
 @slot('title') User List  @endslot
 @endcomponent
 
+
+<?
+
+?>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="card" id="tasksList">
@@ -50,7 +55,7 @@
                                         <td>{{ $user->created_at}}</td>
                                         <td class="action">
                                             <div class="hstack gap-3 fs-12">
-                                                <a href="{{ URL::to('users') }}/<?=_encode($user->id)?>" data-id="{{$user->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a>
+                                                <!-- <a href="{{ URL::to('users') }}/<?#=_encode($user->id)?>" data-id="{{$user->id}}" class="link-info text-info d-inline-block"><i class="ri-eye-fill align-bottom me-1"></i> View</a> -->
                                                 <? if($user->status != 'posted') : ?>
                                                     <a href="{{ URL::to('users') }}/<?=_encode($user->id);?>/edit" data-id="{{$user->id}} " class="link-info edit-po"><i class="ri-pencil-fill align-bottom me-1"></i> Edit </a> </div>
                                                 <? endif; ?>
