@@ -252,6 +252,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="text-center">
+                                                                <a href="javascript:void(0)" class="text-info split-product" data-id="<?=$x?>"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>
                                                                 <a href="javascript:void(0)" class="text-danger remove-product" data-id="<?=$x?>"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
                                                             </div>
                                                         </td>
