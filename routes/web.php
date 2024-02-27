@@ -72,6 +72,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/productTemplate', 'App\Http\Controllers\ProductController@productTemplate');
     Route::post('/uploadProduct', 'App\Http\Controllers\ProductController@uploadProduct');
     Route::resource('/master', App\Http\Controllers\MasterDataController::class);
+    Route::resource('/inquiry', App\Http\Controllers\ItemInquiryController::class);
 
 });
 

@@ -36,41 +36,41 @@ class RcvHdr extends Model
         'updated_at'
     ];
 
-    public function items() 
+    public function items()
     {
         return $this->hasMany(RcvDtl::class, 'rcv_no', 'rcv_no');
     }
-    public function supplier() 
+    public function supplier()
     {
         return $this->hasOne(Supplier::class, 'id', 'supplier_id');
     }
 
-    public function warehouse() 
+    public function warehouse()
     {
         return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
     }
 
-    public function user_create() 
+    public function user_create()
     {
         return $this->hasOne(User::class, 'id', 'created_by');
     }
 
-    public function truck() 
+    public function truck()
     {
         return $this->hasOne(TruckType::class, 'id', 'created_by');
     }
 
-    public function customer() 
+    public function customer()
     {
         return $this->hasOne(Client::class, 'id', 'customer_id');
     }
 
-    public function company() 
+    public function company()
     {
         return $this->hasOne(Client::class, 'id', 'company_id');
     }
 
-    public function store() 
+    public function store()
     {
         return $this->hasOne(Store::class, 'id', 'store_id');
     }
