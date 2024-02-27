@@ -219,7 +219,7 @@ class ReportController extends Controller
         if($request->has('location')  && $request->location !='')
             $rcv->where('masterfiles.storage_location_id', $request->location);
 
-        
+
         $date_split = explode(" to ",$request->date_range);
 
         $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
@@ -230,7 +230,7 @@ class ReportController extends Controller
             $to = date('Y-m-d',  strtotime($date_split[0]))." 23:59:59";
         }
 
-        
+
         $rcv->where('masterfiles.created_at', '<', $from);
 
         $data = $rcv->get();
@@ -711,6 +711,7 @@ class ReportController extends Controller
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
                 ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rd.rcv_no')
                 ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+                ->where('masterdata.inv_qty','>',0)
                 ->groupBy(['masterdata.product_id','rh.date_received']);
                 if ($request->q) {
                     $result->where(function($q)use($request){
@@ -733,22 +734,22 @@ class ReportController extends Controller
             $product_code = $res->product_code;
             if(!isset($xdata[$product_code]))
             {
-                $xdata[$product_code]['days30'] = ($res->diff_days <= 30) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days60'] = ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days90'] = ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days120'] = ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days150'] = ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
-                $xdata[$product_code]['over150days'] = ($res->diff_days > 150) ? $res->inv_qty : 0;
                 $xdata[$product_code] = $res;
+                $xdata[$product_code]['days30'] = (float)($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] = (float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] = (float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] = (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] = (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] = (float)($res->diff_days > 150) ? $res->inv_qty : 0;
             }
             else{
-                $xdata[$product_code]['inv_qty'] += $res->inv_qty;
-                $xdata[$product_code]['days30'] += ($res->diff_days <= 30) ? $res->inv_qty : 0;;
-                $xdata[$product_code]['days60'] += ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days90'] += ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days120'] += ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days150'] += ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
-                $xdata[$product_code]['over150days'] += ($res->diff_days > 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['inv_qty'] += (float)$res->inv_qty;
+                $xdata[$product_code]['days30'] += (float)($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] += (float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] +=(float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] += (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] += (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] += (float)($res->diff_days > 150) ? $res->inv_qty : 0;
             }
         }
 
@@ -773,6 +774,7 @@ class ReportController extends Controller
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
             ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rd.rcv_no')
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+            ->where('masterdata.inv_qty','>',0)
             ->groupBy(['masterdata.product_id','rh.date_received']);
             if ($request->q) {
                 $result->where(function($q)use($request){
@@ -797,22 +799,22 @@ class ReportController extends Controller
             $product_code = $res->product_code;
             if(!isset($xdata[$product_code]))
             {
-                $xdata[$product_code]['days30'] = ($res->diff_days <= 30) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days60'] = ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days90'] = ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days120'] = ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days150'] = ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
-                $xdata[$product_code]['over150days'] = ($res->diff_days > 150) ? $res->inv_qty : 0;
                 $xdata[$product_code] = $res;
+                $xdata[$product_code]['days30'] = (float)($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] =(float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] = (float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] = (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] = (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] = (float)($res->diff_days > 150) ? $res->inv_qty : 0;
             }
             else{
-                $xdata[$product_code]['inv_qty'] += $res->inv_qty;
-                $xdata[$product_code]['days30'] += ($res->diff_days <= 30) ? $res->inv_qty : 0;;
-                $xdata[$product_code]['days60'] += ($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days90'] += ($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days120'] += ($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
-                $xdata[$product_code]['days150'] += ($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
-                $xdata[$product_code]['over150days'] += ($res->diff_days > 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['inv_qty'] += (float)$res->inv_qty;
+                $xdata[$product_code]['days30'] += (float)($res->diff_days <= 30) ? $res->inv_qty : 0;;
+                $xdata[$product_code]['days60'] += (float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] += (float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] += (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] += (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] += (float)($res->diff_days > 150) ? $res->inv_qty : 0;
             }
         }
         $data = array();
