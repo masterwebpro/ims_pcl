@@ -109,6 +109,39 @@ class StockTransferController extends Controller
         try {
             $ref_no = $request->ref_no;
 
+            $data = [];
+            $transfer_qty = 0;
+            for($x=0; $x < count($request->product_id); $x++ ) {
+
+                if(isset($data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]])) {
+                    $transfer_qty  += $request->dest_inv_qty[$x];
+                } else {
+                    $transfer_qty  = $request->dest_inv_qty[$x];
+                }
+                $data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]]['original_qty'] =  $request->source_inv_qty[$x];
+                $data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]]['transfer_qty'] =  $transfer_qty;
+            }
+
+            //validation
+            $has_error = [];
+            foreach($data as $idx=>$item) {
+                $product = explode("|", $idx);
+
+                if($item['original_qty'] < $item['transfer_qty']) {
+                    $has_error[] = "Insufficeint QTY: ". $product[0]." in location ". getStorageLocation($product[2]). ". (Actual Qty: ".$item['original_qty'].", Transfer Qty: ".$item['transfer_qty'].")" ;
+                }
+            
+            }
+
+            if($has_error) {
+                DB::connection()->rollBack();
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Insufficient Qty!',
+                    'error_msg'=> $has_error
+                ]);
+            }
+           
             if($ref_no=='') {
                 $ref_no = generateSeries('ST');
 

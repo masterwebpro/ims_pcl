@@ -159,6 +159,13 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <div id="errMsg" class="d-none">
+                                <div class="alert alert-danger">
+                                    <strong>Whoops!</strong> There were some problems with your input.<br>
+                                    <ul class="errors">
+                                    </ul>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-nowrap table-bordered transfer" id="product-list">
                                     <thead>
@@ -189,6 +196,11 @@
                                             <td class="text-start">
                                                 <input type="hidden" name="product_id[]" readonly="" id="product_id_{{$dtl->id}}" value="{{$dtl->product_id}}">
                                                 <input type="hidden" name="rcv_dtl_id[]" readonly="" id="rcv_dtl_id_{{$dtl->id}}" value="{{$dtl->rcv_dtl_id}}">
+
+
+                                                <input type="hidden" name="product_name[]" readonly id="product_name_{{$dtl->id}}" value="{{$dtl->item->product_name}}" />
+                                                <input type="hidden" name="product_code[]" readonly id="product_code_{{$dtl->id}}" value="{{$dtl->item->product_code}}'" />
+
                                                 {{$i}} 
                                             </td> 
                                             <td class="text-start  fs-13">
@@ -240,8 +252,8 @@
                                             </td>
                                             <td>
                                                 <div class="text-center">
-                                                    <!-- <a href="javascript:void(0)" class="text-info split-product" data-id="0">
-                                                        <i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>&nbsp;  -->
+                                                    <a href="javascript:void(0)" class="text-info split-product" data-id="0">
+                                                        <i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>&nbsp; 
                                                     <a href="javascript:void(0)" class="text-danger remove-product" data-id="0">
                                                         <i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
                                                 </div>

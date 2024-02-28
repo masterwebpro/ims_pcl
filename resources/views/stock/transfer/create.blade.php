@@ -127,6 +127,13 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <div id="errMsg" class="d-none">
+                                <div class="alert alert-danger">
+                                    <strong>Whoops!</strong> There were some problems with your input.<br>
+                                    <ul class="errors">
+                                    </ul>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-nowrap table-bordered transfer" id="product-list">
                                     <thead>

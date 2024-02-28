@@ -463,3 +463,14 @@ function _getWarehouseDtl($warehouse_id) {
         return false;
     }
 }
+
+function getStorageLocation($location_id) {
+    $location = DB::table('storage_locations')->where('storage_location_id', $location_id)->first();
+
+    $storage_location = '';
+    if($location) {
+        $storage_location = $location->location;
+    }
+    return $storage_location;
+
+}

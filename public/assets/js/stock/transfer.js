@@ -149,6 +149,8 @@ $(document).on('click', '#add-product', function() {
             $('#product-list tbody').append('<tr id="product_'+(rowCount-1)+'"> \
             <td class="text-start d-none"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
+                <input type="hidden" name="product_name[]" readonly id="product_name_'+data[x].product_name+'" value="'+data[x].product_name+'" /> \
+                <input type="hidden" name="product_code[]" readonly id="product_code_'+data[x].product_code+'" value="'+data[x].product_code+'" /> \
                 <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id_'+data[x].rcv_dtl_id+'" value="'+data[x].rcv_dtl_id+'" /> \
             '+rowCount+' </td> \
             <td class="text-start  fs-13"> \
@@ -178,7 +180,7 @@ $(document).on('click', '#add-product', function() {
                 <select style="width: 150px;" name="dest_warehouse[]" data-id="'+(rowCount-1)+'" id="dest_warehouse_'+(rowCount-1)+'" class="form-select dest_warehouse select2"><option value="">Select Warehouse</option></select> \
                 <span class="text-danger error-msg dest_warehouse'+(rowCount-1)+'_error"></span> \
             </td> \
-            <td class="text-start ps-1"><select style="width: 100px;" name="dest_location[] id="dest_location_'+(rowCount-1)+'" class="form-select dest_location select2"><option value="">Select Location</option></select> \
+            <td class="text-start ps-1"><select style="width: 100px;" name="dest_location[]" id="dest_location_'+(rowCount-1)+'" class="form-select dest_location select2"><option value="">Select Location</option></select> \
                 <span class="text-danger error-msg dest_location'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="text-start ps-1"> \
@@ -230,34 +232,24 @@ $(document).on('change', '.dest_warehouse', function(){
 
 var cloneCount = 1;
 $(document).on('click', '.split-product', function(e) {
+
     e.preventDefault();
     var id=$(this).data('id');
-    
+ 
     var thisRow = $( this ).closest( 'tr' )[0];
-    // $( thisRow ).clone().insertAfter( thisRow )
-    //     .find('.whse_uom_error').prop('class', 'text-danger error-msg whse_uom_error whse_uom'+cloneCount+'_error' )
-    //     .find('.inv_uom_error').prop('class', 'text-danger error-msg inv_uom_error inv_uom'+cloneCount+'_error' );
+    value = $(thisRow).find( '.new_inv_qty' ).val();
+    var rem  = value % 2;
+    var parent_val = (value / 2);
+    var second_val = (value / 2);
 
-    let clone = $(thisRow).clone();
-    // clone.find('#whse_uom').attr("whse_uom", 'whse_uom_'+cloneCount);
-    // clone.find('#whse_uom').attr("class", 'text-danger error-msg whse_uom'+cloneCount+'_error'); 
+    if(rem != 0 ) {
+        parent_val = (value / 2) + (rem/2);
+        second_val = (value / 2) - (rem/2);
+    } 
 
-    // clone.find('#inv_uom').attr("inv_uom", 'inv_uom_'+cloneCount);
-    // clone.find('#inv_uom').attr("class", 'text-danger error-msg inv_uom'+cloneCount+'_error'); 
-
-    // clone.find('#inv_qty').attr("inv_qty", 'inv_qty_'+cloneCount);
-    // clone.find('#inv_qty').attr("class", 'text-danger error-msg inv_qty'+cloneCount+'_error');
-    
-    // clone.find('#whse_qty').attr("whse_qty", 'whse_qty_'+cloneCount);
-    // clone.find('#whse_qty').attr("class", 'text-danger error-msg whse_qty'+cloneCount+'_error');
-
-    // clone.find('#item_type').attr("item_type", 'item_type_'+cloneCount);
-    // clone.find('#item_type').attr("class", 'text-danger error-msg item_type'+cloneCount+'_error');
-
-
-    $(clone).insertAfter(thisRow);
-
-    cloneCount++;
+    $(thisRow).find( '.new_inv_qty' ).val(parent_val);
+    $( thisRow ).clone().insertAfter( thisRow )
+        .find( '.new_inv_qty' ).val(second_val); 
 });
 
 $(document).on('click', '.submit-open', function (e) {
@@ -303,6 +295,7 @@ function _submitData(form_data) {
         contentType: false,
         beforeSend: function () {
             $('#preloading').modal('show');
+            $(".errors").html('');
             $('#submit-transfer').find('span.error-msg').text('');
         },
         success: function (data) {
@@ -321,9 +314,18 @@ function _submitData(form_data) {
 						}, 300);
                     }
                 } else {
+                    // alert('test');
                     toastr.error(data.message,'Error on saving'); 
+
+                    if(data.error_msg) {
+                        $.each(data.error_msg, function(prefix, val) {
+                            $('#errMsg').removeClass('d-none');
+                            $(".errors").append('<li>'+val+'</li>');
+                        });
+                    }
                 }
             } else {
+                // alert('ert');
                 $.each(data.errors, function(prefix, val) {
                     $('#errMsg').removeClass('d-none');
                     $('#submit-transfer').find('span.'+prefix.replace('.','')+'_error').text(val);
