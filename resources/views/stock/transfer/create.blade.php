@@ -207,9 +207,9 @@
                     </div>
 
                     <div class="col-3">
-                        <h6 class="text-muted text-uppercase fw-semibold"> Product Name </h6>
+                        <h6 class="text-muted text-uppercase fw-semibold"> Product Name OR Code</h6>
                         <p class="fw-medium">
-                            <input type="text" class="form-control" placeholder="Product Name" id="product_name">
+                            <input type="text" class="form-control" placeholder="Product Name or Code" id="product_name">
                         </p>
                     </div>
 
