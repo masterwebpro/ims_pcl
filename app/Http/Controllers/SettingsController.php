@@ -216,10 +216,14 @@ class SettingsController extends Controller
             $result->where('rh.rcv_no', $request->rcv_no);
         }
 
-        if($request->product_name) {
-            $result->where('p.product_name', 'like', '%'.$request->product_name.'%');
+        if(isset($request->product_name)){
+            $keyword = '%'.$request->product_name.'%';
+            $result->where(function($cond)use($keyword){
+                $cond->where('p.product_name','like',$keyword)
+                ->orwhere('p.product_code','like',$keyword)
+                ->orwhere('p.sap_code','like',$keyword);
+            });
         }
-
 
         $record = $result->get();
         return response()->json($record);
