@@ -181,7 +181,7 @@ class SettingsController extends Controller
     }
 
     public function getMasterfileData(Request $request) {
-        $result = \App\Models\MasterdataModel::select('p.product_id','p.product_code','p.product_name','masterdata.item_type', 'masterdata.rcv_dtl_id', 'sl.storage_location_id as old_location_id', DB::raw("case when sl.location is null or sl.location = '' then 'RA' else  sl.location end as old_location"), 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer', 'masterdata.inv_qty', 'masterdata.whse_qty')
+        $result = \App\Models\MasterdataModel::select('p.product_id','p.product_code','p.product_name','masterdata.item_type', 'masterdata.rcv_dtl_id', 'sl.storage_location_id as old_location_id', DB::raw("case when sl.location is null or sl.location = '' then 'RA' else  sl.location end as old_location"), 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer', DB::raw("(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty") , DB::raw("(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty"))
                 ->where('masterdata.warehouse_id', $request->warehouse_id)
                 ->where('masterdata.inv_qty', '>', 0)
                 ->where('masterdata.whse_qty', '>', 0)
