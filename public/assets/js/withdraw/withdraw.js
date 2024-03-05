@@ -150,7 +150,7 @@ $(document).on('click', '#add-product', function() {
             }
             btn += '</div>'
 
-            $('#product-list tbody').append('<tr id="rows_'+(rowCount-1)+'"> \
+            $('#product-list tbody').prepend('<tr id="rows_'+(rowCount-1)+'"> \
             <td class="text-start"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
                 <input type="hidden" name="master_id[]" readonly id="master_id_'+data[x].master_id+'" value="'+data[x].master_id+'" /> \
