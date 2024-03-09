@@ -182,7 +182,7 @@
                                             <input type="date" class="form-control" id="start_date"
                                                 name="start_date" placeholder="Start Date" value="{{ date('Y-m-d',strtotime($dispatch->start_datetime)) }}">
                                             <input type="time" class="form-control" id="start_time"
-                                                name="start_time" placeholder="Dispatch Date" value="{{ date('H:i:s',strtotime($dispatch->finish_datetime)) }}">
+                                                name="start_time" placeholder="Dispatch Date" value="{{ date('H:i:s',strtotime($dispatch->start_datetime)) }}">
                                         </div>
                                         <span class="text-danger error-msg start_time_error"></span>
                                 </div>

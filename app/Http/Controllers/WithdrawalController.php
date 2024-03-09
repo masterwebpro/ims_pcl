@@ -105,10 +105,6 @@ class WithdrawalController extends Controller
             }]
         ])
         ->paginate(20);
-        // echo "<pre>";
-        // print_r($wd_list);
-        // echo "</pre>";
-        // die();
         $deliver_list = Client::where('client_type','T')->get();
         $client_list = Client::where('is_enabled', '1')->get();
         return view('withdraw/index', ['wd_list'=>$wd_list, 'deliver_list'=> $deliver_list, 'client_list'=> $client_list, 'request'=> $request]);
