@@ -285,3 +285,29 @@ $(document).on('click', '.submit-inbound-monitoring-xls', function(e) {
         $('#preloading').modal('hide');
     }, 100);
 });
+
+$(document).on('click', '.submit-aging-manufacturing-xls', function(e) {
+    $('#preloading').modal('show');
+    e.preventDefault();
+    var client = $('#customer').val();
+    var company = $('#company').val();
+    var date = $('#date_picker').val();
+    var filter_date = $('#filter_date').val();
+    window.location.href= BASEURL + 'reports/export-aging-manufacturing?customer='+client+'&company='+company+'&date='+date+'&filter_date='+filter_date;
+    setTimeout(function () {
+        $('#preloading').modal('hide');
+    }, 100);
+});
+
+$(document).on('click', '.submit-analysis-xls', function(e) {
+    $('#preloading').modal('show');
+    e.preventDefault();
+    var client = $('#customer').val();
+    var company = $('#company').val();
+    var date = $('#date_picker').val();
+    var filter_date = $('#filter_date').val();
+    window.location.href= BASEURL + 'reports/export-analysis?customer='+client+'&company='+company+'&date='+date+'&filter_date='+filter_date;
+    setTimeout(function () {
+        $('#preloading').modal('hide');
+    }, 100);
+});

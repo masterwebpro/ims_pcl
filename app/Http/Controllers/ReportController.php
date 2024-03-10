@@ -21,6 +21,8 @@ use App\Exports\ExportInventory;
 use App\Exports\ExportOutboundMonitoring;
 use App\Exports\ExportInboundMonitoring;
 use App\Exports\ExportAging;
+use App\Exports\ExportAgingManufacturing;
+use App\Exports\ExportAnalysis;
 use App\Models\DispatchDtl;
 use App\Models\DispatchHdr;
 use App\Models\MasterdataModel;
@@ -35,6 +37,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -1058,5 +1061,299 @@ class ReportController extends Controller
         }
 		$file_name = 'export-inbound-monitoring'.date('Ymd-His').'.xls';
         return Excel::download(new ExportInboundMonitoring($data), $file_name);
+    }
+
+    public function getAgingManufacturingIndex(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->get();
+        $result = MasterdataModel::select(
+                'p.product_code',
+                'p.product_name',
+                DB::raw('sum(masterdata.inv_qty) as inv_qty'),
+                'rd.manufacture_date',
+                'rh.date_received',
+                DB::raw('DATEDIFF(now(),rd.manufacture_date) as diff_days')
+                )
+                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
+                ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rd.rcv_no')
+                ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+                ->where('masterdata.inv_qty','>',0)
+                ->whereNotNull('rd.manufacture_date')
+                ->groupBy(['masterdata.product_id','rd.manufacture_date']);
+                if ($request->q) {
+                    $result->where(function($q)use($request){
+                        $q->where('p.product_code', $request->q)
+                        ->orWhere('p.product_name', $request->q);
+                    });
+                }
+                if($request->filter_date == 'filter_date' && $request->date) {
+                    $result->whereBetween('rd.manufacture_date', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+                }
+                if($request->customer ){
+                    $result->where('masterdata.customer_id', $request->customer);
+                }
+                if($request->company){
+                    $result->where('masterdata.company_id', $request->company);
+                }
+        $data  = $result->get();
+        $xdata = array();
+        foreach($data as $res){
+            $product_code = $res->product_code;
+            if(!isset($xdata[$product_code]))
+            {
+                $xdata[$product_code] = $res;
+                $xdata[$product_code]['days30'] = (float)($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] = (float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] = (float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] = (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] = (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] = (float)($res->diff_days > 150) ? $res->inv_qty : 0;
+            }
+            else{
+                $xdata[$product_code]['inv_qty'] += (float)$res->inv_qty;
+                $xdata[$product_code]['days30'] += (float)($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] += (float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] +=(float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] += (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] += (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] += (float)($res->diff_days > 150) ? $res->inv_qty : 0;
+            }
+        }
+
+        $result = paginate($xdata,20);
+        return view('report/aging-manufacturing', [
+            'client_list'=>$client_list,
+            'request'=>$request,
+            'data_list'=> $result,
+        ]);
+    }
+
+    function exportAgingManufacturing(Request $request) {
+        ob_start();
+        $file_name = 'export-aging-manufacturing'.date('Ymd-His').'.xls';
+        $result = MasterdataModel::select(
+            'p.product_code',
+            'p.product_name',
+            DB::raw('sum(masterdata.inv_qty) as inv_qty'),
+            'rh.date_received',
+            'rd.manufacture_date',
+            DB::raw('DATEDIFF(now(),rh.date_received) as diff_days')
+            )
+            ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
+            ->leftJoin('rcv_hdr as rh', 'rh.rcv_no', '=', 'rd.rcv_no')
+            ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+            ->where('masterdata.inv_qty','>',0)
+            ->whereNotNull('rd.manufacture_date')
+            ->groupBy(['masterdata.product_id','rh.date_received']);
+            if ($request->q) {
+                $result->where(function($q)use($request){
+                    $q->where('p.product_code', $request->q)
+                    ->orWhere('p.product_name', $request->q);
+                });
+            }
+            if($request->date) {
+                $result->whereBetween('rh.date_received', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+            }
+
+            if($request->customer ){
+                $result->where('masterdata.customer_id', $request->customer);
+            }
+            if($request->company){
+                $result->where('masterdata.company_id', $request->company);
+            }
+
+        $data  = $result->get();
+        $xdata = array();
+        foreach($data as $res){
+            $product_code = $res->product_code;
+            if(!isset($xdata[$product_code]))
+            {
+                $xdata[$product_code] = $res;
+                $xdata[$product_code]['days30'] = (float)($res->diff_days <= 30) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days60'] =(float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] = (float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] = (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] = (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] = (float)($res->diff_days > 150) ? $res->inv_qty : 0;
+            }
+            else{
+                $xdata[$product_code]['inv_qty'] += (float)$res->inv_qty;
+                $xdata[$product_code]['days30'] += (float)($res->diff_days <= 30) ? $res->inv_qty : 0;;
+                $xdata[$product_code]['days60'] += (float)($res->diff_days > 30 && $res->diff_days <= 60) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days90'] += (float)($res->diff_days > 60 && $res->diff_days <= 90) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days120'] += (float)($res->diff_days > 90 && $res->diff_days <= 120) ? $res->inv_qty : 0;
+                $xdata[$product_code]['days150'] += (float)($res->diff_days > 120 && $res->diff_days <= 150) ? $res->inv_qty : 0;
+                $xdata[$product_code]['over150days'] += (float)($res->diff_days > 150) ? $res->inv_qty : 0;
+            }
+        }
+        $data = array();
+        foreach($xdata as $res){
+            $data[] = array(
+                $res['product_code'],
+                $res['product_name'],
+                date('Y/m/d',strtotime($res['date_received'])),
+                date('Y/m/d',strtotime($res['manufacture_date'])),
+                number_format($res['inv_qty'],2,'.',''),
+                number_format($res['days30'],2,'.',''),
+                number_format($res['days60'],2,'.',''),
+                number_format($res['days90'],2,'.',''),
+                number_format($res['days120'],2,'.',''),
+                number_format($res['days150'],2,'.',''),
+                number_format($res['over150days'],2,'.','')
+            );
+        }
+
+        return Excel::download(new ExportAgingManufacturing($data), $file_name);
+    }
+
+    function getAnalysis(Request $request) {
+        ob_start();
+        $client_list = Client::where('is_enabled', '1')->get();
+        $year = $request->year ?? date('Y');
+        $result = DispatchDtl::select(
+                            DB::raw('WEEK(dh.dispatch_date) as week_no'),
+                            'dh.dispatch_date',
+                            'prod.product_code',
+                            'prod.product_name',
+                            'prod.sap_code',
+                            DB::raw('sum(dispatch_dtl.qty) as dispatch_qty'),
+                        )
+                        ->leftJoin('dispatch_hdr as dh', 'dh.dispatch_no', '=', 'dispatch_dtl.dispatch_no')
+                        ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
+                        ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'dispatch_dtl.wd_no')
+                        ->leftJoin('products as prod', 'prod.product_id', '=', 'wd.product_id')
+                        ->where('dh.status','posted')
+                        ->whereYear('dh.dispatch_date',$year)
+                        ->groupBy([DB::raw('WEEK(dh.dispatch_date)'),'prod.product_code','prod.sap_code']);
+                        if ($request->q) {
+                            $result->where(function($q)use($request){
+                                $q->where('p.product_code', $request->q)
+                                ->orWhere('p.product_name', $request->q);
+                            });
+                        }
+                        if($request->date) {
+                            $result->whereBetween('dh.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+                        }
+
+                        if($request->customer ){
+                            $result->where('prod.customer_id', $request->customer);
+                        }
+                        if($request->company){
+                            $result->where('wh.company_id', $request->company);
+                        }
+        $data_analysis = $result->get();
+
+        $workWeeks = $this->getWeekNumbersFromJan1ToDate($year);
+        $data = array();
+        foreach($data_analysis as $value){
+            for($j = 0; $j < count($workWeeks); $j++) {
+                if($value['week_no'] == $workWeeks[$j]){
+                    $data[$value['product_code']][$workWeeks[$j]] = $value['dispatch_qty'];
+                }
+                else{
+                    if(!isset($data[$value['product_code']][$workWeeks[$j]])){
+                        $data[$value['product_code']][$workWeeks[$j]] = 0;
+                    }
+                }
+            }
+        }
+        return view('report/analysis',[
+            'client_list'=>$client_list,
+            'data_list'=>$data,
+            'request'=>$request,
+            'workWeeks'=>$workWeeks,
+        ]);
+    }
+
+    function getWeekNumbersFromJan1ToDate($year) {
+        $currentDate = $year.'-'.date('m-d'); // Get the current date
+        $startDate = $year.'-01-01'; // January 1st of the current year
+
+        $startWeek = date('W', strtotime($startDate)); // Week number of January 1st
+        $currentWeek = date('W', strtotime($currentDate)); // Current week number
+
+        // If the current year starts from the first week, return the range from 1 to the current week
+        if ($startWeek == 0) {
+            return range(0, $currentWeek);
+        } else {
+            // If the current year starts from a week other than the first week,
+            // adjust the week numbers accordingly
+            $adjustedStartWeek = $startWeek - 1;
+            $adjustedCurrentWeek = $currentWeek - $startWeek + 1;
+            return range($adjustedStartWeek, $adjustedCurrentWeek);
+        }
+    }
+
+    function exportAnalysis(Request $request) {
+        ob_start();
+        $file_name = 'export-analysis'.date('Ymd-His').'.xls';
+        $year = $request->year ?? date('Y');
+        $result = DispatchDtl::select(
+                            DB::raw('WEEK(dh.dispatch_date) as week_no'),
+                            'dh.dispatch_date',
+                            'prod.product_code',
+                            'prod.product_name',
+                            'prod.sap_code',
+                            DB::raw('sum(dispatch_dtl.qty) as dispatch_qty'),
+                        )
+                        ->leftJoin('dispatch_hdr as dh', 'dh.dispatch_no', '=', 'dispatch_dtl.dispatch_no')
+                        ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
+                        ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'dispatch_dtl.wd_no')
+                        ->leftJoin('products as prod', 'prod.product_id', '=', 'wd.product_id')
+                        ->where('dh.status','posted')
+                        ->whereYear('dh.dispatch_date',$year)
+                        ->groupBy([DB::raw('WEEK(dh.dispatch_date)'),'prod.product_code','prod.sap_code']);
+                        if ($request->q) {
+                            $result->where(function($q)use($request){
+                                $q->where('p.product_code', $request->q)
+                                ->orWhere('p.product_name', $request->q);
+                            });
+                        }
+                        if($request->date) {
+                            $result->whereBetween('dh.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+                        }
+
+                        if($request->customer ){
+                            $result->where('prod.customer_id', $request->customer);
+                        }
+                        if($request->company){
+                            $result->where('wh.company_id', $request->company);
+                        }
+        $data_analysis = $result->get();
+
+        $workWeeks = $this->getWeekNumbersFromJan1ToDate($year);
+        $data = array();
+        foreach($data_analysis as $value){
+            for($j = 0; $j < count($workWeeks); $j++) {
+                if($value['week_no'] == $workWeeks[$j]){
+                    $data[$value['product_code']][$workWeeks[$j]] = $value['dispatch_qty'];
+                }
+                else{
+                    if(!isset($data[$value['product_code']][$workWeeks[$j]])){
+                        $data[$value['product_code']][$workWeeks[$j]] = 0;
+                    }
+                }
+            }
+        }
+
+        $xdata = array();
+        $header = array("MATERIAL NO");
+        for($x = 0; $x < count($workWeeks); $x++){
+            array_push($header,"WK ".$workWeeks[$x]);
+        }
+        array_push($header,"GRAND TOTAL");
+        $xdata[] = $header;
+        foreach($data as $key => $value){
+            $xxdata = array();
+            $xxdata[] = $key;
+            $total = 0;
+            foreach($value as $k => $v){
+                $xxdata[] = number_format($v,2,'.',',');
+                $total += $v;
+            }
+            array_push($xxdata,number_format($total,2,'.',','));
+            $xdata[] = array_values($xxdata);
+        }
+        return Excel::download(new ExportAnalysis($xdata), $file_name);
     }
 }
