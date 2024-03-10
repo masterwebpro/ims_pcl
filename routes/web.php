@@ -159,6 +159,11 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-aging', [App\Http\Controllers\ReportController::class, 'exportAging'])->name('export-aging');
     Route::get('/export-product', [App\Http\Controllers\ProductController::class,'exportProduct'])->name('export-product');
 
+    Route::get('/aging-manufacturing', [App\Http\Controllers\ReportController::class, 'getAgingManufacturingIndex'])->name('reports.aging-manufacturing');
+    Route::get('/export-aging-manufacturing', [App\Http\Controllers\ReportController::class, 'exportAgingManufacturing'])->name('export-aging-manufacturing');
+
+    Route::get('/analysis', [App\Http\Controllers\ReportController::class, 'getAnalysis'])->name('reports.analysis');
+    Route::get('/export-analysis', [App\Http\Controllers\ReportController::class, 'exportAnalysis'])->name('reports.export-analysis');
 
 });
 
