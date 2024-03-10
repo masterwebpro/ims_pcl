@@ -1227,8 +1227,8 @@ class ReportController extends Controller
                         ->groupBy([DB::raw('WEEK(dh.dispatch_date)'),'prod.product_code','prod.sap_code']);
                         if ($request->q) {
                             $result->where(function($q)use($request){
-                                $q->where('p.product_code', $request->q)
-                                ->orWhere('p.product_name', $request->q);
+                                $q->where('prod.product_code', $request->q)
+                                ->orWhere('prod.product_name', $request->q);
                             });
                         }
                         if($request->date) {
@@ -1305,8 +1305,8 @@ class ReportController extends Controller
                         ->groupBy([DB::raw('WEEK(dh.dispatch_date)'),'prod.product_code','prod.sap_code']);
                         if ($request->q) {
                             $result->where(function($q)use($request){
-                                $q->where('p.product_code', $request->q)
-                                ->orWhere('p.product_name', $request->q);
+                                $q->where('prod.product_code', $request->q)
+                                ->orWhere('prod.product_name', $request->q);
                             });
                         }
                         if($request->date) {

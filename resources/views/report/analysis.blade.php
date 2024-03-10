@@ -63,19 +63,11 @@
                                 </button>
                             </div>
                             <!--end col-->
-
                             <div class="col-lg-3 col-sm-4">
-                                <div class="input-light">
-                                    <select class="form-control" name="filter_date" id="filter_date">
-                                        <option value="filter_date">As of Date</option>
-                                    </select>
+                                <div class="input-group">
+                                    <span class="input-group-text">Select Year</span>
+                                    <input type="number" class="form-control" name="year" value="<?=date('Y')?>" placeholder="Select Year">
                                 </div>
-                            </div>
-
-                            <div class="col-lg-3 col-sm-4">
-                                <input type="text" class="form-control" name="date" id="date_picker" value=""
-                                    data-provider="flatpickr" data-date-format="Y-m-d"
-                                    placeholder="Select date">
                             </div>
                             <!--end col-->
 
