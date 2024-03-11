@@ -283,6 +283,12 @@
                                 <button data-status="open" id="search-withdrawal" class="btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
                             </p>
                         </div>
+                        <div class="col-4 hstack gap-2 justify-content-end">
+                            <button type="button" class="btn btn-warning" id="select-all"><i
+                                class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
+                            <button type="button" class="btn btn-success" id="add-withdrawal"><i
+                                    class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-withdrawal-list">
@@ -304,14 +310,6 @@
                             <tbody>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-warning" id="select-all"><i
-                            class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
-                        <button type="button" class="btn btn-success" id="add-withdrawal"><i
-                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
                     </div>
                 </div>
             </div>
