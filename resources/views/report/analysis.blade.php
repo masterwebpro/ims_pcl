@@ -66,7 +66,7 @@
                             <div class="col-lg-3 col-sm-4">
                                 <div class="input-group">
                                     <span class="input-group-text">Select Year</span>
-                                    <input type="number" class="form-control" name="year" value="<?=date('Y')?>" placeholder="Select Year">
+                                    <input type="number" class="form-control" id="year" name="year" value="<?=($request->year) ? $request->year : date('Y')?>" placeholder="Select Year">
                                 </div>
                             </div>
                             <!--end col-->
@@ -93,18 +93,25 @@
                                 </tr>
                             </thead>
                             <tbody class="list">
-                                <? foreach ($data_list as $product_code =>  $week) : ?>
+                                @if (count($data_list) > 0)
+                                    <? foreach ($data_list as $product_code =>  $week) : ?>
+                                        <tr>
+                                            <td>{{$product_code}}</td>
+                                            <?
+                                            $total = 0;
+                                            foreach ($week as $wk) : ?>
+                                                <td class="text-end">{{number_format($wk,2,'.',',')}}</td>
+                                                <? $total += $wk; ?>
+                                            <? endforeach; ?>
+                                            <td class="text-end">{{ number_format($total,2,'.',',')}}</td>
+                                        </tr>
+                                    <? endforeach; ?>
+                                @else
                                     <tr>
-                                        <td>{{$product_code}}</td>
-                                        <?
-                                        $total = 0;
-                                        foreach ($week as $wk) : ?>
-                                            <td class="text-end">{{number_format($wk,2,'.',',')}}</td>
-                                            <? $total += $wk; ?>
-                                        <? endforeach; ?>
-                                        <td class="text-end">{{ number_format($total,2,'.',',')}}</td>
+                                        <td colspan="54" class="text-danger text-center">No Record Found!</td>
                                     </tr>
-                                <? endforeach; ?>
+                                @endif
+
                             </tbody>
                         </table>
                         <!--end table-->

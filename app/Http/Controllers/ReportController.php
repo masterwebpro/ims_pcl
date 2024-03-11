@@ -1211,7 +1211,7 @@ class ReportController extends Controller
         $client_list = Client::where('is_enabled', '1')->get();
         $year = $request->year ?? date('Y');
         $result = DispatchDtl::select(
-                            DB::raw('WEEK(dh.dispatch_date) as week_no'),
+                            DB::raw('WEEK(dh.dispatch_date, 1) as week_no'),
                             'dh.dispatch_date',
                             'prod.product_code',
                             'prod.product_name',
@@ -1266,22 +1266,18 @@ class ReportController extends Controller
     }
 
     function getWeekNumbersFromJan1ToDate($year) {
-        $currentDate = $year.'-'.date('m-d'); // Get the current date
+        $currentDate = ($year == date('Y')) ? $year.'-'.date('m-d') : $year .'-12-31'; // Get the current date
         $startDate = $year.'-01-01'; // January 1st of the current year
 
         $startWeek = date('W', strtotime($startDate)); // Week number of January 1st
         $currentWeek = date('W', strtotime($currentDate)); // Current week number
-
-        // If the current year starts from the first week, return the range from 1 to the current week
-        if ($startWeek == 0) {
-            return range(0, $currentWeek);
+        if ($startWeek == 1 && $year == date('Y')) {
+            $weekNumbers = range(1, $currentWeek);
         } else {
-            // If the current year starts from a week other than the first week,
-            // adjust the week numbers accordingly
-            $adjustedStartWeek = $startWeek - 1;
-            $adjustedCurrentWeek = $currentWeek - $startWeek + 1;
-            return range($adjustedStartWeek, $adjustedCurrentWeek);
+            $weekNumbers = range(1, $currentWeek);
         }
+        sort($weekNumbers);
+        return $weekNumbers;
     }
 
     function exportAnalysis(Request $request) {
@@ -1289,7 +1285,7 @@ class ReportController extends Controller
         $file_name = 'export-analysis'.date('Ymd-His').'.xls';
         $year = $request->year ?? date('Y');
         $result = DispatchDtl::select(
-                            DB::raw('WEEK(dh.dispatch_date) as week_no'),
+                            DB::raw('WEEK(dh.dispatch_date, 1) as week_no'),
                             'dh.dispatch_date',
                             'prod.product_code',
                             'prod.product_name',
@@ -1303,20 +1299,20 @@ class ReportController extends Controller
                         ->where('dh.status','posted')
                         ->whereYear('dh.dispatch_date',$year)
                         ->groupBy([DB::raw('WEEK(dh.dispatch_date)'),'prod.product_code','prod.sap_code']);
-                        if ($request->q) {
+                        if (isset($request->q) && $request->q) {
                             $result->where(function($q)use($request){
                                 $q->where('prod.product_code', $request->q)
                                 ->orWhere('prod.product_name', $request->q);
                             });
                         }
-                        if($request->date) {
+                        if(isset($request->date) && $request->date) {
                             $result->whereBetween('dh.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:59"]);
                         }
 
-                        if($request->customer ){
+                        if(isset($request->customer)){
                             $result->where('prod.customer_id', $request->customer);
                         }
-                        if($request->company){
+                        if(isset($request->company)){
                             $result->where('wh.company_id', $request->company);
                         }
         $data_analysis = $result->get();
