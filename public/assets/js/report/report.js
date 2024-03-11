@@ -304,9 +304,8 @@ $(document).on('click', '.submit-analysis-xls', function(e) {
     e.preventDefault();
     var client = $('#customer').val();
     var company = $('#company').val();
-    var date = $('#date_picker').val();
-    var filter_date = $('#filter_date').val();
-    window.location.href= BASEURL + 'reports/export-analysis?customer='+client+'&company='+company+'&date='+date+'&filter_date='+filter_date;
+    var year = $('#year').val();
+    window.location.href= BASEURL + 'reports/export-analysis?customer='+client+'&company='+company+'&year='+year;
     setTimeout(function () {
         $('#preloading').modal('hide');
     }, 100);

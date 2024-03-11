@@ -68,7 +68,7 @@
                                 <input type="hidden" name="dispatch_id" value="{{ _encode($dispatch->id) }}" id="dispatch_id">
                                 <div class="col-lg-3 col-md-3 form-group">
                                     <input type="hidden" name="dispatch_no" value="{{ $dispatch->dispatch_no }}" id="dispatch_no">
-                                    <label for="colFormLabel" class="form-label">Plate No <span
+                                    <label for="plate_no" class="form-label">Plate No <span
                                             class="text-danger">*</span></label>
                                     <select class="form-select select2" required="required" id="plate_no" name="plate_no">
                                         <option value="">Select Plate No</option>
@@ -79,19 +79,19 @@
                                     <span class="text-danger error-msg plate_no_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Trucker Name<span
+                                    <label for="trucker_name" class="form-label">Trucker Name<span
                                         class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="trucker_name" name="trucker_name" readonly
                                         value="{{ $dispatch->trucker_name }}" placeholder="Trucker Name">
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Truck Type <span
+                                    <label for="truck_type" class="form-label">Truck Type <span
                                             class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="truck_type" name="truck_type" readonly
                                             value="{{ $dispatch->truck_type }}" placeholder="Truck Type">
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Seal No.<span
+                                    <label for="seal_no" class="form-label">Seal No.<span
                                         class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="seal_no" name="seal_no"
                                         value="{{ $dispatch->seal_no }}" placeholder="Seal No.">
@@ -100,27 +100,27 @@
                             </div>
                             <div class="row ms-3 mt-3 mx-3">
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Dispatcher Name<span
+                                    <label for="dispatch_by" class="form-label">Dispatcher Name<span
                                         class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="dispatch_by" name="dispatch_by"
                                         value="{{ $dispatch->dispatch_by }}" placeholder="Dispatcher Name">
                                     <span class="text-danger error-msg dispatch_by_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Driver<span
+                                    <label for="driver" class="form-label">Driver<span
                                         class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="driver" name="driver"
                                         value="{{ $dispatch->driver}}" placeholder="Driver Name">
                                     <span class="text-danger error-msg driver_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Helper</label>
+                                    <label for="helper" class="form-label">Helper</label>
                                         <input type="text" class="form-control" id="helper" name="helper"
                                         value="{{ $dispatch->helper }}" placeholder="Helper Name">
                                     <span class="text-danger error-msg helper_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Contact Number</label>
+                                    <label for="contact_no" class="form-label">Contact Number</label>
                                         <input type="text" class="form-control" id="contact_no" name="contact_no"
                                         value="{{ $dispatch->contact_no }}" placeholder="Contact">
                                     <span class="text-danger error-msg contact_no_error"></span>
@@ -128,14 +128,14 @@
                             </div>
                             <div class="row ms-3 mt-3 mx-3">
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Dispatch Date <span
+                                    <label for="dispatch_date" class="form-label">Dispatch Date <span
                                             class="text-danger">*</span></label>
                                         <input type="date" class="form-control" id="dispatch_date"
                                             name="dispatch_date" placeholder="Dispatch Date" value="<?=date('Y-m-d');?>">
                                         <span class="text-danger error-msg dispatch_date_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
-                                    <label for="colFormLabel" class="form-label">Start Picking<span
+                                    <label for="start_pick_date" class="form-label">Start Picking<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="date" class="form-control" id="start_pick_date"
@@ -146,7 +146,7 @@
                                         <span class="text-danger error-msg start_pick_time_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Finish Picking<span
+                                    <label for="finish_pick_date" class="form-label">Finish Picking<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="date" class="form-control" id="finish_pick_date"
@@ -157,7 +157,7 @@
                                         <span class="text-danger error-msg finish_pick_time_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Actual Truck Arrival<span
+                                    <label for="arrival_date" class="form-label">Actual Truck Arrival<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="date" class="form-control" id="arrival_date"
@@ -170,13 +170,13 @@
                             </div>
                             <div class="row ms-3 mt-3 mx-3">
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Prepared By</label>
+                                    <label for="created_by" class="form-label">Prepared By</label>
                                         <input type="text" class="form-control" id="created_by" name="created_by" disabled
                                             value="<?=$created_by?>" placeholder="Created By">
                                         <span class="text-danger error-msg created_by_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
-                                    <label for="colFormLabel" class="form-label">Start Loading<span
+                                    <label for="start_date" class="form-label">Start Loading<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="date" class="form-control" id="start_date"
@@ -187,7 +187,7 @@
                                         <span class="text-danger error-msg start_time_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Finish Loading<span
+                                    <label for="finish_date" class="form-label">Finish Loading<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="date" class="form-control" id="finish_date"
@@ -198,7 +198,7 @@
                                         <span class="text-danger error-msg finish_time_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3 form-group">
-                                    <label for="colFormLabel" class="form-label">Depart Date/Time<span
+                                    <label for="date_departed" class="form-label">Depart Date/Time<span
                                             class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="date" class="form-control" id="date_departed"
@@ -243,9 +243,7 @@
                                                 <th scope="col">Order No.</th>
                                                 <th scope="col">Order Date</th>
                                                 <th scope="col">DR Number</th>
-                                                <th scope="col">PO Number</th>
-                                                {{--  <th scope="col">Sales Invoice</th>
-                                                <th scope="col">Action</th>  --}}
+                                                <th scope="col">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -296,12 +294,6 @@
                                                     <td class="text-start fs-14">
                                                         {{$item->dr_no}}
                                                     </td>
-                                                    {{--  <td class="text-start fs-14">
-                                                        {{$item->po_num}}
-                                                    </td>
-                                                    <td class="text-start fs-14">
-                                                        {{$item->sales_invoice}}
-                                                    </td>  --}}
                                                     <td>
                                                         <div class="text-center text-align-justify">
                                                             <button type="button" class="btn btn-danger mx-2 btn-icon waves-effect waves-light remove-withdrawal" data-id="{{$x}}"><i class="ri-delete-bin-5-fill"></i></button>
@@ -373,14 +365,13 @@
                                     <th scope="col">WD #</th>
                                     <th scope="col">Customer</th>
                                     <th scope="col">Deliver To</th>
+                                    <th scope="col">SAP Code</th>
                                     <th scope="col">Product Name</th>
                                     <th scope="col">Withdraw Quantity</th>
                                     <th scope="col">Unit</th>
                                     <th scope="col">Order No.</th>
                                     <th scope="col">Order Date</th>
                                     <th scope="col">DR Number</th>
-                                    {{--  <th scope="col">PO Number</th>
-                                    <th scope="col">Sales Invoice</th>  --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -390,8 +381,10 @@
                 </div>
                 <div class="modal-footer">
                     <div class="hstack gap-2 justify-content-end">
+                        <button type="button" class="btn btn-warning" id="select-all"><i
+                            class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
                         <button type="button" class="btn btn-success" id="add-withdrawal"><i
-                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add</button>
+                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
                     </div>
                 </div>
             </div>

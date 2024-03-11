@@ -299,8 +299,6 @@
                                     <th scope="col">Order No.</th>
                                     <th scope="col">Order Date</th>
                                     <th scope="col">DR Number</th>
-                                    {{--  <th scope="col">PO Number</th>  --}}
-                                    {{--  <th scope="col">Sales Invoice</th>  --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -310,8 +308,10 @@
                 </div>
                 <div class="modal-footer">
                     <div class="hstack gap-2 justify-content-end">
+                        <button type="button" class="btn btn-warning" id="select-all"><i
+                            class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
                         <button type="button" class="btn btn-success" id="add-withdrawal"><i
-                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add</button>
+                                class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
                     </div>
                 </div>
             </div>

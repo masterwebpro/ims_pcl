@@ -34,7 +34,7 @@ $(document).on('click', '.create-dispatch', function (e) {
 $(document).on('click', '#find-withdrawal', function() {
     $('#show-withdrawal').modal('show');
     if ($.fn.DataTable.isDataTable("#show-withdrawal-list")) {
-        $('#show-withdrawal-list').DataTable().clear().destroy();
+        $('#show-withdrawal-list').DataTable().destroy();
     }
     withdrawal();
 });
@@ -46,6 +46,47 @@ $(document).on('click', '#search-withdrawal', function() {
     withdrawal();
 });
 
+$(document).on('keypress', '#keyword', function() {
+    if ($.fn.DataTable.isDataTable("#show-withdrawal-list")) {
+        $('#show-withdrawal-list').DataTable().clear().destroy();
+    }
+    withdrawal();
+});
+
+$(document).on('click', '#select-all', function() {
+    toggleSelectAllRows();
+});
+
+function toggleSelectAllRows() {
+    var $table = $('#show-withdrawal-list').DataTable();
+    var rows = $table.rows().nodes(); // Get the DOM nodes of the rows
+
+    var rowsArray = Array.from(rows);
+
+    // Check if any rows are selected
+    var anySelected = false;
+    rowsArray.forEach(function(row) {
+        if ($(row).hasClass('selected')) {
+            anySelected = true;
+            return; // break the loop once a selected row is found
+        }
+    });
+
+    // If any row is selected, deselect all rows
+    if (anySelected) {
+        rowsArray.forEach(function(row) {
+            $(row).removeClass('selected');
+        });
+        $('#select-all').text('Select All');
+    } else {
+        // If no row is selected, select all rows
+        rowsArray.forEach(function(row) {
+            $(row).addClass('selected');
+        });
+        $('#select-all').text('Deselect All');
+    }
+}
+
 function withdrawal(){
     var keyword = $("#keyword").val();
     var wd_list = document.querySelectorAll('input[name="wddtl_id[]"]');
@@ -53,7 +94,6 @@ function withdrawal(){
     wd_list.forEach(input => {
         wddtl_id.push(input.value);
     });
-
     new DataTable("#show-withdrawal-list",{
         order: [[1, 'asc'],[6,'asc']],
         paging: true,
@@ -71,18 +111,16 @@ function withdrawal(){
         },
         columns: [
             { data: 'id',  visible: false },
-            { data: 'wd_no' },
-            { data: 'client_name' },
-            { data: 'deliver_to' },
+            { data: 'wd_no', class : 'text-nowrap'},
+            { data: 'client_name' ,class : 'text-nowrap'},
+            { data: 'deliver_to',class : 'text-nowrap' },
             { data: 'sap_code' },
-            { data: 'product_name' },
+            { data: 'product_name' , class : 'text-nowrap'},
             { data: 'inv_qty' , render: $.fn.dataTable.render.number( ',', '.', 2), class : 'text-center'},
             { data: 'ui_code' },
             { data: 'order_no' },
-            { data: 'order_date' },
+            { data: 'order_date', class : 'text-nowrap' },
             { data: 'dr_no' },
-            //{ data: 'po_num' },
-            //{ data: 'sales_invoice' },
         ],
     });
 }
