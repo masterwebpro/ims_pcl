@@ -74,6 +74,16 @@ $(document).on('click', '.search-item', function() {
     masterfile();
 });
 
+
+//search enter
+$(document).on('keypress', '#product', function() {
+    $('#show-items').modal('show');
+    if ($.fn.DataTable.isDataTable("#show-items-list")) {
+        $('#show-items-list').DataTable().clear().destroy();
+    }
+    masterfile();
+});
+
 function masterfile(){
     var company_id = $('#company').val();
     var client_id = $('#client').val();
