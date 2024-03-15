@@ -67,7 +67,7 @@ $(document).on('click', '.submit-inventory', function(e) {
     var item_type = $('#item_type').val();
     var product_id = $('#product_id').val();
     var location = $('#location').val();
-   
+
     $.ajax({
         url: BASEURL + 'reports/getInventoryReport',
         method: 'get',
@@ -100,9 +100,9 @@ $(document).on('click', '.submit-inventory', function(e) {
                         var exp_date = (item.expiry_date) ? item.expiry_date : '-';
                         var lot_no = (item.lot_no) ? item.lot_no : '-';
 
-                        total_qty += item.inv_qty; 
+                        total_qty += item.inv_qty;
                         i++;
-                       
+
                         table += '<tr>';
                             // table += "<td width='120px;'>"+item.client_name+"</td>";
                             table += "<td width='120px;'>"+i+"</td>";
@@ -120,21 +120,21 @@ $(document).on('click', '.submit-inventory', function(e) {
                             // table += "<td class='text-center'>"+item.uw_code+"</td>";
 
                             table += "<td class='text-end'>"+number_format(item.inv_qty)+"</td>";
-                            table += "<td class='text-center'>"+item.ui_code+"</td>";                                           
-                        table += '</tr>';                        
+                            table += "<td class='text-center'>"+item.ui_code+"</td>";
+                        table += '</tr>';
                     });
 
                     table += "<tr>";
                     table += "<th colspan='11' class='fw-medium'>Total</th>";
                     table += "<th class='text-center fw-bold'>"+number_format(total_qty)+"</th>";
                     table += "<th class='text-center'>&nbsp;</th>";
-                    table += "</tr>"; 
-                            
-                            
+                    table += "</tr>";
+
+
 
                     $('#inventory_list tbody').html(table);
                 } else {
-                    toastr.error(data.message,'Error on saving'); 
+                    toastr.error(data.message,'Error on saving');
                 }
             } else {
                 $.each(data.errors, function(prefix, val) {
@@ -178,6 +178,20 @@ $(document).on('click', '.submit-xls-inventory', function(e) {
     var item_type = $('#item_type').val();
     var product_id = $('#product_id').val();
     var location = $('#location').val();
-    
+
     window.location.href= BASEURL + 'reports/export-inventory?company='+company+'&store='+store+'&warehouse='+warehouse+'&item_type='+item_type+'&product_id='+product_id+'&location='+location;
 });
+
+$('.accordion-toggle').click(function () {
+    $(this).next('.accordion-content').slideToggle();
+});
+
+$(document).on('click', '.submit-reserve-xls', function(e) {
+    $('#preloading').modal('show');
+    e.preventDefault();
+    window.location.href= BASEURL + 'reports/export-reserve-monitoring';
+    setTimeout(function () {
+        $('#preloading').modal('hide');
+    }, 100);
+});
+
