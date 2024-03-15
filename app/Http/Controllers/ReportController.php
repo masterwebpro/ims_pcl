@@ -1352,4 +1352,72 @@ class ReportController extends Controller
         }
         return Excel::download(new ExportAnalysis($xdata), $file_name);
     }
+
+    public function getInventoryAdjustment(Request $request)
+    {
+        ob_start();
+        $data = MasterdataModel::select(
+                        'p.sap_code',
+                        'masterdata.product_id',
+                        'p.product_code', 'p.product_name',
+                        'masterdata.rcv_dtl_id',
+                        'masterdata.id',
+                        DB::raw('sum(masterdata.inv_qty) as inv_qty'),
+                        DB::raw('sum(masterdata.whse_qty) as whse_qty'),
+                        DB::raw('sum(masterdata.reserve_qty) as reserve_qty'),
+                    )
+                ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+                ->with('details')
+                ->where('masterdata.reserve_qty', '!=', 0)
+                ->groupBy('masterdata.id','masterdata.product_id')
+                ->orderByRaw('sum(masterdata.inv_qty - masterdata.reserve_qty) ASC');
+        $result = $data->get();
+
+        foreach($result as $key => $res){
+            $result[$key]['wd_qty'] = $res->details->sum('wd_qty');
+            $result[$key]['dispatch_qty'] = $res->details->sum('dispatch_qty');
+        }
+        return view('report/inventory-adjustment', [
+            'data' => $result
+        ]);
+    }
+
+    public function exportInventoryAdjustment(Request $request)
+    {
+        ob_start();
+        $file_name = 'export-inventory-reserve'.date('Ymd-His').'.xls';
+        $data = MasterdataModel::select(
+                        'p.sap_code',
+                        'masterdata.product_id',
+                        'p.product_code', 'p.product_name',
+                        'masterdata.rcv_dtl_id',
+                        'masterdata.id',
+                        DB::raw('sum(masterdata.inv_qty) as inv_qty'),
+                        DB::raw('sum(masterdata.whse_qty) as whse_qty'),
+                        DB::raw('sum(masterdata.reserve_qty) as reserve_qty'),
+                    )
+                ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+                ->with('details')
+                ->where('masterdata.reserve_qty', '!=', 0)
+                ->groupBy('masterdata.id','masterdata.product_id')
+                ->orderByRaw('sum(masterdata.inv_qty - masterdata.reserve_qty) ASC');
+        $result = $data->get();
+        $xdata[] = ["MASTER ID","PRODUCT ID","MATERIAL NO","WITHDRAW","DISPATCH","MUST BE RESERVE","INVENTORY QTY","RESERVE QTY"];
+
+        foreach($result as $key => $res){
+            $wd_qty = $res->details->sum('wd_qty');
+            $dispatch_qty = $res->details->sum('dispatch_qty');
+            $xdata[] = [
+                $res->id,
+                $res->product_id,
+                $res->product_code,
+                number_format($wd_qty,2,'.',','),
+                number_format($dispatch_qty,2,'.',','),
+                number_format($wd_qty - $dispatch_qty,2,'.',','),
+                number_format($res->inv_qty,2,'.',','),
+                number_format($res->reserve_qty,2,'.',','),
+            ];
+        }
+        return Excel::download(new ExportAnalysis($xdata), $file_name);
+    }
 }
