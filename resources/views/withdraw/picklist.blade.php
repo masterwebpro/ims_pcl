@@ -119,13 +119,13 @@
                         {{ number_format($item->inv_qty,2) }}
                     </td>
                     <td class=" ps-1">
-                        {{ $item->master->uom->code }}
+                        {{ isset($item->master->code) ? $item->master->code : "" }}
                     </td>
                     <td class=" ps-1">
-                        {{ ($item->master->warehouse) ? $item->master->warehouse->warehouse_name : "" }}
+                        <?=isset($item->master->warehouse_name) ? $item->master->warehouse_name : ""; ?>
                     </td>
                     <td class=" ps-1">
-                        {{ ($item->master->location) ? $item->master->location->location : "" }}
+                        <?=isset($item->master->location) ? $item->master->location : ""?>
                     </td>
                 </tr>
                 @endforeach
