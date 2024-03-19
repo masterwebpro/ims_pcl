@@ -23,7 +23,7 @@ class ExportInventory implements FromCollection, WithHeadings
 
     public function collection()
     {
-        
+
         // $rcv = MasterfileModel::select('cl.client_name', 's.store_name', 'w.warehouse_name', 'product_code', 'product_name',  DB::raw("IFNULL(sl.location, 'RA')  as location"),  'masterfiles.item_type', DB::raw("SUM(inv_qty) as inv_qty"),  'ui.code as ui_code',  DB::raw("SUM(whse_qty) as whse_qty"),  'uw.code as uw_code')
         //     ->leftJoin('products as p', 'p.product_id', '=', 'masterfiles.product_id')
         //     ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterfiles.storage_location_id')
@@ -37,7 +37,7 @@ class ExportInventory implements FromCollection, WithHeadings
         //     ->orderBy('product_name')
         //     ->orderBy('sl.location');
 
-        $rcv = MasterdataModel::select('cl.client_name', 's.store_name', 'w.warehouse_name', 'sap_code',   'product_code', 'product_name',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date',  'masterdata.item_type',  DB::raw("IFNULL(sl.location, 'RA')  as location"),  DB::raw("SUM(masterdata.inv_qty) as inv_qty"),  'ui.code as ui_code',  DB::raw("SUM(masterdata.whse_qty) as whse_qty"),  'uw.code as uw_code')
+        $rcv = MasterdataModel::select('cl.client_name', 's.store_name', 'w.warehouse_name', 'sap_code',   'product_code', 'product_name',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date',  'masterdata.item_type',  DB::raw("IFNULL(sl.location, 'RA')  as location"),  DB::raw("SUM(masterdata.inv_qty) as inv_qty"),  'ui.code as ui_code',  DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterdata.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterdata.company_id')
@@ -50,27 +50,27 @@ class ExportInventory implements FromCollection, WithHeadings
             ->having('inv_qty',  '>', 0)
             ->orderBy('product_name')
             ->orderBy('sl.location');
-        
+
         if($this->request->has('company')  && $this->request->company !='')
             $rcv->where('masterdata.company_id', $this->request->company);
-        
+
         if($this->request->has('store')  && $this->request->store !='')
             $rcv->where('masterdata.store_id', $this->request->store);
-        
+
         if($this->request->has('warehouse')  && $this->request->warehouse !='')
             $rcv->where('masterdata.warehouse_id', $this->request->warehouse);
 
         if($this->request->has('product_id')  && $this->request->product_id !='')
             $rcv->where('p.product_id', $this->request->product_id);
-        
+
         if($this->request->has('item_type')  && $this->request->item_type !='')
             $rcv->where('masterdata.item_type', $this->request->item_type);
 
         if($this->request->has('location')  && $this->request->location !='')
             $rcv->where('masterdata.storage_location_id', $this->request->location);
-  
+
         $result = $rcv->get();
-        
+
         // if($this->request->has('date_received')  && $this->request->date_received !='') {
         //     $date_split = explode(" to ",$this->request->date_received);
         //     $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
@@ -97,10 +97,10 @@ class ExportInventory implements FromCollection, WithHeadings
         'Expiry Date',
         'Item Type',
         'Location',
-        'WHSE Qty',
-        'UOM',
         'Inv Qty',
-        'UOM'
+        'UOM',
+        'Reserve Qty',
+        'Balance Qty'
        ];
 	}
 }

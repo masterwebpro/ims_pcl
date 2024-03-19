@@ -121,6 +121,8 @@ $(document).on('click', '.submit-inventory', function(e) {
 
                             table += "<td class='text-end'>"+number_format(item.inv_qty)+"</td>";
                             table += "<td class='text-center'>"+item.ui_code+"</td>";
+                            table += "<td class='text-end'>"+number_format(item.reserve_qty)+"</td>";
+                            table += "<td class='text-end'>"+number_format(item.balance_qty)+"</td>";
                         table += '</tr>';
                     });
 
