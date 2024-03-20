@@ -76,6 +76,9 @@ $(document).on('click', '.submit-receive-search', function(e) {
                             table += "<td class='text-center'>"+item.item_type+"</td>";
                             table += "<td class='text-center'>"+item.whse_qty+" / "+item.uw_code+"</td>";
                             table += "<td class='text-center'>"+item.inv_qty+" / "+item.ui_code+"</td>";
+                            table += "<td class='text-center'>"+(item.lot_no ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
                         table += '</tr>';
                     });
 
@@ -186,7 +189,10 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                             table += "<td width='120px;'>"+item.po_num+"</td>";
                             table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
-                            table += "<td class='text-center'>"+item.inv_qty+" / "+item.ui_code+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+item.inv_qty+" / "+item.ui_code+"</td>";
+                            table += "<td class='text-center'>"+(item.lot_no ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
                         table += '</tr>';
                     });
 

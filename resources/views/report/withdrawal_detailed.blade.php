@@ -33,7 +33,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
                                     <p class=" mb-2" id="billing-name">
                                         <select class="form-select select2" id="client" name="client">
-                                            <option value="">Select Client</option>                                                            
+                                            <option value="">Select Client</option>
                                             <? foreach($client_list as $client) : ?>
                                                 <option value="<?=$client->id?>" <?=($request->client == $client->id) ? 'selected' : ''?> ><?=$client->client_name?></option>
                                             <? endforeach;?>
@@ -47,7 +47,7 @@
                                     <p class=" mb-2" id="shipping-name">
                                         <input type="hidden" name="store_id" id="store_id" value="{{$request->store}}">
                                         <select class="form-select select2" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>                                                            
+                                            <option value="">Select Store/Warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -58,7 +58,7 @@
                                     <p class="mb-2" id="warehouse1">
                                         <input type="hidden" name="warehouse_id" id="warehouse_id" value="{{$request->warehouse}}">
                                         <select class="form-select select2" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>                                                            
+                                            <option value="">Select warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
@@ -69,7 +69,7 @@
                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Date Withdraw <small>(YYY-mm-dd)</small></h6>
                                     <input type="text" class="form-control" name="withdraw_date" id="withdraw_date" value = "{{$request->withdraw_date}}" data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true" placeholder="Select date range">
-                                </div> 
+                                </div>
                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Order Type </h6>
                                     <p class=" mb-2">
@@ -77,7 +77,7 @@
                                             <option value="">Select Order Type</option>
                                             <? foreach($order_type as $type) : ?>
                                             <option value="<?= $type->code ?>"><?= $type->name ?></option>
-                                            <? endforeach;?>                              
+                                            <? endforeach;?>
                                         </select>
                                         <span class="text-danger error-msg order_type_error"></span>
                                     </p>
@@ -128,7 +128,7 @@
         <div class="col-xxl-11">
             <div class="card" id="demo">
                 <div class="card-body p-4 ">
-                    <div class="row " id="load-search">
+                    <div class="table-responsive" id="load-search">
                         <table id="item_list" style="font-size: 12px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
                             <thead  class="table-light">
                                 <tr>
@@ -142,9 +142,12 @@
                                     <th class="fw-medium text-center">Product Code</th>
                                     <th class="fw-medium text-center">Product Description</th>
                                     <th class="fw-medium text-center" width="110px;">Inv / UOM</th>
+                                    <th class="fw-medium text-center">Lot No</th>
+                                    <th class="fw-medium text-center">Expiry Date</th>
+                                    <th class="fw-medium text-center">Mfg. Date</th>
                                 </tr>
                             </thead>
-                             
+
                             <tbody>
                             </tbody>
                         </table>

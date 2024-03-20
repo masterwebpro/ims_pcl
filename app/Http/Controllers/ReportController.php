@@ -147,7 +147,7 @@ class ReportController extends Controller
     }
 
     function printPdfReceivingDetailed(Request $request) {
-
+        ob_start();
         $rcv = RcvHdr::select('rcv_hdr.*', 'p.product_code', 'p.product_name','rd.*', 'uw.code as uw_code', 'ui.code as ui_code', )
                 ->leftJoin('rcv_dtl as rd', 'rd.rcv_no', '=', 'rcv_hdr.rcv_no')
                 ->leftJoin('products as p', 'p.product_id', '=', 'rd.product_id')
@@ -351,8 +351,10 @@ class ReportController extends Controller
 
     public function getWithdrawalDetailed(Request $request)
     {
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', )
+        ob_start();
+        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
                 ->where('wd_hdr.status','posted');
@@ -389,7 +391,7 @@ class ReportController extends Controller
 
         return response()->json([
             'success'  => true,
-            'message' => 'Saved successfully!',
+            'message' => 'Record found!',
             'data'    => $result,
         ]);
     }
@@ -404,8 +406,9 @@ class ReportController extends Controller
         ob_start();
         ini_set("memory_limit", "-1");
         set_time_limit(0);
-        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', )
+        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
                 ->where('wd_hdr.status','posted');
