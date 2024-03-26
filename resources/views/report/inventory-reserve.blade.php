@@ -16,7 +16,7 @@
         <div class="card" id="tasksList">
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0 flex-grow-1">Inventory Reserve Monitoring</h5>
+                    <h5 class="card-title mb-0 flex-grow-1">Withdrawal w/o Dispatch</h5>
                     <div class="flex-shrink-0">
                         <a href="#" class="submit-reserve-xls btn btn-secondary btn-label rounded-pill end-0"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i>Export to Excel</a>
                     </div>
@@ -27,14 +27,14 @@
                     <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                         <thead class="table-light text-muted">
                             <tr>
+                                <th class="fw-medium">WD Dtl ID</th>
                                 <th class="fw-medium">MasterID</th>
+                                <th class="fw-medium">RCV Dtl ID</th>
                                 <th class="fw-medium">Product ID</th>
                                 <th class="fw-medium">Product Code</th>
+                                <th class="fw-medium">Withdraw No.</th>
                                 <th class="fw-medium">Withdraw QTY</th>
                                 <th class="fw-medium">Dispatch QTY</th>
-                                <th class="fw-medium">Must be Reserve QTY</th>
-                                <th class="fw-medium">Inventory QTY</th>
-                                <th class="fw-medium">Reserve QTY</th>
                             </tr>
                         </thead>
 
@@ -42,23 +42,19 @@
                             <? if(count($data) > 0 ) : ?>
                                 <? foreach($data as $res) :?>
                                     <tr class="accordion-toggle">
-                                        <td class="align-middle">{{ $res['id'] }}</td>
+                                        <td class="align-middle">{{ $res['wd_dtl_id'] }}</td>
+                                        <td class="align-middle">{{ $res['master_id'] }}</td>
+                                        <td class="align-middle">{{ $res['rcv_dtl_id'] }}</td>
                                         <td class="align-middle">{{ $res['product_id'] }}</td>
                                         <td class="align-middle">{{ $res['product_code'] }}</td>
+                                        <td class="align-middle">
+                                            <a href="{{ URL::to('withdraw') }}/<?= _encode($res->wd_id) ?>"
+                                                data-id="{{ $res->wd_id }}" class="link-info text-info d-inline-block">
+                                                {{ $res->wd_no }}</a>
+                                        </td>
                                         <td class="align-middle text-end">{{number_format($res['wd_qty'],2) }}</td>
                                         <td class="align-middle text-end">{{number_format($res['dispatch_qty'],2) }}</td>
-                                        <td class="align-middle text-end">{{ number_format(($res['wd_qty'] - $res['dispatch_qty']) , 2) }}</td>
-                                        <td class="align-middle text-end">{{ number_format($res['inv_qty'],2) }}</td>
-                                        <td class="align-middle text-end">{{ $res['reserve_qty'] }}</td>
                                     </tr>
-                                    <? foreach($res['details'] as $dtl) :?>
-                                    <tr class="accordion-content bg-info" style="display: none;">
-                                        <td colspan="2">{{ $dtl['wd_no'] }}</td>
-                                        <td colspan="2">{{ $dtl['wd_qty'] }}</td>
-                                        <td colspan="2">{{ $dtl['dispatch_no'] }}</td>
-                                        <td colspan="2">{{ $dtl['dispatch_qty'] }}</td>
-                                    </tr>
-                                    <? endforeach; ?>
                                 <? endforeach; ?>
                             <? else :?>
                                 <div class="noresult" style="display: none">
