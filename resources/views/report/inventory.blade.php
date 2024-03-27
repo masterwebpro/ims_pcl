@@ -24,7 +24,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="company" name="company">
-                                            <option value="">Select Company</option>                                                            
+                                            <option value="">Select Company</option>
                                             <? foreach($client_list as $client) : ?>
                                                 <? if(strtoupper($client->client_type) == 'O') : ?>
                                                 <option value="<?=$client->id?>" ><?=$client->client_name?></option>
@@ -39,7 +39,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address</h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>                                                            
+                                            <option value="">Select Store/Warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -49,7 +49,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse</h6>
                                     <p class="mb-2">
                                         <select class="form-select select2" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>                                                            
+                                            <option value="">Select warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
@@ -59,7 +59,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Location</h6>
                                     <p class="mb-2" >
                                         <select class="form-select select2" id="location" name="location">
-                                            <option value="">Select Location</option>                                                            
+                                            <option value="">Select Location</option>
                                         </select>
                                         <span class="text-danger error-msg location_error"></span>
                                     </p>
@@ -67,7 +67,7 @@
                                  <!--end col-->
                             </div>
                             <div class="row mt-1">
-                                 
+
                                  <div class="col-lg-4 col-md-4">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Products</h6>
                                     <p class=" mb-2">
@@ -82,9 +82,9 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Item Type</h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="item_type" name="item_type">
-                                            <option value="good">Good</option>   
-                                            <option value="damage">Damage</option>   
-                                            <option value="repair">Repair</option>                                                            
+                                            <option value="good">Good</option>
+                                            <option value="damage">Damage</option>
+                                            <option value="repair">Repair</option>
                                         </select>
                                         <span class="text-danger error-msg item_type_error"></span>
                                     </p>
@@ -136,12 +136,14 @@
                                     <th class="fw-medium text-center">Whse UOM</th> -->
                                     <th class="fw-medium text-center">Inv QTY</th>
                                     <th class="fw-medium text-center">Inv UOM</th>
+                                    <th class="fw-medium text-center">Reserve QTY</th>
+                                    <th class="fw-medium text-center">Balance QTY</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
+
                             </tbody>
-                           
+
                         </table>
                     </div>
                 </div>

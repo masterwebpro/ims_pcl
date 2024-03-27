@@ -21,8 +21,9 @@ class ExportWdDetailed implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $wd = WdHdr::select('wd_hdr.withdraw_date','wd_hdr.wd_no', 'wd_hdr.order_no','wd_hdr.order_type','wd_hdr.dr_no','wd_hdr.sales_invoice','wd_hdr.po_num', 'p.product_code', 'p.product_name', 'wd.inv_qty', 'ui.code as ui_code','wd.dispatch_qty' )
+        $wd = WdHdr::select('wd_hdr.withdraw_date','wd_hdr.wd_no', 'wd_hdr.order_no','wd_hdr.order_type','wd_hdr.dr_no','wd_hdr.sales_invoice','wd_hdr.po_num', 'p.product_code', 'p.product_name', 'wd.inv_qty', 'ui.code as ui_code','wd.dispatch_qty',  'rd.lot_no', 'rd.expiry_date','rd.manufacture_date')
             ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+            ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
             ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
             ->where('wd_hdr.status','posted');
@@ -74,7 +75,10 @@ class ExportWdDetailed implements FromCollection, WithHeadings
 		'Product Description',
         'Inv Qty',
         'UOM',
-        'Dispatch Qty'
+        'Dispatch Qty',
+        'Lot No',
+        'Exp. Date',
+        'Mfg. Date',
        ];
 	}
 }

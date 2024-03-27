@@ -165,6 +165,9 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/analysis', [App\Http\Controllers\ReportController::class, 'getAnalysis'])->name('reports.analysis');
     Route::get('/export-analysis', [App\Http\Controllers\ReportController::class, 'exportAnalysis'])->name('reports.export-analysis');
 
+    Route::get('/inventory-reserve', [App\Http\Controllers\ReportController::class, 'getInventoryAdjustment'])->name('reports.inventory-adjustment');
+    Route::get('/export-reserve-monitoring', [App\Http\Controllers\ReportController::class, 'exportInventoryAdjustment'])->name('reports.export-reserve-monitoring');
+
 });
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {

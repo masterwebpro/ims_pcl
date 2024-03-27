@@ -147,7 +147,7 @@ class ReportController extends Controller
     }
 
     function printPdfReceivingDetailed(Request $request) {
-
+        ob_start();
         $rcv = RcvHdr::select('rcv_hdr.*', 'p.product_code', 'p.product_name','rd.*', 'uw.code as uw_code', 'ui.code as ui_code', )
                 ->leftJoin('rcv_dtl as rd', 'rd.rcv_no', '=', 'rcv_hdr.rcv_no')
                 ->leftJoin('products as p', 'p.product_id', '=', 'rd.product_id')
@@ -295,7 +295,7 @@ class ReportController extends Controller
     }
 
     public function getInventoryReport(Request $request) {
-        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"))
+        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterdata.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterdata.company_id')
@@ -351,8 +351,10 @@ class ReportController extends Controller
 
     public function getWithdrawalDetailed(Request $request)
     {
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', )
+        ob_start();
+        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
                 ->where('wd_hdr.status','posted');
@@ -389,7 +391,7 @@ class ReportController extends Controller
 
         return response()->json([
             'success'  => true,
-            'message' => 'Saved successfully!',
+            'message' => 'Record found!',
             'data'    => $result,
         ]);
     }
@@ -404,8 +406,9 @@ class ReportController extends Controller
         ob_start();
         ini_set("memory_limit", "-1");
         set_time_limit(0);
-        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', )
+        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
                 ->where('wd_hdr.status','posted');
@@ -1349,6 +1352,73 @@ class ReportController extends Controller
             }
             array_push($xxdata,number_format($total,2,'.',','));
             $xdata[] = array_values($xxdata);
+        }
+        return Excel::download(new ExportAnalysis($xdata), $file_name);
+    }
+
+    public function getInventoryAdjustment(Request $request)
+    {
+        ob_start();
+        $data = WdHdr::select(
+                        'p.sap_code',
+                        'wd_dtl.product_id',
+                        'p.product_code', 'p.product_name',
+                        'wd_dtl.rcv_dtl_id',
+                        'wd_dtl.master_id',
+                        'wd_dtl.wd_no',
+                        'wd_dtl.id as wd_dtl_id',
+                        'wd_hdr.id as wd_id',
+                        DB::raw('sum(wd_dtl.inv_qty) as wd_qty'),
+                        DB::raw('sum(wd_dtl.dispatch_qty) as dispatch_qty'),
+                    )
+                ->leftJoin('wd_dtl', 'wd_dtl.wd_no', '=', 'wd_hdr.wd_no')
+                ->leftJoin('products as p', 'p.product_id', '=', 'wd_dtl.product_id')
+                ->where('wd_hdr.status', 'posted')
+                ->where('wd_dtl.dispatch_qty', 0)
+                ->groupBy('wd_dtl.id')
+                ->orderBy('wd_hdr.withdraw_date','ASC');
+        $result = $data->get();
+        return view('report/inventory-reserve', [
+            'data' => $result
+        ]);
+    }
+
+    public function exportInventoryAdjustment(Request $request)
+    {
+        ob_start();
+        $file_name = 'export-inventory-reserve'.date('Ymd-His').'.xls';
+        $data = WdHdr::select(
+                    'p.sap_code',
+                    'wd_dtl.product_id',
+                    'p.product_code', 'p.product_name',
+                    'wd_dtl.rcv_dtl_id',
+                    'wd_dtl.master_id',
+                    'wd_dtl.wd_no',
+                    'wd_dtl.id as wd_dtl_id',
+                    'wd_hdr.id as wd_id',
+                    DB::raw('sum(wd_dtl.inv_qty) as wd_qty'),
+                    DB::raw('sum(wd_dtl.dispatch_qty) as dispatch_qty')
+                )
+            ->leftJoin('wd_dtl', 'wd_dtl.wd_no', '=', 'wd_hdr.wd_no')
+            ->leftJoin('products as p', 'p.product_id', '=', 'wd_dtl.product_id')
+            ->where('wd_hdr.status', 'posted')
+            ->where('wd_dtl.dispatch_qty', 0)
+            ->groupBy('wd_dtl.id')
+            ->orderBy('wd_hdr.withdraw_date','ASC');
+        $result = $data->get();
+        $xdata[] = ["WD DTL ID","MASTER ID","RCV DTL ID","PRODUCT ID","MATERIAL NO","WITHDRAW NO","WITHDRAW","DISPATCH"];
+
+        foreach($result as $key => $res){
+            $xdata[] = [
+                $res->wd_dtl_id,
+                $res->master_id,
+                $res->rcv_dtl_id,
+                $res->product_id,
+                $res->product_code,
+                $res->wd_no,
+                number_format($res->wd_qty,2,'.',','),
+                number_format($res->dispatch_qty,2,'.',','),
+            ];
         }
         return Excel::download(new ExportAnalysis($xdata), $file_name);
     }
