@@ -32,9 +32,10 @@ class WdDtl extends Model
     public function master()
     {
         return $this->belongsTo(MasterdataModel::class, 'master_id', 'id')
-                ->select('masterdata.*','wh.warehouse_name','sl.location')
+                ->select('masterdata.*','wh.warehouse_name','sl.location', 'uom.code')
                 ->leftJoin('warehouses as wh','wh.id','masterdata.warehouse_id')
-                ->leftJoin('storage_locations as sl','sl.storage_location_id','masterdata.storage_location_id');
+                ->leftJoin('storage_locations as sl','sl.storage_location_id','masterdata.storage_location_id')
+                ->leftJoin('uom','uom.uom_id','masterdata.inv_uom');
     }
 
     public function itemize()

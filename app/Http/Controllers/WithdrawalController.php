@@ -355,7 +355,7 @@ class WithdrawalController extends Controller
                             DB::rollBack();
                             return response()->json([
                                 'success'  => false,
-                                'message' => 'Line no '.($x + 1).' reserve quantity is higher than available stocks.',
+                                'message' => 'Line no '.($x + 1).' reserve quantity is higher than available stocks with product id # .'.$request->product_id[$x]. ' Inv QTY '. $masterData->inv_qty. "  Reserve qty ". $reserve,
                                 'data' => "Error on posting data"
                             ]);
                         }
