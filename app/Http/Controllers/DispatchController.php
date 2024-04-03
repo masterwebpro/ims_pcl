@@ -203,6 +203,7 @@ class DispatchController extends Controller
             DispatchDtl::where('dispatch_no',$dispatch_no)->delete();
             if(isset($request->wd_dtl_id)){
                 $wd_no = array();
+                $counter = 1;
                 for($x=0; $x < count($request->wd_dtl_id); $x++ ) {
                     $wd_no[$request->wd_no[$x]] = $request->wd_no[$x];
                     $dtl = array(
@@ -249,10 +250,11 @@ class DispatchController extends Controller
                             DB::rollBack();
                             return response()->json([
                                 'success'  => false,
-                                'message' => "Line no {$x} inventory quantity is less than dispatch quantity",
+                                'message' => "Line no {$counter} inventory quantity is less than dispatch quantity",
                             ]);
                         }
                     }
+                    $counter++;
                 }
 
                 if($request->status == 'posted'){
