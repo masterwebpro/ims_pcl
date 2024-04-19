@@ -33,15 +33,15 @@ class StockTransferController extends Controller
         $active_list = TransferHdr::select('*')
             ->where('status','open')->orderByDesc('created_at')
             ->paginate(20);
-        
+
         $posted_list = TransferHdr::select('*')
             ->where('status','posted')->orderByDesc('created_at')
             ->paginate(20);
 
         return view('stock/transfer/index', [
-            'active_list'=>$active_list, 
-            'posted_list'=>$posted_list, 
-            'client_list'=>$client_list, 
+            'active_list'=>$active_list,
+            'posted_list'=>$posted_list,
+            'client_list'=>$client_list,
         ]);
     }
 
@@ -51,11 +51,11 @@ class StockTransferController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    { 
+    {
         $client_list = Client::where('is_enabled', '1')->get();
 
         return view('stock/transfer/create', [
-            'client_list'=>$client_list, 
+            'client_list'=>$client_list,
         ]);
     }
 
@@ -82,7 +82,7 @@ class StockTransferController extends Controller
             'dest_location.*' => 'required',
             'dest_inv_qty.*' => 'required',
             'dest_inv_uom.*' => 'required',
-            
+
         ], [
             'source_company'=>'Source Company is required',
             'company'=>'Company is required',
@@ -98,7 +98,7 @@ class StockTransferController extends Controller
             'dest_location.*' => 'Dest Location is required',
             'dest_inv_qty.*' => 'Dest Inv qtyrequired',
             'dest_inv_uom.*' => 'Dest Inv UOM required',
-            
+
         ]);
 
         if ($validator->fails()) {
@@ -111,14 +111,17 @@ class StockTransferController extends Controller
 
             $data = [];
             $transfer_qty = 0;
+            $original_qty = 0;
             for($x=0; $x < count($request->product_id); $x++ ) {
 
                 if(isset($data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]])) {
                     $transfer_qty  += $request->dest_inv_qty[$x];
+                    $original_qty += $request->source_inv_qty[$x];
                 } else {
                     $transfer_qty  = $request->dest_inv_qty[$x];
+                    $original_qty = $request->source_inv_qty[$x];
                 }
-                $data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]]['original_qty'] =  $request->source_inv_qty[$x];
+                $data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]]['original_qty'] =  $original_qty;
                 $data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]]['transfer_qty'] =  $transfer_qty;
             }
 
@@ -130,7 +133,7 @@ class StockTransferController extends Controller
                 if($item['original_qty'] < $item['transfer_qty']) {
                     $has_error[] = "Insufficeint QTY: ". $product[0]." in location ". getStorageLocation($product[2]). ". (Actual Qty: ".$item['original_qty'].", Transfer Qty: ".$item['transfer_qty'].")" ;
                 }
-            
+
             }
 
             if($has_error) {
@@ -141,7 +144,7 @@ class StockTransferController extends Controller
                     'error_msg'=> $has_error
                 ]);
             }
-           
+
             if($ref_no=='') {
                 $ref_no = generateSeries('ST');
 
@@ -223,7 +226,7 @@ class StockTransferController extends Controller
                     'whse_uom'=>$request->dest_inv_uom[$x],
                     'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
                     'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
-                    
+
                 );
 
                 //deduct from old
@@ -293,7 +296,7 @@ class StockTransferController extends Controller
             if($request->status == 'posted') {
                 //add on the masterfile
                 MasterfileModel::insert($masterfile);
-                
+
                 $audit_trail[] = [
                     'control_no' => $ref_no,
                     'type' => 'masterfile',
@@ -306,7 +309,7 @@ class StockTransferController extends Controller
 
                 _stockInMasterData($_stockInMasterdata);
                 _stockOutMasterData($_stockOutMasterdata);
-            } 
+            }
 
             AuditTrail::insert($audit_trail);
 
@@ -342,7 +345,7 @@ class StockTransferController extends Controller
         // $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
 
         return view('stock/transfer/show', [
-            'client_list'=>$client_list, 
+            'client_list'=>$client_list,
             'transfer_hdr'=> $transfer_hdr,
             'transfer_dtl'=> $transfer_dtl,
             'warehouses'=>$warehouses,
@@ -362,7 +365,7 @@ class StockTransferController extends Controller
         // $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
 
         return view('stock/transfer/edit', [
-            'client_list'=>$client_list, 
+            'client_list'=>$client_list,
             'transfer_hdr'=> $transfer_hdr,
             'transfer_dtl'=> $transfer_dtl,
             'warehouses'=>$warehouses,
@@ -373,13 +376,13 @@ class StockTransferController extends Controller
     public function destroy(Request $request)
     {
         DB::connection()->beginTransaction();
-        try 
+        try
         {
             $ref_no = $request->ref_no;
             if($ref_no) {
                 $rcv = TransferHdr::where('ref_no', $ref_no)->delete();
                 $rcv_dtl = TransferDtl::where('ref_no', $ref_no)->delete();
-               
+
                 $audit_trail[] = [
                     'control_no' => $ref_no,
                     'type' => 'ST',
@@ -415,13 +418,13 @@ class StockTransferController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }  
+        }
     }
 
     public function unpost(Request $request) {
-        
+
         DB::connection()->beginTransaction();
-        try 
+        try
         {
 
             $ref_no = $request->ref_no;
@@ -433,7 +436,7 @@ class StockTransferController extends Controller
             $_stockInMasterdata = [];
 
             foreach($transfer_dtl as $transfer) {
-            
+
                 $product = Products::where('product_id',$transfer->product_id)->first();
 
                 //get company ID
@@ -451,7 +454,7 @@ class StockTransferController extends Controller
                 $masterfile[] = array(
                     'ref_no'=>$ref_no,
                     'customer_id'=>$product->customer_id,
-                
+
                     'store_id'=>$transfer_hdr->source_store_id,
                     'company_id'=>$transfer_hdr->source_company_id,
 
@@ -467,7 +470,7 @@ class StockTransferController extends Controller
                     'whse_uom'=>$transfer->source_inv_uom,
                     'created_at'=>date("Y-m-d H:i:s", strtotime("+5 sec")),
                     'updated_at'=>date("Y-m-d H:i:s", strtotime("+5 sec"))
-                    
+
                 );
 
 
@@ -491,7 +494,7 @@ class StockTransferController extends Controller
                     'updated_at'=>$this->current_datetime
                 );
 
-            
+
                 //deduct the qty to dest
                 $_stockOutMasterdata[] = array(
                     'company_id'=>$warehouse->client_id,
@@ -536,7 +539,7 @@ class StockTransferController extends Controller
             ];
 
             MasterfileModel::insert($masterfile);
-                
+
             $audit_trail[] = [
                 'control_no' => $ref_no,
                 'type' => 'masterfile',
@@ -549,13 +552,13 @@ class StockTransferController extends Controller
 
             _stockInMasterData($_stockInMasterdata);
             _stockOutMasterData($_stockOutMasterdata);
-        
+
 
             AuditTrail::insert($audit_trail);
 
             //update header to open
             TransferHdr::where('ref_no', $ref_no)->update(['status'=>'open']);
-            
+
             DB::connection()->commit();
 
             return response()->json([
@@ -572,8 +575,7 @@ class StockTransferController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        } 
+        }
 
     }
 }
-     
