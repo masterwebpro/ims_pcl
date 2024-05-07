@@ -37,7 +37,9 @@ class DispatchHdr extends Model
                     ->leftJoin('client_list as cl','cl.id','wd_hdr.customer_id')
                     ->leftJoin('client_list as del','del.id','wd_hdr.deliver_to_id')
                     ->leftJoin('products as p','p.product_id','=','wd_dtl.product_id')
-                    ->leftJoin('uom as ui','ui.uom_id','=','wd_dtl.inv_uom');
+                    ->leftJoin('uom as ui','ui.uom_id','=','wd_dtl.inv_uom')
+                    ->orderBy('dispatch_dtl.wd_no','ASC')
+                    ->orderBy('dispatch_dtl.wd_dtl_id','ASC');
     }
 
     public function truck()

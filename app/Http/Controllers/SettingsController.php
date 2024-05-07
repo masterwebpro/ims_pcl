@@ -405,7 +405,9 @@ class SettingsController extends Controller
                     // ->whereNull('wd_hdr.dispatch_no')
                     ->groupBy('wd_dtl.id')
                     ->having('inv_qty','>',0)
-                    ->orderBy('wd_hdr.order_date','ASC');
+                    ->orderBy('wd_hdr.order_date','ASC')
+                    ->orderBy('wd_dtl.wd_no','ASC')
+                    ->orderBy('wd_dtl.id','ASC');
                     if(isset($request->keyword)){
                         $search = "%".$request->keyword."%";
                         $result->where(function($cond)use($search){
