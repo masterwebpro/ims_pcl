@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Awobaz\Compoships\Compoships;
+use Illuminate\Support\Facades\DB;
+
 class WdDtl extends Model
 {
 
@@ -48,5 +50,11 @@ class WdDtl extends Model
         return $this->belongsTo(RcvDtl::class, 'rcv_dtl_id', 'id')
                 ->select('rcv_dtl.id','rcv_dtl.lot_no','rcv_dtl.expiry_date','rcv_dtl.manufacture_date','rh.date_received as received_date')
                 ->leftJoin('rcv_hdr as rh','rh.rcv_no','rcv_dtl.rcv_no');
+    }
+
+    public function dispatch()
+    {
+        return $this->hasOne(DispatchDtl::class, 'wd_dtl_id', 'id')
+                ->select('wd_dtl_id',DB::raw('GROUP_CONCAT(dispatch_no SEPARATOR ", ") as dispatch_no'));
     }
 }

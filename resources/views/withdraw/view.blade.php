@@ -367,6 +367,9 @@
                                                     <th scope="col">Mfg. Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
+                                                    @if ($wd->status == 'posted')
+                                                    <th scope="col">Dispatch No</th>
+                                                    @endif
                                                     <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
@@ -385,6 +388,7 @@
                                                         <td class="text-start">
                                                             <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                         {{$x++}} </td>
+
                                                         <td class="text-start fs-14">
                                                             <b>{{$item->product->product_code}}</b><br/>
                                                             {{$item->product->product_name}}
@@ -422,12 +426,15 @@
                                                         <td class=" ps-1">
                                                             {{ ($item->master) ?  $item->master->location : "" }}
                                                         </td>
+                                                        @if ($wd->status == 'posted')
+                                                        <td class="text-start fs-14">{{ ($item->dispatch) ? $item->dispatch->dispatch_no : '' }}</td>
+                                                        @endif
                                                         <td class="ps-1">
                                                             @if ($item->product->is_serialize == 1)
                                                                 <button type="button" class="add-serial btn btn-icon btn-success waves-effect waves-light" data-type="view" data-itemize="{{ $item->itemize }}" id="row_{{$x}}" data-rowid="{{$x}}" data-productname="{{ $item->product->product_name }}" data-productcode="{{ $item->product->product_code }}" data-productid="{{$item->product_id}}" data-masterfileid="{{$item->masterfile_id}}">
                                                                     <i class="ri-barcode-line"></i>
                                                                 </button>
-                                                                @endif
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach

@@ -405,7 +405,6 @@ class WithdrawalController extends Controller
         $wd = WdHdr::select('wd_hdr.*', 'u.name')
                 ->leftJoin('users as u', 'u.id', '=', 'wd_hdr.created_by')
                 ->where('wd_hdr.id', _decode($id))->first();
-        // dd($wd);
         $order_type = OrderType::all();
         $store_list = Store::all();
         $company_list = Client::where('client_type','O')->get();
