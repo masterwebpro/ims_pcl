@@ -181,16 +181,31 @@ class SettingsController extends Controller
     }
 
     public function getMasterfileData(Request $request) {
-        $result = \App\Models\MasterdataModel::select('p.product_id','p.product_code','p.product_name','masterdata.item_type', 'masterdata.rcv_dtl_id', 'sl.storage_location_id as old_location_id', DB::raw("case when sl.location is null or sl.location = '' then 'RA' else  sl.location end as old_location"), 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer', DB::raw("(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty") , DB::raw("(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty"))
+        $result = \App\Models\MasterdataModel::select('masterdata.id as master_id','p.product_id','p.product_code','p.product_name','masterdata.item_type', 'masterdata.rcv_dtl_id', 'sl.storage_location_id as old_location_id', DB::raw("case when sl.location is null or sl.location = '' then 'RA' else  sl.location end as old_location"), 'iu.code as i_code',  'iu.uom_id as i_uom_id', 'wu.code as w_code', 'wu.uom_id as w_uom_id','sl.rack as rack', 'sl.level as layer', DB::raw("(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty") , DB::raw("(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty"))
                 ->where('masterdata.warehouse_id', $request->warehouse_id)
-                ->where('masterdata.inv_qty', '>', 0)
-                ->where('masterdata.whse_qty', '>', 0)
                 ->leftJoin('products as p','p.product_id','masterdata.product_id')
                 ->leftJoin('storage_locations as sl','sl.storage_location_id','masterdata.storage_location_id')
                 ->leftJoin('uom as wu','wu.uom_id','masterdata.whse_uom')
                 ->leftJoin('uom as iu','iu.uom_id','masterdata.inv_uom')
                 ->leftJoin('rcv_dtl as rd','rd.id','masterdata.rcv_dtl_id')
-                ->leftJoin('rcv_hdr as rh','rh.rcv_no','rd.rcv_no');
+                ->leftJoin('rcv_hdr as rh','rh.rcv_no','rd.rcv_no')
+                ->havingRaw('SUM(masterdata.inv_qty - masterdata.reserve_qty) > 0')
+                ->groupBy(
+                    'masterdata.id',
+                    'p.product_id',
+                    'p.product_code',
+                    'p.product_name',
+                    'masterdata.item_type',
+                    'masterdata.rcv_dtl_id',
+                    'sl.storage_location_id',
+                    'sl.location',
+                    'iu.code',
+                    'iu.uom_id',
+                    'wu.code',
+                    'wu.uom_id',
+                    'sl.rack',
+                    'sl.level'
+                );
 
         if($request->location) {
             if(isset($request->storage_id)) {
