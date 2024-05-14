@@ -222,7 +222,7 @@ class ReportController extends Controller
         if($request->has('location')  && $request->location !='')
             $rcv->where('masterfiles.storage_location_id', $request->location);
 
-        
+
         $date_split = explode(" to ",$request->date_range);
 
         $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
@@ -233,7 +233,7 @@ class ReportController extends Controller
             $to = date('Y-m-d',  strtotime($date_split[0]))." 23:59:59";
         }
 
-        
+
         $rcv->where('masterfiles.created_at', '<', $from);
 
         $data = $rcv->get();
@@ -295,7 +295,7 @@ class ReportController extends Controller
     }
 
     public function getInventoryReport(Request $request) {
-        $rcv = MasterdataModel::select('client_name22', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
+        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterdata.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterdata.company_id')
