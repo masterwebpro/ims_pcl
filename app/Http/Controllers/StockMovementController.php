@@ -30,15 +30,15 @@ class StockMovementController extends Controller
         $active_list = MvHdr::select('*')
             ->where('status','open')->orderByDesc('created_at')
             ->paginate(20);
-        
+
         $posted_list = MvHdr::select('*')
             ->where('status','posted')->orderByDesc('created_at')
             ->paginate(20);
 
         return view('stock/movement/index', [
-            'active_list'=>$active_list, 
-            'posted_list'=>$posted_list, 
-            'client_list'=>$client_list, 
+            'active_list'=>$active_list,
+            'posted_list'=>$posted_list,
+            'client_list'=>$client_list,
         ]);
     }
 
@@ -51,7 +51,7 @@ class StockMovementController extends Controller
         if(empty($session)) {
             return to_route('movement.index');
         }
-        
+
         $warehouse = _decode($session['warehouse']);
         $store = _decode($session['store']);
         $company = _decode($session['company']);
@@ -60,7 +60,7 @@ class StockMovementController extends Controller
         $locations = (new SettingsController)->getLocationWarehouse($warehouse);
 
         return view('stock/movement/create', [
-            'client_list'=>$client_list, 
+            'client_list'=>$client_list,
             'warehouse_id' =>$warehouse? $warehouse : '',
             'store_id'=> $store? $store : '',
             'company_id'=> $company? $company : '',
@@ -82,7 +82,7 @@ class StockMovementController extends Controller
             'new_location.*' => 'required',
             'new_inv_qty.*' => 'required|required_with:old_inv_qty.*|numeric|min:1|lte:old_inv_qty.*',
             'new_inv_uom.*' => 'required',
-            
+
         ], [
             'warehouse'=>'Warehouse is required',
             'company'=>'Company is required',
@@ -136,7 +136,7 @@ class StockMovementController extends Controller
             $_stockInMasterdata= [];
             $_stockOutMasterdata= [];
             $_isReservedInMasterdata=[];
-         
+
             for($x=0; $x < count($request->product_id); $x++ ) {
                 $dtl[] = array(
                     'ref_no'=>$ref_no,
@@ -219,7 +219,7 @@ class StockMovementController extends Controller
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                     // 'expiry_date'=>$request->expiry_date,
                     // 'lot_no'=>$request->lot_no,
-                    // 'received_date'=>date("Y-m-d", strtotime($request->date_received)), 
+                    // 'received_date'=>date("Y-m-d", strtotime($request->date_received)),
                 );
 
                 $_stockInMasterdata[] = array(
@@ -254,7 +254,7 @@ class StockMovementController extends Controller
             if($request->status == 'posted') {
                 //add on the masterfile
                 MasterfileModel::insert($masterfile);
-                
+
                 $audit_trail[] = [
                     'control_no' => $ref_no,
                     'type' => 'masterfile',
@@ -267,7 +267,7 @@ class StockMovementController extends Controller
 
                 _stockInMasterData($_stockInMasterdata);
                 _stockOutMasterData($_stockOutMasterdata);
-            } 
+            }
 
             AuditTrail::insert($audit_trail);
 
@@ -299,7 +299,7 @@ class StockMovementController extends Controller
 
         $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
         return view('stock/movement/view', [
-            'client_list'=>$client_list, 
+            'client_list'=>$client_list,
             'mv_hdr'=> $mv_hdr,
             'mv_dtl'=> $mv_dtl,
             'location'=>$location,
@@ -315,7 +315,7 @@ class StockMovementController extends Controller
 
         $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
         return view('stock/movement/edit', [
-            'client_list'=>$client_list, 
+            'client_list'=>$client_list,
             'mv_hdr'=> $mv_hdr,
             'mv_dtl'=> $mv_dtl,
             'location'=>$location,
@@ -328,7 +328,7 @@ class StockMovementController extends Controller
             'warehouse'=>'required',
             'company'=>'required',
             'store'=>'required',
-            
+
         ], [
             'warehouse'=>'Warehouse is required',
             'company'=>'Company  is required',
@@ -338,7 +338,7 @@ class StockMovementController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
         }
-        
+
         try {
 
             $data = [
@@ -382,7 +382,7 @@ class StockMovementController extends Controller
     public function getNewLocation($warehouse_id, $storage_id) {
 
         $location_list = \App\Models\StorageLocationModel::select('storage_location_id','location')->where('warehouse_id', $warehouse_id)->orderBy('location')->get();
-        
+
         $html = '<option value="">New Loc</option>';
         foreach ($location_list as $loc) {
             $sel = ($loc->storage_location_id == $storage_id) ? 'selected' : '';
@@ -394,14 +394,14 @@ class StockMovementController extends Controller
     {
         DB::connection()->beginTransaction();
 
-        try 
+        try
         {
             $ref_no = $request->ref_no;
             if($ref_no) {
                 $mv_hdr = MvHdr::where('ref_no', $ref_no)->delete();
                 $mv_dtl = MvDtl::where('ref_no', $ref_no)->delete();
 
-                  
+
                 $audit_trail[] = [
                     'control_no' => $ref_no,
                     'type' => 'SM',
@@ -438,19 +438,19 @@ class StockMovementController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }   
+        }
     }
 
     public function unpost(Request $request)
     {
         DB::connection()->beginTransaction();
 
-        try 
+        try
         {
             $ref_no = $request->ref_no;
             if($ref_no) {
                 $rcv = MvHdr::where('ref_no', $ref_no)->update(['status'=>'open']);
-               
+
                 //remove on masterfiles
                 $mster_hdr = MasterfileModel::where('ref_no', $ref_no)->delete();
 
@@ -496,13 +496,13 @@ class StockMovementController extends Controller
                         'whse_uom'=>$rec->old_inv_uom,
                         'rcv_dtl_id'=>$rec->rcv_dtl_id,
                     );
-                    
+
                 }
 
                 _stockInMasterData($_stockInMasterdata);
                 _stockOutMasterData($_stockOutMasterdata);
 
-                 
+
                 $audit_trail[] = [
                     'control_no' => $ref_no,
                     'type' => 'SM',
@@ -514,7 +514,7 @@ class StockMovementController extends Controller
                 ];
 
                 AuditTrail::insert($audit_trail);
-    
+
                 DB::connection()->commit();
 
                 return response()->json([
@@ -539,6 +539,6 @@ class StockMovementController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }   
+        }
     }
 }

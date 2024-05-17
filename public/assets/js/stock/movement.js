@@ -55,7 +55,7 @@ $(document).on('click', '#movement-next-btn', function() {
     var store = $('#store').val();
     var company = $('#company').val();
     var warehouse = $('#warehouse').val();
-   
+
     $.ajax({
         url: BASEURL + 'stock/movement/validate',
         method: "POST",
@@ -73,7 +73,7 @@ $(document).on('click', '#movement-next-btn', function() {
         success: function (response) {
             if($.isEmptyObject(response.errors)) {
                 window.location = BASEURL+'stock/movement/create';
-				
+
             } else {
                 $.each(response.errors, function(prefix, val) {
                     $('#errMsg').removeClass('d-none');
@@ -91,7 +91,7 @@ $(document).on('click', '#movement-next-btn', function() {
 
 $(document).on('click', '#find-items', function() {
 
-    $('#show-items').modal('show'); 
+    $('#show-items').modal('show');
     if ($.fn.DataTable.isDataTable("#show-items-list")) {
         $('#show-items-list').DataTable().clear().destroy();
     }
@@ -106,12 +106,12 @@ $(document).on('click', '.search-item', function() {
     var rcv_no = $('#rcv_no').val();
     //var storage_location_id = $('#storage_location_id').val();
 
-    
-    if(warehouse_id) {   
 
-        $('#show-items').modal('show'); 
+    if(warehouse_id) {
+
+        $('#show-items').modal('show');
         $('#show-items-list').DataTable().clear().destroy();
-        
+
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
@@ -138,7 +138,7 @@ $(document).on('click', '.search-item', function() {
                     if ($.fn.DataTable.isDataTable("#show-items-list")) {
                         $('#show-items-list').DataTable().clear().destroy();
                     }
-                    
+
                     new DataTable("#show-items-list",{
                         order: [[1, 'desc']],
                         paging: true,
@@ -166,7 +166,7 @@ $(document).on('click', '.search-item', function() {
                             { data: 'whse_qty' },
                             { data: 'w_code' },
                             { data: 'rcv_dtl_id' },
-                            
+
                         ],
                         "pageLength": 50,
                         lengthMenu: [
@@ -185,7 +185,7 @@ $(document).on('click', '.search-item', function() {
             complete: function() {
                $('#preloading').modal('hide');
             }
-        });       
+        });
     } else {
         alert("Supplier Name required");
     }
@@ -204,7 +204,7 @@ $(document).on('click', '#add-product', function() {
             var btn = '<div class="text-center">';
             btn += '<a href="javascript:void(0)" class="text-info split-product" data-id="'+(rowCount-1)+'"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>';
             btn += '&nbsp; <a href="javascript:void(0)" class="text-danger remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
-            
+
             btn += '</div>'
 
             $('#product-list tbody').append('<tr id="product_'+(rowCount-1)+'"> \
@@ -250,13 +250,13 @@ $(document).on('click', '#add-product', function() {
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
-   
+
     $('#show-items').modal('hide');
 });
 
 $(document).on('click', '.submit-open', function (e) {
     e.preventDefault();
-   
+
     var form_data = new FormData(document.getElementById("submit-receive"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'open');
@@ -266,7 +266,7 @@ $(document).on('click', '.submit-open', function (e) {
 
 $(document).on('click', '.submit-posted', function (e) {
     e.preventDefault();
-   
+
     var form_data = new FormData(document.getElementById("submit-receive"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'posted');
@@ -307,13 +307,13 @@ function _submitData(form_data) {
 							window.location = BASEURL+'stock/movement/'+data.id+'/edit';
 						}, 300);
                     } else {
-                        toastr.success(data.message); 
+                        toastr.success(data.message);
                         setTimeout(function () {
 							window.location = BASEURL+'stock/movement';
 						}, 300);
                     }
                 } else {
-                    toastr.error(data.message,'Error on saving'); 
+                    toastr.error(data.message,'Error on saving');
                 }
             } else {
                 $.each(data.errors, function(prefix, val) {
@@ -349,13 +349,13 @@ $(document).on('blur', '.new_inv_qty', function() {
 
 $(document).on('blur', '#item_code', function(e) {
     var val = $(this).val();
-    scanItem(val); 
+    scanItem(val);
 });
 
 $(document).on('keyup', '#item_code', function(e) {
     var val = $(this).val();
     if (e.keyCode === 13)  {
-        scanItem(val); 
+        scanItem(val);
     }
 });
 
@@ -372,7 +372,7 @@ function scanItem(val) {
 $(document).on('click', '.split-product', function(e) {
     e.preventDefault();
     var id=$(this).data('id');
- 
+
     var thisRow = $( this ).closest( 'tr' )[0];
     value = $(thisRow).find( '.new_inv_qty' ).val();
     var rem  = value % 2;
@@ -382,12 +382,12 @@ $(document).on('click', '.split-product', function(e) {
     if(rem != 0 ) {
         parent_val = (value / 2) + (rem/2);
         second_val = (value / 2) - (rem/2);
-    } 
+    }
 
     $(thisRow).find( '.new_inv_qty' ).val(parent_val);
     $( thisRow ).clone().insertAfter( thisRow )
-        .find( '.new_inv_qty' ).val(second_val); 
-    // $( thisRow ).clone().insertAfter( thisRow ); 
+        .find( '.new_inv_qty' ).val(second_val);
+    // $( thisRow ).clone().insertAfter( thisRow );
 });
 
 
@@ -440,3 +440,52 @@ $(document).on('click', '.submit-unpost', function (e) {
         }
     });
 });
+
+$(document).on('click', '.submit-delete', function (e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to DELETE this transaction?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, DELETE it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: BASEURL + 'stock/movement',
+                data: {
+                    ref_no : $('#ref_no').val(),
+                    _token: $('input[name=_token]').val()
+                },
+                method: "DELETE",
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#preloading').modal('show');
+                    $('#submit-movement').find('span.error-msg').text('');
+                },
+                success: function (data) {
+                    if($.isEmptyObject(data.errors)) {
+                        if(data.success == true) {
+                            toastr.success(data.message);
+                            setTimeout(function () {
+                                window.location = BASEURL+'stock/movement';
+                            }, 300);
+
+                        } else {
+                            toastr.error(data.message,'Error on saving');
+
+                        }
+                    } else {
+                        toastr.error('Some fields are required');
+                    }
+                },
+                complete: function() {
+                   $('#preloading').modal('hide');
+                }
+            });
+        }
+    });
+});
+

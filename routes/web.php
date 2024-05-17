@@ -121,6 +121,7 @@ Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
     Route::resource('/movement', App\Http\Controllers\StockMovementController::class);
     Route::delete('/movement', [App\Http\Controllers\StockMovementController::class, 'destroy']);
     Route::post('/movement/unpost', [App\Http\Controllers\StockMovementController::class, 'unpost']);
+    Route::post('/movement/unpost', [App\Http\Controllers\StockMovementController::class, 'unpost']);
 
     Route::post('/movement/validate', [App\Http\Controllers\StockMovementController::class, 'getValidate']);
     Route::resource('/adjustment', App\Http\Controllers\StockAdjustmentController::class);
