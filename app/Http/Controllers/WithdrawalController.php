@@ -186,6 +186,24 @@ class WithdrawalController extends Controller
             // 'inv_uom.*' => 'UOM  is required',
             // 'item_type.*' => 'This is required'
         ]);
+        $validator->after(function ($validator) use ($request) {
+            $wd_no = $request->wd_no;
+            $drNo = $request->input('dr_no');
+            $client = $request->input('client');
+            if (!empty($drNo) && !empty($client)) {
+                $existsQuery = DB::table('wd_hdr')
+                    ->where('dr_no', $drNo)
+                    ->where('customer_id', $client);
+                if($wd_no) {
+                    $existsQuery->where('wd_no', '!=', $wd_no);
+                }
+                $exists = $existsQuery->exists();
+                if ($exists) {
+                    $validator->errors()->add('dr_no', 'The DR number has already been taken for this customer.');
+                }
+            }
+        });
+
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
