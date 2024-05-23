@@ -163,7 +163,7 @@
                                 <div class="col-lg-3 col-md-3 form-group">
                                         <label for="colFormLabel" class="form-label">Prepared By</label>
                                             <input type="text" class="form-control" id="created_by" name="created_by" disabled
-                                                value="<?=$created_by?>" placeholder="Created By">
+                                                value="<?=$dispatch->name ?? $created_by?>" placeholder="Created By">
                                             <span class="text-danger error-msg created_by_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
