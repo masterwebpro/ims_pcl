@@ -382,7 +382,7 @@ class StockTransferController extends Controller
             if($ref_no) {
                 $rcv = TransferHdr::where('ref_no', $ref_no)->delete();
                 $rcv_dtl = TransferDtl::where('ref_no', $ref_no)->delete();
-
+                MasterfileModel::where('ref_no', $ref_no)->delete();
                 $audit_trail[] = [
                     'control_no' => $ref_no,
                     'type' => 'ST',

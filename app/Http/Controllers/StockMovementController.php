@@ -400,8 +400,7 @@ class StockMovementController extends Controller
             if($ref_no) {
                 $mv_hdr = MvHdr::where('ref_no', $ref_no)->delete();
                 $mv_dtl = MvDtl::where('ref_no', $ref_no)->delete();
-
-
+                MasterfileModel::where('ref_no', $ref_no)->delete();
                 $audit_trail[] = [
                     'control_no' => $ref_no,
                     'type' => 'SM',
