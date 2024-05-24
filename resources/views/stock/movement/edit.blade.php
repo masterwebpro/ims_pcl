@@ -194,7 +194,7 @@
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
-                                                <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>
+                                                <th scope="col" class="text-center align-middle" rowspan="2">#</th>
                                                 <th scope="col" class="text-center" rowspan="2" valign="middle">Product Deatails</th>
                                                 <th rowspan="2" class="text-center" valign="middle">Item Type</th>
                                                 <th colspan="2" class="text-center">Old Location</th>
