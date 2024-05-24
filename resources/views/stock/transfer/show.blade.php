@@ -124,8 +124,8 @@
                                 <table class="table table-nowrap table-bordered transfer" id="product-list">
                                     <thead>
                                         <tr class="table-active">
-                                            <th scope="col" class="text-center" rowspan="2"> &nbsp;</th>
-                                            <th scope="col" class="text-center" rowspan="2" valign="middle">Product Deatails</th>
+                                            <th scope="col" class="text-center align-middle" rowspan="2">#</th>
+                                            <th scope="col" class="text-center" rowspan="2" valign="middle">Product Details</th>
                                             <th rowspan="2" class="text-center" valign="middle">Item Type</th>
                                             <th colspan="3" class="text-center">Source Location</th>
                                             <th colspan="3" class="text-center">Destination Location</th>

@@ -147,7 +147,7 @@ $(document).on('click', '#add-product', function() {
             btn += '</div>'
 
             $('#product-list tbody').append('<tr id="product_'+(rowCount-1)+'"> \
-            <td class="text-start d-none"> \
+            <td class="text-start"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
                 <input type="hidden" name="product_name[]" readonly id="product_name_'+data[x].product_name+'" value="'+data[x].product_name+'" /> \
                 <input type="hidden" name="product_code[]" readonly id="product_code_'+data[x].product_code+'" value="'+data[x].product_code+'" /> \
@@ -440,4 +440,38 @@ $(document).on('click', '.submit-unpost', function (e) {
         }
     });
 });
+
+$(document).on('click', '#select-all', function() {
+    toggleSelectAllRows();
+});
+
+function toggleSelectAllRows() {
+    var $table = $('#show-items-list').DataTable();
+    var rows = $table.rows().nodes(); // Get the DOM nodes of the rows
+
+    var rowsArray = Array.from(rows);
+
+    // Check if any rows are selected
+    var anySelected = false;
+    rowsArray.forEach(function(row) {
+        if ($(row).hasClass('selected')) {
+            anySelected = true;
+            return; // break the loop once a selected row is found
+        }
+    });
+
+    // If any row is selected, deselect all rows
+    if (anySelected) {
+        rowsArray.forEach(function(row) {
+            $(row).removeClass('selected');
+        });
+        $('#select-all').html('<i class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All');
+    } else {
+        // If no row is selected, select all rows
+        rowsArray.forEach(function(row) {
+            $(row).addClass('selected');
+        });
+        $('#select-all').html('<i class=" ri-arrow-go-back-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Deselect All');
+    }
+}
 
