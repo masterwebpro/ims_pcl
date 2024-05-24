@@ -171,8 +171,8 @@
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
-                                                <th scope="col" class="text-center d-none" rowspan="2"> &nbsp;</th>
-                                                <th scope="col" class="text-center" rowspan="2" valign="middle">Product Deatails</th>
+                                                <th scope="col" class="align-middle text-center" rowspan="2">#</th>
+                                                <th scope="col" class="text-center" rowspan="2" valign="middle">Product Details</th>
                                                 <th rowspan="2" class="text-center" valign="middle">Item Type</th>
                                                 <th colspan="2" class="text-center">Old Location</th>
                                                 <th colspan="2" class="text-center">Target Location</th>
@@ -238,11 +238,15 @@
                             </p>
                         </div>
 
-                        <div class="col-3">
+                        <div class="col-2">
                             <h6 class="text-muted text-uppercase fw-semibold">&nbsp;</h6>
                             <p class="fw-medium" id="billing-name">
-                                <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
+                                <button data-status="open" class="search-item btn btn-warning rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
                             </p>
+                        </div>
+                        <div class="col-4 hstack gap-2 justify-content-end">
+                            <button type="button" class="btn btn-warning rounded-pill" id="select-all"><i class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
+                            <button type="button" class="btn btn-success rounded-pill" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
                         </div>
                     </div>   
 
@@ -269,11 +273,6 @@
                         </table>
                     </div>
                     
-                </div>
-                <div class="modal-footer">
-                    <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-success" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add</button>
-                    </div>
                 </div>
             </div>
         </div>
