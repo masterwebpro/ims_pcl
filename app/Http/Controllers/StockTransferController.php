@@ -96,7 +96,7 @@ class StockTransferController extends Controller
             'source_inv_uom.*' => 'Source UOM is required',
             'dest_warehouse.*' => 'Dest warehouse is required',
             'dest_location.*' => 'Dest Location is required',
-            'dest_inv_qty.*' => 'Dest Inv qtyrequired',
+            'dest_inv_qty.*' => 'Dest Inv qty required',
             'dest_inv_uom.*' => 'Dest Inv UOM required',
 
         ]);
@@ -110,32 +110,25 @@ class StockTransferController extends Controller
             $ref_no = $request->ref_no;
 
             $data = [];
-            $transfer_qty = 0;
-            $original_qty = 0;
             for($x=0; $x < count($request->product_id); $x++ ) {
-
-                if(isset($data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]])) {
-                    $transfer_qty  += $request->dest_inv_qty[$x];
-                    $original_qty += $request->source_inv_qty[$x];
+                $key = $request->product_id[$x]."|".$request->rcv_dtl_id[$x]."|".$request->source_location[$x];
+                if(!isset($data[$key])) {
+                    $data[$key]['transfer_qty']  = $request->dest_inv_qty[$x];
+                    $data[$key]['original_qty'] = $request->source_inv_qty[$x];
+                    $data[$key]['product_code'] = $request->product_code[$x];
+                    $data[$key]['source_location'] = $request->source_location[$x];
                 } else {
-                    $transfer_qty  = $request->dest_inv_qty[$x];
-                    $original_qty = $request->source_inv_qty[$x];
+                    $data[$key]['transfer_qty']  += $request->dest_inv_qty[$x];
                 }
-                $data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]]['original_qty'] =  $original_qty;
-                $data[$request->product_code[$x]."|".$request->product_name[$x]."|".$request->source_location[$x]]['transfer_qty'] =  $transfer_qty;
             }
-
             //validation
             $has_error = [];
             foreach($data as $idx=>$item) {
-                $product = explode("|", $idx);
-
                 if($item['original_qty'] < $item['transfer_qty']) {
-                    $has_error[] = "Insufficeint QTY: ". $product[0]." in location ". getStorageLocation($product[2]). ". (Actual Qty: ".$item['original_qty'].", Transfer Qty: ".$item['transfer_qty'].")" ;
+                    $has_error[] = "Insufficeint QTY: ". $item['product_code']." in location ". getStorageLocation($item['source_location']). ". (Actual Qty: ".$item['original_qty'].", Transfer Qty: ".$item['transfer_qty'].")" ;
                 }
 
             }
-
             if($has_error) {
                 DB::connection()->rollBack();
                 return response()->json([
