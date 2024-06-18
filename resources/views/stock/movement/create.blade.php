@@ -43,13 +43,6 @@
                 <div class="row mb-3">
                     <div class="col-lg-12">
                         <div class="card-body p-4 ">
-                        <div id="errMsg" class="d-none">
-                                <div class="alert alert-danger">
-                                    <strong>Whoops!</strong> There were some problems with your input.<br>
-                                    <ul class="errors">
-                                    </ul>
-                                </div>
-                            </div>
                             <div class="row g-3">
                                 <div class="col-4">
                                 <input type="hidden" name="ref_no" id="ref_no" value="" />
@@ -173,6 +166,14 @@
                                         </div>
                                     </div> 
                                 </div> 
+
+                                <div id="errMsg" class="d-none">
+                                    <div class="alert alert-danger">
+                                        <strong>Whoops!</strong> There were some problems with your input.<br>
+                                        <ul class="errors">
+                                        </ul>
+                                    </div>
+                                </div>
                                 
                                 <div class="table-responsive">
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
