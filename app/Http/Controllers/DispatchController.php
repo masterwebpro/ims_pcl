@@ -171,6 +171,12 @@ class DispatchController extends Controller
             $arrival = date("Y-m-d", strtotime($request->arrival_date))." ".date("H:i:s", strtotime($request->arrival_time));
 
             $dispatch_date = isset($request->dispatch_date) ? $request->dispatch_date : date("Y-m-d");
+            if(DispatchHdr::where('dispatch_no', $dispatch_no)->where('status','posted')->first()) {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Dispatch No. '.$dispatch_no.' already posted!, Please reload the page and try again.']);
+            }
+
             $dispatch = DispatchHdr::updateOrCreate(['dispatch_no' => $dispatch_no], [
                 'dispatch_no'=>$dispatch_no,
                 'dispatch_date'=> $dispatch_date,
@@ -193,8 +199,6 @@ class DispatchController extends Controller
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
             ]);
-            // $wd_id = WdHdr::where('dispatch_no',$dispatch_no)->pluck('id');
-            // WdHdr::whereIN('id',$wd_id)->update(['dispatch_no' => null]);
             $dispatch_dtl = DispatchDtl::where('dispatch_no',$dispatch_no)->get();
             foreach ($dispatch_dtl as $key => $dtl){
                 $wd_detail = WdDtl::find($dtl->wd_dtl_id);
@@ -383,6 +387,13 @@ class DispatchController extends Controller
         try
         {
             $dispatch_no = $request->dispatch_no;
+
+            if(DispatchHdr::where('dispatch_no', $dispatch_no)->where('status','posted')->first()) {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Dispatch No. '.$dispatch_no.' already posted!, Please reload the page and try again.']);
+            }
+            
             if($dispatch_no) {
                 $dispatch_dtl = DispatchDtl::where('dispatch_no', $dispatch_no)->get();
                 DispatchHdr::where('dispatch_no', $dispatch_no)->delete();

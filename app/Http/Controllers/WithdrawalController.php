@@ -225,6 +225,12 @@ class WithdrawalController extends Controller
                 SeriesModel::insert($series);
             }
 
+            if(WdHdr::where('wd_no', $wd_no)->where('status','posted')->first()) {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Withdrawal No. '.$wd_no.' already posted!, Please reload the page and try again.']);
+            }
+
             $wd = WdHdr::updateOrCreate(['wd_no' => $wd_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
@@ -503,6 +509,12 @@ class WithdrawalController extends Controller
         try
         {
             $wd_no = $request->wd_no;
+            if(WdHdr::where('wd_no', $wd_no)->where('status','posted')->first()) {
+                return response()->json([
+                    'success'  => false,
+                    'message' => 'Withdrawal No. '.$wd_no.' already posted!, Please reload the page and try again.']);
+            }
+            
             if($wd_no) {
                 WdHdr::where('wd_no', $wd_no)->delete();
                 WdDtl::where('wd_no', $wd_no)->delete();
