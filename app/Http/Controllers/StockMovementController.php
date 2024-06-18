@@ -100,6 +100,48 @@ class StockMovementController extends Controller
             return response()->json(['errors' => $validator->errors()]);
         }
 
+        $transfer_qty = 0;
+        $original_qty = 0;
+        for($x=0; $x < count($request->product_id); $x++ ) {
+
+            $product_info = Products::where('product_id',$request->product_id[$x])->first();
+
+            $data[$request->product_id[$x]]['old'] = $request->old_inv_qty[$x];
+            if(isset($data[$request->product_id[$x]]['new'])) {
+                $data[$request->product_id[$x]]['new'] += $request->new_inv_qty[$x];
+               
+            } else {
+                $data[$request->product_id[$x]]['new'] = $request->new_inv_qty[$x];
+            }
+
+            $data[$request->product_id[$x]]['location'] = $request->new_location[$x];
+            $data[$request->product_id[$x]]['product_name'] = $product_info->product_name;
+            $data[$request->product_id[$x]]['sap_code'] = $product_info->sap_code;
+            $data[$request->product_id[$x]]['index'] = $x;
+        }
+
+        //check if 
+
+        // validation
+        $has_error = [];
+        foreach($data as $idx=>$item) {
+            if($item['old'] < $item['new']) {
+                $has_error[] = "Insufficeint QTY: ". $item['sap_code']. " (Actual Qty: ".$item['old'].", Total Transfer Qty: ".$item['new'].")" ;
+            }
+
+        }
+
+        if($has_error) {
+            DB::connection()->rollBack();
+            return response()->json([
+                'success'  => false,
+                'message' => 'Insufficient Qty!',
+                'error_msg'=> $has_error
+            ]);
+        }
+
+      
+
         DB::connection()->beginTransaction();
         try {
             $ref_no = $request->ref_no;

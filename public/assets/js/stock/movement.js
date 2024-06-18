@@ -297,6 +297,7 @@ function _submitData(form_data) {
         beforeSend: function () {
             $('#preloading').modal('show');
             $('#submit-receive').find('span.error-msg').text('');
+            $(".errors").html('');
         },
         success: function (data) {
             if($.isEmptyObject(data.errors)) {
@@ -314,6 +315,12 @@ function _submitData(form_data) {
                     }
                 } else {
                     toastr.error(data.message,'Error on saving');
+                    if(data.error_msg) {
+                        $.each(data.error_msg, function(prefix, val) {
+                            $('#errMsg').removeClass('d-none');
+                            $(".errors").append('<li>'+val+'</li>');
+                        });
+                    }
                 }
             } else {
                 $.each(data.errors, function(prefix, val) {

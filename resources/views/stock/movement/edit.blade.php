@@ -189,6 +189,14 @@
                                         <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                                     </div>
                                 </div> 
+
+                                <div id="errMsg" class="d-none">
+                                    <div class="alert alert-danger">
+                                        <strong>Whoops!</strong> There were some problems with your input.<br>
+                                        <ul class="errors">
+                                        </ul>
+                                    </div>
+                                </div>
                                 
                                 <div class="table-responsive">
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
