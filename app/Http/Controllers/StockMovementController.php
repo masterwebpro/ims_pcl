@@ -102,31 +102,26 @@ class StockMovementController extends Controller
 
         $transfer_qty = 0;
         $original_qty = 0;
+
         for($x=0; $x < count($request->product_id); $x++ ) {
+            $key = $request->product_id[$x]."|".$request->rcv_dtl_id[$x]."|".$request->old_location[$x];
 
             $product_info = Products::where('product_id',$request->product_id[$x])->first();
-
-            $data[$request->product_id[$x]]['old'] = $request->old_inv_qty[$x];
-            if(isset($data[$request->product_id[$x]]['new'])) {
-                $data[$request->product_id[$x]]['new'] += $request->new_inv_qty[$x];
-               
+            
+            if(!isset($data[$key])) {
+                $data[$key]['transfer_qty']  = $request->new_inv_qty[$x];
+                $data[$key]['original_qty'] = $request->old_inv_qty[$x];
+                $data[$key]['sap_code'] = $product_info->sap_code;
+                $data[$key]['source_location'] = $request->old_location[$x];
             } else {
-                $data[$request->product_id[$x]]['new'] = $request->new_inv_qty[$x];
+                $data[$key]['transfer_qty']  += $request->new_inv_qty[$x];
             }
-
-            $data[$request->product_id[$x]]['location'] = $request->new_location[$x];
-            $data[$request->product_id[$x]]['product_name'] = $product_info->product_name;
-            $data[$request->product_id[$x]]['sap_code'] = $product_info->sap_code;
-            $data[$request->product_id[$x]]['index'] = $x;
         }
-
-        //check if 
-
-        // validation
+        //validation
         $has_error = [];
         foreach($data as $idx=>$item) {
-            if($item['old'] < $item['new']) {
-                $has_error[] = "Insufficeint QTY: ". $item['sap_code']. " (Actual Qty: ".$item['old'].", Total Transfer Qty: ".$item['new'].")" ;
+            if($item['original_qty'] < $item['transfer_qty']) {
+                $has_error[] = "Insufficeint QTY: ". $item['sap_code']." in location ". getStorageLocation($item['source_location']). ". (Actual Qty: ".$item['original_qty'].", Transfer Qty: ".$item['transfer_qty'].")" ;
             }
 
         }
@@ -139,8 +134,6 @@ class StockMovementController extends Controller
                 'error_msg'=> $has_error
             ]);
         }
-
-      
 
         DB::connection()->beginTransaction();
         try {
