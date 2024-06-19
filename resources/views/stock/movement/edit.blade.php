@@ -226,6 +226,7 @@
                                                             <input type="hidden" name="ref1_no[]" readonly id="product_id_<?=$dtl->product_id?>" value="<?=$dtl->ref1_no?>" />
                                                             <input type="hidden" name="ref1_type[]" readonly id="product_id_<?=$dtl->product_id?>" value="<?=$dtl->ref1_type?>" />
                                                             <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id_<?=$dtl->rcv_dtl_id?>" value="<?=$dtl->rcv_dtl_id?>" />
+                                                            <input type="hidden" name="master_id[]" readonly id="master_id_<?=$dtl->master_id?>" value="<?=$dtl->master_id?>" />
                                                         </td>
                                                         <td class="text-start  fs-12">{{$dtl->item->product_name}}<br/><small>{{$dtl->item->product_code}}</small></td>
                                                         <td class="text-center ps-1 fs-12">

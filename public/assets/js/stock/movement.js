@@ -166,6 +166,7 @@ $(document).on('click', '.search-item', function() {
                             { data: 'whse_qty' },
                             { data: 'w_code' },
                             { data: 'rcv_dtl_id' },
+                            { data: 'master_id' },
 
                         ],
                         "pageLength": 50,
@@ -211,6 +212,7 @@ $(document).on('click', '#add-product', function() {
             <td class="text-start"> \
                 <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
                 <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id_'+data[x].rcv_dtl_id+'" value="'+data[x].rcv_dtl_id+'" /> \
+                <input type="hidden" name="master_id[]" readonly id="master_id_'+data[x].master_id+'" value="'+data[x].master_id+'" /> \
             '+rowCount+' </td> \
             <td class="text-start  fs-13"> \
                 '+data[x].product_name+'<br/><small>'+data[x].product_code+'</small> \

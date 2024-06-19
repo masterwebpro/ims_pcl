@@ -196,6 +196,7 @@
                                             <td class="text-start">
                                                 <input type="hidden" name="product_id[]" readonly="" id="product_id_{{$dtl->id}}" value="{{$dtl->product_id}}">
                                                 <input type="hidden" name="rcv_dtl_id[]" readonly="" id="rcv_dtl_id_{{$dtl->id}}" value="{{$dtl->rcv_dtl_id}}">
+                                                <input type="hidden" name="master_id[]" readonly="" id="master_id_{{$dtl->id}}" value="{{$dtl->master_id}}">
 
 
                                                 <input type="hidden" name="product_name[]" readonly id="product_name_{{$dtl->id}}" value="{{$dtl->item->product_name}}" />
