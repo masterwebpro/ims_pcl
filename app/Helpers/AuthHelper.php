@@ -179,10 +179,23 @@ function _stockInMasterData($masterfile) {
             ->where('warehouse_id', $params['warehouse_id'])
             ->where('product_id', $params['product_id']);
 
-            if(isset($params['storage_location_id']))
-                $updateData->where('storage_location_id', $params['storage_location_id']);
-            else
-                $updateData->where('storage_location_id', null);
+
+
+            if(isset($params['master_id'])) {
+                
+                $updateData->where('id', $params['master_id']);
+
+            } else {
+                
+                if(isset($params['storage_location_id'])) {
+                    $updateData->where('storage_location_id', $params['storage_location_id']);
+                } else {
+                    $updateData->where('storage_location_id', null);
+                }
+
+                if(isset($params['rcv_dtl_id']))
+                    $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
+            }
 
             // if(isset($params['lot_no']))
             //     $updateData->where('lot_no', $params['lot_no']);
@@ -192,9 +205,6 @@ function _stockInMasterData($masterfile) {
 
             // if(isset($params['manufacture_date']))
             //     $updateData->where('manufacture_date', $params['manufacture_date']);
-
-            if(isset($params['rcv_dtl_id']))
-                $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
 
             $record = $updateData->first();
 
@@ -247,11 +257,22 @@ function _stockOutMasterData($masterfile) {
                 ->where('warehouse_id', $params['warehouse_id'])
                 ->where('product_id', $params['product_id']);
 
-            if(isset($params['storage_location_id'])) {
-                $updateData->where('storage_location_id', $params['storage_location_id']);
+            if(isset($params['master_id'])) {
+                
+                $updateData->where('id', $params['master_id']);
+
             } else {
-                $updateData->where('storage_location_id', null);
+                
+                if(isset($params['storage_location_id'])) {
+                    $updateData->where('storage_location_id', $params['storage_location_id']);
+                } else {
+                    $updateData->where('storage_location_id', null);
+                }
+
+                if(isset($params['rcv_dtl_id']))
+                $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
             }
+                
 
 
             // if(isset($params['lot_no']))
@@ -263,8 +284,7 @@ function _stockOutMasterData($masterfile) {
             // if(isset($params['manufacture_date']))
             //     $updateData->where('manufacture_date', $params['manufacture_date']);
 
-            if(isset($params['rcv_dtl_id']))
-                $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
+            
 
             $record = $updateData->first();
 
@@ -318,6 +338,9 @@ function _has_masterfile($params) {
 
     if(isset($params['rcv_dtl_id']))
         $result->where('rcv_dtl_id', $params['rcv_dtl_id']);
+
+    if(isset($params['master_id']))
+        $result->where('id', $params['master_id']);
 
     $record = $result->get();
 

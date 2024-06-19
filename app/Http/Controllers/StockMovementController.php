@@ -104,7 +104,7 @@ class StockMovementController extends Controller
         $original_qty = 0;
 
         for($x=0; $x < count($request->product_id); $x++ ) {
-            $key = $request->product_id[$x]."|".$request->rcv_dtl_id[$x]."|".$request->old_location[$x];
+            $key = $request->product_id[$x]."|".$request->rcv_dtl_id[$x]."|".$request->old_location[$x]."|".$request->master_id[$x];
 
             $product_info = Products::where('product_id',$request->product_id[$x])->first();
             
@@ -189,6 +189,7 @@ class StockMovementController extends Controller
                     'new_whse_qty'=>$request->new_inv_qty[$x],
                     'new_whse_uom'=>$request->new_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    'master_id'=>$request->master_id[$x],
                     // 'ref1_no'=>$request->ref1_no[$x],
                     // 'ref1_type'=>$request->ref1_type[$x],
                 );
@@ -252,6 +253,7 @@ class StockMovementController extends Controller
                     'whse_qty'=>($request->new_inv_qty[$x]),
                     'whse_uom'=>$request->new_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    'master_id'=>$request->master_id[$x],
                     // 'expiry_date'=>$request->expiry_date,
                     // 'lot_no'=>$request->lot_no,
                     // 'received_date'=>date("Y-m-d", strtotime($request->date_received)),
@@ -270,6 +272,7 @@ class StockMovementController extends Controller
                     'whse_qty'=>($request->new_inv_qty[$x]),
                     'whse_uom'=>$request->new_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    'master_id'=>$request->master_id[$x],
                 );
             }
 
