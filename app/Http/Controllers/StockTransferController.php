@@ -111,7 +111,7 @@ class StockTransferController extends Controller
 
             $data = [];
             for($x=0; $x < count($request->product_id); $x++ ) {
-                $key = $request->product_id[$x]."|".$request->rcv_dtl_id[$x]."|".$request->source_location[$x];
+                $key = $request->product_id[$x]."|".$request->rcv_dtl_id[$x]."|".$request->source_location[$x]."|".$request->master_id[$x];
                 if(!isset($data[$key])) {
                     $data[$key]['transfer_qty']  = $request->dest_inv_qty[$x];
                     $data[$key]['original_qty'] = $request->source_inv_qty[$x];
@@ -121,6 +121,7 @@ class StockTransferController extends Controller
                     $data[$key]['transfer_qty']  += $request->dest_inv_qty[$x];
                 }
             }
+
             //validation
             $has_error = [];
             foreach($data as $idx=>$item) {
@@ -188,6 +189,7 @@ class StockTransferController extends Controller
                     'dest_inv_qty'=>$request->dest_inv_qty[$x],
                     'dest_inv_uom'=>$request->dest_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    'master_id'=>$request->master_id[$x],
                 );
 
                 //get company ID
@@ -255,6 +257,7 @@ class StockTransferController extends Controller
                     'whse_qty'=>($request->dest_inv_qty[$x]),
                     'whse_uom'=>$request->dest_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    'master_id'=>$request->master_id[$x],
                 );
 
                 $_stockInMasterdata[] = array(
@@ -270,6 +273,7 @@ class StockTransferController extends Controller
                     'whse_qty'=>($request->dest_inv_qty[$x]),
                     'whse_uom'=>$request->dest_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
+                    'master_id'=>$request->master_id[$x],
                 );
             }
 

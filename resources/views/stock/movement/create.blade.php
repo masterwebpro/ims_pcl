@@ -272,6 +272,7 @@
                                     <th>Whse qty</th>
                                     <th>Whse Uom</th>
                                     <th>Rcv DTL ID</th>
+                                    <th>MASTER ID</th>
                                     <!-- <th>REF1</th>
                                     <th>REF1_type</th> -->
                                 </tr>
