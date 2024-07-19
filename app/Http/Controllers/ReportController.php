@@ -710,8 +710,8 @@ class ReportController extends Controller
         $result = MasterdataModel::select(
                 'p.product_code',
                 'p.product_name',
-                'masterdata.inv_qty',
                 'rh.date_received',
+                DB::raw('SUM(masterdata.inv_qty) as inv_qty'),
                 DB::raw('DATEDIFF(now(),rh.date_received) as diff_days')
                 )
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
@@ -773,8 +773,8 @@ class ReportController extends Controller
         $result = MasterdataModel::select(
             'p.product_code',
             'p.product_name',
-            'masterdata.inv_qty',
             'rh.date_received',
+            DB::raw('SUM(masterdata.inv_qty) as inv_qty'),
             DB::raw('DATEDIFF(now(),rh.date_received) as diff_days')
             )
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
