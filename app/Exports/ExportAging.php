@@ -29,7 +29,7 @@ class ExportAging implements FromCollection, ShouldAutoSize, WithHeadings
         return [
             'PRODUCT CODE',
             'PRODUCT NAME',
-            'DATE RECEIVED',
+            // 'DATE RECEIVED',
             'INVENTORY',
             '30 DAYS',
             '60 DAYS',

@@ -773,7 +773,7 @@ class ReportController extends Controller
         $result = MasterdataModel::select(
             'p.product_code',
             'p.product_name',
-            'rh.date_received',
+            // 'rh.date_received',
             DB::raw('SUM(masterdata.inv_qty) as inv_qty'),
             DB::raw('DATEDIFF(now(),rh.date_received) as diff_days')
             )
@@ -828,7 +828,7 @@ class ReportController extends Controller
             $data[] = array(
                 $res['product_code'],
                 $res['product_name'],
-                date('Y/m/d',strtotime($res['date_received'])),
+                // date('Y/m/d',strtotime($res['date_received'])),
                 number_format($res['inv_qty'],2,'.',''),
                 number_format($res['days30'],2,'.',''),
                 number_format($res['days60'],2,'.',''),
