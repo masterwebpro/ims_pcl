@@ -91,7 +91,7 @@
                             <thead class="table-light text-muted">
                                 <tr>
                                     <th class="sort" data-sort="dispatch_date">PRODUCT</th>
-                                    <th class="sort" data-sort="dispatch_no">DATE RECEIVED</th>
+                                    {{--  <th class="sort" data-sort="dispatch_no">DATE RECEIVED</th>  --}}
                                     <th class="sort" data-sort="dispatch_no">INVENTORY</th>
                                     <th class="sort" data-sort="dispatch_no">30 DAYS</th>
                                     <th class="sort" data-sort="dispatch_no">60 DAYS</th>
@@ -110,9 +110,9 @@
                                         <b>{{ $rd->product_code }} </b><br/>
                                         <span class="text-wrap"><em>{{ $rd->product_name }}</em></span>
                                     </td>
-                                    <td>
+                                    {{--  <td>
                                         {{ date('Y/m/d',strtotime($rd->date_received)) }}
-                                    </td>
+                                    </td>  --}}
                                     <td class="text-end">{{ number_format($rd->inv_qty,2) }}</td>
                                     <td class="text-end">{{ number_format($rd->days30,2) }} </td>
                                     <td class="text-end">{{ number_format($rd->days60,2) }} </td>
