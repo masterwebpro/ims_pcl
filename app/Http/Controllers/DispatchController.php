@@ -223,6 +223,13 @@ class DispatchController extends Controller
 
                     if($request->status == 'posted'){
                         $masterData = MasterdataModel::find($wd_detail->master_id);
+                        if(!$masterData){
+                            DB::rollBack();
+                            return response()->json([
+                                'success'  => false,
+                                'message' => "Line no {$counter} master data for Id {$wd_detail->master_id} not found!",
+                            ]);
+                        }
                         if($masterData->inv_qty >= $request->dispatch_qty[$x] && $wd_detail->inv_qty >= $request->dispatch_qty[$x]){
                             $masterData->update([
                                 'inv_qty' => $masterData->inv_qty - $request->dispatch_qty[$x],
@@ -292,7 +299,7 @@ class DispatchController extends Controller
 
             AuditTrail::insert($audit_trail);
 
-            DB::connection()->commit();
+            // DB::connection()->commit();
 
             return response()->json([
                 'success'  => true,

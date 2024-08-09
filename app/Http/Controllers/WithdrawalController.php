@@ -273,7 +273,6 @@ class WithdrawalController extends Controller
                     ];
                     SeriesModel::insert($series);
                 }
-
                 for($x=0; $x < count($request->product_id); $x++ ) {
                     $serial_data = array();
                     if($request->is_serialize[$x] == 1)
@@ -332,9 +331,25 @@ class WithdrawalController extends Controller
 
                     if($request->status == 'posted'){
                         $masterData = MasterdataModel::find($request->master_id[$x]);
+                        if(!$masterData){
+                            DB::rollBack();
+                            return response()->json([
+                                'success'  => false,
+                                'message' => "Line no ".($x + 1) ."master Id {$request->master_id[$x]} not found!",
+                            ]);
+                        }
+                        
                         $inv_qty = ($request->is_serialize[$x] == 1) ? (count($serial_data) > 0 ) ? count($serial_data) : $request->inv_qty[$x] : $request->inv_qty[$x];
-                        $reserve = $masterData->reserve_qty + $inv_qty;
-                        if($masterData->inv_qty >= $reserve){
+                        $reserve = ($masterData->reserve_qty + $inv_qty);
+                        if($masterData->inv_qty < $masterData->reserve_qty || $masterData->inv_qty < $reserve){
+                            DB::rollBack();
+                            return response()->json([
+                                'success'  => false,
+                                'message' => 'Line no '.($x + 1).' reserve quantity is higher than available stocks with product id # .'.$request->product_id[$x]. ' Inv QTY '. $masterData->inv_qty. "  Reserve qty ". $reserve . " Master ID" . $request->master_id[$x],
+                            ]);
+                        }
+
+                        if($masterData->inv_qty > 0 && $masterData->inv_qty >= $reserve && $reserve > 0){
                             $masterData->update(['reserve_qty' => $reserve]);
                             MasterfileModel::create([
                                 'ref_no'=> $twd_no,
