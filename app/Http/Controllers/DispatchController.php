@@ -299,7 +299,7 @@ class DispatchController extends Controller
 
             AuditTrail::insert($audit_trail);
 
-            // DB::connection()->commit();
+            DB::connection()->commit();
 
             return response()->json([
                 'success'  => true,
