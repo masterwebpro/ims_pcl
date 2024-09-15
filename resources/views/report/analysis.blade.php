@@ -83,6 +83,7 @@
                             <thead class="table-light text-muted">
                                 <tr>
                                     <th rowspan="2" class="align-middle text-center">COUNT of QUANTITY (in PCS) <br/> MATERIAL NO</th>
+                                    <th rowspan="2" class="align-middle text-center">DESCRIPTION</th>
                                     <th colspan="<?=count($workWeeks) ?>" class="text-center">WEEK NO</th>
                                     <th rowspan="2" class="align-middle text-center">GRAND TOTAL</th>
                                 </tr>
@@ -97,9 +98,10 @@
                                     <? foreach ($data_list as $product_code =>  $week) : ?>
                                         <tr>
                                             <td>{{$product_code}}</td>
+                                            <td class="text-wrap">{{ $week['product_name']}}</td>
                                             <?
                                             $total = 0;
-                                            foreach ($week as $wk) : ?>
+                                            foreach ($week['week'] as $wk) : ?>
                                                 <td class="text-end">{{number_format($wk,2,'.',',')}}</td>
                                                 <? $total += $wk; ?>
                                             <? endforeach; ?>
