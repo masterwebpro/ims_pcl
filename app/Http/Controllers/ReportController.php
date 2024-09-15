@@ -1245,17 +1245,17 @@ class ReportController extends Controller
                             $result->where('wh.company_id', $request->company);
                         }
         $data_analysis = $result->get();
-
         $workWeeks = $this->getWeekNumbersFromJan1ToDate($year);
         $data = array();
         foreach($data_analysis as $value){
+            $data[$value['product_code']]['product_name'] = $value['product_name'];
             for($j = 0; $j < count($workWeeks); $j++) {
                 if($value['week_no'] == $workWeeks[$j]){
-                    $data[$value['product_code']][$workWeeks[$j]] = $value['dispatch_qty'];
+                    $data[$value['product_code']]['week'][$workWeeks[$j]] = $value['dispatch_qty'];
                 }
                 else{
                     if(!isset($data[$value['product_code']][$workWeeks[$j]])){
-                        $data[$value['product_code']][$workWeeks[$j]] = 0;
+                        $data[$value['product_code']]['week'][$workWeeks[$j]] = 0;
                     }
                 }
             }
@@ -1323,20 +1323,21 @@ class ReportController extends Controller
         $workWeeks = $this->getWeekNumbersFromJan1ToDate($year);
         $data = array();
         foreach($data_analysis as $value){
+            $data[$value['product_code']]['product_name'] = $value['product_name'];
             for($j = 0; $j < count($workWeeks); $j++) {
                 if($value['week_no'] == $workWeeks[$j]){
-                    $data[$value['product_code']][$workWeeks[$j]] = $value['dispatch_qty'];
+                    $data[$value['product_code']]['week'][$workWeeks[$j]] = $value['dispatch_qty'];
                 }
                 else{
                     if(!isset($data[$value['product_code']][$workWeeks[$j]])){
-                        $data[$value['product_code']][$workWeeks[$j]] = 0;
+                        $data[$value['product_code']]['week'][$workWeeks[$j]] = 0;
                     }
                 }
             }
         }
 
         $xdata = array();
-        $header = array("MATERIAL NO");
+        $header = array("MATERIAL NO","DESCRIPTION");
         for($x = 0; $x < count($workWeeks); $x++){
             array_push($header,"WK ".$workWeeks[$x]);
         }
@@ -1345,8 +1346,9 @@ class ReportController extends Controller
         foreach($data as $key => $value){
             $xxdata = array();
             $xxdata[] = $key;
+            $xxdata[] = $value['product_name'];
             $total = 0;
-            foreach($value as $k => $v){
+            foreach($value['week'] as $k => $v){
                 $xxdata[] = number_format($v,2,'.',',');
                 $total += $v;
             }
