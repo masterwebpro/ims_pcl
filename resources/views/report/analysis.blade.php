@@ -82,10 +82,15 @@
                         <table class="table align-middle table-bordered table-nowrap mb-0" id="tasksTable">
                             <thead class="table-light text-muted">
                                 <tr>
-                                    <th rowspan="2" class="align-middle text-center">COUNT of QUANTITY (in PCS) <br/> MATERIAL NO</th>
-                                    <th rowspan="2" class="align-middle text-center">DESCRIPTION</th>
+                                    <th rowspan="3" class="align-middle text-center">COUNT of QUANTITY (in PCS) <br/> MATERIAL NO</th>
+                                    <th rowspan="3" class="align-middle text-center">DESCRIPTION</th>
                                     <th colspan="<?=count($workWeeks) ?>" class="text-center">WEEK NO</th>
-                                    <th rowspan="2" class="align-middle text-center">GRAND TOTAL</th>
+                                    <th rowspan="3" class="align-middle text-center">GRAND TOTAL</th>
+                                </tr>
+                                <tr>
+                                    <? foreach ($monthofWeek as $month => $week) : ?>
+                                        <th class="text-center" colspan="{{ count($week) }}">{{ $month }}</th>
+                                    <? endforeach; ?>
                                 </tr>
                                 <tr>
                                     <? foreach ($workWeeks as $wk) : ?>
@@ -138,4 +143,5 @@
     <script src="{{ URL::asset('/assets/libs/@tarekraafat/@tarekraafat.min.js') }}"></script>
 
     <script src="{{ URL::asset('/assets/js/report/report.js') }}"></script>
+    <script src="{{ URL::asset('/assets/js/report/tableToExcel.js') }}"></script>
 @endsection

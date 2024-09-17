@@ -305,14 +305,26 @@ $(document).on('click', '.submit-aging-manufacturing-xls', function(e) {
     }, 100);
 });
 
-$(document).on('click', '.submit-analysis-xls', function(e) {
-    $('#preloading').modal('show');
-    e.preventDefault();
-    var client = $('#customer').val();
-    var company = $('#company').val();
-    var year = $('#year').val();
-    window.location.href= BASEURL + 'reports/export-analysis?customer='+client+'&company='+company+'&year='+year;
-    setTimeout(function () {
-        $('#preloading').modal('hide');
-    }, 100);
+// $(document).on('click', '.submit-analysis-xls', function(e) {
+//     $('#preloading').modal('show');
+//     e.preventDefault();
+//     var client = $('#customer').val();
+//     var company = $('#company').val();
+//     var year = $('#year').val();
+//     window.location.href= BASEURL + 'reports/export-analysis?customer='+client+'&company='+company+'&year='+year;
+//     setTimeout(function () {
+//         $('#preloading').modal('hide');
+//     }, 100);
+// });
+$(document).on('click', '.submit-analysis-xls', function (e) { 
+    let table = document.getElementsByTagName("table");
+    var dt = new Date();
+    var time = dt.getHours() + dt.getMinutes() + dt.getSeconds();
+        
+    TableToExcel.convert(table[0], {
+        name: `AnalysisReport_`+time+`.xlsx`,
+        sheet: {
+            name: 'Analysis'
+        }
+    });
 });
