@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use DateTime;
 
 class ReportController extends Controller
 {
@@ -1260,11 +1261,13 @@ class ReportController extends Controller
                 }
             }
         }
+        $monthOfWeek = $this->groupWeeksByMonth($year,$workWeeks);
         return view('report/analysis',[
             'client_list'=>$client_list,
             'data_list'=>$data,
             'request'=>$request,
             'workWeeks'=>$workWeeks,
+            'monthofWeek' => $monthOfWeek
         ]);
     }
 
@@ -1424,4 +1427,36 @@ class ReportController extends Controller
         }
         return Excel::download(new ExportAnalysis($xdata), $file_name);
     }
+
+    function getMonthOfWeek($year,$workWeek){
+        // Create a DateTime instance for the start of the year
+        $startOfYear = new DateTime("{$year}-01-01");
+    
+        // Modify the date to the start of the given work week
+        $startOfYear->modify("+". ($workWeek - 1) . " weeks");
+    
+        // Get the month name
+        return $monthName = $startOfYear->format('F');
+    }
+    
+    function groupWeeksByMonth($year, $weekNumbers) {
+        $groupedByMonth = [];
+    
+        // Loop through each week number
+        foreach ($weekNumbers as $weekNumber) {
+            // Get the month name for the given week number
+            $month = $this->getMonthOfWeek($year, $weekNumber);
+    
+            // Group by month
+            if (!isset($groupedByMonth[$month])) {
+                $groupedByMonth[$month] = [];
+            }
+    
+            // Add the week number to the corresponding month
+            $groupedByMonth[$month][] = $weekNumber;
+        }
+    
+        return $groupedByMonth;
+    }
+    
 }
