@@ -169,6 +169,7 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/inventory-reserve', [App\Http\Controllers\ReportController::class, 'getInventoryAdjustment'])->name('reports.inventory-adjustment');
     Route::get('/export-reserve-monitoring', [App\Http\Controllers\ReportController::class, 'exportInventoryAdjustment'])->name('reports.export-reserve-monitoring');
 
+    Route::get('/audit-logs', [App\Http\Controllers\AuditLogsController::class, 'index'])->name('reports.audit-logs');
 });
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {

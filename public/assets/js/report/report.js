@@ -316,15 +316,28 @@ $(document).on('click', '.submit-aging-manufacturing-xls', function(e) {
 //         $('#preloading').modal('hide');
 //     }, 100);
 // });
-$(document).on('click', '.submit-analysis-xls', function (e) { 
+$(document).on('click', '.submit-analysis-xls', function (e) {
     let table = document.getElementsByTagName("table");
     var dt = new Date();
     var time = dt.getHours() + dt.getMinutes() + dt.getSeconds();
-        
+
     TableToExcel.convert(table[0], {
         name: `AnalysisReport_`+time+`.xlsx`,
         sheet: {
             name: 'Analysis'
+        }
+    });
+});
+
+$(document).on('click', '.submit-audit-logs-xls', function (e) {
+    let table = document.getElementsByTagName("table");
+    var dt = new Date();
+    var time = dt.getHours() + dt.getMinutes() + dt.getSeconds();
+
+    TableToExcel.convert(table[0], {
+        name: `Audit-Logs-Report`+time+`.xlsx`,
+        sheet: {
+            name: 'Audit-Logs-Report'
         }
     });
 });
