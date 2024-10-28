@@ -16,12 +16,16 @@ class AuditLogsController extends Controller
     public function index(Request $request)
     {
         $client_list = User::all();
+        $dateRangeParts = explode(" to ", $request->date);
+        $startDate = isset($dateRangeParts[0]) ? $dateRangeParts[0] : "";
+        $endDate = isset($dateRangeParts[1]) ? $dateRangeParts[1] : "";
+
         $data_list = AuditTrail::select('audit_trail.*','u.name as created_by')
                     ->leftJoin('users as u', 'u.id', '=', 'audit_trail.user_id')
                     ->orderBy('audit_trail.control_no','ASC')
                     ->orderBy('audit_trail.created_at','ASC')
                     ->where([
-                        [function ($query) use ($request) {
+                        [function ($query) use ($request,$startDate,$endDate) {
                             if (($s = $request->status)) {
                                 if($s != 'all')
                                     $query->orWhere('audit_trail.status', $s);
@@ -30,12 +34,16 @@ class AuditLogsController extends Controller
                                 $query->where('audit_trail.control_no', $request->q);
                             }
 
+                            if ($request->type) {
+                                $query->where('audit_trail.type', $request->type);
+                            }
+
                             if (isset($request->user_id)) {
                                 $query->where('audit_trail.user_id', $request->user_id);
                             }
 
-                            if (isset($request->date)) {
-                                $query->whereBetween('audit_trail.created_at', [$request->date." 00:00:00", $request->date." 23:59:00"]);
+                            if (isset($request->date) && $startDate && $endDate) {
+                                $query->whereBetween('audit_trail.created_at', [$startDate,$endDate]);
                             }
 
                             $query->get();

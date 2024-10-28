@@ -67,19 +67,32 @@
                                 </button>
                             </div>
                             <!--end col-->
-
-                            <div class="col-lg-3 col-sm-4">
+                            <div class="col-lg-3 col-sm-3">
                                 <div class="input-light">
-                                    <select class="form-control" name="filter_date" id="filter_date">
-                                        <option value="filter_date">As of Date</option>
+                                    <select class="form-control" data-choices data-choices-search-false name="type"
+                                        id="type">
+                                        <option value="">Transaction Type</option>
+                                        <option <?= $request->type == 'WD' ? 'selected' : '' ?> value="WD">Withdrawal
+                                        </option>
+                                        <option <?=$request->type == 'RCV' ? 'selected' : '' ?> value="RCV">Receiving
+                                        </option>
+                                        <option <?= $request->type == 'PO' ? 'selected' : '' ?> value="PO">Purchase Order
+                                        </option>
+                                        <option <?= $request->type == 'SM' ? 'selected' : '' ?> value="SM">Stock Movement
+                                        </option>
+                                        <option <?= $request->type == 'ST' ? 'selected' : '' ?> value="ST">Stock Transfer
+                                        </option>
+                                        <option <?= $request->type == 'DP' ? 'selected' : '' ?> value="DP">Dispatch
+                                        </option>
+                                        <option <?= $request->type == 'DO' ? 'selected' : '' ?> value="DO">Delivery Order
+                                        </option>
                                     </select>
                                 </div>
                             </div>
-
                             <div class="col-lg-3 col-sm-4">
-                                <input type="text" class="form-control" name="date" id="date_picker" value=""
-                                    data-provider="flatpickr" data-date-format="Y-m-d"
-                                    placeholder="Select date">
+                                <input type="text" class="form-control" name="date" id="date_picker"
+                                    data-provider="flatpickr" data-date-format="Y-m-d" value="{{isset($request->date) ? $request->date : ''}}" data-range-date="true"
+                                    placeholder="Select date range">
                             </div>
                             <!--end col-->
 
@@ -95,7 +108,7 @@
                             <thead class="table-light text-muted">
                                 <tr>
                                     <th class="sort" data-sort="dispatch_date">Transaction No</th>
-                                    <th class="sort" data-sort="dispatch_no">Type</th>
+                                    <th class="sort" data-sort="dispatch_no">Transaction Type</th>
                                     <th class="sort" data-sort="dispatch_no">Status</th>
                                     <th class="sort" data-sort="dispatch_no">Created By</th>
                                     <th class="sort" data-sort="dispatch_no">Created At</th>
@@ -111,7 +124,37 @@
                                         {{ $rd->control_no }}
                                     </td>
                                     <td>
-                                        {{ $rd->type }}
+                                        @switch($rd->type)
+                                        @case('WD')
+                                            Withdrawal
+                                            @break
+                                        @case('RCV')
+                                            Receiving
+                                            @break
+                                        @case('masterfile')
+                                            Receiving
+                                            @break
+                                        @case('PO')
+                                            Purchase Order
+                                            @break
+                                        @case('SM')
+                                            Stock Movement
+                                            @break
+                                        @case('ST')
+                                            Stock Transfer
+                                            @break
+                                        @case('DP')
+                                            Dispatch
+                                            @break
+                                        @case('DO')
+                                            Delivery Order
+                                            @break
+                                        @case('D')
+                                            Delivery Order
+                                            @break
+                                        @default
+                                            {{ $rd->type }}
+                                    @endswitch
                                     </td>
                                     <td>
                                         {{ $rd->status }}
