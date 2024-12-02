@@ -292,6 +292,85 @@
         
             <div class="modal-body">
         
+                <div class="row g-3 mb-2">
+                    <div class="col-3">
+                        <h6 class="text-muted text-uppercase fw-semibold">Source Warehouse</h6>
+                        <p class="fw-medium">
+                            <select class="form-select select3 source_warehouse" required="required" id="source_warehouse" name="source_warehouse">
+                                <option value="">Select Source Warehouse</option>                                                            
+                            </select>
+                            <span class="text-danger error-msg source_warehouse_error"></span>
+                        </p>
+                    </div>
+    
+                    <div class="col-3">
+                        <h6 class="text-muted text-uppercase fw-semibold"> Source Location </h6>
+                        <p class="fw-medium" id="billing-name">
+                            <select class="form-select select3" id="source_location" name="source_location">
+                                <option value="">No Location</option>  
+                            </select>
+                        </p>
+                    </div>
+
+                    <div class="col-3">
+                        <h6 class="text-muted text-uppercase fw-semibold"> Product Name OR Code</h6>
+                        <p class="fw-medium">
+                            <input type="text" class="form-control" placeholder="Product Name or Code" id="product_name">
+                        </p>
+                    </div>
+
+
+                    <div class="col-3">
+                        <h6 class="text-muted text-uppercase fw-semibold">&nbsp;</h6>
+                        <p class="fw-medium">
+                            <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
+                        </p>
+                    </div>
+                    <div class="col-12 hstack gap-2 justify-content-end">
+                        <button type="button" class="btn btn-warning rounded-pill" id="select-all"><i class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
+                        <button type="button" class="btn btn-success rounded-pill" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
+                    </div>
+                </div>   
+
+                <div class="table-responsive">
+                    <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
+                        <thead class="table-light">
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Location</th>
+                                <th>Item Type</th>
+                                <th>Inv Qty</th>
+                                <th>Inv Uom</th>
+                                <th>Whse qty</th>
+                                <th>Whse Uom</th>
+                                <th class="d-none">Rcv DTL ID</th>
+                                <th >Master ID</th>
+                                <!-- <th>REF1</th>
+                                <th>REF1_type</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal" id="show-items" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-light p-3">
+                <h5 class="modal-title" id="exampleModalLabel">Item List</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            </div>
+        
+            <div class="modal-body">
+        
                 <div class="row g-3">
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold">Source Warehouse</h6>
@@ -359,7 +438,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 
 	@endsection

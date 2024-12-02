@@ -19,7 +19,8 @@ $(document).ready(function () {
             var id = $(this).data('id');
             location_id = $("#location_"+id ).val();
             populateLocation('dest_location_'+id, warehouse_id, location_id);
-        });    
+        });   
+ 
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
@@ -52,11 +53,12 @@ $(document).on('change', '#dest_company', function() {
 
 
 $(document).on('click', '.add-item', function() {
-
+    $('#source_site').trigger('change');
     var source_site = $('#source_site').val();
-
+    
     if(source_site) {
         $('#show-items').modal('show'); 
+        $('#show-items-list').DataTable().clear().destroy();
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
@@ -67,13 +69,16 @@ $(document).on('click', '.add-item', function() {
 });
 
 
-$(document).on('click', '.search-item', function() {
-
+$(document).on('click', '.search-item', function(e) {
+e.preventDefault()
     var warehouse_id = $('#source_warehouse').val();
     var store_id = $('#source_store').val();
     var company_id = $('#source_company').val();
     var source_location = $('#source_location').val();
     var product_name = $('#product_name').val();
+    var master_id = $('input[name="master_id[]"]').map(function(){ 
+        return this.value; 
+    }).get();
     
     if(warehouse_id) {   
 
@@ -96,7 +101,8 @@ $(document).on('click', '.search-item', function() {
                     store_id: store_id,
                     client_id: company_id,
                     product_name : product_name,
-                    warehouse_id:warehouse_id
+                    warehouse_id:warehouse_id,
+                    selected_master_id: master_id
                 },
                 dataSrc:""
             },

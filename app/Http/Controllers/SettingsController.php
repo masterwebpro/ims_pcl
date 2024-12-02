@@ -240,6 +240,10 @@ class SettingsController extends Controller
             });
         }
 
+        if(isset($request->selected_master_id)) {
+            $result->whereNotIn('masterdata.id', $request->selected_master_id);
+        }
+
         $record = $result->get();
         return response()->json($record);
     }
