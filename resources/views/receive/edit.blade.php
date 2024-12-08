@@ -48,7 +48,7 @@
 
                         <? if(in_array($rcv->status, array('posted', 'closed'))) : ?>
                             <? if (mod_access('rcv',  'unpost', Auth::id())) : ?>
-                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-po"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
                             <? endif ;?>
                         <? endif;?>
                         
