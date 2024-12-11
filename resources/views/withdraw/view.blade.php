@@ -39,6 +39,8 @@
                                         class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
                                     Edit</a>
                             @else
+                            <button type="button" class="generate-picklist  btn btn-danger btn-label rounded-pill"><i
+                                    class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Picklist</button>
                             <button type="button" class="generate-withdrawal-slip  btn btn-danger btn-label rounded-pill"><i
                                 class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Withdrawal Slip</button>
                             @endif

@@ -46,6 +46,7 @@
                                     <? endif ;?>
                                 <? endif ;?>
                             <? endif;?>
+                            
                             <button type="button" class="generate-picklist  btn btn-danger btn-label rounded-pill"><i
                                     class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Picklist</button>
                             <? if(in_array($wd->status, array('posted', 'closed'))) : ?>
