@@ -1,6 +1,3 @@
-// create a program for odd even number
-
-
 var filterParams = {
     comparator: (filterLocalDateAtMidnight, cellValue) => {
         var dateAsString = cellValue;
@@ -49,11 +46,19 @@ const columnDefs = [
         },
     },
     { field: 'item_type', headerName: "Item Type", hide:true, filter: 'agSetColumnFilter',},
-    { field: 'inv_qty', headerName: "Stocks", filter: 'agTextColumnFilter', cellClass: 'text-end'},
+    { field: 'inv_qty', headerName: "Stocks", filter: 'agTextColumnFilter', cellClass: 'text-end',valueFormatter: function (params) {
+        if(params.value != null) {
+            return number_format(params.value);
+        } else {
+            return '';
+        }
+        
+    }, },
     { field: 'ui_code', headerName: "Unit", filter: 'agSetColumnFilter',},
+    { field: 'location', headerName: "Location"},
     { field: 'warehouse_name', headerName: "Warehouse"},
     // { field: 'email_address', headerName: "Layer"},
-    { field: 'location', headerName: "Location"},
+    
     { field: 'lot_no', headerName: "Lot No", filter: 'agTextColumnFilter', },
     { field: 'expiry_date', headerName: "Expiry date", filter: 'agDateColumnFilter', cellClass: 'text-center', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
         valueFormatter: function (params) {
@@ -74,9 +79,7 @@ const columnDefs = [
             }
             
         },
-    },
-   
-    
+    }, 
 ];
 
 let gridApi;
@@ -92,7 +95,7 @@ const gridOptions = {
         floatingFilter: true,
         enableCellChangeFlash: true,
     },
-    pagination: false,
+    pagination: true,
     rowSelection: 'multiple',
     rowData: [],
     // onRowDoubleClicked: viewData
@@ -172,7 +175,6 @@ $(document).on('click', '.search-item', function() {
     masterfile();
 });
 
-
 //search enter
 $(document).on('keypress', '#product', function() {
     $('#show-items').modal('show');
@@ -188,6 +190,7 @@ function loadData() {
     var client_id = $('#client').val();
     var store_id = $('#store').val();
     var master_id = document.getElementsByName("master_id");
+    var customer_id = $('#client').val();
 
     var master_id = $("input[name='master_id[]']")
               .map(function(){return $(this).val();}).get();
@@ -198,6 +201,7 @@ function loadData() {
         data:  {
             'client_id': client_id,
             'store_id': store_id,
+            customer_id: customer_id,
             master_id: master_id,
             _token: $('input[name=_token]').val(),
         },
@@ -347,10 +351,10 @@ $(document).on('click', '#add-product', function() {
             <td class="text-start  fs-14"> \
                 '+((data.lot_no) ? data.lot_no : '')+'\
             </td> \
-            <td class="text-start  fs-14"> \
+            <td class="text-start  fs-14 d-none"> \
                 '+((data.expiry_date) ? moment(data.expiry_date).format('D MMM YYYY') : '') +'\
             </td> \
-            <td class="text-start  fs-14"> \
+            <td class="text-start  fs-14  d-none"> \
                 '+((data.manufacture_date) ? moment(data.manufacture_date).format('D MMM YYYY') : '') +'\
             </td> \
             <td class="text-start  fs-14"> \

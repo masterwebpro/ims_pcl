@@ -365,8 +365,8 @@
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
                                                     <th scope="col">Lot No</th>
-                                                    <th scope="col">Expiry Date</th>
-                                                    <th scope="col">Mfg. Date</th>
+                                                    <th scope="col" class="d-none">Expiry Date</th>
+                                                    <th scope="col" class="d-none">Mfg. Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     @if ($wd->status == 'posted')
@@ -403,11 +403,11 @@
                                                         </td>
                                                         {{-- @if ($wd->status == 'open')
                                                         <td class="ps-1 text-center">
-                                                            {{ number_format($item->master->inv_qty,2) }}
+                                                            {{ number_format($item->master->inv_qty,0) }}
                                                         </td>
                                                         @endif --}}
                                                         <td class="ps-1 text-center">
-                                                            {{ number_format($item->inv_qty,2) }}
+                                                            {{ number_format($item->inv_qty,0) }}
                                                             <input type="hidden"  class="form-control inv_qty numeric" name="inv_qty[]"  data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                         </td>
                                                         <td class=" ps-1">
@@ -416,10 +416,10 @@
                                                         <td class=" ps-1">
                                                             {{ ($item->receiving) ? $item->receiving->lot_no : "" }}
                                                         </td>
-                                                        <td class=" ps-1">
+                                                        <td class=" ps-1 d-none">
                                                             {{ ($item->receiving) ? $item->receiving->expiry_date : "" }}
                                                         </td>
-                                                        <td class=" ps-1">
+                                                        <td class=" ps-1 d-none">
                                                             {{ ($item->receiving) ? $item->receiving->manufacture_date : "" }}
                                                         </td>
                                                         <td class=" ps-1">

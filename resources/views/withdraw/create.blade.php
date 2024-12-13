@@ -343,8 +343,8 @@
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
                                                     <th scope="col">Lot No</th>
-                                                    <th scope="col">Expiry Date</th>
-                                                    <th scope="col">Mfg. Date</th>
+                                                    <th scope="col" class=" d-none">Expiry Date</th>
+                                                    <th scope="col"  class=" d-none">Mfg. Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     <th scope="col" class="text-center">Action</th>
