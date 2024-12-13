@@ -844,4 +844,132 @@ class SettingsController extends Controller
         return response()->json($record);
     }
 
+    function getAgGridAvailableStocks(Request $request) {
+
+        DB::connection()->beginTransaction();
+        try {
+            $data =  MasterdataModel::select(
+                'masterdata.id as master_id',
+                'masterdata.rcv_dtl_id',
+                'masterdata.product_id',
+                'client_name',
+                'store_name',
+                'w.warehouse_name',
+                'product_code',
+                'sap_code',
+                'product_name',
+                'sl.location',
+                'b.brand_name',
+                'masterdata.whse_uom',
+                'masterdata.inv_uom',
+                'masterdata.item_type',
+                'uw.code as uw_code',
+                'ui.code as ui_code',
+                DB::raw('sum(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty'),
+                DB::raw('sum(masterdata.whse_qty - masterdata.reserve_qty) as whse_qty'),
+                'rd.lot_no',
+                'rd.expiry_date',
+                'rh.date_received as received_date',
+                'rd.manufacture_date'
+            )
+            ->leftJoin('rcv_dtl as rd','rd.id','=','masterdata.rcv_dtl_id')
+            ->leftJoin('rcv_hdr as rh','rh.rcv_no','=','rd.rcv_no')
+            ->leftJoin('products as p','p.product_id','=','masterdata.product_id')
+            ->leftJoin('storage_locations as sl','sl.storage_location_id','=','masterdata.storage_location_id')
+            ->leftJoin('client_list as cl','cl.id','=','masterdata.company_id')
+            ->leftJoin('store_list as s','s.id','=','masterdata.store_id')
+            ->leftJoin('warehouses as w','w.id','=','masterdata.warehouse_id')
+            ->leftJoin('uom as uw','uw.uom_id','=','masterdata.whse_uom')
+            ->leftJoin('uom as ui','ui.uom_id','=','masterdata.inv_uom')
+            ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+            ->leftJoin('brands as b','b.brand_id','cb.brand_id')
+            ->havingRaw('sum(masterdata.inv_qty - masterdata.reserve_qty) > 0')
+            ->groupBy('masterdata.id')
+            ->orderBy('rh.date_received','ASC')
+            ->orderBy('product_name','ASC')
+            ->orderBy('sl.location','ASC');
+
+            if(isset($request->master_id)){
+                $data->whereNotIN('masterdata.id', $request->master_id);
+            }
+
+            if($request->company_id > 0){
+                $data->where('masterdata.company_id', $request->company_id);
+            }
+
+            if(isset($request->warehouse_id)){
+                $data->where('masterdata.warehouse_id', $request->warehouse_id);
+            }
+
+            if($request->customer_id > 0){
+                $data->where('masterdata.customer_id', $request->customer_id);
+            }
+
+            if($request->store_id > 0){
+                $data->where('masterdata.store_id', $request->store_id);
+            }
+
+            if($request->item_type){
+                $data->where('masterdata.item_type', $request->item_type);
+            }
+            
+            $result = $data->get();
+            return response()->json($result);
+
+        } catch (Throwable $e) {
+            DB::connection()->rollback();
+            return response()->json([
+                'success'  => false,
+                'message' => 'Unable to process request. Please try again.',
+                'data'    => $e->getMessage()
+            ]);
+        }
+
+
+        // if(isset($request->master_id)){
+        //     $result->whereNotIN('masterdata.id', json_decode($request->master_id));
+        // }
+
+        // if($request->company_id > 0){
+        //     $result->where('masterdata.company_id', $request->company_id);
+        // }
+
+        // if(isset($request->warehouse_id)){
+        //     $result->where('masterdata.warehouse_id', $request->warehouse_id);
+        // }
+
+        // if($request->customer_id > 0){
+        //     $result->where('masterdata.customer_id', $request->customer_id);
+        // }
+
+        // if($request->store_id > 0){
+        //     $result->where('masterdata.store_id', $request->store_id);
+        // }
+
+        // if($request->item_type){
+        //     $result->where('masterdata.item_type', $request->item_type);
+        // }
+
+        // if(isset($request->product)){
+        // $keyword = '%'.$request->product.'%';
+        // $result->where(function($cond)use($keyword){
+        //     $cond->where('product_code','like',$keyword)
+        //     ->orwhere('product_name','like',$keyword)
+        //     ->orwhere('product_sku','like',$keyword);
+        // });
+        // }
+        // $record = $result->get();
+        // if($record){
+        //     foreach($record as &$rec){
+        //         $rec->lot_no =  $rec->lot_no != null ? $rec->lot_no : "";
+        //         $rec->location =  $rec->location != null ? $rec->location : "";
+        //         $rec->expiry_date =  ($rec->expiry_date != null &&  $rec->expiry_date != '0000-00-00 00:00:00') ? date('Y/m/d',strtotime($rec->expiry_date)) : "";
+        //         $rec->received_date =  ($rec->received_date != null  &&  $rec->received_date != '0000-00-00 00:00:00') ? date('Y/m/d',strtotime($rec->received_date)) : "";
+        //         $rec->manufacture_date =  ($rec->manufacture_date != null   &&  $rec->manufacture_date != '0000-00-00 00:00:00') ? date('Y/m/d',strtotime($rec->manufacture_date)) : "";
+        //     }
+        // }
+        // return response()->json($record);
+
+    }
+
 }

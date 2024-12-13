@@ -1,5 +1,109 @@
 // create a program for odd even number
 
+
+var filterParams = {
+    comparator: (filterLocalDateAtMidnight, cellValue) => {
+        var dateAsString = cellValue;
+        if (dateAsString == null) return -1;
+        
+        var dateAsString = moment(cellValue).format('DD/MM/YYYY');
+
+        var dateParts = dateAsString.split("/");
+        var cellDate = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+
+        if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+        return 0;
+        }
+
+        if (cellDate < filterLocalDateAtMidnight) {
+        return -1;
+        }
+
+        if (cellDate > filterLocalDateAtMidnight) {
+        return 1;
+        }
+        return 0;
+    },
+};
+const columnDefs = [
+    {headerName: '', filter: false, width:20, suppressMenu: true,  cellClass: 'text-end',
+
+        headerCheckboxSelection: true, // Checkbox in header
+        checkboxSelection: true, // Checkbox in each row
+        filter: false,
+        sort: false,
+    },  
+    { field: 'master_id', headerName: "Master Id", hide:true},
+   
+    { field: 'product_code', headerName: "Product Code", filter: 'agTextColumnFilter'},
+    { field: 'product_name', headerName: "Product Name", filter: 'agTextColumnFilter'},
+    { field: 'brand_name', headerName: "Brand", filter: 'agSetColumnFilter',suppressMenu: true },
+    { field: 'received_date', headerName: "Date Recieved", filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
+        valueFormatter: function (params) {
+            if(params.value != null) {
+                return moment(params.value).format('D MMM YYYY');
+            } else {
+                return '-';
+            }
+            
+        },
+    },
+    { field: 'item_type', headerName: "Item Type", hide:true, filter: 'agSetColumnFilter',},
+    { field: 'inv_qty', headerName: "Stocks", filter: 'agTextColumnFilter', cellClass: 'text-end'},
+    { field: 'ui_code', headerName: "Unit", filter: 'agSetColumnFilter',},
+    { field: 'warehouse_name', headerName: "Warehouse"},
+    // { field: 'email_address', headerName: "Layer"},
+    { field: 'location', headerName: "Location"},
+    { field: 'lot_no', headerName: "Lot No", filter: 'agTextColumnFilter', },
+    { field: 'expiry_date', headerName: "Expiry date", filter: 'agDateColumnFilter', cellClass: 'text-center', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
+        valueFormatter: function (params) {
+            if(params.value != null) {
+                return moment(params.value).format('D MMM YYYY');
+            } else {
+                return '-';
+            }
+            
+        },
+    },
+    { field: 'manufacture_date', headerName: "Mfg Date", cellClass: 'text-center', filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
+        valueFormatter: function (params) {
+            if(params.value != null) {
+                return moment(params.value).format('D MMM YYYY');
+            } else {
+                return '-';
+            }
+            
+        },
+    },
+   
+    
+];
+
+let gridApi;
+
+const gridOptions = {
+    columnDefs: columnDefs,
+    autoSizeStrategy: {
+        type: 'fitCellContents'
+    },
+    defaultColDef: {
+    
+        filter: true,
+        floatingFilter: true,
+        enableCellChangeFlash: true,
+    },
+    pagination: false,
+    rowSelection: 'multiple',
+    rowData: [],
+    // onRowDoubleClicked: viewData
+};
+if (typeof page !== 'undefined') {
+    if (page == 'create' || page == 'edit') {
+        var gridDiv = document.querySelector('#myGrid');
+        gridApi = agGrid.createGrid(gridDiv, gridOptions);
+    }
+}
+
 $(document).ready(function () {
     $(".select").select2();
 
@@ -46,16 +150,10 @@ $(document).on('change', '#store', function() {
 $(document).on('click', '#find-items', function() {
     var client_id = $('#client').val();
     var store_id = $('#store').val();
-    var warehouse_id = $('#warehouse').val();
-    var product = $('#product').val();
-    var item_type = $('#item_type').val();
-    populateWarehouse(store_id, '');
+
     if(client_id && store_id) {
         $('#show-items').modal('show');
-        if ($.fn.DataTable.isDataTable("#show-items-list")) {
-            $('#show-items-list').DataTable().clear().destroy();
-        }
-        masterfile();
+        loadData();
     } else {
         if(client_id == ''){
             alert("Client Name required");
@@ -83,6 +181,56 @@ $(document).on('keypress', '#product', function() {
     }
     masterfile();
 });
+
+function loadData() {
+    var url = BASEURL + 'settings/aggrid/getAvailableStocks'
+
+    var client_id = $('#client').val();
+    var store_id = $('#store').val();
+    var master_id = document.getElementsByName("master_id");
+
+    var master_id = $("input[name='master_id[]']")
+              .map(function(){return $(this).val();}).get();
+   
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data:  {
+            'client_id': client_id,
+            'store_id': store_id,
+            master_id: master_id,
+            _token: $('input[name=_token]').val(),
+        },
+        dataType: 'json',
+        beforeSend: function() {
+           // $('#loadingModal').modal('show');
+        //    scrambleAndRefreshAll(gridApi)
+           gridApi.setGridOption('rowData', null)
+        // gridApi.setRowData([]);
+           gridApi.showLoadingOverlay();
+        },
+        success:function(data){
+            // gridApi.setRowData(data);
+            gridApi.setGridOption('rowData', data)
+            // gridApi.setPinnedBottomRowData(getPinnedBottom(data));
+            gridApi.hideOverlay();
+           
+        },
+        statusCode: {
+            200: function() {
+                gridApi.hideOverlay();
+            }
+          }
+    });
+}
+
+function scrambleAndRefreshAll(gridApi) {
+    const params = {
+      force: true,
+      suppressFlash: true,
+    };
+    gridApi.refreshCells(params);
+  }
 
 function masterfile(){
     var company_id = $('#company').val();
@@ -143,70 +291,78 @@ function removeProduct() {
   });
 
 $(document).on('click', '#add-product', function() {
-    var table = $('#show-items-list').DataTable();
-    var data = ( table.rows('.selected').data());
+    // var table = $('#show-items-list').DataTable();
+    // var data = ( table.rows('.selected').data());
 
-    //if (table.rows('.selected').data().length > 0) {
-    if(data.length > 0) {
-        for(x=0; x<data.length; x++) {
-            var uom = getUom();
+    const selectedNodes = gridApi.getSelectedNodes()
+    if (selectedNodes.length > 0) {
+
+        for(x=0; x< selectedNodes.length; x++) {
+            var data = selectedNodes[x].data;
+
+            // var uom = getUom();
             var rowCount = $('#product-list tr').length;
+
+            if(page == 'edit') {
+                rowCount = rowCount -1;
+            }
             var idx = rowCount - 3;
-            var itemType = (data[x].item_type == 'good') ? "bg-success" : "bg-danger";
+            var itemType = (data.item_type == 'good') ? "bg-success" : "bg-danger";
             var btn = '<div class="text-center text-align-justify">';
             btn += '<button type="button" class="btn btn-danger mx-2 btn-icon waves-effect waves-light remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill"></i></button>';
-            if(data[x].is_serialize == 1){
-                btn += '<button type="button" class="add-serial btn btn-success btn-icon waves-effect waves-light" id="row_'+(rowCount-1)+'" data-rowid="'+(rowCount-1)+'" data-productid="'+ data[x].product_id +'" data-masterfileid="'+ data[x].masterfile_id +'" data-productcode="'+ data[x].product_code +'" data-productname="'+ data[x].product_name +'"><i class="ri-barcode-line"></i></button>';
+            if(data.is_serialize == 1){
+                btn += '<button type="button" class="add-serial btn btn-success btn-icon waves-effect waves-light" id="row_'+(rowCount-1)+'" data-rowid="'+(rowCount-1)+'" data-productid="'+ data.product_id +'" data-masterfileid="'+ data.masterfile_id +'" data-productcode="'+ data.product_code +'" data-productname="'+ data.product_name +'"><i class="ri-barcode-line"></i></button>';
             }
             btn += '</div>'
 
             $('#product-list tbody').prepend('<tr id="rows_'+(rowCount-1)+'"> \
             <td class="text-start"> \
-                <input type="hidden" name="product_id[]" readonly id="product_id_'+data[x].product_id+'" value="'+data[x].product_id+'" /> \
-                <input type="hidden" name="master_id[]" readonly id="master_id_'+data[x].master_id+'" value="'+data[x].master_id+'" /> \
-                <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id_'+data[x].rcv_dtl_id+'" value="'+data[x].rcv_dtl_id+'" /> \
-                <input type="hidden" name="available_qty[]" readonly id="available_qty_'+data[x].inv_qty+'" value="'+data[x].inv_qty+'" /> \
-                <input type="hidden" name="is_serialize[]" readonly value="'+data[x].is_serialize+'" />\
-            '+rowCount+' </td> \
+                <input type="hidden" name="product_id[]" readonly id="product_id_'+data.product_id+'" value="'+data.product_id+'" /> \
+                <input type="hidden" name="master_id[]" readonly id="master_id_'+data.master_id+'" value="'+data.master_id+'" /> \
+                <input type="hidden" name="rcv_dtl_id[]" readonly id="rcv_dtl_id_'+data.rcv_dtl_id+'" value="'+data.rcv_dtl_id+'" /> \
+                <input type="hidden" name="available_qty[]" readonly id="available_qty_'+data.inv_qty+'" value="'+data.inv_qty+'" /> \
+                <input type="hidden" name="is_serialize[]" readonly value="'+data.is_serialize+'" />\
+            '+(rowCount)+' </td> \
             <td class="text-start  fs-14"> \
-                <small><b>'+((data[x].sap_code) ? data[x].sap_code : data[x].product_code)+'</b></small><br/>\
-                '+data[x].product_name+'\
+                <small><b>'+((data.sap_code) ? data.sap_code : data.product_code)+'</b></small><br/>\
+                '+data.product_name+'\
             </td> \
             <td class="text-center ps-1 fs-13"> \
-                <span class="badge '+ itemType +' text-capitalize">'+data[x].item_type+'</span> \
+                <span class="badge '+ itemType +' text-capitalize">'+data.item_type+'</span> \
             </td> \
             <td class="text-center  fs-14"> \
-                '+data[x].received_date+'\
+                '+((data.received_date) ? moment(data.received_date).format('D MMM YYYY') : '' )+'\
             </td> \
-            <td class="text-center  fs-14"> \
-                '+data[x].inv_qty.toFixed(2)+'\
+            <td class="text-end  fs-14"> \
+                '+data.inv_qty.toFixed(0)+'\
             </td> \
             <td class="text-start fs-14"> \
-                <input type="text" class="form-control inv_qty numeric" name="inv_qty[]" data-qty="'+data[x].inv_qty+'" data-id="'+ idx +'" id="inv_qty'+(rowCount-1)+'" value="1" placeholder="Enter Qty" /> \
+                <input type="text" class="form-control text-end inv_qty numeric" name="inv_qty[]" data-qty="'+data.inv_qty+'" data-id="'+ idx +'" id="inv_qty'+(rowCount-1)+'" value="1" placeholder="Enter Qty" /> \
                 <span class="text-danger error-msg inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].ui_code+'\
-                <input type="hidden" readonly class="form-control" name="inv_uom[]" data-id="'+data[x].inv_uom+'" id="inv_uom_'+(rowCount-1)+'" value="'+data[x].inv_uom+'"> \
+                '+((data.ui_code) ? data.ui_code : '')+'\
+                <input type="hidden" readonly class="form-control" name="inv_uom[]" data-id="'+data.inv_uom+'" id="inv_uom_'+(rowCount-1)+'" value="'+data.inv_uom+'"> \
             </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].lot_no+'\
+                '+((data.lot_no) ? data.lot_no : '')+'\
             </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].expiry_date+'\
+                '+((data.expiry_date) ? moment(data.expiry_date).format('D MMM YYYY') : '') +'\
             </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].manufacture_date+'\
+                '+((data.manufacture_date) ? moment(data.manufacture_date).format('D MMM YYYY') : '') +'\
             </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].warehouse_name+'\
+                '+data.warehouse_name+'\
             </td> \
             <td class="text-start  fs-14"> \
-                '+data[x].location+'\
+                '+((data.location) ? data.location : '')+'\
             </td> \
             <td>'+btn+'</td> \
             </tr>');
-            toastr.success(data[x].product_name + ' successfully added');
+            toastr.success(data.product_name + ' successfully added');
+
         }
         totalPackage();
     }

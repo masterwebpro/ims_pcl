@@ -497,3 +497,6 @@ function getStorageLocation($location_id) {
     return $storage_location;
 
 }
+function _version() {
+    return "v-240901-1.0";
+}

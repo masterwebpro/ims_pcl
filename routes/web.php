@@ -108,6 +108,7 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/getAllPostedDO', [App\Http\Controllers\SettingsController::class, 'getAllPostedDo']);
     Route::get('/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAvailableStocks']);
+    Route::post('/aggrid/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAgGridAvailableStocks']);
     Route::get('/getAvailableItems', [App\Http\Controllers\SettingsController::class, 'getAvailableItems']);
     Route::get('/getParticulars', [App\Http\Controllers\SettingsController::class, 'getParticulars']);
     Route::get('/getAllPostedDispatch', [App\Http\Controllers\SettingsController::class, 'getAllPostedDispatch']);
