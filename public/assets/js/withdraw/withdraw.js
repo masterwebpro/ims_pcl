@@ -31,20 +31,10 @@ const columnDefs = [
         sort: false,
     },  
     { field: 'master_id', headerName: "Master Id", hide:true},
-   
+    { field: 'brand_name', headerName: "Brand", filter: 'agSetColumnFilter',suppressMenu: true },
     { field: 'product_code', headerName: "Product Code", filter: 'agTextColumnFilter'},
     { field: 'product_name', headerName: "Product Name", filter: 'agTextColumnFilter'},
-    { field: 'brand_name', headerName: "Brand", filter: 'agSetColumnFilter',suppressMenu: true },
-    { field: 'received_date', headerName: "Date Recieved", filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
-        valueFormatter: function (params) {
-            if(params.value != null) {
-                return moment(params.value).format('D MMM YYYY');
-            } else {
-                return '-';
-            }
-            
-        },
-    },
+    
     { field: 'item_type', headerName: "Item Type", hide:true, filter: 'agSetColumnFilter',},
     { field: 'inv_qty', headerName: "Stocks", filter: 'agTextColumnFilter', cellClass: 'text-end',valueFormatter: function (params) {
         if(params.value != null) {
@@ -59,8 +49,7 @@ const columnDefs = [
     { field: 'warehouse_name', headerName: "Warehouse"},
     // { field: 'email_address', headerName: "Layer"},
     
-    { field: 'lot_no', headerName: "Lot No", filter: 'agTextColumnFilter', },
-    { field: 'expiry_date', headerName: "Expiry date", filter: 'agDateColumnFilter', cellClass: 'text-center', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
+    { field: 'received_date', headerName: "Date Recieved", filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
         valueFormatter: function (params) {
             if(params.value != null) {
                 return moment(params.value).format('D MMM YYYY');
@@ -70,7 +59,19 @@ const columnDefs = [
             
         },
     },
-    { field: 'manufacture_date', headerName: "Mfg Date", cellClass: 'text-center', filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
+    
+    { field: 'lot_no', headerName: "Lot No", filter: 'agTextColumnFilter', },
+    { field: 'expiry_date', headerName: "Expiry date", hide:true, filter: 'agDateColumnFilter', cellClass: 'text-center', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
+        valueFormatter: function (params) {
+            if(params.value != null) {
+                return moment(params.value).format('D MMM YYYY');
+            } else {
+                return '-';
+            }
+            
+        },
+    },
+    { field: 'manufacture_date', headerName: "Mfg Date",  hide:true, cellClass: 'text-center', filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
         valueFormatter: function (params) {
             if(params.value != null) {
                 return moment(params.value).format('D MMM YYYY');
