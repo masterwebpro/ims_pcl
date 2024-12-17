@@ -415,10 +415,10 @@
                                                             {{ isset($item->receiving) ? date('d M Y', strtotime($item->receiving->received_date)) : '' }}
                                                         </td>
                                                         <td class="ps-1 fs-14 text-end">
-                                                            {{ ($item->master) ? number_format(($item->master->inv_qty - $item->master->reserve_qty),0) : ""}}
+                                                            {{ ($item->master) ? number_format(($item->master->inv_qty - $item->master->reserve_qty),0,'.','') : ""}}
                                                         </td>
                                                         <td class="ps-1 fs-14">
-                                                            <input type="text"  class="form-control inv_qty text-end numeric" name="inv_qty[]" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{number_format($item->inv_qty,0)}}" placeholder="Inv Qty" />
+                                                            <input type="text"  class="form-control inv_qty text-end numeric" name="inv_qty[]" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{number_format($item->inv_qty,0,'.','')}}" placeholder="Inv Qty" />
                                                             <span class="text-danger error-msg inv_qty{{$x}}_error"></span>
                                                         </td>
                                                         <td class=" ps-1 fs-14">
