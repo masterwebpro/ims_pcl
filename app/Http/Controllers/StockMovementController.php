@@ -107,7 +107,7 @@ class StockMovementController extends Controller
             $key = $request->product_id[$x]."|".$request->rcv_dtl_id[$x]."|".$request->old_location[$x]."|".$request->master_id[$x];
 
             $product_info = Products::where('product_id',$request->product_id[$x])->first();
-            
+
             if(!isset($data[$key])) {
                 $data[$key]['transfer_qty']  = $request->new_inv_qty[$x];
                 $data[$key]['original_qty'] = $request->old_inv_qty[$x];
@@ -510,7 +510,7 @@ class StockMovementController extends Controller
                         'store_id'=>$mv->store_id,
                         'warehouse_id'=>$mv->warehouse_id,
                         'product_id'=>$rec->product_id,
-                        'storage_location_id'=>($rec->new_storage_location_id == 0 || $rec->new_storage_location_id == 'null') ? NULL : $rec->new_storage_location_id,
+                        'storage_location_id'=> $rec->new_storage_location_id,
                         'item_type'=>$rec->new_item_type,
                         'inv_qty'=>($rec->new_inv_qty),
                         'inv_uom'=>$rec->new_inv_uom,
@@ -525,13 +525,14 @@ class StockMovementController extends Controller
                         'store_id'=>$mv->store_id,
                         'warehouse_id'=>$mv->warehouse_id,
                         'product_id'=>$rec->product_id,
-                        'storage_location_id'=>($rec->old_storage_location_id == 0 || $rec->old_storage_location_id == 'null') ? NULL : $rec->old_storage_location_id,
+                        'storage_location_id'=>$rec->old_storage_location_id,
                         'item_type'=>$rec->old_item_type,
-                        'inv_qty'=>($rec->old_inv_qty),
+                        'inv_qty'=>($rec->new_inv_qty),
                         'inv_uom'=>$rec->old_inv_uom,
-                        'whse_qty'=>($rec->old_inv_qty),
+                        'whse_qty'=>($rec->new_inv_qty),
                         'whse_uom'=>$rec->old_inv_uom,
                         'rcv_dtl_id'=>$rec->rcv_dtl_id,
+                        'master_id'=>$rec->master_id,
                     );
 
                 }
@@ -561,10 +562,11 @@ class StockMovementController extends Controller
                 ]);
 
             } else {
+                DB::rollBack();
                 return response()->json([
                     'success'  => false,
                     'message' => 'Unable to process request. Please try again.',
-                    'data'    => $e->getMessage()
+                    'data'    => 'Reference is empty.'
                 ]);
             }
 

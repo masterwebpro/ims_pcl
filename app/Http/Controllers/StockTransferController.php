@@ -276,7 +276,6 @@ class StockTransferController extends Controller
                     'master_id'=>$request->master_id[$x],
                 );
             }
-
             $result= TransferDtl::where('ref_no',$ref_no)->delete();
             TransferDtl::insert($dtl);
 
@@ -499,11 +498,11 @@ class StockTransferController extends Controller
                     'store_id'=>$warehouse->store_id,
                     'warehouse_id'=>$transfer->dest_warehouse_id,
                     'product_id'=>$transfer->product_id,
-                    'storage_location_id'=>($transfer->dest_storage_location_id == 0 || $transfer->dest_storage_location_id == 'null') ? NULL : $transfer->dest_storage_location_id,
+                    'storage_location_id'=> $transfer->dest_storage_location_id,
                     'item_type'=>$transfer->dest_item_type,
-                    'inv_qty'=>($transfer->dest_inv_qty),
+                    'inv_qty'=> $transfer->dest_inv_qty,
                     'inv_uom'=>$transfer->dest_inv_uom,
-                    'whse_qty'=>($transfer->dest_inv_qty),
+                    'whse_qty'=>$transfer->dest_inv_qty,
                     'whse_uom'=>$transfer->dest_inv_uom,
                     'rcv_dtl_id'=>$transfer->rcv_dtl_id,
                 );
@@ -518,13 +517,13 @@ class StockTransferController extends Controller
                     'storage_location_id'=>$transfer->source_storage_location_id,
                     'item_type'=>$transfer->dest_item_type,
                     'inv_qty'=>$transfer->dest_inv_qty,
-                    'inv_uom'=>$request->dest_inv_uom,
+                    'inv_uom'=>$transfer->dest_inv_uom,
                     'whse_qty'=>$transfer->dest_inv_qty,
-                    'whse_uom'=>$request->dest_inv_uom,
+                    'whse_uom'=>$transfer->dest_inv_uom,
                     'rcv_dtl_id'=>$transfer->rcv_dtl_id,
+                    'master_id' => $transfer->master_id
                 );
             }
-
             $audit_trail[] = [
                 'control_no' => $ref_no,
                 'type' => 'ST',
@@ -567,6 +566,7 @@ class StockTransferController extends Controller
         }
         catch(\Throwable $e)
         {
+            DB::rollBack();
             return response()->json([
                 'success'  => false,
                 'message' => 'Unable to process request. Please try again.',

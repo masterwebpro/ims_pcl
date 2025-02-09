@@ -38,9 +38,9 @@
                     <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
                 <? endif ;?>
             <? endif ;?>
-        <? endif;?>  
-        
-        <a href="{{ URL::to('stock/transfer') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>   
+        <? endif;?>
+
+        <a href="{{ URL::to('stock/transfer') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
     </div>
     <!--end col-->
 </div>
@@ -53,9 +53,9 @@
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1"><?=$transfer_hdr->ref_no?> </h5>
-                    
+
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-                        
+
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                                             <input type="hidden" class="form-control" name="ref_no" id="ref_no" value="{{$transfer_hdr->ref_no}}">
                                             <label for="source_company" class="form-label">Source Company <span class="text-danger">*</span></label>
                                             <select class="form-select select2 source_company" id="source_company" name="source_company">
-                                                <option value="">Select Source Company</option>                                                            
+                                                <option value="">Select Source Company</option>
                                                 <? foreach($client_list as $company) : ?>
                                                     <option value="<?=$company->id?>" <?=($company->id == $transfer_hdr->source_company_id) ? 'selected': ''; ?> ><?=$company->client_name?></option>
                                                 <? endforeach;?>
@@ -93,12 +93,12 @@
                                             <label for="transaction_date" class="form-label">Source Site Name <span class="text-danger">*</span></label>
                                             <input type="hidden" class="form-control" name="store_id" id="store_id" value="{{$transfer_hdr->source_store_id}}">
                                             <select class="form-select select2 source_site" name="source_site" id="source_site">
-                                                <option value="">Select Source Site</option>                                                            
+                                                <option value="">Select Source Site</option>
                                             </select>
                                             <span class="text-danger error-msg source_site_error"></span>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Transaction Date <span class="text-danger">*</span></label>
@@ -109,14 +109,14 @@
                                 </div>
 
                                 <div class="row">
-                                    
+
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="firstNameinput" class="form-label">DR Num</label>
                                             <input type="text" class="form-control" placeholder="DR num"  value="{{$transfer_hdr->dr_no}}"  name="dr_no" id="dr_no">
                                         </div>
                                     </div>
-                                  
+
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
@@ -124,14 +124,14 @@
                                             <span class="text-danger error-msg requested_by_error"></span>
                                         </div>
                                     </div>
-                                
+
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="remarks" class="form-label">Remarks</label>
                                             <input type="text" class="form-control" name="remarks"  value="{{$transfer_hdr->remarks}}" placeholder="Remarks" id="remarks">
                                         </div>
                                     </div>
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -142,9 +142,9 @@
             </div>
             <!--end card-->
         </div>
-        <!--end col--> 
-        
-        
+        <!--end col-->
+
+
         <div class="col-xxl-12">
             <div class="card" id="demo">
                 <!--end col-->
@@ -187,7 +187,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="newlink">
-                                        <? 
+                                        <?
                                         $i=1;
 
                                         // dd($transfer_dtl);
@@ -202,8 +202,8 @@
                                                 <input type="hidden" name="product_name[]" readonly id="product_name_{{$dtl->id}}" value="{{$dtl->item->product_name}}" />
                                                 <input type="hidden" name="product_code[]" readonly id="product_code_{{$dtl->id}}" value="{{$dtl->item->product_code}}'" />
 
-                                                {{$i}} 
-                                            </td> 
+                                                {{$i}}
+                                            </td>
                                             <td class="text-start  fs-13">
                                                 {{$dtl->item->product_name}}<br><small><?=($dtl->item->sap_code) ? $dtl->item->sap_code : $dtl->item->product_code; ?></small>
                                             </td>
@@ -211,7 +211,7 @@
                                                 <input type="hidden" readonly="" class="form-control" name="item_type[]" data-id="good" id="item_type_{{$dtl->id}}" value="{{$dtl->source_item_type}}">
                                             </td>
                                             <td class="text-center ps-1 fs-13">
-                                                {{$dtl->source_warehouse->warehouse_name}}                
+                                                {{$dtl->source_warehouse->warehouse_name}}
                                                 <input type="hidden" readonly="" class="form-control" name="source_warehouse[]" id="source_warehouse_{{$dtl->id}}" value="{{$dtl->source_warehouse_id}}">
                                             </td>
                                             <td class="text-center ps-1 fs-13">
@@ -254,7 +254,7 @@
                                             <td>
                                                 <div class="text-center">
                                                     <a href="javascript:void(0)" class="text-info split-product" data-id="0">
-                                                        <i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>&nbsp; 
+                                                        <i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>&nbsp;
                                                     <a href="javascript:void(0)" class="text-danger remove-product" data-id="0">
                                                         <i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
                                                 </div>
@@ -263,9 +263,9 @@
                                         <? $i++; endforeach; ?>
                                     </tbody>
                                     </table>
-                                    
+
                                 <!--end table-->
-                            </div>                           
+                            </div>
                         </div>
                         <!--end card-body-->
                     </div>
@@ -274,7 +274,7 @@
             </div>
             <!--end card-->
         </div>
-        <!--end col--> 
+        <!--end col-->
 
     </div>
     <!--end row-->
@@ -289,25 +289,25 @@
                 <h5 class="modal-title" id="exampleModalLabel">Item List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
-        
+
             <div class="modal-body">
-        
+
                 <div class="row g-3 mb-2">
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold">Source Warehouse</h6>
                         <p class="fw-medium">
                             <select class="form-select select3 source_warehouse" required="required" id="source_warehouse" name="source_warehouse">
-                                <option value="">Select Source Warehouse</option>                                                            
+                                <option value="">Select Source Warehouse</option>
                             </select>
                             <span class="text-danger error-msg source_warehouse_error"></span>
                         </p>
                     </div>
-    
+
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold"> Source Location </h6>
                         <p class="fw-medium" id="billing-name">
                             <select class="form-select select3" id="source_location" name="source_location">
-                                <option value="">No Location</option>  
+                                <option value="">No Location</option>
                             </select>
                         </p>
                     </div>
@@ -330,7 +330,7 @@
                         <button type="button" class="btn btn-warning rounded-pill" id="select-all"><i class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
                         <button type="button" class="btn btn-success rounded-pill" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
                     </div>
-                </div>   
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
@@ -355,7 +355,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -368,25 +368,25 @@
                 <h5 class="modal-title" id="exampleModalLabel">Item List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
-        
+
             <div class="modal-body">
-        
+
                 <div class="row g-3">
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold">Source Warehouse</h6>
                         <p class="fw-medium">
                             <select class="form-select select3 source_warehouse" required="required" id="source_warehouse" name="source_warehouse">
-                                <option value="">Select Source Warehouse</option>                                                            
+                                <option value="">Select Source Warehouse</option>
                             </select>
                             <span class="text-danger error-msg source_warehouse_error"></span>
                         </p>
                     </div>
-    
+
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold"> Source Location </h6>
                         <p class="fw-medium" id="billing-name">
                             <select class="form-select select3" id="source_location" name="source_location">
-                                <option value="">No Location</option>  
+                                <option value="">No Location</option>
                             </select>
                         </p>
                     </div>
@@ -405,7 +405,7 @@
                             <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
                         </p>
                     </div>
-                </div>   
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
@@ -423,13 +423,13 @@
                                 <th>Rcv DTL ID</th>
                                 <!-- <th>REF1</th>
                                 <th>REF1_type</th> -->
-                            </tr>
+                            {{-- </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                 </div>
-                
+
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
@@ -438,7 +438,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div> --> --}}
 
 
 	@endsection
