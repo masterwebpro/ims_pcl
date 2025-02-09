@@ -177,16 +177,15 @@ function _stockInMasterData($masterfile) {
             ->where('company_id', $params['company_id'])
             ->where('store_id', $params['store_id'])
             ->where('warehouse_id', $params['warehouse_id'])
-            ->where('product_id', $params['product_id']);
+            ->where('product_id', $params['product_id'])
+            ->where('inv_qty','>=',0);
 
 
 
             if(isset($params['master_id'])) {
-                
                 $updateData->where('id', $params['master_id']);
 
             } else {
-                
                 if(isset($params['storage_location_id'])) {
                     $updateData->where('storage_location_id', $params['storage_location_id']);
                 } else {
@@ -255,14 +254,15 @@ function _stockOutMasterData($masterfile) {
                 ->where('company_id', $params['company_id'])
                 ->where('store_id', $params['store_id'])
                 ->where('warehouse_id', $params['warehouse_id'])
-                ->where('product_id', $params['product_id']);
+                ->where('product_id', $params['product_id'])
+                ->where('inv_qty','>=',$params['inv_qty']);
 
             if(isset($params['master_id'])) {
-                
+
                 $updateData->where('id', $params['master_id']);
 
             } else {
-                
+
                 if(isset($params['storage_location_id'])) {
                     $updateData->where('storage_location_id', $params['storage_location_id']);
                 } else {
@@ -272,7 +272,7 @@ function _stockOutMasterData($masterfile) {
                 if(isset($params['rcv_dtl_id']))
                 $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
             }
-                
+
 
 
             // if(isset($params['lot_no']))
@@ -284,14 +284,7 @@ function _stockOutMasterData($masterfile) {
             // if(isset($params['manufacture_date']))
             //     $updateData->where('manufacture_date', $params['manufacture_date']);
 
-            
-
             $record = $updateData->first();
-
-            $update = array(
-
-            );
-
             //update MASTERDATA
             DB::table('masterdata')
                 ->where('id', $record->id)
