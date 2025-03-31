@@ -64,6 +64,7 @@
 <!--end row-->
 
 <form name="submit-receive" id="submit-receive">
+    @csrf
     <div class="row justify-content-center">
         <div class="col-xxl-12">
             <div class="card">
