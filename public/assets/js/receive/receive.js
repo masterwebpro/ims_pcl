@@ -39,14 +39,14 @@ $(document).on('change', '#store', function() {
 });
 
 $(document).on('click', '#find-items', function() {
-   
+
     var customer_id = $('#customer').val();
 
     // var supplier_id = (sup_id != '') ? sup_id : 0;
 
-    if(customer_id) {   
+    if(customer_id) {
 
-        $('#show-items').modal('show'); 
+        $('#show-items').modal('show');
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
@@ -82,40 +82,40 @@ $(document).on('click', '#find-items', function() {
     }
 });
 
-var rowIdx = 0; 
+var rowIdx = 0;
 
 $(document).on('click', '.remove-product', function() {
-    var child = $(this).closest('tr').nextAll(); 
-    child.each(function () { 
-        // Getting <tr> id. 
-        var id = $(this).attr('id'); 
-    
-        // Getting the <p> inside the .row-index class. 
-        var item_type = $(this).children('.c_item_type').children('span#item_type'); 
-        var whse_qty = $(this).children('.c_whse_qty').children('span#whse_qty'); 
-        var whse_uom = $(this).children('.c_whse_uom').children('span#whse_uom'); 
-        var inv_qty = $(this).children('.c_inv_qty').children('span#inv_qty'); 
-        var inv_uom = $(this).children('.c_inv_uom').children('span#inv_uom'); 
-    
-        // Gets the row number from <tr> id. 
-        var dig = parseInt(id.substring(1)); 
-    
-        // Modifying row index. 
+    var child = $(this).closest('tr').nextAll();
+    child.each(function () {
+        // Getting <tr> id.
+        var id = $(this).attr('id');
+
+        // Getting the <p> inside the .row-index class.
+        var item_type = $(this).children('.c_item_type').children('span#item_type');
+        var whse_qty = $(this).children('.c_whse_qty').children('span#whse_qty');
+        var whse_uom = $(this).children('.c_whse_uom').children('span#whse_uom');
+        var inv_qty = $(this).children('.c_inv_qty').children('span#inv_qty');
+        var inv_uom = $(this).children('.c_inv_uom').children('span#inv_uom');
+
+        // Gets the row number from <tr> id.
+        var dig = parseInt(id.substring(1));
+
+        // Modifying row index.
         item_type.attr("class", `text-danger error-msg acct_code item_type${dig - 1}_error`);
         whse_qty.attr("class", `text-danger error-msg whse_qty${dig - 1}_error`);
         whse_uom.attr("class", `text-danger error-msg whse_uom${dig - 1}_error`);
         inv_qty.attr("class", `text-danger error-msg inv_qty${dig - 1}_error`);
         inv_uom.attr("class", `text-danger error-msg inv_uom${dig - 1}_error`);
-          
-          // Modifying row id. 
-          $(this).attr('id', `R${dig - 1}`); 
-        }); 
-    
-        // Removing the current row. 
-        $(this).closest('tr').remove(); 
-    
-        // Decreasing total number of rows by 1. 
-        rowIdx--; 
+
+          // Modifying row id.
+          $(this).attr('id', `R${dig - 1}`);
+        });
+
+        // Removing the current row.
+        $(this).closest('tr').remove();
+
+        // Decreasing total number of rows by 1.
+        rowIdx--;
 });
 
 
@@ -183,7 +183,7 @@ $(document).on('click', '#add-product', function() {
         <td>'+btn+'</td> \
         </tr>');
 
-        rowIdx++; 
+        rowIdx++;
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
@@ -193,7 +193,7 @@ $(document).on('click', '#add-product', function() {
 
 $(document).on('click', '.submit-open', function (e) {
     e.preventDefault();
-   
+
     var form_data = new FormData(document.getElementById("submit-receive"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'open');
@@ -203,7 +203,7 @@ $(document).on('click', '.submit-open', function (e) {
 
 $(document).on('click', '.submit-posted', function (e) {
     e.preventDefault();
-   
+
     var form_data = new FormData(document.getElementById("submit-receive"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'posted');
@@ -250,14 +250,14 @@ $(document).on('click', '.submit-delete', function (e) {
                 success: function (data) {
                     if($.isEmptyObject(data.errors)) {
                         if(data.success == true) {
-                            toastr.success(data.message); 
+                            toastr.success(data.message);
                             setTimeout(function () {
                                 window.location = BASEURL+'receive';
                             }, 300);
-                            
+
                         } else {
-                            toastr.error(data.message,'Error on saving'); 
-                         
+                            toastr.error(data.message,'Error on saving');
+
                         }
                     } else {
                         toastr.error('Some fields are required');
@@ -298,13 +298,13 @@ $(document).on('click', '.submit-unpost', function (e) {
                 success: function (data) {
                     if($.isEmptyObject(data.errors)) {
                         if(data.success == true) {
-                            toastr.success(data.message); 
+                            toastr.success(data.message);
                             setTimeout(function () {
                                 window.location = BASEURL+'receive';
                             }, 300);
-                            
+
                         } else {
-                            // toastr.error(data.message,'Error on saving'); 
+                            // toastr.error(data.message,'Error on saving');
                             showError(data.message);
                         }
                     } else {
@@ -336,7 +336,7 @@ $(document).on('click', '.receive-po', function (e) {
     if ($.fn.DataTable.isDataTable("#unit-allocation")) {
         $('#po-table').DataTable().clear().destroy();
     }
-    new DataTable("#po-table",{ 
+    new DataTable("#po-table",{
         paging: true,
         ajax: BASEURL+"settings/getAllPostedPO",
         columns: [
@@ -367,7 +367,7 @@ $(document).on('click', '#receive-po-btn', function (e) {
         }, 300);
     } else {
         alert("Please select a PO Number");
-    }    
+    }
 });
 
 function _submitData(form_data) {
@@ -392,13 +392,13 @@ function _submitData(form_data) {
 							window.location = BASEURL+'receive/'+data.id+'/edit';
 						}, 300);
                     } else {
-                        toastr.success(data.message); 
+                        toastr.success(data.message);
                         setTimeout(function () {
 							window.location = BASEURL+'receive';
 						}, 300);
                     }
                 } else {
-                    toastr.error(data.message,'Error on saving'); 
+                    toastr.error(data.message,'Error on saving');
                 }
             } else {
                 $.each(data.errors, function(prefix, val) {
@@ -418,7 +418,7 @@ $(document).on('blur keyup', '#item_code', function(e) {
     if (e.type === 'blur' || e.keyCode === 13)  {
 
         var item_code = $(this).val();
-      
+
         $.ajax({
             url: BASEURL + 'settings/product',
             method: "get",
@@ -485,7 +485,7 @@ $(document).on('blur keyup', '#item_code', function(e) {
 
 
                             toastr.success(data.data.product_name,'Added successfully');
-                          
+
 
                         } else {
                             toastr.error(item_code,'No Record found!');
@@ -512,11 +512,11 @@ $(document).on('blur keyup', '#item_code', function(e) {
 $(document).on('keyup', '.whse_qty', function(e){
     e.preventDefault();
     var id = $(this).data('id');
-    var trid = $(this).closest('tr').attr('id'); 
+    var trid = $(this).closest('tr').attr('id');
     var val = $(this).val();
 
     //$('#inv_qty_'+id).val(val);
-   // $(this).closest('input').find('.inv_qty').val(val); 
+   // $(this).closest('input').find('.inv_qty').val(val);
 
 //    $('#'+trid+' .inv_qty').val(val);
     $(this).closest('tr') .find( '.inv_qty' ).val(val);
@@ -558,7 +558,7 @@ function computeAll() {
 $(document).on('click', '.split-product', function(e) {
     e.preventDefault();
     var id=$(this).data('id');
- 
+
     var thisRow = $( this ).closest( 'tr' )[0];
     value = $(thisRow).find( '.whse_qty' ).val();
     var rem  = value % 2;
@@ -568,14 +568,14 @@ $(document).on('click', '.split-product', function(e) {
     if(rem != 0 ) {
         parent_val = (value / 2) + (rem/2);
         second_val = (value / 2) - (rem/2);
-    } 
+    }
 
     $(thisRow).find( '.whse_qty' ).val(parent_val);
     $(thisRow).find( '.inv_qty' ).val(parent_val);
     $( thisRow ).clone().insertAfter( thisRow )
         .find( '.whse_qty' ).val(second_val)
-        .find( '.inv_qty' ).val(second_val); 
-    // $( thisRow ).clone().insertAfter( thisRow ); 
+        .find( '.inv_qty' ).val(second_val);
+    // $( thisRow ).clone().insertAfter( thisRow );
 });
 
 var cloneCount = 1;
@@ -587,11 +587,11 @@ $(document).on('click', '.split-row', function(e) {
     var prev = $(this).closest('tr').prev();
 
     id = $(thisRow).attr('id');
-    var dig = parseInt(id.substring(1)); 
+    var dig = parseInt(id.substring(1));
     var cloneCount = dig + 1;
 
-    
-    
+
+
     value = $(thisRow).find( '.whse_qty' ).val();
     var rem  = value % 2;
     var parent_val = (value / 2);
@@ -600,47 +600,91 @@ $(document).on('click', '.split-row', function(e) {
     if(rem != 0 ) {
         parent_val = (value / 2) + (rem/2);
         second_val = (value / 2) - (rem/2);
-    } 
+    }
 
     $(thisRow).find( '.whse_qty' ).val(parent_val);
     $(thisRow).find( '.inv_qty' ).val(parent_val);
 
-    
+
     clone = $( thisRow ).clone().insertAfter( thisRow ).attr('id', `R${cloneCount}`);
 
-    var item_type = $(clone).children('.c_item_type').children('span#item_type'); 
-    var whse_qty = $(clone).children('.c_whse_qty').children('span#whse_qty'); 
-    var whse_uom = $(clone).children('.c_whse_uom').children('span#whse_uom'); 
-    var inv_qty = $(clone).children('.c_inv_qty').children('span#inv_qty'); 
-    var inv_uom = $(clone).children('.c_inv_uom').children('span#inv_uom'); 
+    var item_type = $(clone).children('.c_item_type').children('span#item_type');
+    var whse_qty = $(clone).children('.c_whse_qty').children('span#whse_qty');
+    var whse_uom = $(clone).children('.c_whse_uom').children('span#whse_uom');
+    var inv_qty = $(clone).children('.c_inv_qty').children('span#inv_qty');
+    var inv_uom = $(clone).children('.c_inv_uom').children('span#inv_uom');
 
-    // // Modifying row index. 
+    // // Modifying row index.
     item_type.attr("class", `text-danger error-msg item_type${cloneCount}_error`);
     whse_qty.attr("class", `text-danger error-msg whse_qty${cloneCount}_error`);
     whse_uom.attr("class", `text-danger error-msg whse_uom${cloneCount}_error`);
     inv_qty.attr("class", `text-danger error-msg inv_qty${cloneCount}_error`);
     inv_uom.attr("class", `text-danger error-msg inv_uom${cloneCount}_error`);
 
-    var child = $(thisRow).nextAll(); 
+    var child = $(thisRow).nextAll();
     idx = cloneCount;
-    child.each(function () { 
-        var item_type = $(this).children('.c_item_type').children('span#item_type'); 
-        var whse_qty = $(this).children('.c_whse_qty').children('span#whse_qty'); 
-        var whse_uom = $(this).children('.c_whse_uom').children('span#whse_uom'); 
-        var inv_qty = $(this).children('.c_inv_qty').children('span#inv_qty'); 
-        var inv_uom = $(this).children('.c_inv_uom').children('span#inv_uom'); 
-       
-        // Modifying row index. 
+    child.each(function () {
+        var item_type = $(this).children('.c_item_type').children('span#item_type');
+        var whse_qty = $(this).children('.c_whse_qty').children('span#whse_qty');
+        var whse_uom = $(this).children('.c_whse_uom').children('span#whse_uom');
+        var inv_qty = $(this).children('.c_inv_qty').children('span#inv_qty');
+        var inv_uom = $(this).children('.c_inv_uom').children('span#inv_uom');
+
+        // Modifying row index.
         item_type.attr("class", `text-danger error-msg acct_code item_type${idx}_error`);
         whse_qty.attr("class", `text-danger error-msg whse_qty${idx}_error`);
         whse_uom.attr("class", `text-danger error-msg whse_uom${idx}_error`);
         inv_qty.attr("class", `text-danger error-msg inv_qty${idx}_error`);
         inv_uom.attr("class", `text-danger error-msg inv_uom${idx}_error`);
-          
-        // // Modifying row id. 
-        $(this).attr('id', `R${idx}`); 
+
+        // // Modifying row id.
+        $(this).attr('id', `R${idx}`);
         idx ++;
-    }); 
+    });
 
 
 });
+
+$(document).on('click', '.update-item', function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    var row_id = $(this).data('row-id');
+    var thisRow = $(this).closest('tr')[0];
+    var manufacture_date = $(thisRow).find('input#manufacture_date_'+row_id).val();
+    var lot_no = $(thisRow).find('input#lot_no_'+row_id).val();
+    var expiry_date = $(thisRow).find('input#expiry_date_'+row_id).val();
+    var remarks = $(thisRow).find('input#item_remarks_'+row_id).val();
+
+    $.ajax({
+        url: BASEURL + 'receive/modify',
+        method: "POST",
+        data: {
+            _token: $('input[name=_token]').val(),
+            id: id,
+            manufacture_date: manufacture_date,
+            lot_no: lot_no,
+            expiry_date: expiry_date,
+            remarks: remarks
+        },
+        beforeSend: function () {
+            $('#preloading').modal('show');
+        },
+        success: function (data) {
+            if (data.success) {
+                toastr.success('Row updated successfully');
+            } else {
+                toastr.error(data.message || 'Error updating row');
+            }
+        },
+        error: function () {
+            toastr.error('Server error');
+        },
+        complete: function () {
+            $('#preloading').modal('hide');
+        }
+    });
+
+});
+
+
+

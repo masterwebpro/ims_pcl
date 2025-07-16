@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/receive/{id}/create', [App\Http\Controllers\ReceiveController::class, 'receivePo']);
     Route::delete('/receive', [App\Http\Controllers\ReceiveController::class, 'destroy']);
     Route::post('/receive/unpost', [App\Http\Controllers\ReceiveController::class, 'unpost']);
+    Route::post('/receive/modify', [App\Http\Controllers\ReceiveController::class, 'updateRow']);
 
     Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
 
