@@ -353,11 +353,12 @@ class ReportController extends Controller
     public function getWithdrawalDetailed(Request $request)
     {
         ob_start();
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
+        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+                ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
                 ->where('wd_hdr.status','posted');
 
         if($request->has('wd_no') && $request->wd_no !='')
@@ -407,11 +408,12 @@ class ReportController extends Controller
         ob_start();
         ini_set("memory_limit", "-1");
         set_time_limit(0);
-        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
+        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date', 'dd.dispatch_no')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+                ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
                 ->where('wd_hdr.status','posted');
 
         if($request->has('wd_no') && $request->wd_no !='')
@@ -1431,32 +1433,32 @@ class ReportController extends Controller
     function getMonthOfWeek($year,$workWeek){
         // Create a DateTime instance for the start of the year
         $startOfYear = new DateTime("{$year}-01-01");
-    
+
         // Modify the date to the start of the given work week
         $startOfYear->modify("+". ($workWeek - 1) . " weeks");
-    
+
         // Get the month name
         return $monthName = $startOfYear->format('F');
     }
-    
+
     function groupWeeksByMonth($year, $weekNumbers) {
         $groupedByMonth = [];
-    
+
         // Loop through each week number
         foreach ($weekNumbers as $weekNumber) {
             // Get the month name for the given week number
             $month = $this->getMonthOfWeek($year, $weekNumber);
-    
+
             // Group by month
             if (!isset($groupedByMonth[$month])) {
                 $groupedByMonth[$month] = [];
             }
-    
+
             // Add the week number to the corresponding month
             $groupedByMonth[$month][] = $weekNumber;
         }
-    
+
         return $groupedByMonth;
     }
-    
+
 }

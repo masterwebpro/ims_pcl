@@ -134,6 +134,7 @@
                                 <tr>
                                     <th class="fw-medium text-center">Date Withdraw</th>
                                     <th class="fw-medium text-center">Reference No</th>
+                                    <th class="fw-medium text-center">Dispatch No</th>
                                     <th class="fw-medium text-center">Order No</th>
                                     <th class="fw-medium text-center">Order Type</th>
                                     <th class="fw-medium text-center">DR No</th>
