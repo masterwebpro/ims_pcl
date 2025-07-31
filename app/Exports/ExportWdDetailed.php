@@ -67,6 +67,7 @@ class ExportWdDetailed implements FromCollection, WithHeadings
         return [
         'Date Withdraw',
         'Reference No',
+        'Dispatch No',
         'Order No',
         'Order Type',
         'DR No',
