@@ -82,9 +82,10 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Item Type</h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="item_type" name="item_type">
-                                            <option value="good">Good</option>
-                                            <option value="damage">Damage</option>
-                                            <option value="repair">Repair</option>
+                                            <option value="">Item Type</option>
+                                            @foreach ($item_type as $type)
+                                                <option value="{{ $type->code }}">{{ $type->name }}</option>
+                                            @endforeach
                                         </select>
                                         <span class="text-danger error-msg item_type_error"></span>
                                     </p>

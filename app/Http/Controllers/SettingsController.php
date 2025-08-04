@@ -19,6 +19,7 @@ use App\Imports\ProductUpload;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UOM;
+use App\Models\ItemType;
 use App\Models\WdDtl;
 use App\Models\WdHdr;
 
@@ -863,6 +864,7 @@ class SettingsController extends Controller
                 'masterdata.whse_uom',
                 'masterdata.inv_uom',
                 'masterdata.item_type',
+                'masterdata.remarks',
                 'uw.code as uw_code',
                 'ui.code as ui_code',
                 DB::raw('sum(masterdata.inv_qty - masterdata.reserve_qty) as inv_qty'),
@@ -912,7 +914,7 @@ class SettingsController extends Controller
             if($request->item_type){
                 $data->where('masterdata.item_type', $request->item_type);
             }
-            
+
             $result = $data->get();
             return response()->json($result);
 
@@ -970,6 +972,22 @@ class SettingsController extends Controller
         // }
         // return response()->json($record);
 
+    }
+
+    public function getItemType(Request $request) {
+        $item_type = ItemType::all();
+
+        $html = '<option value="">Item Type</option>';
+        foreach ($item_type as $type) {
+            $html .= '<option value="'.$type->code.'"'
+                . (($type->code == $request->code) ? ' selected' : '')
+                . '>'.$type->name.'</option>';
+        }
+        return response()->json([
+            'success'  => true,
+            'message' => 'Saved successfully!',
+            'data'    => $html
+        ]);
     }
 
 }

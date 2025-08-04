@@ -126,6 +126,7 @@ $(document).on('click', '#add-product', function() {
 
     if (table.rows('.selected').data().length > 0) {
         var uom = getUom();
+        var item_type = getItemType();
         var rowCount = $('#product-list tr').length;
         var idx = rowCount - 1;
 
@@ -145,10 +146,8 @@ $(document).on('click', '#add-product', function() {
             <input type="hidden" name="product_code[]" value="'+data.product_code+'" /> \
         </td> \
         <td class="text-start c_item_type"> \
-            <select name="item_type[]" id="item_type_'+uniqueId+'" class="uom uom_select form-select">  \
-                <option value="good">Good</option>  \
-                <option value="damage">Damage</option> \
-                <option value="repair">Repair</option> \
+            <select name="item_type[]" id="item_type_'+uniqueId+'" class="item_type item_type_select form-select select2">  \
+            '+item_type+' \
             </select> \
             <span id="item_type"  class="text-danger error-msg item_type'+(rowIdx)+'_error"></span> \
         </td>  \
@@ -434,6 +433,7 @@ $(document).on('blur keyup', '#item_code', function(e) {
                     if(data.success == true) {
                         if(data.data) {
                             var uom = getUom();
+                            var item_type = getItemType();
                             var rowCount = $('#product-list tr').length;
                             var idx = rowCount - 1;
                             var btn = '<div class="text-center">';
@@ -448,10 +448,8 @@ $(document).on('blur keyup', '#item_code', function(e) {
                                 '+data.data.product_name+'<br/><small>'+data.data.product_code+'</small> \
                             </td> \
                             <td class="text-start"> \
-                                <select name="item_type[]" id="item_type_'+rowCount+'" class="uom uom_select form-select">  \
-                                    <option value="good">Good</option>  \
-                                    <option value="damage">Damage</option> \
-                                    <option value="repair">Repair</option> \
+                                <select name="item_type[]" id="item_type_'+rowCount+'" class="item_type item_type_select form-select select2">  \
+                                '+item_type+' \
                                 </select> \
                                 <span class="text-danger error-msg item_type'+(rowCount-1)+'_error"></span> \
                             </td>  \

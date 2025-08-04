@@ -19,8 +19,8 @@ $(document).ready(function () {
             var id = $(this).data('id');
             location_id = $("#location_"+id ).val();
             populateLocation('dest_location_'+id, warehouse_id, location_id);
-        });   
- 
+        });
+
     }
 
     $('#show-items-list tbody').on('click', 'tr', function (e) {
@@ -43,7 +43,7 @@ $(document).on('change', '#source_site', function() {
 
 $(document).on('change', '#source_warehouse', function() {
     var warehouse_id = $(this).val();
-    populateLocation('source_location', warehouse_id, '') 
+    populateLocation('source_location', warehouse_id, '')
 });
 
 $(document).on('change', '#dest_company', function() {
@@ -55,9 +55,9 @@ $(document).on('change', '#dest_company', function() {
 $(document).on('click', '.add-item', function() {
     $('#source_site').trigger('change');
     var source_site = $('#source_site').val();
-    
+
     if(source_site) {
-        $('#show-items').modal('show'); 
+        $('#show-items').modal('show');
         $('#show-items-list').DataTable().clear().destroy();
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
@@ -65,7 +65,7 @@ $(document).on('click', '.add-item', function() {
     } else {
         showError("Please select source site.");
     }
-    
+
 });
 
 
@@ -76,15 +76,15 @@ e.preventDefault()
     var company_id = $('#source_company').val();
     var source_location = $('#source_location').val();
     var product_name = $('#product_name').val();
-    var master_id = $('input[name="master_id[]"]').map(function(){ 
-        return this.value; 
+    var master_id = $('input[name="master_id[]"]').map(function(){
+        return this.value;
     }).get();
-    
-    if(warehouse_id) {   
 
-        $('#show-items').modal('show'); 
+    if(warehouse_id) {
+
+        $('#show-items').modal('show');
         $('#show-items-list').DataTable().clear().destroy();
-        
+
         if ($.fn.DataTable.isDataTable("#show-items-list")) {
             $('#show-items-list').DataTable().clear().destroy();
         }
@@ -118,7 +118,7 @@ e.preventDefault()
                 { data: 'w_code' },
                 { data: 'rcv_dtl_id', visible: false},
                 { data: 'master_id', visible: true},
-                
+
             ],
             "pageLength": 25,
             lengthMenu: [
@@ -126,7 +126,7 @@ e.preventDefault()
                 [10, 25, 50, 'All']
             ]
         });
-     
+
     } else {
         alert("Warehouse ID required");
     }
@@ -138,19 +138,20 @@ $(document).on('click', '#add-product', function() {
     var warehouse_id = $('#warehouse_id').val();
     var source_site = $('#source_site').val();
     var source_warehouse =  $('#source_warehouse').val();
- 
+
     if(data.length > 0) {
         for(x=0; x<data.length; x++) {
             // var new_location = getNewLocation(warehouse_id);
             var rowCount = ($('#product-list tr').length) - 1;
 
             populateWarehouse(source_site, '', 'dest_warehouse_'+(rowCount-1));
+            var item_type = getItemType(data[x].item_type);
 
             var idx = rowCount - 3;
             var btn = '<div class="text-center">';
             btn += '<a href="javascript:void(0)" class="text-info split-product" data-id="'+(rowCount-1)+'"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>';
             btn += '&nbsp; <a href="javascript:void(0)" class="text-danger remove-product" data-id="'+(rowCount-1)+'"><i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>';
-            
+
             btn += '</div>'
 
             $('#product-list tbody').append('<tr id="product_'+(rowCount-1)+'"> \
@@ -184,6 +185,9 @@ $(document).on('click', '#add-product', function() {
                 </div> \
                 <span class="text-danger error-msg old_inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
+            <td class="text-start ps-1"><select style="width: 100px;" name="dest_item_type[]" id="dest_item_type_'+(rowCount-1)+'" data-id="'+data[x].item_type+'" class="form-select select2">'+item_type+'</select> \
+                <span class="text-danger error-msg dest_item_type'+(rowCount-1)+'_error"></span> \
+            </td> \
             <td class="text-center ps-1 fs-13"> \
                 <select style="width: 150px;" name="dest_warehouse[]" data-id="'+(rowCount-1)+'" id="dest_warehouse_'+(rowCount-1)+'" class="form-select dest_warehouse select2"><option value="">Select Warehouse</option></select> \
                 <span class="text-danger error-msg dest_warehouse'+(rowCount-1)+'_error"></span> \
@@ -199,6 +203,9 @@ $(document).on('click', '#add-product', function() {
                 </div> \
                 <span class="text-danger error-msg dest_inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
+            <td class="ps-1"> \
+            <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  placeholder="Remarks" /> \
+             </td> \
             <td>'+btn+'</td> \
             </tr>');
 
@@ -208,7 +215,7 @@ $(document).on('click', '#add-product', function() {
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
-   
+
     $('#show-items').modal('hide');
 });
 
@@ -243,7 +250,7 @@ $(document).on('click', '.split-product', function(e) {
 
     e.preventDefault();
     var id=$(this).data('id');
- 
+
     var thisRow = $( this ).closest( 'tr' )[0];
     value = $(thisRow).find( '.new_inv_qty' ).val();
     var rem  = value % 2;
@@ -253,16 +260,16 @@ $(document).on('click', '.split-product', function(e) {
     if(rem != 0 ) {
         parent_val = (value / 2) + (rem/2);
         second_val = (value / 2) - (rem/2);
-    } 
+    }
 
     $(thisRow).find( '.new_inv_qty' ).val(parent_val);
     $( thisRow ).clone().insertAfter( thisRow )
-        .find( '.new_inv_qty' ).val(second_val); 
+        .find( '.new_inv_qty' ).val(second_val);
 });
 
 $(document).on('click', '.submit-open', function (e) {
     e.preventDefault();
-   
+
     var form_data = new FormData(document.getElementById("submit-transfer"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'open');
@@ -273,7 +280,7 @@ $(document).on('click', '.submit-open', function (e) {
 
 $(document).on('click', '.submit-posted', function (e) {
     e.preventDefault();
-   
+
     var form_data = new FormData(document.getElementById("submit-transfer"));
     form_data.append("_token", $('input[name=_token]').val());
     form_data.append("status", 'posted');
@@ -316,14 +323,14 @@ function _submitData(form_data) {
 							window.location = BASEURL+'stock/transfer/'+data.id+'/edit';
 						}, 300);
                     } else {
-                        toastr.success(data.message); 
+                        toastr.success(data.message);
                         setTimeout(function () {
 							window.location = BASEURL+'stock/transfer';
 						}, 300);
                     }
                 } else {
                     // alert('test');
-                    toastr.error(data.message,'Error on saving'); 
+                    toastr.error(data.message,'Error on saving');
 
                     if(data.error_msg) {
                         $.each(data.error_msg, function(prefix, val) {

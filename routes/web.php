@@ -91,6 +91,8 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/getProductAttribute', [App\Http\Controllers\SettingsController::class, 'getProductAttribute']);
     Route::get('/getLevel', [App\Http\Controllers\SettingsController::class, 'getLevel']);
     Route::get('/getStorageLocationId', [App\Http\Controllers\SettingsController::class, 'getStorageLocation']);
+    Route::get('/itemType', [App\Http\Controllers\SettingsController::class, 'getItemType']);
+
 
     Route::get('/masterfile', [App\Http\Controllers\SettingsController::class, 'getMasterfileData']);
     Route::get('/newLocation/{warehouse_id}', [App\Http\Controllers\SettingsController::class, 'getNewLocation']);

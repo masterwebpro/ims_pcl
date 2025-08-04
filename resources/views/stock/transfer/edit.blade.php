@@ -172,15 +172,16 @@
                                         <tr class="table-active">
                                             <th scope="col" class="text-center align-middle" rowspan="2">#</th>
                                             <th scope="col" class="text-center" rowspan="2" valign="middle">Product Details</th>
-                                            <th rowspan="2" class="text-center" valign="middle">Item Type</th>
-                                            <th colspan="3" class="text-center">Source Location</th>
-                                            <th colspan="3" class="text-center">Destination Location</th>
+                                            <th colspan="4" class="text-center">Source Location</th>
+                                            <th colspan="4" class="text-center">Destination Location</th>
+                                            <th rowspan="2" class="text-center" valign="middle">Remarks</th>
                                             <th rowspan="2" class="text-center" valign="middle">Action</th>
-                                        </tr>
                                         <tr class="table-active text-center" >
+                                            <th>Item Type</th>
                                             <th>Warehouse</th>
                                             <th>Location</th>
                                             <th>Inv</th>
+                                            <th>Item Type</th>
                                             <th>Warehouse</th>
                                             <th>Location</th>
                                             <th>Inv</th>
@@ -226,6 +227,15 @@
                                                 </div>
                                                 <span class="text-danger error-msg old_inv_qty0_error"></span>
                                             </td>
+                                            <td>
+                                                <select name="dest_item_type[]"  style="width: 120px;"  id="dest_item_type_<?=($i)?>" class="form-select" style="width: 120px;">
+                                                    <option value="">Item Type</option>
+                                                    @foreach ($item_type as $item)
+                                                        <option value="{{ $item->code }}" <?=($item->code == $dtl->dest_item_type) ? 'selected' : '' ?>>{{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger error-msg dest_item_type<?=($i)?>_error"></span>
+                                            </td>
                                             <td class="text-center ps-1 fs-13">
                                                 <input type="hidden"  class="form-control destWarehouseId" data-id="{{$dtl->id}}" id="{{$dtl->id}}" name="destWarehouseId[]" value="{{$dtl->dest_warehouse_id}}">
                                                 <select style="width: 150px;" name="dest_warehouse[]" data-id="{{$dtl->id}}" id="dest_warehouse_{{$dtl->id}}" class="form-select dest_warehouse select2">
@@ -250,6 +260,9 @@
                                                     <span class="input-group-text">{{$dtl->dest_uom->code}}</span>
                                                 </div>
                                                 <span class="text-danger error-msg dest_inv_qty0_error"></span>
+                                            </td>
+                                            <td class="ps-1">
+                                                <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]" value="{{ $dtl->remarks }}" placeholder="Remarks" />
                                             </td>
                                             <td>
                                                 <div class="text-center">
