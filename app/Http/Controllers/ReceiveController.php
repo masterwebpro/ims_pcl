@@ -19,6 +19,7 @@ use App\Models\Supplier;
 use App\Models\UOM;
 use App\Models\TruckType;
 use App\Models\AuditTrail;
+use App\Models\ItemType;
 
 use DataTables;
 
@@ -88,6 +89,7 @@ class ReceiveController extends Controller
         $warehouse_list = Warehouse::all();
 
         $uom = UOM::all();
+        $item_type = ItemType::all();
 
         return view('receive/create', [
             'client_list'=>$client_list,
@@ -95,7 +97,8 @@ class ReceiveController extends Controller
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
-            'uom'=>$uom
+            'uom'=>$uom,
+            'item_type' => $item_type
         ]);
     }
 
@@ -363,6 +366,7 @@ class ReceiveController extends Controller
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
+        $item_type = ItemType::all();
 
         return view('receive/view', [
             'rcv'=>$rcv,
@@ -371,6 +375,7 @@ class ReceiveController extends Controller
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
+            'item_type' => $item_type,
             'uom_list'=>$uom_list]);
     }
 
@@ -392,7 +397,7 @@ class ReceiveController extends Controller
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
-
+        $item_type = ItemType::all();
         return view('receive/edit', [
             'rcv'=>$rcv,
             'client_list'=>$client_list,
@@ -400,6 +405,7 @@ class ReceiveController extends Controller
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
+            'item_type' => $item_type,
             'uom_list'=>$uom_list]);
     }
 

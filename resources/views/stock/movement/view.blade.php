@@ -62,7 +62,7 @@
                                     <p class="fw-medium mb-2" id="billing-name">
                                         <input type="hidden" name="company_id" id="company_id" value="<?=$mv_hdr->company_id?>" />
                                         <select class="form-select select" disabled required="required" id="company" name="company">
-                                            <option value="">Company Client</option>                                                            
+                                            <option value="">Company Client</option>
                                             <? foreach($client_list as $client) : ?>
                                                 <option value="<?=$client->id?>" <?=($client->id == $mv_hdr->company_id) ? 'selected': ''; ?> ><?=$client->client_name?></option>
                                             <? endforeach;?>
@@ -76,7 +76,7 @@
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$mv_hdr->store_id?>" />
                                         <select class="form-select select" disabled required="required" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>                                                            
+                                            <option value="">Select Store/Warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -87,7 +87,7 @@
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <input type="hidden" name="warehouse_id" id='warehouse_id' value="<?=$mv_hdr->warehouse_id?>" />
                                         <select class="form-select select" disabled required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>                                                            
+                                            <option value="">Select warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
@@ -114,7 +114,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="po_num" name="po_num" value="" placeholder="PO Number">
                                         <span class="text-danger error-msg po_num_error"></span>
@@ -132,15 +132,15 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-12 mt-3 d-none">
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>                                                            
+                                            <option value="">Select warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </div>
@@ -167,21 +167,23 @@
                             </div>
                             <div class="card-body p-4">
                                 <!-- ITEMS -->
-                                 
-                                
+
+
                                 <div class="table-responsive">
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="text-center align-middle" rowspan="2">#</th>
                                                 <th scope="col" class="text-center" rowspan="2" valign="middle">Product Details</th>
-                                                <th rowspan="2" class="text-center" valign="middle">Item Type</th>
-                                                <th colspan="2" class="text-center">Old Location</th>
-                                                <th colspan="2" class="text-center">Target Location</th>
+                                                <th colspan="3" class="text-center">Old Location</th>
+                                                <th colspan="3" class="text-center">Target Location</th>
+                                                <th rowspan="2" class="text-center" valign="middle">Remarks</th>
                                             </tr>
                                             <tr class="table-active text-center" >
+                                                <th>Item Type</th>
                                                 <th>Location</th>
                                                 <th >Inv</th>
+                                                <th>Item Type</th>
                                                 <th>Location</th>
                                                 <th>Inv</th>
                                             </tr>
@@ -212,6 +214,12 @@
                                                             <span class="text-danger error-msg old_inv_qty<?=($x)?>_error"></span>
                                                         </td>
                                                         <td>
+                                                            <select name="new_item_type[]" disabled id="new_item_type_<?=($x)?>" class="form-select disabled" style="width: 120px;">
+                                                                <?=$stock->getNewItemType($dtl->new_item_type);?>
+                                                            </select>
+                                                            <span class="text-danger error-msg new_item_type<?=($x)?>_error"></span>
+                                                        </td>
+                                                        <td>
                                                             <select name="new_location[]" disabled id="new_location_<?=($x)?>" class="form-select disabled" style="width: 120px;">
                                                                 <?=$stock->getNewLocation($mv_hdr->warehouse_id, $dtl->new_storage_location_id);?>
                                                             </select>
@@ -225,12 +233,14 @@
                                                             </div>
                                                             <span class="text-danger error-msg new_inv_qty<?=($x)?>_error"></span>
                                                         </td>
-                                                  
+                                                        <td class="ps-1">
+                                                            <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  disabled value="{{ $dtl->remarks }}" placeholder="Remarks" />
+                                                        </td>
                                                     </tr>
                                                     <?$x++?>
 
                                                 <? endforeach;?>
-                                            
+
                                             <? else : ?>
                                                 <tr class="text-center" >
                                                     <td colspan="8">
@@ -239,13 +249,13 @@
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            
+
                                             <? endif;?>
                                         </tbody>
                                     </table>
-                                        
+
                                     <!--end table-->
-                                </div>                           
+                                </div>
                             </div>
                             <!--end card-body-->
                         </div>

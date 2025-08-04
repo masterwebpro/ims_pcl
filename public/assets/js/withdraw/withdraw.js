@@ -2,7 +2,7 @@ var filterParams = {
     comparator: (filterLocalDateAtMidnight, cellValue) => {
         var dateAsString = cellValue;
         if (dateAsString == null) return -1;
-        
+
         var dateAsString = moment(cellValue).format('DD/MM/YYYY');
 
         var dateParts = dateAsString.split("/");
@@ -29,12 +29,12 @@ const columnDefs = [
         checkboxSelection: true, // Checkbox in each row
         filter: false,
         sort: false,
-    },  
+    },
     { field: 'master_id', headerName: "Master Id", hide:true},
     { field: 'brand_name', headerName: "Brand", filter: 'agSetColumnFilter',suppressMenu: true },
     { field: 'product_code', headerName: "Product Code", filter: 'agTextColumnFilter'},
     { field: 'product_name', headerName: "Product Name", filter: 'agTextColumnFilter'},
-    
+
     { field: 'item_type', headerName: "Item Type", hide:true, filter: 'agSetColumnFilter',},
     { field: 'inv_qty', headerName: "Stocks", filter: 'agTextColumnFilter', cellClass: 'text-end',valueFormatter: function (params) {
         if(params.value != null) {
@@ -42,13 +42,13 @@ const columnDefs = [
         } else {
             return '';
         }
-        
+
     }, },
     { field: 'ui_code', headerName: "Unit", filter: 'agSetColumnFilter',},
     { field: 'location', headerName: "Location"},
     { field: 'warehouse_name', headerName: "Warehouse"},
     // { field: 'email_address', headerName: "Layer"},
-    
+
     { field: 'received_date', headerName: "Date Recieved", filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
         valueFormatter: function (params) {
             if(params.value != null) {
@@ -56,11 +56,13 @@ const columnDefs = [
             } else {
                 return '-';
             }
-            
+
         },
     },
-    
+
     { field: 'lot_no', headerName: "Lot No", filter: 'agTextColumnFilter', },
+    { field: 'item_type', headerName: "Item Type", filter: 'agTextColumnFilter', },
+    { field: 'remarks', headerName: "Remarks", filter: 'agTextColumnFilter', },
     { field: 'expiry_date', headerName: "Expiry date", hide:true, filter: 'agDateColumnFilter', cellClass: 'text-center', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
         valueFormatter: function (params) {
             if(params.value != null) {
@@ -68,7 +70,7 @@ const columnDefs = [
             } else {
                 return '-';
             }
-            
+
         },
     },
     { field: 'manufacture_date', headerName: "Mfg Date",  hide:true, cellClass: 'text-center', filter: 'agDateColumnFilter', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
@@ -78,9 +80,9 @@ const columnDefs = [
             } else {
                 return '-';
             }
-            
+
         },
-    }, 
+    },
 ];
 
 let gridApi;
@@ -91,7 +93,7 @@ const gridOptions = {
         type: 'fitCellContents'
     },
     defaultColDef: {
-    
+
         filter: true,
         floatingFilter: true,
         enableCellChangeFlash: true,
@@ -195,7 +197,7 @@ function loadData() {
 
     var master_id = $("input[name='master_id[]']")
               .map(function(){return $(this).val();}).get();
-   
+
     $.ajax({
         type: 'POST',
         url: url,
@@ -219,7 +221,7 @@ function loadData() {
             gridApi.setGridOption('rowData', data)
             // gridApi.setPinnedBottomRowData(getPinnedBottom(data));
             gridApi.hideOverlay();
-           
+
         },
         statusCode: {
             200: function() {

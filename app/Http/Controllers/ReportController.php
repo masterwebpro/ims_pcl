@@ -28,6 +28,7 @@ use App\Models\DispatchHdr;
 use App\Models\MasterdataModel;
 use App\Models\OrderType;
 use App\Models\WdHdr;
+use App\Models\ItemType;
 use DataTables;
 
 use Illuminate\Support\Facades\Auth;
@@ -47,11 +48,12 @@ class ReportController extends Controller
         $supplier_list = Supplier::all();
         // $client_list = Client::where('is_enabled', '1')->get();
         $client_list = Client::where('client_type','O')->where('is_enabled', '1')->get();
-
+        $item_type = ItemType::all();
         return view('report/stock_ledger', [
             'request'=>$request,
             'supplier_list'=>$supplier_list,
             'client_list'=>$client_list,
+            'item_type'=>$item_type,
         ]);
     }
 
@@ -64,7 +66,7 @@ class ReportController extends Controller
             'client'=>'required',
             'store'=>'required',
             'product_id' => 'required',
-            'item_type' => 'required',
+            // 'item_type' => 'required',
             'date_range' => 'required',
         ], ['*'=>'This field is required' ]);
 
@@ -292,6 +294,7 @@ class ReportController extends Controller
         return view('report/inventory', [
             'client_list'=>$client_list,
             'request'=>$request,
+            'item_type' => ItemType::all()
         ]);
     }
 

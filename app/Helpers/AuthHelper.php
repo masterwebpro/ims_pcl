@@ -212,6 +212,7 @@ function _stockInMasterData($masterfile) {
                 ->update([
                     'inv_qty' => DB::raw('inv_qty + '.$params['inv_qty']),
                     'whse_qty' => DB::raw('whse_qty + '.$params['whse_qty']),
+                    'remarks' => isset($params['remarks']) ? $params['remarks'] : null
                 ]);
 
         } else {
@@ -232,7 +233,8 @@ function _stockInMasterData($masterfile) {
                 // 'lot_no'=>isset($params['lot_no']) ? $params['lot_no'] : null,
                 // 'received_date'=>isset($params['received_date']) ? $params['received_date'] : null,
                 // 'manufacture_date'=>isset($params['manufacture_date']) ? $params['manufacture_date'] : null,
-                'rcv_dtl_id'=>isset($params['rcv_dtl_id']) ? $params['rcv_dtl_id'] : null
+                'rcv_dtl_id'=>isset($params['rcv_dtl_id']) ? $params['rcv_dtl_id'] : null,
+                'remarks'=>isset($params['remarks']) ? $params['remarks'] : null
             );
         }
     }
@@ -243,7 +245,6 @@ function _stockInMasterData($masterfile) {
 }
 
 function _stockOutMasterData($masterfile) {
-
     foreach($masterfile as $key => $params) {
         $masterfile_id = _has_masterfile($params);
 
@@ -286,12 +287,14 @@ function _stockOutMasterData($masterfile) {
 
             $record = $updateData->first();
             //update MASTERDATA
-            DB::table('masterdata')
-                ->where('id', $record->id)
-                ->update([
-                    'inv_qty' => DB::raw('inv_qty - '.$params['inv_qty']),
-                    'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty'])
-                ]);
+            if($record) {
+                DB::table('masterdata')
+                    ->where('id', $record->id)
+                    ->update([
+                        'inv_qty' => DB::raw('inv_qty - '.$params['inv_qty']),
+                        'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty'])
+                    ]);
+            }
         }
     }
 }
@@ -492,4 +495,14 @@ function getStorageLocation($location_id) {
 }
 function _version() {
     return "v-240901-1.0";
+}
+
+function getItemType($code) {
+    $item_type = DB::table('item_type')->where('code', $code)->first();
+
+    if ($item_type) {
+        return $item_type->name;
+    } else {
+        return '';
+    }
 }

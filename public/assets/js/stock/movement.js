@@ -200,6 +200,7 @@ $(document).on('click', '#add-product', function() {
     if(data.length > 0) {
         for(x=0; x<data.length; x++) {
             var new_location = getNewLocation(warehouse_id);
+            var item_type = getItemType(data[x].item_type);
             var rowCount = ($('#product-list tr').length) - 1;
             var idx = rowCount - 3;
             var btn = '<div class="text-center">';
@@ -233,6 +234,9 @@ $(document).on('click', '#add-product', function() {
                 </div> \
                 <span class="text-danger error-msg old_inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
+            <td class="text-start ps-1"><select style="width: 100px;" name="new_item_type[]" id="new_item_type_'+(rowCount-1)+'" data-id="'+data[x].item_type+'" class="form-select select2">'+item_type+'</select> \
+                <span class="text-danger error-msg new_item_type'+(rowCount-1)+'_error"></span> \
+            </td> \
             <td class="text-start ps-1"><select style="width: 100px;" name="new_location[]" id="new_location_'+(rowCount-1)+'" class="form-select select2">'+new_location+'</select> \
                 <span class="text-danger error-msg new_location'+(rowCount-1)+'_error"></span> \
             </td> \
@@ -244,6 +248,9 @@ $(document).on('click', '#add-product', function() {
                 </div> \
                 <span class="text-danger error-msg new_inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
+            <td class="ps-1"> \
+            <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  placeholder="Remarks" /> \
+             </td> \
             <td>'+btn+'</td> \
             </tr>');
 

@@ -9,6 +9,7 @@ use App\Models\SeriesModel;
 use App\Models\AuditTrail;
 use App\Models\MasterfileModel;
 use App\Models\Products;
+use App\Models\ItemType;
 
 use App\Http\Controllers\SettingsController;
 
@@ -59,12 +60,14 @@ class StockMovementController extends Controller
         //get rack and layer
         $locations = (new SettingsController)->getLocationWarehouse($warehouse);
 
+        $item_type = ItemType::all();
         return view('stock/movement/create', [
             'client_list'=>$client_list,
             'warehouse_id' =>$warehouse? $warehouse : '',
             'store_id'=> $store? $store : '',
             'company_id'=> $company? $company : '',
             'locations'=> $locations,
+            'item_type' => $item_type
         ]);
     }
 
@@ -79,6 +82,7 @@ class StockMovementController extends Controller
             'old_location.*' => 'required',
             'old_inv_qty.*' => 'required',
             'old_inv_uom.*' => 'required',
+            'new_item_type.*' => 'required',
             'new_location.*' => 'required',
             'new_inv_qty.*' => 'required|required_with:old_inv_qty.*|numeric|min:1|lte:old_inv_qty.*',
             'new_inv_uom.*' => 'required',
@@ -91,6 +95,7 @@ class StockMovementController extends Controller
             'item_type.*'=>'Item type is required',
             'old_location.*' => 'Old Location is required',
             'old_inv_uom.*' => 'Inv Qty is required',
+            'new_item_type.*'=>'New Item type is required',
             'new_location.*' => 'New Location is required',
             'new_inv_qty.*' => 'Insufficient Qty',
             'new_inv_uom.*' => 'Inv UOM required'
@@ -183,13 +188,14 @@ class StockMovementController extends Controller
                     'old_whse_qty'=>$request->old_inv_qty[$x],
                     'old_whse_uom'=>$request->old_inv_uom[$x],
                     'new_storage_location_id'=>$request->new_location[$x],
-                    'new_item_type'=>$request->item_type[$x],
+                    'new_item_type'=>$request->new_item_type[$x],
                     'new_inv_qty'=>$request->new_inv_qty[$x],
                     'new_inv_uom'=>$request->new_inv_uom[$x],
                     'new_whse_qty'=>$request->new_inv_qty[$x],
                     'new_whse_uom'=>$request->new_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                     'master_id'=>$request->master_id[$x],
+                    'remarks'=>$request->item_remarks[$x],
                     // 'ref1_no'=>$request->ref1_no[$x],
                     // 'ref1_type'=>$request->ref1_type[$x],
                 );
@@ -206,7 +212,7 @@ class StockMovementController extends Controller
                     'warehouse_id'=>$request->warehouse_id,
                     'storage_location_id'=>$request->new_location[$x],
                     'product_id'=>$request->product_id[$x],
-                    'item_type'=>$request->item_type[$x],
+                    'item_type'=>$request->new_item_type[$x],
                     'trans_type'=>'SM',
                     'status'=>'X',
                     'inv_qty'=>$request->new_inv_qty[$x],
@@ -253,7 +259,7 @@ class StockMovementController extends Controller
                     'whse_qty'=>($request->new_inv_qty[$x]),
                     'whse_uom'=>$request->new_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
-                    'master_id'=>$request->master_id[$x],
+                    'master_id'=>$request->master_id[$x]
                     // 'expiry_date'=>$request->expiry_date,
                     // 'lot_no'=>$request->lot_no,
                     // 'received_date'=>date("Y-m-d", strtotime($request->date_received)),
@@ -266,13 +272,14 @@ class StockMovementController extends Controller
                     'warehouse_id'=>$request->warehouse_id,
                     'product_id'=>$request->product_id[$x],
                     'storage_location_id'=>$request->new_location[$x],
-                    'item_type'=>$request->item_type[$x],
+                    'item_type'=>$request->new_item_type[$x],
                     'inv_qty'=>($request->new_inv_qty[$x]),
                     'inv_uom'=>$request->new_inv_uom[$x],
                     'whse_qty'=>($request->new_inv_qty[$x]),
                     'whse_uom'=>$request->new_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                     'master_id'=>$request->master_id[$x],
+                    'remarks'=>$request->item_remarks[$x]
                 );
             }
 
@@ -320,6 +327,7 @@ class StockMovementController extends Controller
         }
         catch(\Throwable $e)
         {
+            throw $e;
             return response()->json([
                 'success'  => false,
                 'message' => 'Unable to process request. Please try again.',
@@ -336,11 +344,13 @@ class StockMovementController extends Controller
         $mv_dtl = MvDtl::select('*')->where('ref_no', $mv_hdr->ref_no)->get();
 
         $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
+        $item_type = ItemType::all();
         return view('stock/movement/view', [
             'client_list'=>$client_list,
             'mv_hdr'=> $mv_hdr,
             'mv_dtl'=> $mv_dtl,
             'location'=>$location,
+            'item_type' => $item_type
         ]);
     }
 
@@ -350,13 +360,14 @@ class StockMovementController extends Controller
         $client_list = Client::where('is_enabled', '1')->get();
 
         $mv_dtl = MvDtl::select('*')->where('ref_no', $mv_hdr->ref_no)->get();
-
+        $item_type = ItemType::all();
         $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
         return view('stock/movement/edit', [
             'client_list'=>$client_list,
             'mv_hdr'=> $mv_hdr,
             'mv_dtl'=> $mv_dtl,
             'location'=>$location,
+            'item_type' => $item_type
         ]);
     }
 
@@ -425,6 +436,18 @@ class StockMovementController extends Controller
         foreach ($location_list as $loc) {
             $sel = ($loc->storage_location_id == $storage_id) ? 'selected' : '';
             $html .= "<option $sel value='".$loc->storage_location_id."'>".$loc->location."</option>";
+        }
+        return $html;
+    }
+
+    public function getNewItemType($code) {
+
+        $item_type = \App\Models\ItemType::select('code','name')->get();
+
+        $html = '<option value="">New Item Type</option>';
+        foreach ($item_type as $type) {
+            $sel = ($type->code == $code) ? 'selected' : '';
+            $html .= "<option $sel value='".$type->code."'>".$type->name."</option>";
         }
         return $html;
     }
