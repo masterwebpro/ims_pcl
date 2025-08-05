@@ -194,6 +194,7 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                             table += "<td class='text-center'>"+(item.lot_no ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.remarks ?? '')+"</td>";
                         table += '</tr>';
                     });
 

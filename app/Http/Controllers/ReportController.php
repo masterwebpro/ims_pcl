@@ -299,7 +299,7 @@ class ReportController extends Controller
     }
 
     public function getInventoryReport(Request $request) {
-        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
+        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code','masterdata.remarks', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterdata.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterdata.company_id')
@@ -308,10 +308,11 @@ class ReportController extends Controller
             ->leftJoin('uom as uw', 'uw.uom_id', '=', 'masterdata.whse_uom')
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterdata.inv_uom')
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
-            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date')
+            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date','masterdata.remarks')
             ->having('inv_qty',  '>', 0)
             ->orderBy('product_name')
-            ->orderBy('sl.location');
+            ->orderBy('sl.location')
+            ->orderBy('masterdata.remarks');
 
         if($request->has('client')  && $request->client !='')
             $rcv->where('masterdata.customer_id', $request->client);
@@ -356,12 +357,13 @@ class ReportController extends Controller
     public function getWithdrawalDetailed(Request $request)
     {
         ob_start();
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no')
+        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no','md.remarks')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
                 ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
+                ->leftJoin('masterdata as md', 'md.id', '=', 'wd.master_id')
                 ->where('wd_hdr.status','posted');
 
         if($request->has('wd_no') && $request->wd_no !='')
@@ -373,8 +375,8 @@ class ReportController extends Controller
         if($request->has('store')  && $request->store !='')
             $wd->where('wd_hdr.store_id', $request->store);
 
-        if($request->has('warehouse')  && $request->warehouse !='')
-            $wd->where('wd_hdr.warehouse_id', $request->warehouse);
+        // if($request->has('warehouse')  && $request->warehouse !='')
+        //     $wd->where('wd_hdr.warehouse_id', $request->warehouse);
 
         if($request->has('product_code')  && $request->product_code !='')
             $wd->where('p.product_code', $request->product_code);
