@@ -146,6 +146,7 @@
                                     <th class="fw-medium text-center">Lot No</th>
                                     <th class="fw-medium text-center">Expiry Date</th>
                                     <th class="fw-medium text-center">Mfg. Date</th>
+                                    <th class="fw-medium text-center">Remarks</th>
                                 </tr>
                             </thead>
 
