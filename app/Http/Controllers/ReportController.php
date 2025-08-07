@@ -357,13 +357,13 @@ class ReportController extends Controller
     public function getWithdrawalDetailed(Request $request)
     {
         ob_start();
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no','md.remarks')
+        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','wd.id as wd_dtl_id', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no','md.remarks','dd.qty')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
-                ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
                 ->leftJoin('masterdata as md', 'md.id', '=', 'wd.master_id')
+                ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
                 ->where('wd_hdr.status','posted');
 
         if($request->has('wd_no') && $request->wd_no !='')
@@ -391,9 +391,11 @@ class ReportController extends Controller
             $wd->whereBetween('withdraw_date', [$from, $to]);
         }
 
-        if($request->has('product_name')  && $request->product_name !='')
+        if($request->has('product_name')  && $request->product_name !=''){
             $wd->where('p.product_name','LIKE','%'.$request->product_name.'%');
+        }
 
+        $wd->groupBy('wd_hdr.wd_no', 'wd_hdr.withdraw_date', 'wd.product_id', 'dd.dispatch_no');
         $result = $wd->get();
 
         return response()->json([
