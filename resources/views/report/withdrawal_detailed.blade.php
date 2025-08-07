@@ -132,21 +132,26 @@
                         <table id="item_list" style="font-size: 12px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
                             <thead  class="table-light">
                                 <tr>
-                                    <th class="fw-medium text-center">Date Withdraw</th>
-                                    <th class="fw-medium text-center">Reference No</th>
-                                    <th class="fw-medium text-center">Dispatch No</th>
-                                    <th class="fw-medium text-center">Order No</th>
-                                    <th class="fw-medium text-center">Order Type</th>
-                                    <th class="fw-medium text-center">DR No</th>
-                                    <th class="fw-medium text-center">Sales Invoice</th>
-                                    <th class="fw-medium text-center">PO No</th>
-                                    <th class="fw-medium text-center">Product Code</th>
-                                    <th class="fw-medium text-center">Product Description</th>
+                                    <th class="fw-medium text-center" rowspan="2">Date Withdraw</th>
+                                    <th class="fw-medium text-center" rowspan="2">Reference No</th>
+                                    <th class="fw-medium text-center" rowspan="2">Dispatch No</th>
+                                    <th class="fw-medium text-center" rowspan="2">Order No</th>
+                                    <th class="fw-medium text-center" rowspan="2">Order Type</th>
+                                    <th class="fw-medium text-center" rowspan="2">DR No</th>
+                                    <th class="fw-medium text-center" rowspan="2">Sales Invoice</th>
+                                    <th class="fw-medium text-center" rowspan="2">PO No</th>
+                                    <th class="fw-medium text-center" rowspan="2">Product Code</th>
+                                    <th class="fw-medium text-center" rowspan="2">Product Description</th>
+                                    <th class="fw-medium text-center">Withdrawal</th>
+                                    <th class="fw-medium text-center">Dispatch</th>
+                                    <th class="fw-medium text-center" rowspan="2">Lot No</th>
+                                    <th class="fw-medium text-center" rowspan="2">Expiry Date</th>
+                                    <th class="fw-medium text-center" rowspan="2">Mfg. Date</th>
+                                    <th class="fw-medium text-center" rowspan="2">Remarks</th>
+                                </tr>
+                                <tr>
                                     <th class="fw-medium text-center" width="110px;">Inv / UOM</th>
-                                    <th class="fw-medium text-center">Lot No</th>
-                                    <th class="fw-medium text-center">Expiry Date</th>
-                                    <th class="fw-medium text-center">Mfg. Date</th>
-                                    <th class="fw-medium text-center">Remarks</th>
+                                    <th class="fw-medium text-center" width="110px;">Inv / UOM</th>
                                 </tr>
                             </thead>
 
