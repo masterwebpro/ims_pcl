@@ -256,11 +256,24 @@ $(document).on('click', '#add-product', function() {
 
             toastr.success(data[x].product_name + ' successfully added');
         }
+        totalFooter();
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
 
     $('#show-items').modal('hide');
+});
+
+function totalFooter(){
+    var total = 0;
+    $("#product-list tbody tr").each(function () {
+        total += parseFloat($(this).find("input[name='new_inv_qty[]']").val());
+    });
+    $("#new_total").text(total.toFixed(2));
+}
+
+$(document).on('blur', '.new_inv_qty', function() {
+    totalFooter();
 });
 
 $(document).on('click', '.submit-open', function (e) {

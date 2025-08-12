@@ -197,7 +197,7 @@ $(document).on('click', '#add-product', function() {
             </td> \
             <td class="text-start ps-1"> \
                 <div class="input-group"  style="width: 140px;"> \
-                    <input type="text" class="form-control new_inv_qty numeric transfer_item" name="dest_inv_qty[]" data-id="'+data[x].product_id+'" id="dest_inv_qty_'+(rowCount-1)+'" value="'+data[x].inv_qty+'"> \
+                    <input type="text" class="form-control dest_inv_qty numeric transfer_item" name="dest_inv_qty[]" data-id="'+data[x].product_id+'" id="dest_inv_qty_'+(rowCount-1)+'" value="'+data[x].inv_qty+'"> \
                     <input type="hidden" readonly class="form-control" name="dest_inv_uom[]" data-id="'+data[x].product_id+'" id="dest_inv_uom_'+(rowCount-1)+'" value="'+data[x].i_uom_id+'"> \
                     <span class="input-group-text">'+data[x].i_code+'</span> \
                 </div> \
@@ -212,12 +212,26 @@ $(document).on('click', '#add-product', function() {
             toastr.success(data[x].product_name + ' successfully added');
             // $('.select2').select2();
         }
+        totalFooter();
     }
 
     $('#show-items-list tbody tr').removeClass('selected')
 
     $('#show-items').modal('hide');
 });
+
+function totalFooter(){
+    var total = 0;
+    $("#product-list tbody tr").each(function () {
+        total += parseFloat($(this).find("input[name='dest_inv_qty[]']").val());
+    });
+    $("#new_total").text(total.toFixed(2));
+}
+
+$(document).on('blur', '.dest_inv_qty', function() {
+    totalFooter();
+});
+
 
 $(document).on('change', '.dest_warehouse', function(){
     var id = $(this).data('id');

@@ -220,7 +220,16 @@
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
-                                            <? if($mv_dtl) :  $x=0?>
+                                            <? if($mv_dtl) :
+                                            $x=0;
+                                            $groupedTotals = $mv_dtl->groupBy(function($item) {
+                                                return $item->master_id . '-' . $item->product_id;
+                                            })->map(function($group) {
+                                                return [
+                                                    'old_total' => $group->first()->old_inv_qty,
+                                                ];
+                                            });
+                                            ?>
                                                 <? foreach($mv_dtl as $dtl) : ?>
                                                     <tr class="" id="product_<?=$x?>" >
                                                         <td>
@@ -294,6 +303,15 @@
 
                                             <? endif;?>
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="4" class="text-end">Total</td>
+                                                <td class="text-center" id="total"><?=($mv_dtl) ? number_format($groupedTotals->sum('old_total'),2) : 0?></td>
+                                                <td colspan="2"></td>
+                                                <td class="text-center" id="new_total"><?=($mv_dtl) ? number_format($mv_dtl->sum('new_inv_qty'),2) : 0?></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
 
                                     <!--end table-->

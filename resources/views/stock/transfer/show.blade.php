@@ -144,8 +144,13 @@
                                     <tbody id="newlink">
                                         <?
                                         $i=1;
-
-                                        // dd($transfer_dtl);
+                                        $groupedTotals = $transfer_dtl->groupBy(function($item) {
+                                            return $item->master_id . '-' . $item->product_id;
+                                        })->map(function($group) {
+                                            return [
+                                                'old_total' => $group->first()->source_inv_qty,
+                                            ];
+                                        });
                                         foreach($transfer_dtl as $dtl) : ?>
                                         <tr id="R{{$i}}">
                                             <td class="text-start">
@@ -209,6 +214,15 @@
                                         </tr>
                                         <? $i++; endforeach; ?>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5" class="text-end">Total</td>
+                                            <td class="text-center" id="total"><?=($transfer_dtl) ? number_format($groupedTotals->sum('old_total'),2) : 0?></td>
+                                            <td colspan="3"></td>
+                                            <td class="text-center" id="new_total"><?=($transfer_dtl) ? number_format($transfer_dtl->sum('dest_inv_qty'),2) : 0?></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
                                     </table>
 
                                 <!--end table-->
