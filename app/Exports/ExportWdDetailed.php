@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 use App\Models\WdHdr;
-
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -21,7 +21,7 @@ class ExportWdDetailed implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $wd = WdHdr::select('wd_hdr.withdraw_date','wd_hdr.wd_no', 'dd.dispatch_no', 'wd_hdr.order_no','wd_hdr.order_type','wd_hdr.dr_no','wd_hdr.sales_invoice','wd_hdr.po_num', 'p.product_code', 'p.product_name', 'wd.inv_qty', 'ui.code as ui_code','dd.qty',  'rd.lot_no', 'rd.expiry_date','rd.manufacture_date','md.remarks')
+        $wd = WdHdr::select('wd_hdr.withdraw_date','wd_hdr.wd_no', 'dd.dispatch_no', 'wd_hdr.order_no','wd_hdr.order_type','wd_hdr.dr_no','wd_hdr.sales_invoice','wd_hdr.po_num', 'p.product_code', 'p.product_name', DB::raw('sum(wd.inv_qty) as inv_qty'), 'ui.code as ui_code',DB::raw('sum(dd.qty) as qty'),  'rd.lot_no', 'rd.expiry_date','rd.manufacture_date','md.remarks')
             ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
             ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
@@ -60,7 +60,7 @@ class ExportWdDetailed implements FromCollection, WithHeadings
             $wd->where('p.product_name','LIKE','%'.$this->request->product_name.'%');
         }
 
-        $wd->groupBy('wd_hdr.wd_no', 'wd_hdr.withdraw_date', 'wd.product_id', 'dd.dispatch_no');
+        $wd->groupBy('wd_hdr.wd_no', 'wd_hdr.withdraw_date', 'wd.product_id', 'wd.master_id', 'dd.dispatch_no');
 
         return $wd->get();
     }
