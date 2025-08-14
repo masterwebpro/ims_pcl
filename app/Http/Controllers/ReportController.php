@@ -357,7 +357,7 @@ class ReportController extends Controller
     public function getWithdrawalDetailed(Request $request)
     {
         ob_start();
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','wd.id as wd_dtl_id', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no','md.remarks','dd.qty')
+        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*',DB::raw('sum(wd.inv_qty) as inv_qty'),'wd.id as wd_dtl_id', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no','md.remarks',DB::raw('sum(dd.qty) as qty'))
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
@@ -395,7 +395,7 @@ class ReportController extends Controller
             $wd->where('p.product_name','LIKE','%'.$request->product_name.'%');
         }
 
-        $wd->groupBy('wd_hdr.wd_no', 'wd_hdr.withdraw_date', 'wd.product_id', 'dd.dispatch_no');
+        $wd->groupBy('wd_hdr.wd_no', 'wd_hdr.withdraw_date', 'wd.product_id','wd.master_id', 'dd.dispatch_no');
         $result = $wd->get();
 
         return response()->json([

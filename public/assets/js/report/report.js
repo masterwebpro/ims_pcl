@@ -191,7 +191,7 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                             table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
                             table += "<td class='text-center text-nowrap'>"+item.inv_qty+" / "+item.ui_code+"</td>";
-                            table += "<td class='text-center text-nowrap'>"+item.qty+" / "+item.ui_code+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+((item.qty) ?? 0)+" / "+item.ui_code+"</td>";
                             table += "<td class='text-center'>"+(item.lot_no ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
