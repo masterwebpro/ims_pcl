@@ -299,8 +299,10 @@ class ReportController extends Controller
     }
 
     public function getInventoryReport(Request $request) {
-        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code','masterdata.remarks', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
+        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name','sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code','masterdata.remarks', 'b.brand_name', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+            ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+            ->leftJoin('brands as b', 'b.brand_id', '=', 'cb.brand_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterdata.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterdata.company_id')
             ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
@@ -308,7 +310,7 @@ class ReportController extends Controller
             ->leftJoin('uom as uw', 'uw.uom_id', '=', 'masterdata.whse_uom')
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterdata.inv_uom')
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
-            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date','masterdata.remarks')
+            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date','masterdata.remarks','b.brand_name')
             ->having('inv_qty',  '>', 0)
             ->orderBy('product_name')
             ->orderBy('sl.location')

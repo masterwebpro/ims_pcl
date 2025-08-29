@@ -108,6 +108,7 @@ $(document).on('click', '.submit-inventory', function(e) {
                             table += "<td width='120px;'>"+i+"</td>";
                             table += "<td width='120px;'>"+item.store_name+"</td>";
                             table += "<td width='120px;'>"+item.warehouse_name+"</td>";
+                            table += "<td class='text-center'>"+item.brand_name+"</td>";
                             table += "<td class='text-center'>"+sap_code+"</td>";
                             table += "<td class='text-center'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
