@@ -98,6 +98,7 @@
                 <th scope="col">Unit</th>
                 <th scope="col">Warehouse</th>
                 <th scope="col">Location</th>
+                <th scope="col">Remarks</th>
             </tr>
         </thead>
         <tbody>
@@ -128,6 +129,9 @@
                     <td class=" ps-1">
                         <?=isset($item->master->location) ? $item->master->location : ""?>
                     </td>
+                    <td class=" ps-1">
+                        <?=isset($item->master->remarks) ? $item->master->remarks : ""?>
+                    </td>
                 </tr>
                 @endforeach
                 <tr id="product_{{$item->product_id}}">
@@ -143,7 +147,7 @@
                         @endphp
                         {{ number_format($totalInvQty,0) }}
                     </td>
-                    <td class="ps-1" colspan="3">
+                    <td class="ps-1" colspan="4">
                     </td>
                 </tr>
             @else
