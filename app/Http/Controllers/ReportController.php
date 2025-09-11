@@ -384,8 +384,8 @@ class ReportController extends Controller
                 'rd.expiry_date',
                 'dd.dispatch_no',
                 'md.remarks',
-                DB::raw('SUM(wd.inv_qty) as total_inv_qty'),
-                DB::raw('SUM(dd.qty) as total_qty')
+                DB::raw('SUM(wd.inv_qty) as inv_qty'),
+                DB::raw('SUM(dd.qty) as qty')
             )
             ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
