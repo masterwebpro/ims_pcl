@@ -53,7 +53,7 @@
                                     </p>
                                 </div>
                                 <!--end col-->
-                                <div class="col-lg-3 col-md-3">
+                                {{-- <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse</h6>
                                     <p class="mb-2" id="warehouse1">
                                         <input type="hidden" name="warehouse_id" id="warehouse_id" value="{{$request->warehouse}}">
@@ -62,14 +62,14 @@
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
-                                </div>
+                                </div> --}}
                                  <!--end col-->
-                            </div>
-                            <div class="row g-3 mt-1">
                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Date Withdraw <small>(YYY-mm-dd)</small></h6>
                                     <input type="text" class="form-control" name="withdraw_date" id="withdraw_date" value = "{{$request->withdraw_date}}" data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true" placeholder="Select date range">
                                 </div>
+                            </div>
+                            <div class="row g-3 mt-1">
                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Order Type </h6>
                                     <p class=" mb-2">
@@ -91,7 +91,7 @@
                                      </p>
                                 </div>
                                  <!--end col-->
-                                 <div class="col-lg-3 col-md-3">
+                                 <div class="col-lg-6 col-md-6">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Product Name</h6>
                                     <p class="fw-medium mb-2">
                                         <input type="text" class="form-control" placeholder="Product Name" name="product_name" id="product_name" value="{{$request->product_name}}">

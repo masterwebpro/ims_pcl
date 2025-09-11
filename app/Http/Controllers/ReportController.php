@@ -347,7 +347,7 @@ class ReportController extends Controller
 
     public function getWithdrawalDetailedIndex(Request $request)
     {
-        $client_list = Client::where('is_enabled', '1')->get();
+        $client_list = Client::where('is_enabled', '1')->where('client_type','C')->get();
         $order_type = OrderType::all();
         return view('report/withdrawal_detailed', [
             'client_list'=>$client_list,
@@ -359,56 +359,97 @@ class ReportController extends Controller
     public function getWithdrawalDetailed(Request $request)
     {
         ob_start();
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*',DB::raw('sum(wd.inv_qty) as inv_qty'),'wd.id as wd_dtl_id', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date','dd.dispatch_no','md.remarks',DB::raw('sum(dd.qty) as qty'))
-                ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
-                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
-                ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
-                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
-                ->leftJoin('masterdata as md', 'md.id', '=', 'wd.master_id')
-                ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
-                ->where('wd_hdr.status','posted');
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $wd = WdHdr::select(
+                'wd_hdr.wd_no',
+                'wd_hdr.withdraw_date',
+                'wd_hdr.customer_id',
+                'wd_hdr.store_id',
+                'wd_hdr.order_type',
+                'wd_hdr.dr_no',
+                'wd_hdr.order_no',
+                'wd_hdr.sales_invoice',
+                'wd_hdr.po_num',
+                'wd_hdr.order_no',
+                'p.product_code',
+                'p.product_name',
+                'wd.product_id',
+                'wd.master_id',
+                'wd.inv_qty',
+                'wd.id as wd_dtl_id',
+                'ui.code as ui_code',
+                'rd.lot_no',
+                'rd.manufacture_date',
+                'rd.expiry_date',
+                'dd.dispatch_no',
+                'md.remarks',
+                DB::raw('SUM(wd.inv_qty) as total_inv_qty'),
+                DB::raw('SUM(dd.qty) as total_qty')
+            )
+            ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+            ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
+            ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
+            ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+            ->leftJoin('masterdata as md', 'md.id', '=', 'wd.master_id')
+            ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
+            ->where('wd_hdr.status', 'posted')
+            ->when($request->filled('wd_no'), function ($q) use ($request) {
+                $q->where('wd_hdr.wd_no', $request->wd_no);
+            })
+            ->when($request->filled('client'), function ($q) use ($request) {
+                $q->where('wd_hdr.customer_id', $request->client);
+            })
+            ->when($request->filled('store'), function ($q) use ($request) {
+                $q->where('wd_hdr.store_id', $request->store);
+            })
+            ->when($request->filled('product_code'), function ($q) use ($request) {
+                $q->where('p.product_code', $request->product_code);
+            })
+            ->when($request->filled('order_type'), function ($q) use ($request) {
+                $q->where('wd_hdr.order_type', $request->order_type);
+            })
+            ->when($request->filled('withdraw_date'), function ($q) use ($request) {
+                $date_split = explode(" to ", $request->withdraw_date);
+                $from = date('Y-m-d', strtotime($date_split[0])) . " 00:00:00";
+                $to = date('Y-m-d', strtotime($date_split[1])) . " 23:59:59";
+                $q->whereBetween('wd_hdr.withdraw_date', [$from, $to]);
+            })
+            ->when($request->filled('product_name'), function ($q) use ($request) {
+                $q->where('p.product_name', 'LIKE', '%' . $request->product_name . '%');
+            })
+            ->groupBy(
+                'wd_hdr.wd_no',
+                'wd_hdr.withdraw_date',
+                'wd_hdr.customer_id',
+                'wd_hdr.store_id',
+                'wd_hdr.order_type',
+                'p.product_code',
+                'p.product_name',
+                'wd.product_id',
+                'wd.master_id',
+                'wd.id',
+                'ui.code',
+                'rd.lot_no',
+                'rd.manufacture_date',
+                'rd.expiry_date',
+                'dd.dispatch_no',
+                'md.remarks'
+            );
 
-        if($request->has('wd_no') && $request->wd_no !='')
-            $wd->where('wd_hdr.wd_no', $request->wd_no);
-
-        if($request->has('client')  && $request->client !='')
-            $wd->where('wd_hdr.customer_id', $request->client);
-
-        if($request->has('store')  && $request->store !='')
-            $wd->where('wd_hdr.store_id', $request->store);
-
-        // if($request->has('warehouse')  && $request->warehouse !='')
-        //     $wd->where('wd_hdr.warehouse_id', $request->warehouse);
-
-        if($request->has('product_code')  && $request->product_code !='')
-            $wd->where('p.product_code', $request->product_code);
-
-        if($request->has('order_type')  && $request->order_type !='')
-            $wd->where('wd_hdr.order_type', $request->order_type);
-
-        if($request->has('withdraw_date')  && $request->withdraw_date !='' ) {
-            $date_split = explode(" to ",$request->withdraw_date);
-            $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
-            $to = date('Y-m-d',  strtotime($date_split[1]))." 023:59:59";
-            $wd->whereBetween('withdraw_date', [$from, $to]);
-        }
-
-        if($request->has('product_name')  && $request->product_name !=''){
-            $wd->where('p.product_name','LIKE','%'.$request->product_name.'%');
-        }
-
-        $wd->groupBy('wd_hdr.wd_no', 'wd_hdr.withdraw_date', 'wd.product_id','wd.master_id', 'dd.dispatch_no');
         $result = $wd->get();
 
         return response()->json([
-            'success'  => true,
+            'success' => true,
             'message' => 'Record found!',
-            'data'    => $result,
+            'data' => $result,
         ]);
     }
 
     function exportWithdrawalDetailed(Request $request) {
         ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
 		$file_name = 'export-withdrawal-detailed'.date('Ymd-His').'.xls';
         return Excel::download(new ExportWdDetailed($request), $file_name);
     }
