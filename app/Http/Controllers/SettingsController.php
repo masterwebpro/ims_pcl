@@ -907,9 +907,9 @@ class SettingsController extends Controller
                 $data->where('masterdata.customer_id', $request->customer_id);
             }
 
-            if($request->store_id > 0){
-                $data->where('masterdata.store_id', $request->store_id);
-            }
+            // if($request->store_id > 0){
+            //     $data->where('masterdata.store_id', $request->store_id);
+            // }
 
             if($request->item_type){
                 $data->where('masterdata.item_type', $request->item_type);
