@@ -339,8 +339,8 @@ class ProductController extends Controller
         $data = [
             'header' => [
                 ['CUSTOMER CODE','SUPPLIER CODE','SAP CODE','PRODUCT CODE', 'PRODUCT NAME', 'CATEGORY','BRAND','UNIT'],
-                ['TAMSONS-C','TAMSONS-S', 'TNB224576', 'TNB224576','FUIDMASTER 507A Flush Valve 2', 'Tampsons','FLUIDMASTER','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
-                ['SOLID','T-ACCU-001', 'TNB224577', 'TNB224577','5 STAR PNEUMATIC DOOR CLOSER - BRONZE', 'SBMCI','BARS','PC','PLEASE REMOVE THIS ROW BEFORE UPLOAD'],
+                ['TAMSONS-C','TAMSONS-S', 'TNB224576', 'TNB224576','FUIDMASTER 507A Flush Valve 2', 'Tamsons','FLUIDMASTER','PC'],
+                ['SOLID','T-ACCU-001', 'TNB224577', 'TNB224577','5 STAR PNEUMATIC DOOR CLOSER - BRONZE', 'SBMCI','BARS','PC'],
             ],
             'customer' => $customer,
             'supplier' => $supplier,
@@ -384,10 +384,9 @@ class ProductController extends Controller
                                 $category   =     CategoryBrand::select('category_brands.*')
                                                 ->leftJoin('categories as cat','cat.category_id','category_brands.category_id')
                                                 ->leftJoin('brands as br','br.brand_id','category_brands.brand_id')
-                                                ->where('category_name',$prod_data[$i][5])
-                                                ->where('brand_name',$prod_data[$i][6])
+                                                ->where('cat.category_name',$prod_data[$i][5])
+                                                ->where('br.brand_name',$prod_data[$i][6])
                                                 ->first();
-
                                 $xdata[$i]['is_enabled'] = 1;
                                 $xdata[$i]['is_serialize'] = 0;
 
