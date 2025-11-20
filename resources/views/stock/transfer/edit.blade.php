@@ -67,6 +67,7 @@
 <!--end row-->
 
 <form name="submit-transfer" id="submit-transfer">
+    @csrf
     <div class="row">
         <div class="col-xxl-12">
             <div class="card">
