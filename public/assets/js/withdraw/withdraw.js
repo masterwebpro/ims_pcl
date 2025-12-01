@@ -46,6 +46,7 @@ const columnDefs = [
     }, },
     { field: 'ui_code', headerName: "Unit", filter: 'agSetColumnFilter',},
     { field: 'location', headerName: "Location"},
+    { field: 'remarks', headerName: "Remarks", filter: 'agTextColumnFilter', },
     { field: 'warehouse_name', headerName: "Warehouse"},
     // { field: 'email_address', headerName: "Layer"},
 
@@ -62,7 +63,6 @@ const columnDefs = [
 
     { field: 'lot_no', headerName: "Lot No", filter: 'agTextColumnFilter', },
     { field: 'item_type', headerName: "Item Type", filter: 'agTextColumnFilter', },
-    { field: 'remarks', headerName: "Remarks", filter: 'agTextColumnFilter', },
     { field: 'expiry_date', headerName: "Expiry date", hide:true, filter: 'agDateColumnFilter', cellClass: 'text-center', filterParams: filterParams,  suppressMenu: false, minWidth: 200,
         valueFormatter: function (params) {
             if(params.value != null) {
