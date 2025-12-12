@@ -118,6 +118,7 @@ e.preventDefault()
                 { data: 'w_code' },
                 { data: 'rcv_dtl_id', visible: false},
                 { data: 'master_id', visible: true},
+                { data: 'remarks', visible: true},
 
             ],
             "pageLength": 25,
@@ -204,7 +205,7 @@ $(document).on('click', '#add-product', function() {
                 <span class="text-danger error-msg dest_inv_qty'+(rowCount-1)+'_error"></span> \
             </td> \
             <td class="ps-1"> \
-            <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]"  placeholder="Remarks" /> \
+            <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]" value="'+data[x].remarks+'"  placeholder="Remarks" /> \
              </td> \
             <td>'+btn+'</td> \
             </tr>');

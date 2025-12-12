@@ -375,6 +375,7 @@
                                 <th>Whse Uom</th>
                                 <th class="d-none">Rcv DTL ID</th>
                                 <th >Master ID</th>
+                                <th >Remarks</th>
                                 <!-- <th>REF1</th>
                                 <th>REF1_type</th> -->
                             </tr>

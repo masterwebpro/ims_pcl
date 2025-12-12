@@ -29,6 +29,13 @@
                 <button type="button" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
             <? endif ;?>
         <? endif;?>
+        <? if (mod_access('transfer',  'edit', Auth::id())) : ?>
+            @if ($transfer_hdr->status == 'open')
+            <a href="{{ URL::to('stock/transfer') }}/<?=_encode($transfer_hdr->id);?>/edit" data-id="{{$transfer_hdr->id}} " class="btn btn-success btn-label rounded-pill"><i
+                        class="ri-pencil-line label-icon align-middle rounded-pill fs-16 me-2"></i>
+                    Edit</a>
+            @endif
+        <? endif ;?>
         <a href="{{ URL::to('stock/transfer') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
     </div>
     <!--end col-->
