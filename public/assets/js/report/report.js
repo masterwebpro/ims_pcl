@@ -182,6 +182,7 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                         table += '<tr>';
                             table += "<td width='120px;'>"+moment(new Date(item.withdraw_date)).format("DD MMM YYYY") +"</td>";
                             table += "<td width='120px;'>"+item.wd_no+"</td>";
+                            table += "<td width='120px;'>"+(item.dispatch_no ?? '')+"</td>";
                             table += "<td width='120px;'>"+item.order_no+"</td>";
                             table += "<td width='120px;'>"+item.order_type+"</td>";
                             table += "<td width='120px;'>"+item.dr_no+"</td>";
@@ -190,9 +191,11 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                             table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
                             table += "<td class='text-center text-nowrap'>"+item.inv_qty+" / "+item.ui_code+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+((item.qty) ?? 0)+" / "+item.ui_code+"</td>";
                             table += "<td class='text-center'>"+(item.lot_no ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.remarks ?? '')+"</td>";
                         table += '</tr>';
                     });
 
@@ -340,4 +343,93 @@ $(document).on('click', '.submit-audit-logs-xls', function (e) {
             name: 'Audit-Logs-Report'
         }
     });
+});
+
+
+$(document).on('click', '.submit-dispatch-search', function(e) {
+    e.preventDefault();
+    var dispatch_no = $('#dispatch_no').val();
+    var client = $('#client').val();
+    var store = $('#store').val();
+    var warehouse = $('#warehouse').val();
+    var dispatch_date = $('#dispatch_date').val();
+    var product_code = $('#product_code').val();
+    var product_name = $('#product_name').val();
+
+    $.ajax({
+        url: BASEURL + 'reports/get-dispatch-detailed',
+        method: 'get',
+        data: {
+            dispatch_no:dispatch_no,
+            client:client,
+            store:store,
+            dispatch_date:dispatch_date,
+            product_code:product_code,
+            product_name:product_name,
+        },
+        dataType: 'json',
+        beforeSend: function () {
+            $('#preloading').modal('show');
+            $('#submit-dispatch').find('span.error-msg').text('');
+        },
+        success: function (data) {
+            if($.isEmptyObject(data.errors)) {
+                if(data.success == true) {
+                    var results = data.data;
+                    var table = '';
+                    $('#load-search').removeClass('d-none');
+                    $('#load-data').addClass('d-none');
+                    $('#item_list tbody').html('');
+                    results.forEach(function(item) {
+                        //var date = moment();
+                        table += '<tr>';
+                            table += "<td width='120px;'>"+moment(new Date(item.dispatch_date)).format("DD MMM YYYY") +"</td>";
+                            table += "<td width='120px;'>"+item.dispatch_no+"</td>";
+                            table += "<td width='120px;'>"+(item.wd_no ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.plate_no ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.truck_type ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.trucker_name ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.seal_no ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.dispatch_by ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.driver ?? '') + ' / ' + (item.helper ?? '')  +"</td>";
+                            table += "<td width='120px;'>"+moment(new Date(item.start_picking_datetime)).format("DD MMM YYYY h:mm:ss a")+"</td>";
+                            table += "<td width='120px;'>"+moment(new Date(item.start_picking_datetime)).format("DD MMM YYYY h:mm:ss a")+"</td>";
+                            table += "<td width='120px;'>"+moment(new Date(item.arrival_datetime)).format("DD MMM YYYY h:mm:ss a")+"</td>";
+                            table += "<td width='120px;'>"+moment(new Date(item.start_datetime)).format("DD MMM YYYY h:mm:ss a")+"</td>";
+                            table += "<td width='120px;'>"+moment(new Date(item.finish_datetime)).format("DD MMM YYYY h:mm:ss a")+"</td>";
+                            table += "<td width='120px;'>"+moment(new Date(item.depart_datetime)).format("DD MMM YYYY h:mm:ss a")+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
+                            table += "<td class='text-left'>"+item.product_name+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+item.inv_qty+" / "+item.unit+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+((item.qty) ?? 0)+" / "+item.unit+"</td>";
+                            table += "<td class='text-center'>"+(item.order_no ?? '')+"</td>";
+                            table += "<td class='text-center'>"+moment(new Date(item.order_date)).format("DD MMM YYYY")+"</td>";
+                            table += "<td class='text-center'>"+(item.dr_no ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.name ?? '')+"</td>";
+                        table += '</tr>';
+                    });
+
+                    $('#item_list tbody').append(table);
+
+                } else {
+                    toastr.error(data.message,'Error on saving');
+                }
+            } else {
+                toastr.error('Some fields are required');
+            }
+        },
+        complete: function() {
+           $('#preloading').modal('hide');
+		}
+    });
+});
+
+$(document).on('click', '.submit-dispatch-xls', function(e) {
+    e.preventDefault();
+    var dispatch_no = $('#dispatch_no').val();
+    var client = $('#client').val();
+    var store = $('#store').val();
+    var dispatch_date = $('#dispatch_date').val();
+
+    window.location.href= BASEURL + 'reports/export-dispatch-detailed?dispatch_no='+dispatch_no+'&client='+client+'&store='+store+'&dispatch_date='+dispatch_date;
 });

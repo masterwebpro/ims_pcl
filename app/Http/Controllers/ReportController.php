@@ -23,11 +23,13 @@ use App\Exports\ExportInboundMonitoring;
 use App\Exports\ExportAging;
 use App\Exports\ExportAgingManufacturing;
 use App\Exports\ExportAnalysis;
+use App\Exports\ExportDispatchDetailed;
 use App\Models\DispatchDtl;
 use App\Models\DispatchHdr;
 use App\Models\MasterdataModel;
 use App\Models\OrderType;
 use App\Models\WdHdr;
+use App\Models\ItemType;
 use DataTables;
 
 use Illuminate\Support\Facades\Auth;
@@ -47,11 +49,12 @@ class ReportController extends Controller
         $supplier_list = Supplier::all();
         // $client_list = Client::where('is_enabled', '1')->get();
         $client_list = Client::where('client_type','O')->where('is_enabled', '1')->get();
-
+        $item_type = ItemType::all();
         return view('report/stock_ledger', [
             'request'=>$request,
             'supplier_list'=>$supplier_list,
             'client_list'=>$client_list,
+            'item_type'=>$item_type,
         ]);
     }
 
@@ -64,7 +67,7 @@ class ReportController extends Controller
             'client'=>'required',
             'store'=>'required',
             'product_id' => 'required',
-            'item_type' => 'required',
+            // 'item_type' => 'required',
             'date_range' => 'required',
         ], ['*'=>'This field is required' ]);
 
@@ -292,12 +295,15 @@ class ReportController extends Controller
         return view('report/inventory', [
             'client_list'=>$client_list,
             'request'=>$request,
+            'item_type' => ItemType::all()
         ]);
     }
 
     public function getInventoryReport(Request $request) {
-        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name',  'sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
+        $rcv = MasterdataModel::select('client_name', 'store_name', 'w.warehouse_name','sap_code',  'product_code', 'product_name',  'sl.location',  'masterdata.whse_uom', 'masterdata.inv_uom', 'masterdata.item_type',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date', 'uw.code as uw_code', 'ui.code as ui_code','masterdata.remarks', 'b.brand_name', DB::raw("SUM(masterdata.inv_qty) as inv_qty"), DB::raw("SUM(masterdata.whse_qty) as whse_qty"),DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"))
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
+            ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+            ->leftJoin('brands as b', 'b.brand_id', '=', 'cb.brand_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterdata.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterdata.company_id')
             ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
@@ -305,10 +311,11 @@ class ReportController extends Controller
             ->leftJoin('uom as uw', 'uw.uom_id', '=', 'masterdata.whse_uom')
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterdata.inv_uom')
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
-            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date')
+            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date','masterdata.remarks','b.brand_name')
             ->having('inv_qty',  '>', 0)
             ->orderBy('product_name')
-            ->orderBy('sl.location');
+            ->orderBy('sl.location')
+            ->orderBy('masterdata.remarks');
 
         if($request->has('client')  && $request->client !='')
             $rcv->where('masterdata.customer_id', $request->client);
@@ -341,7 +348,7 @@ class ReportController extends Controller
 
     public function getWithdrawalDetailedIndex(Request $request)
     {
-        $client_list = Client::where('is_enabled', '1')->get();
+        $client_list = Client::where('is_enabled', '1')->where('client_type','C')->get();
         $order_type = OrderType::all();
         return view('report/withdrawal_detailed', [
             'client_list'=>$client_list,
@@ -353,52 +360,97 @@ class ReportController extends Controller
     public function getWithdrawalDetailed(Request $request)
     {
         ob_start();
-        $wd = WdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*', 'ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
-                ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
-                ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
-                ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
-                ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
-                ->where('wd_hdr.status','posted');
-
-        if($request->has('wd_no') && $request->wd_no !='')
-            $wd->where('wd_hdr.wd_no', $request->wd_no);
-
-        if($request->has('client')  && $request->client !='')
-            $wd->where('wd_hdr.customer_id', $request->client);
-
-        if($request->has('store')  && $request->store !='')
-            $wd->where('wd_hdr.store_id', $request->store);
-
-        if($request->has('warehouse')  && $request->warehouse !='')
-            $wd->where('wd_hdr.warehouse_id', $request->warehouse);
-
-        if($request->has('product_code')  && $request->product_code !='')
-            $wd->where('p.product_code', $request->product_code);
-
-        if($request->has('order_type')  && $request->order_type !='')
-            $wd->where('wd_hdr.order_type', $request->order_type);
-
-        if($request->has('withdraw_date')  && $request->withdraw_date !='' ) {
-            $date_split = explode(" to ",$request->withdraw_date);
-            $from = date('Y-m-d', strtotime($date_split[0]))." 00:00:00";
-            $to = date('Y-m-d',  strtotime($date_split[1]))." 023:59:59";
-            $wd->whereBetween('withdraw_date', [$from, $to]);
-        }
-
-        if($request->has('product_name')  && $request->product_name !='')
-            $wd->where('p.product_name','LIKE','%'.$request->product_name.'%');
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $wd = WdHdr::select(
+                'wd_hdr.wd_no',
+                'wd_hdr.withdraw_date',
+                'wd_hdr.customer_id',
+                'wd_hdr.store_id',
+                'wd_hdr.order_type',
+                'wd_hdr.dr_no',
+                'wd_hdr.order_no',
+                'wd_hdr.sales_invoice',
+                'wd_hdr.po_num',
+                'wd_hdr.order_no',
+                'p.product_code',
+                'p.product_name',
+                'wd.product_id',
+                'wd.master_id',
+                'wd.inv_qty',
+                'wd.id as wd_dtl_id',
+                'ui.code as ui_code',
+                'rd.lot_no',
+                'rd.manufacture_date',
+                'rd.expiry_date',
+                'dd.dispatch_no',
+                'md.remarks',
+                DB::raw('SUM(wd.inv_qty) as inv_qty'),
+                DB::raw('SUM(dd.qty) as qty')
+            )
+            ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
+            ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
+            ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
+            ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+            ->leftJoin('masterdata as md', 'md.id', '=', 'wd.master_id')
+            ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
+            ->where('wd_hdr.status', 'posted')
+            ->when($request->filled('wd_no'), function ($q) use ($request) {
+                $q->where('wd_hdr.wd_no', $request->wd_no);
+            })
+            ->when($request->filled('client'), function ($q) use ($request) {
+                $q->where('wd_hdr.customer_id', $request->client);
+            })
+            ->when($request->filled('store'), function ($q) use ($request) {
+                $q->where('wd_hdr.store_id', $request->store);
+            })
+            ->when($request->filled('product_code'), function ($q) use ($request) {
+                $q->where('p.product_code', $request->product_code);
+            })
+            ->when($request->filled('order_type'), function ($q) use ($request) {
+                $q->where('wd_hdr.order_type', $request->order_type);
+            })
+            ->when($request->filled('withdraw_date'), function ($q) use ($request) {
+                $date_split = explode(" to ", $request->withdraw_date);
+                $from = date('Y-m-d', strtotime($date_split[0])) . " 00:00:00";
+                $to = date('Y-m-d', strtotime($date_split[1])) . " 23:59:59";
+                $q->whereBetween('wd_hdr.withdraw_date', [$from, $to]);
+            })
+            ->when($request->filled('product_name'), function ($q) use ($request) {
+                $q->where('p.product_name', 'LIKE', '%' . $request->product_name . '%');
+            })
+            ->groupBy(
+                'wd_hdr.wd_no',
+                'wd_hdr.withdraw_date',
+                'wd_hdr.customer_id',
+                'wd_hdr.store_id',
+                'wd_hdr.order_type',
+                'p.product_code',
+                'p.product_name',
+                'wd.product_id',
+                'wd.master_id',
+                'wd.id',
+                'ui.code',
+                'rd.lot_no',
+                'rd.manufacture_date',
+                'rd.expiry_date',
+                'dd.dispatch_no',
+                'md.remarks'
+            );
 
         $result = $wd->get();
 
         return response()->json([
-            'success'  => true,
+            'success' => true,
             'message' => 'Record found!',
-            'data'    => $result,
+            'data' => $result,
         ]);
     }
 
     function exportWithdrawalDetailed(Request $request) {
         ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
 		$file_name = 'export-withdrawal-detailed'.date('Ymd-His').'.xls';
         return Excel::download(new ExportWdDetailed($request), $file_name);
     }
@@ -407,11 +459,12 @@ class ReportController extends Controller
         ob_start();
         ini_set("memory_limit", "-1");
         set_time_limit(0);
-        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date')
+        $wd = wdHdr::select('wd_hdr.*', 'p.product_code', 'p.product_name','wd.*','ui.code as ui_code', 'rd.lot_no','rd.manufacture_date', 'rd.expiry_date', 'dd.dispatch_no')
                 ->leftJoin('wd_dtl as wd', 'wd.wd_no', '=', 'wd_hdr.wd_no')
                 ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
                 ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
                 ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+                ->leftJoin('dispatch_dtl as dd', 'dd.wd_dtl_id', '=', 'wd.id')
                 ->where('wd_hdr.status','posted');
 
         if($request->has('wd_no') && $request->wd_no !='')
@@ -1431,32 +1484,153 @@ class ReportController extends Controller
     function getMonthOfWeek($year,$workWeek){
         // Create a DateTime instance for the start of the year
         $startOfYear = new DateTime("{$year}-01-01");
-    
+
         // Modify the date to the start of the given work week
         $startOfYear->modify("+". ($workWeek - 1) . " weeks");
-    
+
         // Get the month name
         return $monthName = $startOfYear->format('F');
     }
-    
+
     function groupWeeksByMonth($year, $weekNumbers) {
         $groupedByMonth = [];
-    
+
         // Loop through each week number
         foreach ($weekNumbers as $weekNumber) {
             // Get the month name for the given week number
             $month = $this->getMonthOfWeek($year, $weekNumber);
-    
+
             // Group by month
             if (!isset($groupedByMonth[$month])) {
                 $groupedByMonth[$month] = [];
             }
-    
+
             // Add the week number to the corresponding month
             $groupedByMonth[$month][] = $weekNumber;
         }
-    
+
         return $groupedByMonth;
     }
-    
+
+    public function getDispatchDetailedIndex(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->where('client_type','C')->get();
+        $order_type = OrderType::all();
+        return view('report/dispatch_detailed', [
+            'client_list'=>$client_list,
+            'order_type'=>$order_type,
+            'request'=>$request,
+        ]);
+    }
+
+    public function getDispatchDetailed(Request $request)
+    {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $data_list = DispatchDtl::select(
+                'dh.dispatch_date',
+                'dh.truck_type',
+                'dh.trucker_name',
+                'wh.dr_no',
+                'dh.plate_no',
+                'dh.seal_no',
+                'dh.driver',
+                'dh.helper',
+                'wh.order_date',
+                'wh.sales_invoice',
+                'wh.order_no',
+                'wh.wd_no',
+                's.supplier_name',
+                'cat.category_name',
+                'p.product_code',
+                'p.product_name',
+                'dispatch_dtl.qty',
+                'wd.inv_qty',
+                'ui.code as unit',
+                'dispatch_dtl.dispatch_no',
+                'm.item_type',
+                'dh.start_picking_datetime',
+                'dh.finish_picking_datetime',
+                'dh.start_datetime',
+                'dh.finish_datetime',
+                'dh.depart_datetime',
+                'dh.arrival_datetime',
+                'u.name',
+                'dh.dispatch_by',
+                )
+        ->leftJoin('dispatch_hdr as dh', 'dh.dispatch_no', '=', 'dispatch_dtl.dispatch_no')
+        ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
+        ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'wd.wd_no')
+        ->leftJoin('masterdata as m', 'm.id', '=', 'wd.master_id')
+        ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'wd.rcv_dtl_id')
+        ->leftJoin('products as p', 'p.product_id', '=', 'wd.product_id')
+        ->leftJoin('suppliers as s', 's.id', '=', 'p.supplier_id')
+        ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
+        ->leftJoin('categories as cat', 'cat.category_id', '=', 'cb.category_id')
+        ->leftJoin('uom as ui', 'ui.uom_id', '=', 'wd.inv_uom')
+        ->leftJoin('users as u', 'u.id', '=', 'dh.created_by')
+        ->groupBy('dispatch_dtl.id')
+        ->orderBy('dh.dispatch_date','ASC')
+        ->where('dh.status','posted')
+            ->when($request->filled('dispatch_no'), function ($q) use ($request) {
+                $q->where('dh.dispatch_no', $request->dispatch_no);
+            })
+            // ->when($request->filled('client'), function ($q) use ($request) {
+            //     $q->where('wh.customer_id', $request->client);
+            // })
+            // ->when($request->filled('store'), function ($q) use ($request) {
+            //     $q->where('wh.store_id', $request->store);
+            // })
+            // ->when($request->filled('product_code'), function ($q) use ($request) {
+            //     $q->where('p.product_code', $request->product_code);
+            // })
+            // ->when($request->filled('order_type'), function ($q) use ($request) {
+            //     $q->where('wh.order_type', $request->order_type);
+            // })
+            ->when($request->filled('dispatch_date'), function ($q) use ($request) {
+                $date_split = explode(" to ", $request->dispatch_date);
+                $from = date('Y-m-d', strtotime($date_split[0])) . " 00:00:00";
+                $to = date('Y-m-d', strtotime($date_split[1])) . " 23:59:59";
+                $q->whereBetween('dh.dispatch_date', [$from, $to]);
+            })
+            // ->when($request->filled('product_name'), function ($q) use ($request) {
+            //     $q->where('p.product_name', 'LIKE', '%' . $request->product_name . '%');
+            // })
+            ->groupBy(
+                'dh.dispatch_date',
+                'dh.dispatch_no',
+                'wh.customer_id',
+                'wh.store_id',
+                'wh.order_type',
+                'p.product_code',
+                'p.product_name',
+                'wd.product_id',
+                'wd.master_id',
+                'dispatch_dtl.id',
+                'ui.code',
+                'rd.lot_no',
+                'rd.manufacture_date',
+                'rd.expiry_date',
+                'm.remarks'
+            );
+
+        $result = $data_list->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Record found!',
+            'data' => $result,
+        ]);
+    }
+
+    function exportDispatchDetailed(Request $request) {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+		$file_name = 'export-dispatch-detailed'.date('Ymd-His').'.xls';
+        return Excel::download(new ExportDispatchDetailed($request), $file_name);
+    }
+
+
 }
