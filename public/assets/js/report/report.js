@@ -332,3 +332,16 @@ $(document).on('click', '.submit-analysis-xls', function (e) {
         }
     });
 });
+
+$(document).on('click', '.submit-audit-logs-xls', function (e) {
+    let table = document.getElementsByTagName("table");
+    var dt = new Date();
+    var time = dt.getHours() + dt.getMinutes() + dt.getSeconds();
+
+    TableToExcel.convert(table[0], {
+        name: `Audit-Logs-Report`+time+`.xlsx`,
+        sheet: {
+            name: 'Audit-Logs-Report'
+        }
+    });
+});
