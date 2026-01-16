@@ -142,6 +142,13 @@
                                     <th class="fw-medium text-center">Lot No</th>
                                     <th class="fw-medium text-center">Expiry Date</th>
                                     <th class="fw-medium text-center">Mfg. Date</th>
+                                    <th class="fw-medium text-center">Plate No</th>
+                                    <th class="fw-medium text-center">Date Arrived</th>
+                                    <th class="fw-medium text-center">Start Unloading</th>
+                                    <th class="fw-medium text-center">Finish Unloading</th>
+                                    <th class="fw-medium text-center">Date Departed</th>
+                                    <th class="fw-medium text-center">Inspect Date</th>
+                                    <th class="fw-medium text-center">Inspect By</th>
                                 </tr>
                             </thead>
 

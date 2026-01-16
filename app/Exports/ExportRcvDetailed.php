@@ -19,7 +19,7 @@ class ExportRcvDetailed implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $rcv = RcvHdr::select('rcv_hdr.date_received','rcv_hdr.rcv_no', 'rcv_hdr.po_num', 'p.product_code', 'p.product_name','rd.item_type', 'rd.whse_qty','uw.code as uw_code', 'rd.inv_qty', 'ui.code as ui_code' ,'rd.lot_no', 'rd.expiry_date', 'rd.manufacture_date')
+        $rcv = RcvHdr::select('rcv_hdr.date_received','rcv_hdr.rcv_no', 'rcv_hdr.po_num', 'p.product_code', 'p.product_name','rd.item_type', 'rd.whse_qty','uw.code as uw_code', 'rd.inv_qty', 'ui.code as ui_code' ,'rd.lot_no', 'rd.expiry_date', 'rd.manufacture_date','rcv_hdr.plate_no', 'rcv_hdr.date_arrived', 'rcv_hdr.start_unloading', 'rcv_hdr.finish_unloading', 'rcv_hdr.date_departed', 'rcv_hdr.inspect_date', 'rcv_hdr.inspect_by')
             ->leftJoin('rcv_dtl as rd', 'rd.rcv_no', '=', 'rcv_hdr.rcv_no')
             ->leftJoin('products as p', 'p.product_id', '=', 'rd.product_id')
             ->leftJoin('uom as uw', 'uw.uom_id', '=', 'rd.whse_uom')
@@ -75,6 +75,13 @@ class ExportRcvDetailed implements FromCollection, WithHeadings
         'Lot No',
         'Exp. Date',
         'Mfg. Date',
+        'Plate No',
+        'Date Arrived',
+        'Start Unloading',
+        'Finish Unloading',
+        'Date Departed',
+        'Inspect Date',
+        'Inspect By'
        ];
 	}
 }
