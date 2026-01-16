@@ -177,15 +177,16 @@ function _stockInMasterData($masterfile) {
             ->where('company_id', $params['company_id'])
             ->where('store_id', $params['store_id'])
             ->where('warehouse_id', $params['warehouse_id'])
-            ->where('product_id', $params['product_id'])
-            ->where('inv_qty','>=',0);
+            ->where('product_id', $params['product_id']);
 
 
 
             if(isset($params['master_id'])) {
+                
                 $updateData->where('id', $params['master_id']);
 
             } else {
+                
                 if(isset($params['storage_location_id'])) {
                     $updateData->where('storage_location_id', $params['storage_location_id']);
                 } else {
@@ -212,7 +213,6 @@ function _stockInMasterData($masterfile) {
                 ->update([
                     'inv_qty' => DB::raw('inv_qty + '.$params['inv_qty']),
                     'whse_qty' => DB::raw('whse_qty + '.$params['whse_qty']),
-                    'remarks' => isset($params['remarks']) ? $params['remarks'] : null
                 ]);
 
         } else {
@@ -233,8 +233,7 @@ function _stockInMasterData($masterfile) {
                 // 'lot_no'=>isset($params['lot_no']) ? $params['lot_no'] : null,
                 // 'received_date'=>isset($params['received_date']) ? $params['received_date'] : null,
                 // 'manufacture_date'=>isset($params['manufacture_date']) ? $params['manufacture_date'] : null,
-                'rcv_dtl_id'=>isset($params['rcv_dtl_id']) ? $params['rcv_dtl_id'] : null,
-                'remarks'=>isset($params['remarks']) ? $params['remarks'] : null
+                'rcv_dtl_id'=>isset($params['rcv_dtl_id']) ? $params['rcv_dtl_id'] : null
             );
         }
     }
@@ -245,6 +244,7 @@ function _stockInMasterData($masterfile) {
 }
 
 function _stockOutMasterData($masterfile) {
+
     foreach($masterfile as $key => $params) {
         $masterfile_id = _has_masterfile($params);
 
@@ -255,15 +255,14 @@ function _stockOutMasterData($masterfile) {
                 ->where('company_id', $params['company_id'])
                 ->where('store_id', $params['store_id'])
                 ->where('warehouse_id', $params['warehouse_id'])
-                ->where('product_id', $params['product_id'])
-                ->where('inv_qty','>=',$params['inv_qty']);
+                ->where('product_id', $params['product_id']);
 
             if(isset($params['master_id'])) {
-
+                
                 $updateData->where('id', $params['master_id']);
 
             } else {
-
+                
                 if(isset($params['storage_location_id'])) {
                     $updateData->where('storage_location_id', $params['storage_location_id']);
                 } else {
@@ -273,7 +272,7 @@ function _stockOutMasterData($masterfile) {
                 if(isset($params['rcv_dtl_id']))
                 $updateData->where('rcv_dtl_id', $params['rcv_dtl_id']);
             }
-
+                
 
 
             // if(isset($params['lot_no']))
@@ -285,16 +284,21 @@ function _stockOutMasterData($masterfile) {
             // if(isset($params['manufacture_date']))
             //     $updateData->where('manufacture_date', $params['manufacture_date']);
 
+            
+
             $record = $updateData->first();
+
+            $update = array(
+
+            );
+
             //update MASTERDATA
-            if($record) {
-                DB::table('masterdata')
-                    ->where('id', $record->id)
-                    ->update([
-                        'inv_qty' => DB::raw('inv_qty - '.$params['inv_qty']),
-                        'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty'])
-                    ]);
-            }
+            DB::table('masterdata')
+                ->where('id', $record->id)
+                ->update([
+                    'inv_qty' => DB::raw('inv_qty - '.$params['inv_qty']),
+                    'whse_qty' => DB::raw('whse_qty - '.$params['whse_qty'])
+                ]);
         }
     }
 }
@@ -492,17 +496,4 @@ function getStorageLocation($location_id) {
     }
     return $storage_location;
 
-}
-function _version() {
-    return "v-240901-1.0";
-}
-
-function getItemType($code) {
-    $item_type = DB::table('item_type')->where('code', $code)->first();
-
-    if ($item_type) {
-        return $item_type->name;
-    } else {
-        return '';
-    }
 }

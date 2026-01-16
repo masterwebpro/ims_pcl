@@ -4,10 +4,10 @@
 @endsection
 @section('css')
     <!--datatable css-->
-    <!-- <link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" /> -->
+    <link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
     <!--datatable responsive css-->
-    <!-- <link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" /> -->
-    <!-- <link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" /> -->
+    <link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
     @component('components.breadcrumb')
@@ -46,7 +46,6 @@
                                     <? endif ;?>
                                 <? endif ;?>
                             <? endif;?>
-                            
                             <button type="button" class="generate-picklist  btn btn-danger btn-label rounded-pill"><i
                                     class="ri-file-pdf-line label-icon align-middle rounded-pill fs-16 me-2"></i>Picklist</button>
                             <? if(in_array($wd->status, array('posted', 'closed'))) : ?>
@@ -375,8 +374,8 @@
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
                                                     <th scope="col">Lot No.</th>
-                                                    <th scope="col" class=" d-none">Expiry Date</th>
-                                                    <th scope="col" class=" d-none">Mfg. Date</th>
+                                                    <th scope="col">Expiry Date</th>
+                                                    <th scope="col">Mfg. Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     <th scope="col" class="text-center">Action</th>
@@ -405,38 +404,38 @@
                                                             <b>{{$item->product->product_code}}</b><br/>
                                                             {{$item->product->product_name}}
                                                         </td>
-                                                        <td class="text-center ps-1 fs-14">
+                                                        <td class=" ps-1">
                                                             @php
                                                                 $type = (isset($item->master) && $item->master->item_type == 'good') ? 'bg-success' : 'bg-danger';
                                                             @endphp
                                                             <span class="badge {{$type}} text-capitalize">{{ isset($item->master) ? $item->master->item_type : ""}} </span>
                                                         </td>
-                                                        <td class=" ps-1 fs-14 text-center">
-                                                            {{ isset($item->receiving) ? date('d M Y', strtotime($item->receiving->received_date)) : '' }}
+                                                        <td class=" ps-1">
+                                                            {{ isset($item->receiving) ? date('M d, Y', strtotime($item->receiving->received_date)) : '' }}
                                                         </td>
-                                                        <td class="ps-1 fs-14 text-end">
-                                                            {{ ($item->master) ? number_format(($item->master->inv_qty - $item->master->reserve_qty),0,'.','') : ""}}
+                                                        <td class="ps-1 text-center">
+                                                            {{ ($item->master) ? number_format(($item->master->inv_qty - $item->master->reserve_qty),2) : ""}}
                                                         </td>
-                                                        <td class="ps-1 fs-14">
-                                                            <input type="text"  class="form-control inv_qty text-end numeric" name="inv_qty[]" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{number_format($item->inv_qty,0,'.','')}}" placeholder="Inv Qty" />
+                                                        <td class="ps-1">
+                                                            <input type="text"  class="form-control inv_qty numeric" name="inv_qty[]" data-id="{{$x}}" id="inv_qty_{{$x}}" value="{{$item->inv_qty}}" placeholder="Inv Qty" />
                                                             <span class="text-danger error-msg inv_qty{{$x}}_error"></span>
                                                         </td>
-                                                        <td class=" ps-1 fs-14">
+                                                        <td class=" ps-1">
                                                             {{ ($item->uom) ? $item->uom->code : ""}}
                                                         </td>
-                                                        <td class=" ps-1 fs-14">
+                                                        <td class=" ps-1">
                                                             {{ ($item->receiving) ? $item->receiving->lot_no : "" }}
                                                         </td>
-                                                        <td class=" ps-1 fs-14 d-none">
+                                                        <td class=" ps-1">
                                                             {{ ($item->receiving) ? $item->receiving->expiry_date : "" }}
                                                         </td>
-                                                        <td class=" ps-1 fs-14  d-none">
+                                                        <td class=" ps-1">
                                                             {{ ($item->receiving) ? $item->receiving->manufacture_date : "" }}
                                                         </td>
-                                                        <td class=" ps-1 fs-14">
+                                                        <td class=" ps-1">
                                                             {{ ($item->master) ? $item->master->warehouse_name : ""}}
                                                         </td>
-                                                        <td class=" ps-1 fs-14">
+                                                        <td class=" ps-1">
                                                             {{ ($item->master) ? $item->master->location  : ""}}
                                                         </td>
                                                         <td>
@@ -497,7 +496,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <!-- <div class="row g-3">
+                    <div class="row g-3">
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Product Code|Name|SKU</h6>
                             <p class="fw-medium" id="billing-name">
@@ -530,11 +529,9 @@
                                 <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
                             </p>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="table-responsive">
-                    @csrf
-                    <div id="myGrid" class="ag-theme-balham" style="height: 600px"></div>
-                    <!-- <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
+                    <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
                         <thead class="table-light">
                             <tr>
                                 <th>&nbsp;</th>
@@ -553,7 +550,7 @@
                         </thead>
                         <tbody>
                         </tbody>
-                    </table> -->
+                    </table>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -648,24 +645,16 @@
     </div>
 @endsection
 @section('script')
-
-    <script>
-        var page = 'edit';
-    </script>
-
     <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/cleave.js/cleave.js.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/moment/moment.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/masks/jquery.mask.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
-<!-- 
+
     <script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script> -->
-
-    <script src="{{ URL::asset('assets/js/ag_grid/ag-grid-enterprise.js') }}?v={{_version()}}"></script>
+    <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
 
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/js/withdraw/withdraw.js') }}"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 @endsection

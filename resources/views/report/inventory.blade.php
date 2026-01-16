@@ -68,7 +68,7 @@
                             </div>
                             <div class="row mt-1">
 
-                                 <div class="col-lg-6 col-md-6">
+                                 <div class="col-lg-4 col-md-4">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Products</h6>
                                     <p class=" mb-2">
                                         <input type="hidden" class="form-control" name="product_id" id="product_id">
@@ -78,21 +78,20 @@
                                 </div>
                                  <!--end col-->
 
-                                 <div class="col-lg-3 col-md-3">
+                                 <div class="col-lg-2 col-md-2">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Item Type</h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="item_type" name="item_type">
-                                            <option value="">Item Type</option>
-                                            @foreach ($item_type as $type)
-                                                <option value="{{ $type->code }}">{{ $type->name }}</option>
-                                            @endforeach
+                                            <option value="good">Good</option>
+                                            <option value="damage">Damage</option>
+                                            <option value="repair">Repair</option>
                                         </select>
                                         <span class="text-danger error-msg item_type_error"></span>
                                     </p>
                                 </div>
                                  <!--end col-->
 
-                                <div class="col-lg-3 col-md-3">
+                                <div class="col-lg-6 col-md-6">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">&nbsp;</h6>
                                     <a href="#" class="submit-inventory btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</a>
                                     <a href="#" class="submit-xls-inventory btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
@@ -125,7 +124,6 @@
                                     <th class="fw-medium text-center">#</th>
                                     <th class="fw-medium text-center">Site</th>
                                     <th class="fw-medium text-center">Warehouse</th>
-                                    <th class="fw-medium text-center">Brand</th>
                                     <th class="fw-medium text-center">Sap Code</th>
                                     <th class="fw-medium text-center">Product Code</th>
                                     <th class="fw-medium text-center">Product Name</th>
@@ -140,7 +138,6 @@
                                     <th class="fw-medium text-center">Inv UOM</th>
                                     <th class="fw-medium text-center">Reserve QTY</th>
                                     <th class="fw-medium text-center">Balance QTY</th>
-                                    <th class="fw-medium text-center">Remarks</th>
                                 </tr>
                             </thead>
                             <tbody>
