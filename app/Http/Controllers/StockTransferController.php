@@ -10,6 +10,7 @@ use App\Models\Warehouse;
 use App\Models\AuditTrail;
 use App\Models\MasterfileModel;
 use App\Models\Products;
+use App\Models\ItemType;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -78,6 +79,7 @@ class StockTransferController extends Controller
             'source_location.*' => 'required',
             'source_inv_qty.*' => 'required',
             'source_inv_uom.*' => 'required',
+            'dest_item_type.*' => 'required',
             'dest_warehouse.*' => 'required',
             'dest_location.*' => 'required',
             'dest_inv_qty.*' => 'required',
@@ -94,6 +96,7 @@ class StockTransferController extends Controller
             'source_location.*' => 'Source location is required',
             'source_inv_qty.*' => 'Source Inv qty is required',
             'source_inv_uom.*' => 'Source UOM is required',
+            'dest_item_type.*' => 'Dest Item type is required',
             'dest_warehouse.*' => 'Dest warehouse is required',
             'dest_location.*' => 'Dest Location is required',
             'dest_inv_qty.*' => 'Dest Inv qty required',
@@ -185,11 +188,12 @@ class StockTransferController extends Controller
                     'source_inv_uom'=>$request->source_inv_uom[$x],
                     'dest_warehouse_id'=>$request->dest_warehouse[$x],
                     'dest_storage_location_id'=>$request->dest_location[$x],
-                    'dest_item_type'=>$request->item_type[$x],
+                    'dest_item_type'=>$request->dest_item_type[$x],
                     'dest_inv_qty'=>$request->dest_inv_qty[$x],
                     'dest_inv_uom'=>$request->dest_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                     'master_id'=>$request->master_id[$x],
+                    'remarks'=>$request->item_remarks[$x]
                 );
 
                 //get company ID
@@ -212,7 +216,7 @@ class StockTransferController extends Controller
                     'warehouse_id'=>$request->dest_warehouse[$x],
                     'storage_location_id'=>$request->dest_location[$x],
                     'product_id'=>$request->product_id[$x],
-                    'item_type'=>$request->item_type[$x],
+                    'item_type'=>$request->dest_item_type[$x],
                     'trans_type'=>'ST',
                     'status'=>'X',
                     'inv_qty'=>$request->dest_inv_qty[$x],
@@ -258,6 +262,7 @@ class StockTransferController extends Controller
                     'whse_uom'=>$request->dest_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                     'master_id'=>$request->master_id[$x],
+                    'remarks'=>$request->item_remarks[$x]
                 );
 
                 $_stockInMasterdata[] = array(
@@ -267,16 +272,16 @@ class StockTransferController extends Controller
                     'warehouse_id'=>$request->dest_warehouse[$x],
                     'product_id'=>$request->product_id[$x],
                     'storage_location_id'=>$request->dest_location[$x],
-                    'item_type'=>$request->item_type[$x],
+                    'item_type'=>$request->dest_item_type[$x],
                     'inv_qty'=>($request->dest_inv_qty[$x]),
                     'inv_uom'=>$request->dest_inv_uom[$x],
                     'whse_qty'=>($request->dest_inv_qty[$x]),
                     'whse_uom'=>$request->dest_inv_uom[$x],
                     'rcv_dtl_id'=>$request->rcv_dtl_id[$x],
                     'master_id'=>$request->master_id[$x],
+                    'remarks'=>$request->item_remarks[$x]
                 );
             }
-
             $result= TransferDtl::where('ref_no',$ref_no)->delete();
             TransferDtl::insert($dtl);
 
@@ -341,11 +346,13 @@ class StockTransferController extends Controller
 
         // $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
 
+        $item_type = ItemType::all();
         return view('stock/transfer/show', [
             'client_list'=>$client_list,
             'transfer_hdr'=> $transfer_hdr,
             'transfer_dtl'=> $transfer_dtl,
             'warehouses'=>$warehouses,
+            'item_type' => $item_type
             // 'location'=>$location,
         ]);
     }
@@ -361,11 +368,13 @@ class StockTransferController extends Controller
 
         // $location = (new SettingsController)->getLocationPerWarehouse($mv_hdr->warehouse_id);
 
+        $item_type = ItemType::all();
         return view('stock/transfer/edit', [
             'client_list'=>$client_list,
             'transfer_hdr'=> $transfer_hdr,
             'transfer_dtl'=> $transfer_dtl,
             'warehouses'=>$warehouses,
+            'item_type' => $item_type
             // 'location'=>$location,
         ]);
     }
@@ -499,11 +508,11 @@ class StockTransferController extends Controller
                     'store_id'=>$warehouse->store_id,
                     'warehouse_id'=>$transfer->dest_warehouse_id,
                     'product_id'=>$transfer->product_id,
-                    'storage_location_id'=>($transfer->dest_storage_location_id == 0 || $transfer->dest_storage_location_id == 'null') ? NULL : $transfer->dest_storage_location_id,
+                    'storage_location_id'=> $transfer->dest_storage_location_id,
                     'item_type'=>$transfer->dest_item_type,
-                    'inv_qty'=>($transfer->dest_inv_qty),
+                    'inv_qty'=> $transfer->dest_inv_qty,
                     'inv_uom'=>$transfer->dest_inv_uom,
-                    'whse_qty'=>($transfer->dest_inv_qty),
+                    'whse_qty'=>$transfer->dest_inv_qty,
                     'whse_uom'=>$transfer->dest_inv_uom,
                     'rcv_dtl_id'=>$transfer->rcv_dtl_id,
                 );
@@ -518,13 +527,13 @@ class StockTransferController extends Controller
                     'storage_location_id'=>$transfer->source_storage_location_id,
                     'item_type'=>$transfer->dest_item_type,
                     'inv_qty'=>$transfer->dest_inv_qty,
-                    'inv_uom'=>$request->dest_inv_uom,
+                    'inv_uom'=>$transfer->dest_inv_uom,
                     'whse_qty'=>$transfer->dest_inv_qty,
-                    'whse_uom'=>$request->dest_inv_uom,
+                    'whse_uom'=>$transfer->dest_inv_uom,
                     'rcv_dtl_id'=>$transfer->rcv_dtl_id,
+                    'master_id' => $transfer->master_id
                 );
             }
-
             $audit_trail[] = [
                 'control_no' => $ref_no,
                 'type' => 'ST',
@@ -567,6 +576,7 @@ class StockTransferController extends Controller
         }
         catch(\Throwable $e)
         {
+            DB::rollBack();
             return response()->json([
                 'success'  => false,
                 'message' => 'Unable to process request. Please try again.',

@@ -228,29 +228,6 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="start_unloading" class="col-lg-4 col-form-label">Start Unloading</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" disabled  name="start_unloading" id="start_unloading" value="<?=isset($rcv->start_unloading) ? date("m/d/Y H:i A", strtotime($rcv->start_unloading)) : '' ?>" placeholder="DD-MM-YYYY">
-                                        <span class="text-danger error-msg start_unloading_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="row">
-                                    <label for="finish_unloading" class="col-lg-4  col-form-label">Finish Unloading</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" disabled  name="finish_unloading" id="finish_unloading" value="<?=isset($rcv->finish_unloading) ? date("m/d/Y H:i A", strtotime($rcv->finish_unloading)) : '' ?>" placeholder="hh:mm" id="cleave-time">
-                                        <span class="text-danger error-msg finish_unloading_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 mt-3">
-                        <div class="row ms-3 mx-3">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control"  disabled name="date_departed" id="date_departed" value="<?=isset($rcv->date_departed) ? date("Y-m-d", strtotime($rcv->date_departed)) : '' ?>" placeholder="DD-MM-YYYY">
@@ -333,13 +310,15 @@
                             </div>
                             <div class="card-body p-4">
                                 <!-- ITEMS -->
-                                <div class="col-md-12 mb-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
-                                        <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
-                                        <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
+                                @if (!in_array($rcv->status, array('posted')))
+                                    <div class="col-md-12 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
+                                            <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
+                                            <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
 
                                 <div class="table-responsive">
                                     <table class="table table-nowrap" id="product-list">
@@ -356,6 +335,11 @@
                                                 <th scope="col" >Lot/Batch</th>
                                                 <th scope="col" >Expiry Date</th>
                                                 <th scope="col" >Remarks</th>
+                                                @if (in_array($rcv->status, array('posted')))
+                                                    @if (mod_access('rcv',  'modify', Auth::id()))
+                                                        <th scope="col" class="text-center" style="width: 50px;">Action</th>
+                                                    @endif
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
@@ -409,17 +393,24 @@
                                                         </select>
                                                     </td>
                                                     <td class="ps-1">
-                                                        <input type="date" class="form-control" disabled style="width: 150px;" name="manufacture_date[]" value="{{$item->manufacture_date}}" placeholder="Manufacturing Date" />
+                                                        <input type="date" class="form-control manufacture_date" {{ mod_access('rcv', 'modify', Auth::id()) ? '' : 'disabled' }} style="width: 150px;" id="manufacture_date_{{$x}}" name="manufacture_date[]" value="{{$item->manufacture_date}}" placeholder="Manufacturing Date" />
                                                     </td>
                                                     <td class="ps-1">
-                                                        <input type="text" class="form-control" disabled style="width: 150px;" name="lot_no[]" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />
+                                                        <input type="text" class="form-control lot_no" {{ mod_access('rcv', 'modify', Auth::id()) ? '' : 'disabled' }} style="width: 150px;" id="lot_no_{{$x}}" value="{{$item->lot_no}}" placeholder="Lot/Batch No" />
                                                     </td>
                                                     <td class="ps-1">
-                                                        <input type="date" class="form-control " disabled name="expiry_date[]"  value="{{$item->expiry_date}}" placeholder="Expiry Date" />
+                                                        <input type="date" class="form-control expiry_date" {{ mod_access('rcv', 'modify', Auth::id()) ? '' : 'disabled' }} name="expiry_date[]" id="expiry_date_{{$x}}" value="{{$item->expiry_date}}" placeholder="Expiry Date" />
                                                     </td>
                                                     <td class="ps-1">
-                                                        <input type="text" class="form-control" disabled style="width: 150px;" name="item_remarks[]"  value="{{$item->remarks}}" placeholder="Remarks" />
+                                                        <input type="text" class="form-control item_remarks" {{ mod_access('rcv', 'modify', Auth::id()) ? '' : 'disabled' }} style="width: 150px;" name="item_remarks[]" id="item_remarks_{{$x}}"  value="{{$item->remarks}}" placeholder="Remarks" />
                                                     </td>
+                                                    @if (in_array($rcv->status, array('posted')))
+                                                    @if (mod_access('rcv',  'modify', Auth::id()))
+                                                        <td class="ps-1 text-center">
+                                                            <button type="button" class="btn btn-info btn-sm update-item" id="item-{{ $item->id }}" data-id="{{$item->id}}" data-row-id={{ $x }} title="Update Item"><i class="ri-edit-line"></i> Modify</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
                                                 </tr>
                                                 @endforeach
                                             @else

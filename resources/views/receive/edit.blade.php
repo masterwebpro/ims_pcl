@@ -48,7 +48,7 @@
 
                         <? if(in_array($rcv->status, array('posted', 'closed'))) : ?>
                             <? if (mod_access('rcv',  'unpost', Auth::id())) : ?>
-                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-po"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
+                                <button type="button" data-status="unpost" class="btn btn-info btn-label rounded-pill submit-unpost"><i class=" ri-lock-unlock-line label-icon align-middle rounded-pill fs-16 me-2"></i> Unpost</button>
                             <? endif ;?>
                         <? endif;?>
 
@@ -212,7 +212,6 @@
                         </div>
                     </div>
 
-
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
@@ -235,44 +234,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-12 mt-3">
-                        <div class="row ms-3 mx-3">
-                            <div class="col-lg-6 col-md-6">
-                                 <div class="row">
-                                        <label for="colFormLabel" class="col-lg-4 col-form-label">Start Unloading<span
-                                                class="text-danger">*</span></label>
-                                        <div class="col-lg-8">
-                                                <div class="input-group">
-                                                    <input type="date" class="form-control" id="start_unloading_date"
-                                                        name="start_unloading_date" placeholder="Start Date" value="<?=date('Y-m-d', strtotime($rcv->start_unloading));?>">
-                                                    <input type="time" class="form-control" id="start_unloading_time"
-                                                        name="start_unloading_time" placeholder="Start Time" value="{{ date('H:i', strtotime($rcv->start_unloading)) }}">
-                                                </div>
-                                                <span class="text-danger error-msg start_unloading_date_error"></span>
-                                                <span class="text-danger error-msg start_unloading_time_error"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="row">
-                                    <label for="colFormLabel" class="col-form-label col-lg-4">Finish Unloading<span
-                                            class="text-danger">*</span></label>
-                                        <div class="col-lg-8">
-                                            <div class="input-group">
-                                                <input type="date" class="form-control" id="finish_unloading_date"
-                                                    name="finish_unloading_date" placeholder="Finish Date" value="<?=date('Y-m-d', strtotime($rcv->finish_unloading));?>">
-                                                <input type="time" class="form-control" id="finish_unloading_time"
-                                                    name="finish_unloading_time" placeholder="Finish Time" value="<?=date('H:i', strtotime($rcv->finish_unloading))?>">
-                                            </div>
-                                            <span class="text-danger error-msg finish_unloading_date_error"></span>
-                                            <span class="text-danger error-msg finish_unloading_time_error"></span>
-                                    </div>
-                                    </div>
-                                </div>
-                        </div>
-                    </div>
-
 
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
@@ -374,7 +335,7 @@
                                             <tr class="table-active">
                                                 <th style="width: 10px;" class="d-none">#</th>
                                                 <th style="width: 300px;">Product</th>
-                                                <th >Classfication</th>
+                                                <th style="width: 50px;">Classfication</th>
                                                 <th >WHSE Qty</th>
                                                 <th tyle="width: 50px;">WHSE UOM</th>
                                                 <th >Inv Qty</th>
@@ -409,10 +370,11 @@
                                                         <input type="hidden" name="product_code[]" value="{{$item->product->product_code}}" />
                                                     </td>
                                                     <td class="text-start">
-                                                        <select name="item_type[]" id="item_type_{{$x}}" class="uom uom_select form-select">
-                                                            <option class="fs-8" value="good"    <?=($item->item_type == 'good')? 'selected':''?>>Good</option>
-                                                            <option class="fs-8" value="damage" <?=($item->item_type == 'damage')? 'selected':''?>>Damage</option>
-                                                            <option class="fs-8" value="repair" <?=($item->item_type == 'repair')? 'selected':''?>>Repair</option>
+                                                        <select name="item_type[]" id="item_type_{{$x}}" class="item_type item_type_select form-select">
+                                                            <option value="">Select Item Type</option>
+                                                            @foreach($item_type as $type)
+                                                                <option class="fs-8" value="{{$type->code}}" <?=($item->item_type == $type->code) ? 'selected': ''; ?> >{{$type->name}}</option>
+                                                            @endforeach
                                                         </select>
                                                         <input type="hidden" name="available_qty[]" readonly name="available_qty[]" id="available_qty_{{$item->product_id}}" value="{{$item->inv_qty}}" />
                                                     </td>

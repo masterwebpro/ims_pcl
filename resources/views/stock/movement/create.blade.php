@@ -37,6 +37,7 @@
 <!--end row-->
 
 <form name="submit-receive" id="submit-receive">
+    @csrf
     <div class="row justify-content-center">
         <div class="col-xxl-12">
             <div class="card">
@@ -51,7 +52,7 @@
                                         <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>" />
                                         <input type="hidden" name="company" id="company" value="<?=$company_id?>" />
                                         <select class="form-select select" disabled>
-                                            <option value="">Select Company</option>                                                            
+                                            <option value="">Select Company</option>
                                             <? foreach($client_list as $company) : ?>
                                                 <option value="<?=$company->id?>" <?=($company->id == $company_id) ? 'selected': ''; ?> ><?=$company->client_name?></option>
                                             <? endforeach;?>
@@ -66,7 +67,7 @@
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$store_id?>" />
                                         <input type="hidden" name="store" value="<?=$store_id?>" />
                                         <select class="form-select select" disabled id="store">
-                                            <option value="">Select Store/Warehouse</option>                                                            
+                                            <option value="">Select Store/Warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -77,7 +78,7 @@
                                     <p class="mb-2">
                                         <input type="hidden" name="warehouse_id" id='warehouse_id' value="<?=$warehouse_id?>" />
                                         <select class="form-select select" disabled required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>                                                            
+                                            <option value="">Select warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
@@ -104,7 +105,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="po_num" name="po_num" value="" placeholder="PO Number">
                                         <span class="text-danger error-msg po_num_error"></span>
@@ -122,15 +123,15 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-12 mt-3 d-none">
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>                                                            
+                                            <option value="">Select warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </div>
@@ -164,8 +165,8 @@
                                             <input type="text" class="form-control" name="item_code" id="item_code">
                                             <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                                         </div>
-                                    </div> 
-                                </div> 
+                                    </div>
+                                </div>
 
                                 <div id="errMsg" class="d-none">
                                     <div class="alert alert-danger">
@@ -174,21 +175,23 @@
                                         </ul>
                                     </div>
                                 </div>
-                                
+
                                 <div class="table-responsive">
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="align-middle text-center" rowspan="2">#</th>
                                                 <th scope="col" class="text-center" rowspan="2" valign="middle">Product Details</th>
-                                                <th rowspan="2" class="text-center" valign="middle">Item Type</th>
-                                                <th colspan="2" class="text-center">Old Location</th>
-                                                <th colspan="2" class="text-center">Target Location</th>
+                                                <th colspan="3" class="text-center">Old Location</th>
+                                                <th colspan="3" class="text-center">Target Location</th>
+                                                <th rowspan="2" class="text-center" valign="middle">Remarks</th>
                                                 <th rowspan="2" class="text-center" valign="middle">Action</th>
                                             </tr>
                                             <tr class="table-active text-center" >
+                                                <th>Item Type</th>
                                                 <th>Location</th>
                                                 <th >Inv</th>
+                                                <th>Item Type</th>
                                                 <th>Location</th>
                                                 <th>Inv</th>
                                             </tr>
@@ -196,9 +199,9 @@
                                         <tbody id="newlink">
                                         </tbody>
                                         </table>
-                                        
+
                                     <!--end table-->
-                                </div>                           
+                                </div>
                             </div>
                             <!--end card-body-->
                         </div>
@@ -222,9 +225,9 @@
                     <h5 class="modal-title" id="exampleModalLabel">Item List</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
                 </div>
-            
+
                 <div class="modal-body">
-            
+
                     <div class="row g-3">
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Receiving #</h6>
@@ -232,15 +235,15 @@
                                 <input type="text" class="form-control" id="rcv_no" name="rcv_no" value="" placeholder="Receive Number">
                             </p>
                         </div>
-      
+
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Location </h6>
                             <p class="fw-medium" id="billing-name">
                                 <select class="form-select select3" id="location" name="location">
-                                    <option value="">No Location</option>  
-                                    <option value="ra">Receiving Area</option>  
+                                    <option value="">No Location</option>
+                                    <option value="ra">Receiving Area</option>
                                     <? foreach($locations as $location) : ?>
-                                         <option value="<?=$location->storage_location_id?>"><?=$location->location?></option>  
+                                         <option value="<?=$location->storage_location_id?>"><?=$location->location?></option>
                                     <? endforeach;?>
                                 </select>
                             </p>
@@ -256,7 +259,7 @@
                             <button type="button" class="btn btn-warning rounded-pill" id="select-all"><i class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
                             <button type="button" class="btn btn-success rounded-pill" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
                         </div>
-                    </div>   
+                    </div>
 
                     <div class="table-responsive">
                         <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
@@ -281,7 +284,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

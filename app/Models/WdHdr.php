@@ -16,6 +16,15 @@ class WdHdr extends Model
     {
         return $this->hasMany(WdDtl::class, 'wd_no', 'wd_no');
     }
+
+    public function detail_items()
+    {
+        return $this->hasMany(WdDtl::class, 'wd_no', 'wd_no')
+                    ->leftJoin('masterdata as masterdata','masterdata.id','master_id')
+                    ->leftJoin('storage_locations as sl','sl.storage_location_id','masterdata.storage_location_id')
+                    ->select('wd_dtl.*', 'sl.location')
+                    ->orderBy('sl.location', 'asc');
+    }
     public function supplier()
     {
         return $this->hasOne(Supplier::class, 'id', 'supplier_id');

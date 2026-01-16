@@ -4,10 +4,10 @@
 @endsection
 @section('css')
     <!--datatable css-->
-    <link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- <link href="{{ URL::asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" /> -->
     <!--datatable responsive css-->
-    <link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- <link href="{{ URL::asset('assets/css/responsive.bootstrap.min.css') }}" rel="stylesheet" type="text/css" /> -->
+    <!-- <link href="{{ URL::asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" /> -->
 @endsection
 @section('content')
     @component('components.breadcrumb')
@@ -343,8 +343,8 @@
                                                     <th scope="col">Withdraw Quantity</th>
                                                     <th scope="col">Unit</th>
                                                     <th scope="col">Lot No</th>
-                                                    <th scope="col">Expiry Date</th>
-                                                    <th scope="col">Mfg. Date</th>
+                                                    <th scope="col" class=" d-none">Expiry Date</th>
+                                                    <th scope="col"  class=" d-none">Mfg. Date</th>
                                                     <th scope="col">Warehouse</th>
                                                     <th scope="col">Location</th>
                                                     <th scope="col" class="text-center">Action</th>
@@ -371,6 +371,8 @@
         </div>
     </form>
 
+    
+
 
     <!-- show charges Modal -->
     <div class="modal" id="show-items" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -384,61 +386,10 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-4">
-                            <h6 class="text-muted text-uppercase fw-semibold">Product Code|Name|SKU</h6>
-                            <p class="fw-medium" id="billing-name">
-                                <input type="text" class="form-control" id="product" name="product" value="" placeholder="Product code,name,sku">
-                            </p>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="text-muted text-uppercase fw-semibold">Warehouse</h6>
-                            <p class="fw-medium" id="billing-name">
-                                <select class="form-select" id="warehouse" name="warehouse">
-                                    <option value="">Select Warehouse</option>
-                                </select>
-                            </p>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="text-muted text-uppercase fw-semibold">Item Type </h6>
-                            <p class="fw-medium" id="billing-name">
-                                <select class="form-select" required="required" id="item_type" name="item_type">
-                                    <option value="">Select Type</option>
-                                        <option value="good" selected>Good</option>
-                                        <option value="damage">Damage</option>
-                                        <option value="repair">Repair</option>
-                                </select>
-                            </p>
-                        </div>
-
-                        <div class="col-2">
-                            <h6 class="text-muted text-uppercase fw-semibold">&nbsp;</h6>
-                            <p class="fw-medium" id="billing-name">
-                                <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
-                            </p>
-                        </div>
-                    </div>
                     <div class="table-responsive">
-                        <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>&nbsp;</th>
-                                    <th>Product Code</th>
-                                    <th>Product Name</th>
-                                    <th>Date Recieved</th>
-                                    <th>Item Type</th>
-                                    <th>Available Stocks</th>
-                                    <th>Unit</th>
-                                    <th>Lot No.</th>
-                                    <th>Expiry Date</th>
-                                    <th>Mfg. Date</th>
-                                    <th>Warehouse</th>
-                                    <th>Location</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                        @csrf
+                        <div id="myGrid" class="ag-theme-balham" style="height: 600px"></div>
+                        
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -534,15 +485,24 @@
         </div>
     </div>
 @endsection
+
+
 @section('script')
+
+    <script>
+        var page = 'create';
+    </script>
     <script src="{{ URL::asset('assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/cleave.js/cleave.js.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/libs/moment/moment.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/masks/jquery.mask.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
-
+<!-- 
     <script src="{{ URL::asset('assets/js/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ URL::asset('assets/js/datatables/dataTables.bootstrap5.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/js/datatables/dataTables.responsive.min.js') }}"></script> -->
+
+    <script src="{{ URL::asset('assets/js/ag_grid/ag-grid-enterprise.js') }}?v={{_version()}}"></script>
 
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/js/withdraw/withdraw.js') }}"></script>

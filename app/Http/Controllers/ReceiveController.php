@@ -19,6 +19,7 @@ use App\Models\Supplier;
 use App\Models\UOM;
 use App\Models\TruckType;
 use App\Models\AuditTrail;
+use App\Models\ItemType;
 
 use DataTables;
 
@@ -88,6 +89,7 @@ class ReceiveController extends Controller
         $warehouse_list = Warehouse::all();
 
         $uom = UOM::all();
+        $item_type = ItemType::all();
 
         return view('receive/create', [
             'client_list'=>$client_list,
@@ -95,7 +97,8 @@ class ReceiveController extends Controller
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
-            'uom'=>$uom
+            'uom'=>$uom,
+            'item_type' => $item_type
         ]);
     }
 
@@ -124,10 +127,6 @@ class ReceiveController extends Controller
             'inv_qty.*' => 'required',
             'inv_uom.*' => 'required',
             'item_type.*' => 'required',
-            'start_unloading_date' => 'required',
-            'start_unloading_time' => 'required',
-            'finish_unloading_date' => 'required',
-            'finish_unloading_time' => 'required',
         ], [
             'supplier'=>'Supplier is required',
             'customer'=>'Customer is required',
@@ -149,11 +148,7 @@ class ReceiveController extends Controller
             'whse_uom.*' => 'UOM  is required',
             'inv_qty.*' => 'Qty  is required',
             'inv_uom.*' => 'UOM  is required',
-            'item_type.*' => 'This is required',
-            'start_unloading_date'=>'Start Unloading Date is required',
-            'start_unloading_time'=>'Start Unloading Time is required',
-            'finish_unloading_date'=>'Finish Unloading Date is required',
-            'finish_unloading_time'=>'Finish Unloading Time is required',
+            'item_type.*' => 'This is required'
         ]);
 
         if ($validator->fails()) {
@@ -185,8 +180,6 @@ class ReceiveController extends Controller
 
             $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
-            $start_unloading = date("Y-m-d", strtotime($request->start_unloading_date))." ".date("H:i:s", strtotime($request->start_unloading_time));
-            $finish_unloading = date("Y-m-d", strtotime($request->finish_unloading_date))." ".date("H:i:s", strtotime($request->finish_unloading_time));
 
             $rcv = RcvHdr::updateOrCreate(['rcv_no' => $rcv_no], [
                 'po_num'=>$request->po_num,
@@ -202,8 +195,6 @@ class ReceiveController extends Controller
                 'inspect_date'=>date("Y-m-d H:i:s", strtotime($request->inspect_date)),
                 'date_arrived'=>date("Y-m-d H:i:s", strtotime($date_arrived)),
                 'date_departed'=>date("Y-m-d H:i:s", strtotime($date_departed)),
-                'start_unloading'=>date("Y-m-d H:i:s", strtotime($start_unloading)),
-                'finish_unloading'=>date("Y-m-d H:i:s", strtotime($finish_unloading)),
                 'plate_no'=>$request->plate_no,
                 'truck_type'=>$request->truck_type,
                 'warehouse_id'=>$request->warehouse,
@@ -375,6 +366,7 @@ class ReceiveController extends Controller
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
+        $item_type = ItemType::all();
 
         return view('receive/view', [
             'rcv'=>$rcv,
@@ -383,6 +375,7 @@ class ReceiveController extends Controller
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
+            'item_type' => $item_type,
             'uom_list'=>$uom_list]);
     }
 
@@ -404,7 +397,7 @@ class ReceiveController extends Controller
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
-
+        $item_type = ItemType::all();
         return view('receive/edit', [
             'rcv'=>$rcv,
             'client_list'=>$client_list,
@@ -412,6 +405,7 @@ class ReceiveController extends Controller
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
+            'item_type' => $item_type,
             'uom_list'=>$uom_list]);
     }
 
@@ -611,5 +605,33 @@ class ReceiveController extends Controller
                 'data'    => $e->getMessage()
             ]);
         }
+    }
+
+    public function updateRow(Request $request)
+    {
+        if(!$request->id) {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Row ID is required.',
+                'data'    => null
+            ]);
+        }
+        try {
+            $rcv_dtl = RcvDtl::findOrFail($request->id);
+            $rcv_dtl->update($request->only('manufacture_date', 'lot_no', 'expiry_date','remarks'));
+
+            return response()->json([
+                'success'  => true,
+                'message' => 'Row updated successfully!',
+                'data'    => $rcv_dtl
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Row not found.',
+                'data'    => null
+            ]);
+        }
+
     }
 }
