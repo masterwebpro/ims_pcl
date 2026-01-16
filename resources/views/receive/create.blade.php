@@ -36,7 +36,7 @@
 <!--end row-->
 <form name="submit-receive" id="submit-receive">
     <div class="row justify-content-center">
-        
+
         <div class="col-xxl-11">
             <div class="card">
                 <div class="row mb-3">
@@ -49,11 +49,11 @@
                                     <input type="hidden" name="hasPo" id="hasPo" value="0" />
                                     <p class="mb-2">
                                         <select class="form-select select2" id="supplier" name="supplier">
-                                            <option value="">Select Supplier</option>                                                            
+                                            <option value="">Select Supplier</option>
                                             <? foreach($supplier_list as $supplier) : ?>
                                                 <option value="<?=$supplier->id?>" ><?=$supplier->supplier_name?></option>
                                             <? endforeach;?>
-                                        </select> 
+                                        </select>
                                         <span class="text-danger error-msg supplier_error"></span>
                                     </p>
                                 </div>
@@ -62,7 +62,7 @@
                                     <h6 class="text-muted fw-medium mb-3">Customer Name <span class="text-danger">*</span></h6>
                                     <p class="mb-2">
                                         <select class="form-select select2" id="customer" name="customer">
-                                            <option value="">Select Customer</option>                                                            
+                                            <option value="">Select Customer</option>
                                             <? foreach($client_list as $customer) : ?>
                                                 <? if(strtoupper($customer->client_type) == 'C') : ?>
                                                     <option value="<?=$customer->id?>" ><?=$customer->client_name?></option>
@@ -77,7 +77,7 @@
                                     <h6 class="text-muted fw-medium mb-3">Company <span class="text-danger">*</span></h6>
                                     <p class="mb-2" id="billing-name">
                                         <select class="form-select select2" required="required" id="company" name="company">
-                                            <option value="">Select company</option>                                                            
+                                            <option value="">Select company</option>
                                             <? foreach($client_list as $company) : ?>
                                                 <? if(strtoupper($company->client_type) == 'O') : ?>
                                                     <option value="<?=$company->id?>" ><?=$company->client_name?></option>
@@ -92,7 +92,7 @@
                                     <h6 class="text-muted fw-medium mb-3">Site Name <span class="text-danger">*</span></h6>
                                     <p class=" mb-2" id="shipping-name">
                                         <select class="form-select select2" required="required" id="store" name="store">
-                                            <option value="">Select Site/Warehouse</option>                                                            
+                                            <option value="">Select Site/Warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -120,7 +120,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="po_num" name="po_num" value="" placeholder="PO Number">
                                         <span class="text-danger error-msg po_num_error"></span>
@@ -143,7 +143,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By <span class="text-danger">*</span></label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="received_by" name="received_by" value="" placeholder="Received By">
                                         <span class="text-danger error-msg received_by_error"></span>
@@ -166,7 +166,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By <span class="text-danger">*</span></label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="inspect_by" name="inspect_by" value="" placeholder="Inspect By">
                                         <span class="text-danger error-msg inspect_by_error"></span>
@@ -189,7 +189,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived <span class="text-danger">*</span></label> 
+                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" name="date_arrived" id="date_arrived" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
@@ -211,8 +211,45 @@
                     <div class="col-lg-12 mt-3">
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
+                                 <div class="row">
+                                        <label for="colFormLabel" class="col-lg-4 col-form-label">Start Unloading<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-8">
+                                                <div class="input-group">
+                                                    <input type="date" class="form-control" id="start_unloading_date"
+                                                        name="start_unloading_date" placeholder="Start Date" value="<?=date('Y-m-d');?>">
+                                                    <input type="time" class="form-control" id="start_unloading_time"
+                                                        name="start_unloading_time" placeholder="Start Time" value="{{ date('H:i') }}">
+                                                </div>
+                                                <span class="text-danger error-msg start_unloading_date_error"></span>
+                                                <span class="text-danger error-msg start_unloading_time_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                    <label for="colFormLabel" class="col-form-label col-lg-4">Finish Unloading<span
+                                            class="text-danger">*</span></label>
+                                        <div class="col-lg-8">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="finish_unloading_date"
+                                                    name="finish_unloading_date" placeholder="Finish Date" value="<?=date('Y-m-d');?>">
+                                                <input type="time" class="form-control" id="finish_unloading_time"
+                                                    name="finish_unloading_time" placeholder="Finish Time" value="<?=date('H:i')?>">
+                                            </div>
+                                            <span class="text-danger error-msg finish_unloading_date_error"></span>
+                                            <span class="text-danger error-msg finish_unloading_time_error"></span>
+                                    </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 mt-3">
+                        <div class="row ms-3 mx-3">
+                            <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed <span class="text-danger">*</span></label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" name="date_departed" id="date_departed" value="<?=date("Y-m-d")?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
@@ -235,7 +272,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number <span class="text-danger">*</span></label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" name="plate_no" id="plate_no" value="" placeholder="Plate Number">
                                         <span class="text-danger error-msg plate_no_error"></span>
@@ -247,7 +284,7 @@
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Truck Type <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="truck_type" name="truck_type">
-                                            <option value="">Select Truck Type</option>                                                            
+                                            <option value="">Select Truck Type</option>
                                             <? foreach($truck_type_list as $truck) : ?>
                                                 <option value="<?=$truck->id?>" ><?=$truck->vehicle_desc?></option>
                                             <? endforeach;?>
@@ -263,10 +300,10 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label> 
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>                                                            
+                                            <option value="">Select warehouse</option>
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </div>
@@ -299,8 +336,8 @@
                                         <input type="text" class="form-control" name="item_code" id="item_code">
                                         <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                                     </div>
-                                </div> 
-                                
+                                </div>
+
                                 <div class="table-responsive">
                                     <table class="table table-nowrap" id="product-list">
                                         <thead>
@@ -320,7 +357,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
-                                            
+
                                         </tbody>
                                             <tfoot>
                                                 <td colspan='2' class="fw-semibold">Total</td>
@@ -330,9 +367,9 @@
                                                 <td colspan='6'>&nbsp;</td>
                                             </tfoot>
                                         </table>
-                                        
+
                                     <!--end table-->
-                                </div>                           
+                                </div>
                             </div>
                             <!--end card-body-->
                         </div>
@@ -356,7 +393,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Product List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
-           
+
             <div class="modal-body">
                 <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
                     <thead class="table-light">
@@ -371,7 +408,7 @@
                     <tbody>
                     </tbody>
                 </table>
-                
+
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">

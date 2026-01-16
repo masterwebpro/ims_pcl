@@ -12,9 +12,9 @@
 @section('content')
 @component('components.breadcrumb')
 @slot('li_1') Report @endslot
-@slot('title') Receiving Detailed @endslot
+@slot('title') Dispatch Detailed @endslot
 @endcomponent
-<form action="#" name="submit-receive" id="submit-receive">
+<form action="#" name="submit-withdrawal" id="submit-withdrawal">
     <div class="row justify-content-center">
         <div class="col-xxl-11">
             <div class="card">
@@ -23,13 +23,13 @@
                         <div class="card-body p-4 ">
                             <div class="row g-3">
                                 <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Receiving #</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Dispatch #</h6>
                                     <p class="fw-medium mb-2">
-                                        <input type="text" class="form-control" placeholder="Receiving No" name="rcv_no" id="rcv_no" value="{{$request->rcv_no}}">
-                                        <span class="text-danger error-msg rcv_no_error"></span>
+                                        <input type="text" class="form-control" placeholder="Dispatch No" name="dispatch_no" id="dispatch_no" value="{{$request->dispatch_no}}">
+                                        <span class="text-danger error-msg dispatch_no_error"></span>
                                      </p>
                                 </div>
-                                <div class="col-lg-3 col-md-3">
+                                {{-- <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name</h6>
                                     <p class=" mb-2" id="billing-name">
                                         <select class="form-select select2" id="client" name="client">
@@ -51,37 +51,13 @@
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
-                                </div>
-                                <!--end col-->
+                                </div> --}}
                                 <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse</h6>
-                                    <p class="mb-2" id="warehouse1">
-                                        <input type="hidden" name="warehouse_id" id="warehouse_id" value="{{$request->warehouse}}">
-                                        <select class="form-select select2" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>
-                                        </select>
-                                        <span class="text-danger error-msg warehouse_error"></span>
-                                    </p>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Date Dispatch <small>(YYY-mm-dd)</small></h6>
+                                    <input type="text" class="form-control" name="dispatch_date" id="dispatch_date" value = "{{$request->dispatch_date}}" data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true" placeholder="Select date range">
                                 </div>
-                                 <!--end col-->
-                            </div>
+                            {{-- </div>
                             <div class="row g-3 mt-1">
-                                <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Date Received <small>(YYY-mm-dd)</small></h6>
-                                    <input type="text" class="form-control" name="date_received" id="date_received" value = "{{$request->date_received}}" data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true" placeholder="Select date range">
-                                </div>
-                                <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Item Type </h6>
-                                    <p class=" mb-2">
-                                        <select class="form-select select2" id="item_type" name="item_type">
-                                            <option value="good" <?=($request->item_type == 'good') ? 'selected' : ''?> >Good</option>
-                                            <option value="damage" <?=($request->item_type == 'damage') ? 'selected' : ''?> >Damage</option>
-                                            <option value="repair" <?=($request->item_type == 'repair') ? 'selected' : ''?> >Repair</option>
-                                        </select>
-                                        <span class="text-danger error-msg item_type_error"></span>
-                                    </p>
-                                </div>
-                                 <!--end col-->
                                  <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Product Code</h6>
                                     <p class="fw-medium mb-2">
@@ -89,23 +65,19 @@
                                         <span class="text-danger error-msg product_code_error"></span>
                                      </p>
                                 </div>
-                                 <!--end col-->
                                  <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Product Name</h6>
                                     <p class="fw-medium mb-2">
                                         <input type="text" class="form-control" placeholder="Product Name" name="product_name" id="product_name" value="{{$request->product_name}}">
                                         <span class="text-danger error-msg product_name_error"></span>
                                      </p>
-                                </div>
-                                 <!--end col-->
-                            </div>
-                            <div class="row mt-2">
-                                <div class="d-flex align-items-center">
+                                </div> --}}
+                                <div class="col-lg-6 col-md-6 d-flex align-items-center">
                                     <h5 class="card-title flex-grow-1"></h5>
                                     <div class="">
-                                        <button class="submit-receive-search btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</button>
-                                        <a href="#" class="submit-receive-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
-                                        <a href="#" class="submit-receive-print btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print Preview</a>
+                                        <button class="submit-dispatch-search btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</button>
+                                        <a href="#" class="submit-dispatch-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
+                                        {{-- <a href="#" class="submit-dispatch-print btn btn-primary btn-label rounded-pill"><i class="ri-printer-line label-icon align-middle rounded-pill fs-16 me-2"></i> Print Preview</a> --}}
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -127,28 +99,37 @@
         <div class="col-xxl-11">
             <div class="card" id="demo">
                 <div class="card-body p-4 ">
-                    <div class="row " id="load-search">
+                    <div class="table-responsive" id="load-search">
                         <table id="item_list" style="font-size: 12px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
                             <thead  class="table-light">
-                                <tr>
-                                    <th class="fw-medium text-center">Date Received</th>
-                                    <th class="fw-medium text-center">Reference No</th>
-                                    <th class="fw-medium text-center">PO No</th>
-                                    <th class="fw-medium text-center">Product Code</th>
-                                    <th class="fw-medium text-center">Product Description</th>
-                                    <th class="fw-medium text-center">Item Type</th>
-                                    <th class="fw-medium text-center" width="110px;">Whse / UOM</th>
-                                    <th class="fw-medium text-center" width="110px;">Inv / UOM</th>
-                                    <th class="fw-medium text-center">Lot No</th>
-                                    <th class="fw-medium text-center">Expiry Date</th>
-                                    <th class="fw-medium text-center">Mfg. Date</th>
-                                    <th class="fw-medium text-center">Plate No</th>
-                                    <th class="fw-medium text-center">Date Arrived</th>
-                                    <th class="fw-medium text-center">Start Unloading</th>
-                                    <th class="fw-medium text-center">Finish Unloading</th>
-                                    <th class="fw-medium text-center">Date Departed</th>
-                                    <th class="fw-medium text-center">Inspect Date</th>
-                                    <th class="fw-medium text-center">Inspect By</th>
+                                <tr class="text-nowrap">
+                                    <th class="fw-medium align-middle" rowspan="2">Date Dispatch</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Reference No</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Withdrawal No</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Plate No</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Truck Type</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Trucker Name</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Seal No</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Dispatch By</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Driver/Helper Name</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Start Picking</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Finish Picking</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Actual Truck Arrival</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Start Loading</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Finish Loading</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Depart Date/Time</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Product Code</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Product Description</th>
+                                    <th class="fw-medium align-middle">Withdraw</th>
+                                    <th class="fw-medium align-middle">Dispatch</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Order No</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Order Date</th>
+                                    <th class="fw-medium align-middle" rowspan="2">DR Number</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Prepared By</th>
+                                </tr>
+                                <tr class="text-nowrap">
+                                    <th class="fw-medium text-center" width="110px;">Quantity / UOM</th>
+                                    <th class="fw-medium text-center" width="110px;">Quantity / UOM</th>
                                 </tr>
                             </thead>
 

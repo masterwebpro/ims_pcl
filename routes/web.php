@@ -150,6 +150,10 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'exportWithdrawalDetailed'])->name('export-withdrawal-detailed');
     Route::get('/print-withdrawal-detailed',[App\Http\Controllers\ReportController::class,'printPdfWithdrawalDetailed'])->name('print-withdrawal-detailed');
 
+    Route::get('/dispatch-detailed', [App\Http\Controllers\ReportController::class, 'getDispatchDetailedIndex']);
+    Route::get('/get-dispatch-detailed', [App\Http\Controllers\ReportController::class, 'getDispatchDetailed']);
+    Route::get('/export-dispatch-detailed',[App\Http\Controllers\ReportController::class,'exportDispatchDetailed'])->name('export-dispatch-detailed');
+
     Route::get('/inbound-monitoring', [App\Http\Controllers\ReportController::class, 'getInboundMonitoringIndex'])->name('reports.inbound-monitoring');
     Route::get('/export-inbound-monitoring',[App\Http\Controllers\ReportController::class,'exportInboundMonitoring'])->name('export-inbound-monitoring');
     Route::get('/outbound-monitoring', [App\Http\Controllers\ReportController::class, 'getOutboundMonitoringIndex'])->name('reports.outbound-monitoring');

@@ -23,6 +23,8 @@ class RcvHdr extends Model
         'po_date',
         'inspect_by',
         'inspect_date',
+        'start_unloading',
+        'finish_unloading',
         'date_arrived',
         'date_departed',
         'plate_no',
