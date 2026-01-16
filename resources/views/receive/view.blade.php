@@ -41,7 +41,7 @@
                         <? endif;?>
                         <a href="{{ URL::to('receive') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -63,11 +63,11 @@
                                     <input type="hidden" name="rcv_no" id="rcv_no" value="<?=$rcv->rcv_no?>" />
                                     <p class=" mb-2">
                                         <select class="form-select select2" disabled required="required" id="supplier" name="supplier">
-                                            <option value="">Select Supplier</option>
+                                            <option value="">Select Supplier</option>                                                            
                                             <? foreach($supplier_list as $supplier) : ?>
                                                 <option value="<?=$supplier->id?>" <?=($supplier->id == $rcv->supplier_id) ? 'selected': ''; ?> ><?=$supplier->supplier_name?></option>
                                             <? endforeach;?>
-                                        </select>
+                                        </select> 
                                         <span class="text-danger error-msg supplier_error"></span>
                                     </p>
                                 </div>
@@ -76,7 +76,7 @@
                                     <h6 class="text-muted mb-3">Customer</h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" disabled id="customer" name="customer">
-                                            <option value="">Select customer</option>
+                                            <option value="">Select customer</option>    
                                             <? foreach($client_list as $customer) : ?>
                                                 <? if(strtoupper($customer->client_type) == 'C') : ?>
                                                     <option value="<?=$customer->id?>" <?=($customer->id == $rcv->customer_id) ? 'selected': ''; ?> ><?=$customer->client_name?></option>
@@ -92,7 +92,7 @@
                                     <p class=" mb-2">
                                         <input type="hidden" name="company_id" id="company_id" value="<?=$rcv->company_id?>" />
                                         <select class="form-select select2" disabled  id="company" name="company">
-                                            <option value="">Select Client</option>
+                                            <option value="">Select Client</option>                                                            
                                             <? foreach($client_list as $company) : ?>
                                                 <? if(strtoupper($company->client_type) == 'O') : ?>
                                                     <option value="<?=$company->id?>" <?=($company->id == $rcv->company_id) ? 'selected': ''; ?> ><?=$company->client_name?></option>
@@ -108,7 +108,7 @@
                                     <p class="mb-2">
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$rcv->store_id?>" />
                                         <select class="form-select select2" disabled required="required" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>
+                                            <option value="">Select Store/Warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -136,7 +136,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="po_num" disabled name="po_num" value="<?=isset($rcv->po_num) ? $rcv->po_num : '' ?>" placeholder="PO Number">
                                         <span class="text-danger error-msg po_num_error"></span>
@@ -159,7 +159,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By</label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Received By</label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" disabled  id="received_by" name="received_by" value="<?=isset($rcv->received_by) ? $rcv->received_by : '' ?>" placeholder="Received By">
                                         <span class="text-danger error-msg received_by_error"></span>
@@ -182,7 +182,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By</label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Inspect By</label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" disabled  id="inspect_by" name="inspect_by" value="<?=isset($rcv->inspect_by) ? $rcv->inspect_by : '' ?>" placeholder="Inspect By">
                                         <span class="text-danger error-msg inspect_by_error"></span>
@@ -205,7 +205,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived</label>
+                                    <label for="date_arrived" class="col-lg-4 col-form-label">Date Arrived</label> 
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" disabled  name="date_arrived" id="date_arrived" value="<?=isset($rcv->date_arrived) ? date("Y-m-d", strtotime($rcv->date_arrived)) : '' ?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_arrived_error"></span>
@@ -228,30 +228,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="start_unloading" class="col-lg-4 col-form-label">Start Unloading</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" disabled  name="start_unloading" id="start_unloading" value="<?=isset($rcv->start_unloading) ? date("m/d/Y H:i A", strtotime($rcv->start_unloading)) : '' ?>" placeholder="DD-MM-YYYY">
-                                        <span class="text-danger error-msg start_unloading_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="row">
-                                    <label for="finish_unloading" class="col-lg-4  col-form-label">Finish Unloading</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" disabled  name="finish_unloading" id="finish_unloading" value="<?=isset($rcv->finish_unloading) ? date("m/d/Y H:i A", strtotime($rcv->finish_unloading)) : '' ?>" placeholder="hh:mm" id="cleave-time">
-                                        <span class="text-danger error-msg finish_unloading_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 mt-3">
-                        <div class="row ms-3 mx-3">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label> 
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control"  disabled name="date_departed" id="date_departed" value="<?=isset($rcv->date_departed) ? date("Y-m-d", strtotime($rcv->date_departed)) : '' ?>" placeholder="DD-MM-YYYY">
                                         <span class="text-danger error-msg date_departed_error"></span>
@@ -274,7 +251,7 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number</label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Plate Number</label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" disabled  name="plate_no" id="plate_no" value="<?=isset($rcv->plate_no) ? $rcv->plate_no : '' ?>" placeholder="Plate Number">
                                         <span class="text-danger error-msg plate_no_error"></span>
@@ -286,7 +263,7 @@
                                     <label for="colFormLabel" class="col-lg-4  col-form-label">Truck Type</label>
                                     <div class="col-lg-8">
                                         <select class="form-select select2"  disabled required="required" id="truck_type" name="truck_type">
-                                            <option value="">Select Truck Type</option>
+                                            <option value="">Select Truck Type</option>                                                            
                                             <? foreach($truck_type_list as $truck) : ?>
                                                 <option value="<?=$truck->id?>" <?=($truck->id == $rcv->truck_type) ? 'selected': ''; ?> ><?=$truck->vehicle_desc?></option>
                                             <? endforeach;?>
@@ -302,11 +279,11 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse</label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse</label> 
                                     <div class="col-lg-8">
                                         <input type="hidden" name="warehouse_id" id='warehouse_id' value="<?=isset($rcv->warehouse_id) ? $rcv->warehouse_id : ''?>" />
                                         <select class="form-select select2"  disabled  required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>
+                                            <option value="">Select warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </div>
@@ -339,8 +316,8 @@
                                         <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
                                         <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                                     </div>
-                                </div>
-
+                                </div> 
+                                
                                 <div class="table-responsive">
                                     <table class="table table-nowrap" id="product-list">
                                         <thead>
@@ -359,7 +336,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
-                                            <?
+                                            <? 
                                             $rowCount = count($rcv->items);
                                             $total_whse_qty = 0;
                                             $total_inv_qty = 0;
@@ -367,7 +344,7 @@
                                              ?>
                                             @if(isset($rcv->items))
                                                 @foreach($rcv->items as $item)
-                                                <?
+                                                <? 
                                                     $total_whse_qty += $item->whse_qty;
                                                     $total_inv_qty += $item->inv_qty;
                                                 ?>
@@ -375,15 +352,15 @@
                                                     <td class="text-start fs-12 d-none">
                                                         <input type="hidden" name="product_id[]" readonly id="product_id_{{$item->product_id}}" value="{{$item->product_id}}" />
                                                     {{$x++}} </td>
-                                                    <td class="text-start fs-12">
+                                                    <td class="text-start fs-12"> 
                                                         {{$item->product->product_name}}<br/><small>{{$item->product->product_code}}</small>
                                                         <input type="hidden" name="po_dtl_id[]" readonly id="product_id_{{$item->po_dtl_id}}" value="{{$item->po_dtl_id}}" />
                                                     </td>
-                                                    <td class="text-start fs-12">
+                                                    <td class="text-start fs-12"> 
                                                         <select name="item_type[]"  disabled  id="item_type_{{$x}}" class="uom uom_select form-select">
-                                                            <option class="fs-8" value="good"   <?=($item->item_type == 'good')? 'selected':''?>>Good</option>
-                                                            <option class="fs-8" value="damage" <?=($item->item_type == 'damage')? 'selected':''?>>Damage</option>
-                                                            <option class="fs-8" value="repair" <?=($item->item_type == 'repair')? 'selected':''?>>Repair</option>
+                                                            <option class="fs-8" value="good"   <?=($item->item_type == 'good')? 'selected':''?>>Good</option> 
+                                                            <option class="fs-8" value="damage" <?=($item->item_type == 'damage')? 'selected':''?>>Damage</option>  
+                                                            <option class="fs-8" value="repair" <?=($item->item_type == 'repair')? 'selected':''?>>Repair</option>                                                                                                                    
                                                         </select>
                                                     </td>
                                                     <td class="fs-12 ">
@@ -391,7 +368,7 @@
                                                     </td>
                                                     <td class="fs-12">
                                                        <select name="whse_uom[]"  disabled id="whse_uom_{{$x}}" class="uom uom_select form-select">
-                                                            <option value="">Select UOM</option>
+                                                            <option value="">Select UOM</option>                                                            
                                                             @foreach($uom_list as $uom_whse)
                                                             <option value="{{$uom_whse->uom_id}}" <?=($uom_whse->uom_id == $item->whse_uom) ? 'selected': ''; ?> >{{$uom_whse->code}}</option>
                                                             @endforeach
@@ -402,7 +379,7 @@
                                                     </td>
                                                     <td class=" ps-1">
                                                         <select name="inv_uom[]"  disabled  id="inv_uom_{{$x}}" class="uom uom_select form-select">
-                                                            <option value="">Select UOM</option>
+                                                            <option value="">Select UOM</option>                                                            
                                                             @foreach($uom_list as $uom)
                                                             <option value="{{$uom->uom_id}}" <?=($uom->uom_id == $item->inv_uom) ? 'selected': ''; ?> >{{$uom->code}}</option>
                                                             @endforeach
@@ -425,9 +402,9 @@
                                             @else
                                             <tr class="">
                                                 <td colspan="8" class="text-danger text-center">No Record Found!</td>
-                                            </tr>
+                                            </tr>    
                                             @endif
-
+                                            
                                         </tbody>
                                         <tfoot>
                                             <td colspan='2' class="fw-semibold">Total</td>
@@ -437,9 +414,9 @@
                                             <td colspan='4'>&nbsp;</td>
                                         </tfoot>
                                         </table>
-
+                                        
                                     <!--end table-->
-                                </div>
+                                </div>                           
                             </div>
                             <!--end card-body-->
                         </div>
@@ -463,7 +440,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Product List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
-
+           
             <div class="modal-body">
                 <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
                     <thead class="table-light">
@@ -477,7 +454,7 @@
                     <tbody>
                     </tbody>
                 </table>
-
+                
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">

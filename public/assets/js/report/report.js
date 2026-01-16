@@ -79,13 +79,6 @@ $(document).on('click', '.submit-receive-search', function(e) {
                             table += "<td class='text-center'>"+(item.lot_no ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(item.plate_no ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.date_arrived)).format("DD MMM YYYY h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.start_unloading)).format("DD MMM YYYY h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.finish_unloading)).format("DD MMM YYYY h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.date_departed)).format("DD MMM YYYY h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.inspect_date)).format("DD MMM YYYY h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(item.inspect_by?? '')+"</td>";
                         table += '</tr>';
                     });
 
