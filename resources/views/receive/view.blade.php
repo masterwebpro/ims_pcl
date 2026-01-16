@@ -228,6 +228,29 @@
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
+                                    <label for="start_unloading" class="col-lg-4 col-form-label">Start Unloading</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" disabled  name="start_unloading" id="start_unloading" value="<?=isset($rcv->start_unloading) ? date("m/d/Y H:i A", strtotime($rcv->start_unloading)) : '' ?>" placeholder="DD-MM-YYYY">
+                                        <span class="text-danger error-msg start_unloading_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="row">
+                                    <label for="finish_unloading" class="col-lg-4  col-form-label">Finish Unloading</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" disabled  name="finish_unloading" id="finish_unloading" value="<?=isset($rcv->finish_unloading) ? date("m/d/Y H:i A", strtotime($rcv->finish_unloading)) : '' ?>" placeholder="hh:mm" id="cleave-time">
+                                        <span class="text-danger error-msg finish_unloading_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 mt-3">
+                        <div class="row ms-3 mx-3">
+                            <div class="col-lg-6 col-md-6">
+                                <div class="row">
                                     <label for="colFormLabel" class="col-lg-4 col-form-label">Date Departed</label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control"  disabled name="date_departed" id="date_departed" value="<?=isset($rcv->date_departed) ? date("Y-m-d", strtotime($rcv->date_departed)) : '' ?>" placeholder="DD-MM-YYYY">
@@ -310,7 +333,6 @@
                             </div>
                             <div class="card-body p-4">
                                 <!-- ITEMS -->
-                                @if (!in_array($rcv->status, array('posted')))
                                     <div class="col-md-12 mb-2">
                                         <div class="input-group">
                                             <span class="input-group-text" id="inputGroup-sizing-sm"><i class="ri-barcode-line label-icon align-middle rounded-pill fs-16 me-2"></i>Scan Code</span>
@@ -318,7 +340,7 @@
                                             <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                                         </div>
                                     </div>
-                                @endif
+                                </div>
 
                                 <div class="table-responsive">
                                     <table class="table table-nowrap" id="product-list">

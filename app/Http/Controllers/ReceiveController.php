@@ -127,6 +127,10 @@ class ReceiveController extends Controller
             'inv_qty.*' => 'required',
             'inv_uom.*' => 'required',
             'item_type.*' => 'required',
+            'start_unloading_date' => 'required',
+            'start_unloading_time' => 'required',
+            'finish_unloading_date' => 'required',
+            'finish_unloading_time' => 'required',
         ], [
             'supplier'=>'Supplier is required',
             'customer'=>'Customer is required',
@@ -148,7 +152,11 @@ class ReceiveController extends Controller
             'whse_uom.*' => 'UOM  is required',
             'inv_qty.*' => 'Qty  is required',
             'inv_uom.*' => 'UOM  is required',
-            'item_type.*' => 'This is required'
+            'item_type.*' => 'This is required',
+            'start_unloading_date'=>'Start Unloading Date is required',
+            'start_unloading_time'=>'Start Unloading Time is required',
+            'finish_unloading_date'=>'Finish Unloading Date is required',
+            'finish_unloading_time'=>'Finish Unloading Time is required',
         ]);
 
         if ($validator->fails()) {
@@ -180,7 +188,8 @@ class ReceiveController extends Controller
 
             $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
-
+            $start_unloading = date("Y-m-d", strtotime($request->start_unloading_date))." ".date("H:i:s", strtotime($request->start_unloading_time));
+            $finish_unloading = date("Y-m-d", strtotime($request->finish_unloading_date))." ".date("H:i:s", strtotime($request->finish_unloading_time));
             $rcv = RcvHdr::updateOrCreate(['rcv_no' => $rcv_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
@@ -195,6 +204,8 @@ class ReceiveController extends Controller
                 'inspect_date'=>date("Y-m-d H:i:s", strtotime($request->inspect_date)),
                 'date_arrived'=>date("Y-m-d H:i:s", strtotime($date_arrived)),
                 'date_departed'=>date("Y-m-d H:i:s", strtotime($date_departed)),
+                'start_unloading'=>date("Y-m-d H:i:s", strtotime($start_unloading)),
+                'finish_unloading'=>date("Y-m-d H:i:s", strtotime($finish_unloading)),
                 'plate_no'=>$request->plate_no,
                 'truck_type'=>$request->truck_type,
                 'warehouse_id'=>$request->warehouse,
