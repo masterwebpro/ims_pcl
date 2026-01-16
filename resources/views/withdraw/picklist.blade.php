@@ -14,16 +14,17 @@
             width: 100%;
         }
         .table-data th {
-        border: .5px solid black;
-        padding: 8px;
-        text-align: left;
-        background-color: darkgrey;
+            border: .5px solid black;
+            padding: 8px;
+            text-align: left;
+            background-color: darkgrey;
         }
 
         /* Style for table cells */
         .table-data td {
-        border: .5px solid black;
-        padding: 8px;
+            border: .5px solid black;
+            padding: 8px;
+            font-size: 9px;
         }
         img.centered {
         display: block;
@@ -93,32 +94,33 @@
                 <th scope="col">#</th>
                 <th scope="col">Code</th>
                 <th scope="col">Item Description</th>
-                <th scope="col" class="text-center">Quantity</th>
+                <th scope="col" class="text-center">QTY</th>
                 <th scope="col">Unit</th>
                 <th scope="col">Warehouse</th>
                 <th scope="col">Location</th>
+                <th scope="col">Remarks</th>
             </tr>
         </thead>
         <tbody>
             <?
-            $rowCount = count($wd->items);
+            $rowCount = count($wd->detail_items);
             $x=1;
             ?>
-            @if(isset($wd->items))
-                @foreach($wd->items as $item)
+            @if(isset($wd->detail_items))
+                @foreach($wd->detail_items as $item)
                 <tr id="product_{{$item->product_id}}">
                     <td class="text-start">
                     {{$x++}} </td>
-                    <td class="text-start fs-14">
+                    <td class="text-start fs-12">
                         {{$item->product->product_code}}
                     </td>
-                    <td class="text-start fs-14">
+                    <td class="text-start fs-12">
                         {{$item->product->product_name}}
                     </td>
                     <td class="ps-1 text-end">
-                        {{ number_format($item->inv_qty,2) }}
+                        {{ number_format($item->inv_qty,0) }}
                     </td>
-                    <td class=" ps-1">
+                    <td class=" ps-1 text-center">
                         {{ isset($item->master->code) ? $item->master->code : "" }}
                     </td>
                     <td class=" ps-1">
@@ -126,6 +128,9 @@
                     </td>
                     <td class=" ps-1">
                         <?=isset($item->master->location) ? $item->master->location : ""?>
+                    </td>
+                    <td class=" ps-1">
+                        <?=isset($item->master->remarks) ? $item->master->remarks : ""?>
                     </td>
                 </tr>
                 @endforeach
@@ -140,9 +145,9 @@
                                 $totalInvQty += $item->inv_qty;
                             }
                         @endphp
-                        {{ number_format($totalInvQty,2) }}
+                        {{ number_format($totalInvQty,0) }}
                     </td>
-                    <td class="ps-1" colspan="3">
+                    <td class="ps-1" colspan="4">
                     </td>
                 </tr>
             @else
@@ -172,6 +177,7 @@
     <footer>
         <div style="text-align: center;">
             <em>Page <span class="page-number"></span> of <span class="page-number"></span></em>
+            <div class="mt-2"><small >Run Date: <?=date('Ymd-h:i:s')?></small></div>
         </div>
     </footer>
 </body>

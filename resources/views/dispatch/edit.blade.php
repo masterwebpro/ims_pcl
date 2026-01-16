@@ -131,7 +131,7 @@
                                     <label for="dispatch_date" class="form-label">Dispatch Date <span
                                             class="text-danger">*</span></label>
                                         <input type="date" class="form-control" id="dispatch_date"
-                                            name="dispatch_date" placeholder="Dispatch Date" value="<?=date('Y-m-d', strtotime($dispatch->dispatch_date));?>">
+                                            name="dispatch_date" placeholder="Dispatch Date" value="<?=date('Y-m-d');?>">
                                         <span class="text-danger error-msg dispatch_date_error"></span>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
