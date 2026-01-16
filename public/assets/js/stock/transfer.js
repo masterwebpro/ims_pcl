@@ -112,6 +112,7 @@ $(document).on('click', '.search-item', function() {
                 { data: 'w_code' },
                 { data: 'rcv_dtl_id', visible: false},
                 { data: 'master_id', visible: true},
+                
             ],
             "pageLength": 25,
             lengthMenu: [
