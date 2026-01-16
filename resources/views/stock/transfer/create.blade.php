@@ -49,7 +49,7 @@
                                             <input type="hidden" class="form-control" name="ref_no" id="ref_no">
                                             <label for="firstNameinput" class="form-label">Source Company <span class="text-danger">*</span></label>
                                             <select class="form-select select2 source_company" id="source_company" name="source_company">
-                                                <option value="">Select Source Company</option>
+                                                <option value="">Select Source Company</option>                                                            
                                                 <? foreach($client_list as $company) : ?>
                                                     <option value="<?=$company->id?>" ><?=$company->client_name?></option>
                                                 <? endforeach;?>
@@ -61,12 +61,12 @@
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Source Site Name <span class="text-danger">*</span></label>
                                             <select class="form-select select2 source_site" name="source_site" id="source_site">
-                                                <option value="">Select Source Site</option>
+                                                <option value="">Select Source Site</option>                                                            
                                             </select>
                                             <span class="text-danger error-msg source_site_error"></span>
                                         </div>
                                     </div>
-
+                                    
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Transaction Date <span class="text-danger">*</span></label>
@@ -77,14 +77,14 @@
                                 </div>
 
                                 <div class="row">
-
+                                    
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="firstNameinput" class="form-label">DR Num</label>
                                             <input type="text" class="form-control" placeholder="DR num" name="dr_no" id="dr_no">
                                         </div>
                                     </div>
-
+                                  
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
@@ -92,14 +92,14 @@
                                             <span class="text-danger error-msg requested_by_error"></span>
                                         </div>
                                     </div>
-
+                                
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="remarks" class="form-label">Remarks</label>
                                             <input type="text" class="form-control" name="remarks" placeholder="Remarks" id="remarks">
                                         </div>
                                     </div>
-
+                                   
                                 </div>
                             </div>
                         </div>
@@ -110,9 +110,9 @@
             </div>
             <!--end card-->
         </div>
-        <!--end col-->
-
-
+        <!--end col--> 
+        
+        
         <div class="col-xxl-12">
             <div class="card" id="demo">
                 <!--end col-->
@@ -140,17 +140,15 @@
                                         <tr class="table-active">
                                             <th scope="col" class="text-center" rowspan="2">#</th>
                                             <th scope="col" class="text-center" rowspan="2" valign="middle">Product Details</th>
-                                            <th colspan="4" class="text-center">Source Location</th>
-                                            <th colspan="4" class="text-center">Destination Location</th>
-                                            <th rowspan="2" class="text-center" valign="middle">Remarks</th>
+                                            <th rowspan="2" class="text-center" valign="middle">Item Type</th>
+                                            <th colspan="3" class="text-center">Source Location</th>
+                                            <th colspan="3" class="text-center">Destination Location</th>
                                             <th rowspan="2" class="text-center" valign="middle">Action</th>
                                         </tr>
                                         <tr class="table-active text-center" >
-                                            <th>Item Type</th>
                                             <th>Warehouse</th>
                                             <th>Location</th>
                                             <th>Inv</th>
-                                            <th>Item Type</th>
                                             <th>Warehouse</th>
                                             <th>Location</th>
                                             <th>Inv</th>
@@ -159,9 +157,9 @@
                                     <tbody id="newlink">
                                     </tbody>
                                     </table>
-
+                                    
                                 <!--end table-->
-                            </div>
+                            </div>                           
                         </div>
                         <!--end card-body-->
                     </div>
@@ -170,7 +168,7 @@
             </div>
             <!--end card-->
         </div>
-        <!--end col-->
+        <!--end col--> 
 
     </div>
     <!--end row-->
@@ -185,25 +183,25 @@
                 <h5 class="modal-title" id="exampleModalLabel">Item List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
-
+        
             <div class="modal-body">
-
+        
                 <div class="row g-3 mb-2">
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold">Source Warehouse</h6>
                         <p class="fw-medium">
                             <select class="form-select select3 source_warehouse" required="required" id="source_warehouse" name="source_warehouse">
-                                <option value="">Select Source Warehouse</option>
+                                <option value="">Select Source Warehouse</option>                                                            
                             </select>
                             <span class="text-danger error-msg source_warehouse_error"></span>
                         </p>
                     </div>
-
+    
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold"> Source Location </h6>
                         <p class="fw-medium" id="billing-name">
                             <select class="form-select select3" id="source_location" name="source_location">
-                                <option value="">No Location</option>
+                                <option value="">No Location</option>  
                             </select>
                         </p>
                     </div>
@@ -226,7 +224,7 @@
                         <button type="button" class="btn btn-warning rounded-pill" id="select-all"><i class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
                         <button type="button" class="btn btn-success rounded-pill" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
                     </div>
-                </div>
+                </div>   
 
                 <div class="table-responsive">
                     <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
@@ -243,7 +241,6 @@
                                 <th>Whse Uom</th>
                                 <th class="d-none">Rcv DTL ID</th>
                                 <th >Master ID</th>
-                                <th >Remarks</th>
                                 <!-- <th>REF1</th>
                                 <th>REF1_type</th> -->
                             </tr>
@@ -252,7 +249,7 @@
                         </tbody>
                     </table>
                 </div>
-
+                
             </div>
         </div>
     </div>

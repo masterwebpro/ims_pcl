@@ -53,7 +53,7 @@
                                     </p>
                                 </div>
                                 <!--end col-->
-                                {{-- <div class="col-lg-3 col-md-3">
+                                <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse</h6>
                                     <p class="mb-2" id="warehouse1">
                                         <input type="hidden" name="warehouse_id" id="warehouse_id" value="{{$request->warehouse}}">
@@ -62,14 +62,14 @@
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
-                                </div> --}}
+                                </div>
                                  <!--end col-->
+                            </div>
+                            <div class="row g-3 mt-1">
                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Date Withdraw <small>(YYY-mm-dd)</small></h6>
                                     <input type="text" class="form-control" name="withdraw_date" id="withdraw_date" value = "{{$request->withdraw_date}}" data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true" placeholder="Select date range">
                                 </div>
-                            </div>
-                            <div class="row g-3 mt-1">
                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Order Type </h6>
                                     <p class=" mb-2">
@@ -91,7 +91,7 @@
                                      </p>
                                 </div>
                                  <!--end col-->
-                                 <div class="col-lg-6 col-md-6">
+                                 <div class="col-lg-3 col-md-3">
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Product Name</h6>
                                     <p class="fw-medium mb-2">
                                         <input type="text" class="form-control" placeholder="Product Name" name="product_name" id="product_name" value="{{$request->product_name}}">
@@ -132,26 +132,19 @@
                         <table id="item_list" style="font-size: 12px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
                             <thead  class="table-light">
                                 <tr>
-                                    <th class="fw-medium text-center" rowspan="2">Date Withdraw</th>
-                                    <th class="fw-medium text-center" rowspan="2">Reference No</th>
-                                    <th class="fw-medium text-center" rowspan="2">Dispatch No</th>
-                                    <th class="fw-medium text-center" rowspan="2">Order No</th>
-                                    <th class="fw-medium text-center" rowspan="2">Order Type</th>
-                                    <th class="fw-medium text-center" rowspan="2">DR No</th>
-                                    <th class="fw-medium text-center" rowspan="2">Sales Invoice</th>
-                                    <th class="fw-medium text-center" rowspan="2">PO No</th>
-                                    <th class="fw-medium text-center" rowspan="2">Product Code</th>
-                                    <th class="fw-medium text-center" rowspan="2">Product Description</th>
-                                    <th class="fw-medium text-center">Withdrawal</th>
-                                    <th class="fw-medium text-center">Dispatch</th>
-                                    <th class="fw-medium text-center" rowspan="2">Lot No</th>
-                                    <th class="fw-medium text-center" rowspan="2">Expiry Date</th>
-                                    <th class="fw-medium text-center" rowspan="2">Mfg. Date</th>
-                                    <th class="fw-medium text-center" rowspan="2">Remarks</th>
-                                </tr>
-                                <tr>
+                                    <th class="fw-medium text-center">Date Withdraw</th>
+                                    <th class="fw-medium text-center">Reference No</th>
+                                    <th class="fw-medium text-center">Order No</th>
+                                    <th class="fw-medium text-center">Order Type</th>
+                                    <th class="fw-medium text-center">DR No</th>
+                                    <th class="fw-medium text-center">Sales Invoice</th>
+                                    <th class="fw-medium text-center">PO No</th>
+                                    <th class="fw-medium text-center">Product Code</th>
+                                    <th class="fw-medium text-center">Product Description</th>
                                     <th class="fw-medium text-center" width="110px;">Inv / UOM</th>
-                                    <th class="fw-medium text-center" width="110px;">Inv / UOM</th>
+                                    <th class="fw-medium text-center">Lot No</th>
+                                    <th class="fw-medium text-center">Expiry Date</th>
+                                    <th class="fw-medium text-center">Mfg. Date</th>
                                 </tr>
                             </thead>
 

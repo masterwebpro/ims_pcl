@@ -30,7 +30,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/receive/{id}/create', [App\Http\Controllers\ReceiveController::class, 'receivePo']);
     Route::delete('/receive', [App\Http\Controllers\ReceiveController::class, 'destroy']);
     Route::post('/receive/unpost', [App\Http\Controllers\ReceiveController::class, 'unpost']);
-    Route::post('/receive/modify', [App\Http\Controllers\ReceiveController::class, 'updateRow']);
 
     Route::resource('/do', App\Http\Controllers\DeliveryOrderController::class);
 
@@ -91,8 +90,6 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
     Route::get('/getProductAttribute', [App\Http\Controllers\SettingsController::class, 'getProductAttribute']);
     Route::get('/getLevel', [App\Http\Controllers\SettingsController::class, 'getLevel']);
     Route::get('/getStorageLocationId', [App\Http\Controllers\SettingsController::class, 'getStorageLocation']);
-    Route::get('/itemType', [App\Http\Controllers\SettingsController::class, 'getItemType']);
-
 
     Route::get('/masterfile', [App\Http\Controllers\SettingsController::class, 'getMasterfileData']);
     Route::get('/newLocation/{warehouse_id}', [App\Http\Controllers\SettingsController::class, 'getNewLocation']);
@@ -111,7 +108,6 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function () {
 
     Route::get('/getAllPostedDO', [App\Http\Controllers\SettingsController::class, 'getAllPostedDo']);
     Route::get('/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAvailableStocks']);
-    Route::post('/aggrid/getAvailableStocks', [App\Http\Controllers\SettingsController::class, 'getAgGridAvailableStocks']);
     Route::get('/getAvailableItems', [App\Http\Controllers\SettingsController::class, 'getAvailableItems']);
     Route::get('/getParticulars', [App\Http\Controllers\SettingsController::class, 'getParticulars']);
     Route::get('/getAllPostedDispatch', [App\Http\Controllers\SettingsController::class, 'getAllPostedDispatch']);
@@ -173,7 +169,6 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/inventory-reserve', [App\Http\Controllers\ReportController::class, 'getInventoryAdjustment'])->name('reports.inventory-adjustment');
     Route::get('/export-reserve-monitoring', [App\Http\Controllers\ReportController::class, 'exportInventoryAdjustment'])->name('reports.export-reserve-monitoring');
 
-    Route::get('/audit-logs', [App\Http\Controllers\AuditLogsController::class, 'index'])->name('reports.audit-logs');
 });
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {

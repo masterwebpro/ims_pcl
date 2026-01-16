@@ -31,7 +31,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Client Name <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="client" name="client">
-                                            <option value="">Select Client</option>
+                                            <option value="">Select Client</option>                                                            
                                             <? foreach($client_list as $client) : ?>
                                                 <option value="<?=$client->id?>" ><?=$client->client_name?></option>
                                             <? endforeach;?>
@@ -44,7 +44,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Site Address <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>
+                                            <option value="">Select Store/Warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -54,7 +54,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Warehouse</h6>
                                     <p class="mb-2">
                                         <select class="form-select select2" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>
+                                            <option value="">Select warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
@@ -64,7 +64,7 @@
                                     <h6 class="text-muted text-uppercase fw-semibold mb-3">Location</h6>
                                     <p class="mb-2" >
                                         <select class="form-select select2" id="location" name="location">
-                                            <option value="">Select Location</option>
+                                            <option value="">Select Location</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg location_error"></span>
                                     </p>
@@ -80,9 +80,9 @@
                                         placeholder="Select date range" data-maxDate="<?=date('Y-m-d')?>"
                                        >
                                         <span class="text-danger error-msg date_range_error"></span>
-
+                                  
                                 </div>
-
+                                
                                  <div class="col-lg-5 col-md-4 ">
                                     <h6 class="text-muted text-uppercase fw-semibold">Products <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
@@ -96,10 +96,9 @@
                                     <h6 class="text-muted text-uppercase fw-semibold ">Item Type <span class="text-danger">*</span></h6>
                                     <p class=" mb-2">
                                         <select class="form-select select2" id="item_type" name="item_type">
-                                            <option value="">Select Item Type</option>
-                                            @foreach ($item_type as $item)
-                                                <option value="{{ $item->code }}">{{ $item->name }}</option>
-                                            @endforeach
+                                            <option value="good">Good</option>   
+                                            <option value="damage">Damage</option>   
+                                            <option value="repair">Repair</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg item_type_error"></span>
                                     </p>
@@ -148,9 +147,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                                
                             </tbody>
-
+                           
                         </table>
                     </div>
                 </div>

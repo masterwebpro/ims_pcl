@@ -43,7 +43,7 @@
                                     <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
                                 <? endif ;?>
                             <? endif ;?>
-
+                           
                         <? endif;?>
 
                         <? if(in_array($mv_hdr->status, array('posted', 'closed'))) : ?>
@@ -64,7 +64,6 @@
 <!--end row-->
 
 <form name="submit-receive" id="submit-receive">
-    @csrf
     <div class="row justify-content-center">
         <div class="col-xxl-12">
             <div class="card">
@@ -78,7 +77,7 @@
                                     <p class="fw-medium mb-2" id="billing-name">
                                         <input type="hidden" name="company_id" id="company_id" value="<?=$mv_hdr->company_id?>" />
                                         <select class="form-select select" disabled required="required" id="company" name="company">
-                                            <option value="">Select Company</option>
+                                            <option value="">Select Company</option>                                                            
                                             <? foreach($client_list as $client) : ?>
                                                 <option value="<?=$client->id?>" <?=($client->id == $mv_hdr->company_id) ? 'selected': ''; ?> ><?=$client->client_name?></option>
                                             <? endforeach;?>
@@ -92,7 +91,7 @@
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <input type="hidden" name="store_id" id="store_id" value="<?=$mv_hdr->store_id?>" />
                                         <select class="form-select select" disabled required="required" id="store" name="store">
-                                            <option value="">Select Store/Warehouse</option>
+                                            <option value="">Select Store/Warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg store_error"></span>
                                     </p>
@@ -103,7 +102,7 @@
                                     <p class="fw-medium mb-2" id="shipping-name">
                                         <input type="hidden" name="warehouse_id" id='warehouse_id' value="<?=$mv_hdr->warehouse_id?>" />
                                         <select class="form-select select" disabled required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>
+                                            <option value="">Select warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </p>
@@ -130,7 +129,7 @@
                         <div class="row ms-3 mt-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">PO Number</label> 
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" id="po_num" name="po_num" value="" placeholder="PO Number">
                                         <span class="text-danger error-msg po_num_error"></span>
@@ -148,15 +147,15 @@
                             </div>
                         </div>
                     </div>
-
+                    
                     <div class="col-lg-12 mt-3 d-none">
                         <div class="row ms-3 mx-3">
                             <div class="col-lg-6 col-md-6">
                                 <div class="row">
-                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label>
+                                    <label for="colFormLabel" class="col-lg-4 col-form-label">Warehouse <span class="text-danger">*</span></label> 
                                     <div class="col-lg-8">
                                         <select class="form-select select2" required="required" id="warehouse" name="warehouse">
-                                            <option value="">Select warehouse</option>
+                                            <option value="">Select warehouse</option>                                                            
                                         </select>
                                         <span class="text-danger error-msg warehouse_error"></span>
                                     </div>
@@ -189,7 +188,7 @@
                                         <input type="text" class="form-control" aria-label="Recipient's username with two button addons">
                                         <button class="btn btn-warning" id="find-items" type="button"><i class="ri-book-read-line label-icon align-middle rounded-pill fs-16 me-2"></i> Find Item</button>
                                     </div>
-                                </div>
+                                </div> 
 
                                 <div id="errMsg" class="d-none">
                                     <div class="alert alert-danger">
@@ -198,38 +197,27 @@
                                         </ul>
                                     </div>
                                 </div>
-
+                                
                                 <div class="table-responsive">
                                     <table class="table table-nowrap table-bordered movement" id="product-list">
                                         <thead>
                                             <tr class="table-active">
                                                 <th scope="col" class="text-center align-middle" rowspan="2">#</th>
                                                 <th scope="col" class="text-center" rowspan="2" valign="middle">Product Deatails</th>
-                                                <th colspan="3" class="text-center">Old Location</th>
-                                                <th colspan="3" class="text-center">Target Location</th>
-                                                <th rowspan="2" class="text-center" valign="middle">Remarks</th>
+                                                <th rowspan="2" class="text-center" valign="middle">Item Type</th>
+                                                <th colspan="2" class="text-center">Old Location</th>
+                                                <th colspan="2" class="text-center">Target Location</th>
                                                 <th rowspan="2" class="text-center" valign="middle">Action</th>
                                             </tr>
                                             <tr class="table-active text-center" >
-                                                <th>Item Type</th>
                                                 <th>Location</th>
                                                 <th >Inv</th>
-                                                <th>Item Type</th>
                                                 <th>Location</th>
                                                 <th>Inv</th>
                                             </tr>
                                         </thead>
                                         <tbody id="newlink">
-                                            <? if($mv_dtl) :
-                                            $x=0;
-                                            $groupedTotals = $mv_dtl->groupBy(function($item) {
-                                                return $item->master_id . '-' . $item->product_id;
-                                            })->map(function($group) {
-                                                return [
-                                                    'old_total' => $group->first()->old_inv_qty,
-                                                ];
-                                            });
-                                            ?>
+                                            <? if($mv_dtl) :  $x=0?>
                                                 <? foreach($mv_dtl as $dtl) : ?>
                                                     <tr class="" id="product_<?=$x?>" >
                                                         <td>
@@ -258,12 +246,6 @@
                                                             <span class="text-danger error-msg old_inv_qty<?=($x)?>_error"></span>
                                                         </td>
                                                         <td>
-                                                            <select name="new_item_type[]"  style="width: 120px;"  id="new_item_type_<?=($x)?>" class="form-select" style="width: 120px;">
-                                                                <?=$stock->getNewItemType($dtl->new_item_type);?>
-                                                            </select>
-                                                            <span class="text-danger error-msg new_item_type<?=($x)?>_error"></span>
-                                                        </td>
-                                                        <td>
                                                             <select name="new_location[]"  style="width: 120px;"  id="new_location_<?=($x)?>" class="form-select" style="width: 120px;">
                                                                 <?=$stock->getNewLocation($mv_hdr->warehouse_id, $dtl->new_storage_location_id);?>
                                                             </select>
@@ -277,9 +259,6 @@
                                                             </div>
                                                             <span class="text-danger error-msg new_inv_qty<?=($x)?>_error"></span>
                                                         </td>
-                                                        <td class="ps-1">
-                                                            <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]" value="{{ $dtl->remarks }}" placeholder="Remarks" />
-                                                        </td>
                                                         <td>
                                                             <div class="text-center">
                                                                 <a href="javascript:void(0)" class="text-info split-product" data-id="<?=$x?>"><i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>
@@ -291,7 +270,7 @@
                                                     <?$x++?>
 
                                                 <? endforeach;?>
-
+                                            
                                             <? else : ?>
                                                 <tr class="text-center" >
                                                     <td colspan="8">
@@ -300,22 +279,13 @@
                                                         </div>
                                                     </td>
                                                 </tr>
-
+                                            
                                             <? endif;?>
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td colspan="4" class="text-end">Total</td>
-                                                <td class="text-center" id="total"><?=($mv_dtl) ? number_format($groupedTotals->sum('old_total'),2) : 0?></td>
-                                                <td colspan="2"></td>
-                                                <td class="text-center" id="new_total"><?=($mv_dtl) ? number_format($mv_dtl->sum('new_inv_qty'),2) : 0?></td>
-                                                <td colspan="2"></td>
-                                            </tr>
-                                        </tfoot>
                                     </table>
-
+                                        
                                     <!--end table-->
-                                </div>
+                                </div>                           
                             </div>
                             <!--end card-body-->
                         </div>
@@ -338,9 +308,9 @@
                     <h5 class="modal-title" id="exampleModalLabel">Product List</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
                 </div>
-
+            
                 <div class="modal-body">
-
+            
                     <div class="row g-3">
                         <div class="col-3">
                             <h6 class="text-muted text-uppercase fw-semibold">Receiving #</h6>
@@ -353,13 +323,13 @@
                             <h6 class="text-muted text-uppercase fw-semibold">Rack </h6>
                             <p class="fw-medium" id="billing-name">
                                 <select class="form-select" id="rack" name="rack">
-                                    <option value="">Select Rack</option>
+                                    <option value="">Select Rack</option>  
                                     <? foreach($location as $location_id=>$racks) : ?>
                                         <? foreach($racks as $rack=>$layers) : ?>
-                                            <option value="<?=$rack?>"><?=$rack?></option>
+                                            <option value="<?=$rack?>"><?=$rack?></option>  
                                         <? endforeach;?>
                                     <? endforeach;?>
-
+                                
                                 </select>
                             </p>
                         </div>
@@ -368,7 +338,7 @@
                             <h6 class="text-muted text-uppercase fw-semibold">Layer</h6>
                             <p class="fw-medium" id="billing-name">
                                 <select class="form-select"  id="layer" name="layer">
-                                    <option value="">Select layer</option>
+                                    <option value="">Select layer</option>   
                                 </select>
                             </p>
                         </div>
@@ -379,7 +349,7 @@
                                 <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
                             </p>
                         </div>
-                    </div>
+                    </div>   
 
                     <table class="table align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
                         <thead class="table-light">
@@ -399,7 +369,7 @@
                         <tbody>
                         </tbody>
                     </table>
-
+                    
                 </div>
                 <div class="modal-footer">
                     <div class="hstack gap-2 justify-content-end">

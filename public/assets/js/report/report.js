@@ -182,7 +182,6 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                         table += '<tr>';
                             table += "<td width='120px;'>"+moment(new Date(item.withdraw_date)).format("DD MMM YYYY") +"</td>";
                             table += "<td width='120px;'>"+item.wd_no+"</td>";
-                            table += "<td width='120px;'>"+(item.dispatch_no ?? '')+"</td>";
                             table += "<td width='120px;'>"+item.order_no+"</td>";
                             table += "<td width='120px;'>"+item.order_type+"</td>";
                             table += "<td width='120px;'>"+item.dr_no+"</td>";
@@ -191,11 +190,9 @@ $(document).on('click', '.submit-withdrawal-search', function(e) {
                             table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
                             table += "<td class='text-center text-nowrap'>"+item.inv_qty+" / "+item.ui_code+"</td>";
-                            table += "<td class='text-center text-nowrap'>"+((item.qty) ?? 0)+" / "+item.ui_code+"</td>";
                             table += "<td class='text-center'>"+(item.lot_no ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(item.remarks ?? '')+"</td>";
                         table += '</tr>';
                     });
 
