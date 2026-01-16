@@ -19,7 +19,6 @@ use App\Models\Supplier;
 use App\Models\UOM;
 use App\Models\TruckType;
 use App\Models\AuditTrail;
-use App\Models\ItemType;
 
 use DataTables;
 
@@ -89,22 +88,20 @@ class ReceiveController extends Controller
         $warehouse_list = Warehouse::all();
 
         $uom = UOM::all();
-        $item_type = ItemType::all();
 
         return view('receive/create', [
-            'client_list'=>$client_list,
+            'client_list'=>$client_list, 
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
-            'uom'=>$uom,
-            'item_type' => $item_type
+            'uom'=>$uom
         ]);
     }
 
     public function store(Request $request)
     {
-
+        
         $validator = Validator::make($request->all(), [
             'supplier'=>'required',
             'customer'=>'required',
@@ -157,7 +154,7 @@ class ReceiveController extends Controller
 
         DB::connection()->beginTransaction();
 
-        try
+        try 
         {
             $rcv_no = $request->rcv_no;
 
@@ -180,7 +177,7 @@ class ReceiveController extends Controller
 
             $date_arrived = date("Y-m-d", strtotime($request->date_arrived))." ".date("H:i:s", strtotime($request->time_arrived));
             $date_departed = date("Y-m-d", strtotime($request->date_departed))." ".date("H:i:s", strtotime($request->time_departed));
-
+                
             $rcv = RcvHdr::updateOrCreate(['rcv_no' => $rcv_no], [
                 'po_num'=>$request->po_num,
                 'store_id'=>$request->store,
@@ -213,7 +210,7 @@ class ReceiveController extends Controller
             $result= RcvDtl::where('rcv_no',$rcv_no)->delete();
 
             $has_error = [];
-
+            
             for($x=0; $x < count($request->product_id); $x++ ) {
 
                 if($_hasPo) {
@@ -225,7 +222,7 @@ class ReceiveController extends Controller
                         exit;
                     }
                 }
-
+                
                 $item = array(
                     'rcv_no'=>$rcv_no,
                     'product_id'=>$request->product_id[$x],
@@ -284,7 +281,7 @@ class ReceiveController extends Controller
                     // 'manufacture_date'=>$request->manufacture_date[$x],
                     // 'lot_no'=>$request->lot_no[$x],
                     'rcv_dtl_id'=>$rcv_dtl->id,
-                    // 'received_date'=>date("Y-m-d H:i:s", strtotime($request->date_received)),
+                    // 'received_date'=>date("Y-m-d H:i:s", strtotime($request->date_received)), 
                 );
             }
 
@@ -298,7 +295,7 @@ class ReceiveController extends Controller
                 'data' => null
             ];
 
-
+          
             if($request->status == 'posted') {
                 //add on the masterfile
                 MasterfileModel::insert($masterfile);
@@ -320,7 +317,7 @@ class ReceiveController extends Controller
                         PoHdr::where('po_num', '=', $request->po_num)->update(['status'=>'closed']);
                     }
                 }
-
+                
                 $audit_trail[] = [
                     'control_no' => $rcv_no,
                     'type' => 'masterfile',
@@ -330,7 +327,7 @@ class ReceiveController extends Controller
                     'user_id' => Auth::user()->id,
                     'data' => json_encode(array('comment' => 'Location: floor'))
                 ];
-
+                
             }
 
             AuditTrail::insert($audit_trail);
@@ -351,7 +348,7 @@ class ReceiveController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }
+        }      
     }
 
     public function show($id)
@@ -359,23 +356,21 @@ class ReceiveController extends Controller
         $rcv = RcvHdr::select('rcv_hdr.*', 'u.name')
         ->leftJoin('users as u', 'u.id', '=', 'rcv_hdr.created_by')
         ->where('rcv_hdr.id', _decode($id))->first();
-
+        
         $uom_list = UOM::all();
         $truck_type_list = TruckType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
-        $item_type = ItemType::all();
 
         return view('receive/view', [
-            'rcv'=>$rcv,
-            'client_list'=>$client_list,
+            'rcv'=>$rcv, 
+            'client_list'=>$client_list, 
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
-            'item_type' => $item_type,
             'uom_list'=>$uom_list]);
     }
 
@@ -390,22 +385,21 @@ class ReceiveController extends Controller
         $rcv = RcvHdr::select('rcv_hdr.*', 'u.name')
         ->leftJoin('users as u', 'u.id', '=', 'rcv_hdr.created_by')
         ->where('rcv_hdr.id', _decode($id))->first();
-
+        
         $uom_list = UOM::all();
         $truck_type_list = TruckType::all();
         $store_list = Store::all();
         $supplier_list = Supplier::all();
         $client_list = Client::where('is_enabled', '1')->get();
         $warehouse_list = Warehouse::all();
-        $item_type = ItemType::all();
+
         return view('receive/edit', [
-            'rcv'=>$rcv,
-            'client_list'=>$client_list,
+            'rcv'=>$rcv, 
+            'client_list'=>$client_list, 
             'store_list'=>$store_list,
             'supplier_list'=>$supplier_list,
             'truck_type_list'=>$truck_type_list,
             'warehouse_list'=>$warehouse_list,
-            'item_type' => $item_type,
             'uom_list'=>$uom_list]);
     }
 
@@ -422,10 +416,10 @@ class ReceiveController extends Controller
             $supplier_list = Supplier::all();
             $client_list = Client::where('is_enabled', '1')->get();
             $warehouse_list = Warehouse::all();
-
+    
             return view('receive/po', [
-                'po'=>$po,
-                'client_list'=>$client_list,
+                'po'=>$po, 
+                'client_list'=>$client_list, 
                 'supplier_list'=>$supplier_list,
                 'truck_type_list'=>$truck_type_list,
                 'uom_list'=>$uom_list
@@ -460,7 +454,7 @@ class ReceiveController extends Controller
     {
         DB::connection()->beginTransaction();
 
-        try
+        try 
         {
             $rcv_no = $request->rcv_no;
             if($rcv_no) {
@@ -469,7 +463,7 @@ class ReceiveController extends Controller
                 $rcv_dtl = RcvDtl::where('rcv_no', $rcv_no)->delete();
                 $po = PoHdr::where('po_num', $rcv_hdr->po_num)->update(['status'=>'posted']);
 
-
+                
                 $audit_trail[] = [
                     'control_no' => $rcv_no,
                     'type' => 'RCV',
@@ -506,13 +500,13 @@ class ReceiveController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }
+        }   
     }
 
     public function unpost(Request $request)
     {
         DB::connection()->beginTransaction();
-        try
+        try 
         {
             $rcv_no = $request->rcv_no;
             if($rcv_no) {
@@ -538,7 +532,7 @@ class ReceiveController extends Controller
                         'whse_uom'=>$dtl->whse_uom,
                         'expiry_date'=>$dtl->expiry_date,
                         'lot_no'=>$dtl->lot_no,
-                        'received_date'=>date("Y-m-d", strtotime($dtl->date_received)),
+                        'received_date'=>date("Y-m-d", strtotime($dtl->date_received)), 
                     );
                 }
                 //check if has movement
@@ -557,7 +551,7 @@ class ReceiveController extends Controller
                             'message' => 'Unable to unpost the transaction! Still have active PUTAWAY.',
                             'data'    => $rcv_no
                         ]);
-
+    
                     } else {
                         $rcv = RcvHdr::where('rcv_no', $rcv_no)->update(['status'=>'open']);
                         //remove on MW HDR and DTL
@@ -604,34 +598,6 @@ class ReceiveController extends Controller
                 'message' => 'Unable to process request. Please try again.',
                 'data'    => $e->getMessage()
             ]);
-        }
-    }
-
-    public function updateRow(Request $request)
-    {
-        if(!$request->id) {
-            return response()->json([
-                'success'  => false,
-                'message' => 'Row ID is required.',
-                'data'    => null
-            ]);
-        }
-        try {
-            $rcv_dtl = RcvDtl::findOrFail($request->id);
-            $rcv_dtl->update($request->only('manufacture_date', 'lot_no', 'expiry_date','remarks'));
-
-            return response()->json([
-                'success'  => true,
-                'message' => 'Row updated successfully!',
-                'data'    => $rcv_dtl
-            ]);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success'  => false,
-                'message' => 'Row not found.',
-                'data'    => null
-            ]);
-        }
-
+        }   
     }
 }

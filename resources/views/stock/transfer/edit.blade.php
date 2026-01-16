@@ -38,9 +38,9 @@
                     <button data-status="delete" class="submit-delete  btn btn-danger btn-label rounded-pill"><i class="ri-delete-bin-line label-icon align-middle rounded-pill fs-16 me-2"></i> Delete</button>
                 <? endif ;?>
             <? endif ;?>
-        <? endif;?>
-
-        <a href="{{ URL::to('stock/transfer') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>
+        <? endif;?>  
+        
+        <a href="{{ URL::to('stock/transfer') }}" class="btn btn-primary btn-label rounded-pill"><i class="ri-arrow-go-back-line label-icon align-middle rounded-pill fs-16 me-2"></i> Back</a>   
     </div>
     <!--end col-->
 </div>
@@ -53,9 +53,9 @@
             <div class="card-header border-0">
                 <div class="d-flex align-items-center">
                     <h5 class="card-title mb-0 flex-grow-1"><?=$transfer_hdr->ref_no?> </h5>
-
+                    
                     <div class="d-flex flex-wrap gap-2 mb-3 mb-lg-0">
-
+                        
                     </div>
                 </div>
             </div>
@@ -67,7 +67,6 @@
 <!--end row-->
 
 <form name="submit-transfer" id="submit-transfer">
-    @csrf
     <div class="row">
         <div class="col-xxl-12">
             <div class="card">
@@ -81,7 +80,7 @@
                                             <input type="hidden" class="form-control" name="ref_no" id="ref_no" value="{{$transfer_hdr->ref_no}}">
                                             <label for="source_company" class="form-label">Source Company <span class="text-danger">*</span></label>
                                             <select class="form-select select2 source_company" id="source_company" name="source_company">
-                                                <option value="">Select Source Company</option>
+                                                <option value="">Select Source Company</option>                                                            
                                                 <? foreach($client_list as $company) : ?>
                                                     <option value="<?=$company->id?>" <?=($company->id == $transfer_hdr->source_company_id) ? 'selected': ''; ?> ><?=$company->client_name?></option>
                                                 <? endforeach;?>
@@ -94,12 +93,12 @@
                                             <label for="transaction_date" class="form-label">Source Site Name <span class="text-danger">*</span></label>
                                             <input type="hidden" class="form-control" name="store_id" id="store_id" value="{{$transfer_hdr->source_store_id}}">
                                             <select class="form-select select2 source_site" name="source_site" id="source_site">
-                                                <option value="">Select Source Site</option>
+                                                <option value="">Select Source Site</option>                                                            
                                             </select>
                                             <span class="text-danger error-msg source_site_error"></span>
                                         </div>
                                     </div>
-
+                                    
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Transaction Date <span class="text-danger">*</span></label>
@@ -110,14 +109,14 @@
                                 </div>
 
                                 <div class="row">
-
+                                    
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="firstNameinput" class="form-label">DR Num</label>
                                             <input type="text" class="form-control" placeholder="DR num"  value="{{$transfer_hdr->dr_no}}"  name="dr_no" id="dr_no">
                                         </div>
                                     </div>
-
+                                  
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
@@ -125,14 +124,14 @@
                                             <span class="text-danger error-msg requested_by_error"></span>
                                         </div>
                                     </div>
-
+                                
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="remarks" class="form-label">Remarks</label>
                                             <input type="text" class="form-control" name="remarks"  value="{{$transfer_hdr->remarks}}" placeholder="Remarks" id="remarks">
                                         </div>
                                     </div>
-
+                                   
                                 </div>
                             </div>
                         </div>
@@ -143,9 +142,9 @@
             </div>
             <!--end card-->
         </div>
-        <!--end col-->
-
-
+        <!--end col--> 
+        
+        
         <div class="col-xxl-12">
             <div class="card" id="demo">
                 <!--end col-->
@@ -173,31 +172,25 @@
                                         <tr class="table-active">
                                             <th scope="col" class="text-center align-middle" rowspan="2">#</th>
                                             <th scope="col" class="text-center" rowspan="2" valign="middle">Product Details</th>
-                                            <th colspan="4" class="text-center">Source Location</th>
-                                            <th colspan="4" class="text-center">Destination Location</th>
-                                            <th rowspan="2" class="text-center" valign="middle">Remarks</th>
+                                            <th rowspan="2" class="text-center" valign="middle">Item Type</th>
+                                            <th colspan="3" class="text-center">Source Location</th>
+                                            <th colspan="3" class="text-center">Destination Location</th>
                                             <th rowspan="2" class="text-center" valign="middle">Action</th>
+                                        </tr>
                                         <tr class="table-active text-center" >
-                                            <th>Item Type</th>
                                             <th>Warehouse</th>
                                             <th>Location</th>
                                             <th>Inv</th>
-                                            <th>Item Type</th>
                                             <th>Warehouse</th>
                                             <th>Location</th>
                                             <th>Inv</th>
                                         </tr>
                                     </thead>
                                     <tbody id="newlink">
-                                        <?
+                                        <? 
                                         $i=1;
-                                        $groupedTotals = $transfer_dtl->groupBy(function($item) {
-                                            return $item->master_id . '-' . $item->product_id;
-                                        })->map(function($group) {
-                                            return [
-                                                'old_total' => $group->first()->source_inv_qty,
-                                            ];
-                                        });
+
+                                        // dd($transfer_dtl);
                                         foreach($transfer_dtl as $dtl) : ?>
                                         <tr id="R{{$i}}">
                                             <td class="text-start">
@@ -209,8 +202,8 @@
                                                 <input type="hidden" name="product_name[]" readonly id="product_name_{{$dtl->id}}" value="{{$dtl->item->product_name}}" />
                                                 <input type="hidden" name="product_code[]" readonly id="product_code_{{$dtl->id}}" value="{{$dtl->item->product_code}}'" />
 
-                                                {{$i}}
-                                            </td>
+                                                {{$i}} 
+                                            </td> 
                                             <td class="text-start  fs-13">
                                                 {{$dtl->item->product_name}}<br><small><?=($dtl->item->sap_code) ? $dtl->item->sap_code : $dtl->item->product_code; ?></small>
                                             </td>
@@ -218,7 +211,7 @@
                                                 <input type="hidden" readonly="" class="form-control" name="item_type[]" data-id="good" id="item_type_{{$dtl->id}}" value="{{$dtl->source_item_type}}">
                                             </td>
                                             <td class="text-center ps-1 fs-13">
-                                                {{$dtl->source_warehouse->warehouse_name}}
+                                                {{$dtl->source_warehouse->warehouse_name}}                
                                                 <input type="hidden" readonly="" class="form-control" name="source_warehouse[]" id="source_warehouse_{{$dtl->id}}" value="{{$dtl->source_warehouse_id}}">
                                             </td>
                                             <td class="text-center ps-1 fs-13">
@@ -232,15 +225,6 @@
                                                 <span class="input-group-text">{{$dtl->source_uom->code}}</span>
                                                 </div>
                                                 <span class="text-danger error-msg old_inv_qty0_error"></span>
-                                            </td>
-                                            <td>
-                                                <select name="dest_item_type[]"  style="width: 120px;"  id="dest_item_type_<?=($i)?>" class="form-select" style="width: 120px;">
-                                                    <option value="">Item Type</option>
-                                                    @foreach ($item_type as $item)
-                                                        <option value="{{ $item->code }}" <?=($item->code == $dtl->dest_item_type) ? 'selected' : '' ?>>{{ $item->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="text-danger error-msg dest_item_type<?=($i)?>_error"></span>
                                             </td>
                                             <td class="text-center ps-1 fs-13">
                                                 <input type="hidden"  class="form-control destWarehouseId" data-id="{{$dtl->id}}" id="{{$dtl->id}}" name="destWarehouseId[]" value="{{$dtl->dest_warehouse_id}}">
@@ -261,19 +245,16 @@
                                             </td>
                                             <td class="text-start ps-1">
                                                 <div class="input-group" style="width: 140px;">
-                                                    <input type="text" class="form-control dest_inv_qty numeric transfer_item" name="dest_inv_qty[]" data-id="{{$dtl->id}}" id="dest_inv_qty_{{$dtl->id}}" value="{{$dtl->dest_inv_qty}}">
+                                                    <input type="text" class="form-control new_inv_qty numeric transfer_item" name="dest_inv_qty[]" data-id="{{$dtl->id}}" id="dest_inv_qty_{{$dtl->id}}" value="{{$dtl->dest_inv_qty}}">
                                                     <input type="hidden" readonly="" class="form-control" name="dest_inv_uom[]" data-id="{{$dtl->id}}" id="dest_inv_uom_{{$dtl->id}}" value="{{$dtl->dest_inv_uom}}">
                                                     <span class="input-group-text">{{$dtl->dest_uom->code}}</span>
                                                 </div>
                                                 <span class="text-danger error-msg dest_inv_qty0_error"></span>
                                             </td>
-                                            <td class="ps-1">
-                                                <input type="text" class="form-control" style="width: 150px;" name="item_remarks[]" value="{{ $dtl->remarks }}" placeholder="Remarks" />
-                                            </td>
                                             <td>
                                                 <div class="text-center">
                                                     <a href="javascript:void(0)" class="text-info split-product" data-id="0">
-                                                        <i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>&nbsp;
+                                                        <i class=" ri-menu-add-line label-icon align-middle rounded-pill fs-16 me-2"></i>Split</a>&nbsp; 
                                                     <a href="javascript:void(0)" class="text-danger remove-product" data-id="0">
                                                         <i class="ri-delete-bin-5-fill label-icon align-middle rounded-pill fs-16 me-2"></i></a>
                                                 </div>
@@ -281,19 +262,10 @@
                                         </tr>
                                         <? $i++; endforeach; ?>
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="5" class="text-end">Total</td>
-                                            <td class="text-center" id="total"><?=($transfer_dtl) ? number_format($groupedTotals->sum('old_total'),2) : 0?></td>
-                                            <td colspan="3"></td>
-                                            <td class="text-center" id="new_total"><?=($transfer_dtl) ? number_format($transfer_dtl->sum('dest_inv_qty'),2) : 0?></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
                                     </table>
-
+                                    
                                 <!--end table-->
-                            </div>
+                            </div>                           
                         </div>
                         <!--end card-body-->
                     </div>
@@ -302,7 +274,7 @@
             </div>
             <!--end card-->
         </div>
-        <!--end col-->
+        <!--end col--> 
 
     </div>
     <!--end row-->
@@ -317,105 +289,25 @@
                 <h5 class="modal-title" id="exampleModalLabel">Item List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
-
+        
             <div class="modal-body">
-
-                <div class="row g-3 mb-2">
-                    <div class="col-3">
-                        <h6 class="text-muted text-uppercase fw-semibold">Source Warehouse</h6>
-                        <p class="fw-medium">
-                            <select class="form-select select3 source_warehouse" required="required" id="source_warehouse" name="source_warehouse">
-                                <option value="">Select Source Warehouse</option>
-                            </select>
-                            <span class="text-danger error-msg source_warehouse_error"></span>
-                        </p>
-                    </div>
-
-                    <div class="col-3">
-                        <h6 class="text-muted text-uppercase fw-semibold"> Source Location </h6>
-                        <p class="fw-medium" id="billing-name">
-                            <select class="form-select select3" id="source_location" name="source_location">
-                                <option value="">No Location</option>
-                            </select>
-                        </p>
-                    </div>
-
-                    <div class="col-3">
-                        <h6 class="text-muted text-uppercase fw-semibold"> Product Name OR Code</h6>
-                        <p class="fw-medium">
-                            <input type="text" class="form-control" placeholder="Product Name or Code" id="product_name">
-                        </p>
-                    </div>
-
-
-                    <div class="col-3">
-                        <h6 class="text-muted text-uppercase fw-semibold">&nbsp;</h6>
-                        <p class="fw-medium">
-                            <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
-                        </p>
-                    </div>
-                    <div class="col-12 hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-warning rounded-pill" id="select-all"><i class="ri-check-double-fill label-icon align-middle rounded-pill fs-16 me-2"></i> Select All</button>
-                        <button type="button" class="btn btn-success rounded-pill" id="add-product"><i class="ri-add-line label-icon align-middle rounded-pill fs-16 me-2"></i> Add Selected</button>
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
-                        <thead class="table-light">
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>Product Code</th>
-                                <th>Product Name</th>
-                                <th>Location</th>
-                                <th>Item Type</th>
-                                <th>Inv Qty</th>
-                                <th>Inv Uom</th>
-                                <th>Whse qty</th>
-                                <th>Whse Uom</th>
-                                <th class="d-none">Rcv DTL ID</th>
-                                <th >Master ID</th>
-                                <th >Remarks</th>
-                                <!-- <th>REF1</th>
-                                <th>REF1_type</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- <div class="modal" id="show-items" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabel">Item List</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
-            </div>
-
-            <div class="modal-body">
-
+        
                 <div class="row g-3">
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold">Source Warehouse</h6>
                         <p class="fw-medium">
                             <select class="form-select select3 source_warehouse" required="required" id="source_warehouse" name="source_warehouse">
-                                <option value="">Select Source Warehouse</option>
+                                <option value="">Select Source Warehouse</option>                                                            
                             </select>
                             <span class="text-danger error-msg source_warehouse_error"></span>
                         </p>
                     </div>
-
+    
                     <div class="col-3">
                         <h6 class="text-muted text-uppercase fw-semibold"> Source Location </h6>
                         <p class="fw-medium" id="billing-name">
                             <select class="form-select select3" id="source_location" name="source_location">
-                                <option value="">No Location</option>
+                                <option value="">No Location</option>  
                             </select>
                         </p>
                     </div>
@@ -434,7 +326,7 @@
                             <button data-status="open" class="search-item btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search </button>
                         </p>
                     </div>
-                </div>
+                </div>   
 
                 <div class="table-responsive">
                     <table class="table table-nowrap table-bordered align-middle" width="100%" style="font-size: 12px;" id="show-items-list">
@@ -452,13 +344,13 @@
                                 <th>Rcv DTL ID</th>
                                 <!-- <th>REF1</th>
                                 <th>REF1_type</th> -->
-                            {{-- </tr>
+                            </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                 </div>
-
+                
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
@@ -467,7 +359,7 @@
             </div>
         </div>
     </div>
-</div> --> --}}
+</div>
 
 
 	@endsection

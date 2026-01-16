@@ -40,7 +40,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
     var product_id = $('#product_id').val();
     var location = $('#location').val();
     var date_range = $('#date_picker').val();
-
+   
     $.ajax({
         url: BASEURL + 'reports/getStockLedger',
         method: 'get',
@@ -64,9 +64,9 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                 if(data.success == true) {
                     var res = data.result;
                     var table = '';
-
+                   
                     beggining_balance= 0;
-
+                    
                     if(data.beg_balance[0]) {
                         if(data.beg_balance[0].inv_qty)
                             beggining_balance = data.beg_balance[0].inv_qty;
@@ -74,8 +74,8 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
 
                     table += '<tr>';
                         table += "<td colspan='9' class='fw-medium'>Begginning Qty</td>";
-
-                        table += "<td class='text-end fw-bold'>"+beggining_balance+"</td>";
+                    
+                        table += "<td class='text-end fw-bold'>"+beggining_balance+"</td>";                      
                     table += '</tr>';
 
                     var remaining = beggining_balance;
@@ -83,9 +83,9 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                     res.forEach(function(item) {
                         //get the first 2 character
 
-
+                
                         var type = item.ref_no.split("-");
-
+                       
                         rcv_qty = 0;
                         if(item.trans_type == 'RV')
                             rcv_qty = item.inv_qty;
@@ -113,12 +113,12 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                                     } else {
                                         withdraw_qty = item.inv_qty;
                                     }
-
-                                }
-
+                                    
+                                }   
+                                
                             }
                         }
-
+                            
 
                         if(item.trans_type == 'SM') {
                             if(item.inv_qty < 0) {
@@ -126,7 +126,7 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                             } else {
                                 transfer_qty = item.inv_qty;
                             }
-
+                            
                         }
 
                         balance = remaining + (parseInt(rcv_qty) + parseInt(transfer_qty) + parseInt(withdraw_qty) + parseInt(reserved_qty)) ;
@@ -155,14 +155,14 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                                 remarks = 'Reserved';
                             else
                                 remarks = 'Withdrawn';
-                        }
-
+                        }   
+                            
                         else
                             remarks = '';
 
-
+                            
                         var location = (item.location != null) ? item.location : 'RA';
-
+                          
                         table += '<tr>';
                             table += "<td width='120px;'>"+moment(new Date(item.created_at)).format("DD MMM YYYY")+"</td>";
                             table += "<td width='120px;'>"+item.ref_no+"</td>";
@@ -174,20 +174,20 @@ $(document).on('click', '.submit-stock-ledger', function(e) {
                             table += "<td class='text-end'>"+transfer_qty+"</td>";
                             table += "<td class='text-end'>"+withdraw_qty+"</td>";
                             table += "<td class='text-end'>"+reserved_qty+"</td>";
-                            table += "<td class='text-end'>"+parseInt(remaining)+"</td>";
-                        table += '</tr>';
+                            table += "<td class='text-end'>"+parseInt(remaining)+"</td>";                      
+                        table += '</tr>';                        
                     });
 
                     table += '<tr>';
                         table += "<td colspan='9' class='fw-medium'>Remaining Qty</td>";
-
-                        table += "<td class='text-end fw-bold'>"+number_format(parseInt(remaining))+"</td>";
+                    
+                        table += "<td class='text-end fw-bold'>"+number_format(parseInt(remaining))+"</td>";                      
                     table += '</tr>';
 
                     $('#masterfile_list tbody').html(table);
-
+                  
                 } else {
-                    toastr.error(data.message,'Error on saving');
+                    toastr.error(data.message,'Error on saving'); 
                 }
             } else {
                 $.each(data.errors, function(prefix, val) {
