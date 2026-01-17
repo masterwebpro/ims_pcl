@@ -41,7 +41,6 @@ $(document).on('change', '#store', function() {
 $(document).on('click', '#find-items', function() {
 
     var customer_id = $('#customer').val();
-
     // var supplier_id = (sup_id != '') ? sup_id : 0;
 
     if(customer_id) {
@@ -73,7 +72,7 @@ $(document).on('click', '#find-items', function() {
                 { data: 'product_id',  visible: false },
                 { data: 'sap_code' },
                 { data: 'product_code' },
-                { data: 'product_sku',  visible: false },
+                // { data: 'product_sku',  visible: false },
                 { data: 'product_name' }
             ],
         });

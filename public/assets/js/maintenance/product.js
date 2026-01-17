@@ -30,8 +30,14 @@ $(document).on('change', '#brand', function() {
 
 $(document).on('click', '.submit-product', function (e) {
     e.preventDefault();
-    var checkbox = document.getElementById("is_enabled");
-    var is_enabled = (checkbox.checked) ? 1 : 0;
+    const checkbox = document.querySelector('#is_enabled');
+     var is_enabled = 0;
+    // Check the boolean status
+    if (checkbox.checked) {
+        is_enabled = 1;
+    } else {
+        is_enabled = 0;
+    }
 
     var serial = document.getElementById("is_serialize");
     var is_serialize = (serial.checked) ? 1 : 0;
