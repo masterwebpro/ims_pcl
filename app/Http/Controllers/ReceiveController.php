@@ -228,12 +228,14 @@ class ReceiveController extends Controller
             for($x=0; $x < count($request->product_id); $x++ ) {
 
                 if($_hasPo) {
-                    if($request->inv_qty[$x] > $request->available_qty[$x]) {
-                        return response()->json([
-                            'success'  => false,
-                            'message' => 'Insufficient QTY for Product Code : ' .$request->product_code[$x],
-                        ]);
-                        exit;
+                    if(isset($request->available_qty)) {
+                        if($request->inv_qty[$x] > $request->available_qty[$x]) {
+                            return response()->json([
+                                'success'  => false,
+                                'message' => 'Insufficient QTY for Product Code : ' .$request->product_code[$x],
+                            ]);
+                            exit;
+                        }
                     }
                 }
 
