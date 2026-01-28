@@ -317,7 +317,8 @@ class ReportController extends Controller
             ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date')
             ->having('inv_qty',  '>', 0)
             ->orderBy('product_name')
-            ->orderBy('sl.location');
+            ->orderBy('sl.location')
+            ->orderBy('masterdata.remarks');
 
         if($request->has('client')  && $request->client !='')
             $rcv->where('masterdata.customer_id', $request->client);
