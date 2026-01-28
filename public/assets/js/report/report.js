@@ -80,11 +80,11 @@ $(document).on('click', '.submit-receive-search', function(e) {
                             table += "<td class='text-center'>"+(item.expiry_date ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.manufacture_date ?? '')+"</td>";
                             table += "<td class='text-center'>"+(item.plate_no ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.date_arrived)).format("h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.start_unloading)).format("h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.finish_unloading)).format("h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.date_departed)).format("h:mm:ss a") ?? '')+"</td>";
-                            table += "<td class='text-center'>"+(moment(new Date(item.inspect_date)).format("DD MMM YYYY") ?? '')+"</td>";
+                            table += "<td class='text-center'>"+(item.date_arrived ? moment(new Date(item.date_arrived)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center'>"+(item.start_unloading ? moment(new Date(item.start_unloading)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center'>"+(item.finish_unloading ? moment(new Date(item.finish_unloading)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center'>"+(item.date_departed ? moment(new Date(item.date_departed)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center'>"+(item.inspect_date ? moment(new Date(item.inspect_date)).format("DD MMM YYYY") : '')+"</td>";
                             table += "<td class='text-center'>"+(item.inspect_by?? '')+"</td>";
                         table += '</tr>';
                     });
@@ -395,12 +395,12 @@ $(document).on('click', '.submit-dispatch-search', function(e) {
                             table += "<td width='120px;'>"+(item.seal_no ?? '')+"</td>";
                             table += "<td width='120px;'>"+(item.dispatch_by ?? '')+"</td>";
                             table += "<td width='120px;'>"+(item.driver ?? '') + ' / ' + (item.helper ?? '')  +"</td>";
-                            table += "<td width='120px;'>"+moment(new Date(item.start_picking_datetime)).format("h:mm:ss a")+"</td>";
-                            table += "<td width='120px;'>"+moment(new Date(item.start_picking_datetime)).format("h:mm:ss a")+"</td>";
-                            table += "<td width='120px;'>"+moment(new Date(item.arrival_datetime)).format("h:mm:ss a")+"</td>";
-                            table += "<td width='120px;'>"+moment(new Date(item.start_datetime)).format("h:mm:ss a")+"</td>";
-                            table += "<td width='120px;'>"+moment(new Date(item.finish_datetime)).format("h:mm:ss a")+"</td>";
-                            table += "<td width='120px;'>"+moment(new Date(item.depart_datetime)).format("h:mm:ss a")+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.start_picking_datetime ? moment(new Date(item.start_picking_datetime)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.start_picking_datetime ? moment(new Date(item.start_picking_datetime)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.arrival_datetime ? moment(new Date(item.arrival_datetime)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.start_datetime ? moment(new Date(item.start_datetime)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.finish_datetime ? moment(new Date(item.finish_datetime)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.depart_datetime ? moment(new Date(item.depart_datetime)).format("H:mm") : '')+"</td>";
                             table += "<td class='text-center' width='120px;'>"+item.product_code+"</td>";
                             table += "<td class='text-left'>"+item.product_name+"</td>";
                             table += "<td class='text-center text-nowrap'>"+item.inv_qty+" / "+item.unit+"</td>";
@@ -435,4 +435,149 @@ $(document).on('click', '.submit-dispatch-xls', function(e) {
     var dispatch_date = $('#dispatch_date').val();
 
     window.location.href= BASEURL + 'reports/export-dispatch-detailed?dispatch_no='+dispatch_no+'&client='+client+'&store='+store+'&dispatch_date='+dispatch_date;
+});
+
+
+$(document).on('click', '.submit-movement-search', function(e) {
+    e.preventDefault();
+    var movement_no = $('#movement_no').val();
+    var movement_date = $('#movement_date').val();
+
+    $.ajax({
+        url: BASEURL + 'reports/get-movement-detailed',
+        method: 'get',
+        data: {
+            movement_no:movement_no,
+            movement_date:movement_date,
+        },
+        dataType: 'json',
+        beforeSend: function () {
+            $('#preloading').modal('show');
+            $('#submit-dispatch').find('span.error-msg').text('');
+        },
+        success: function (data) {
+            if($.isEmptyObject(data.errors)) {
+                if(data.success == true) {
+                    var results = data.data;
+                    var table = '';
+                    $('#load-search').removeClass('d-none');
+                    $('#load-data').addClass('d-none');
+                    $('#item_list tbody').html('');
+                    results.forEach(function(item) {
+                        //var date = moment();
+                        table += '<tr>';
+                            table += "<td class='text-nowrap'>"+moment(new Date(item.created_at)).format("DD MMM YYYY") +"</td>";
+                            table += "<td class='text-nowrap'>"+item.ref_no+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.client_name ?? '')+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.store_name ?? '')+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.warehouse_name ?? '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.start_encoding ? moment(new Date(item.start_encoding)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.end_encoding ? moment(new Date(item.end_encoding)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.product_code + ' - ' + item.product_name ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.old_item_type ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.old_location_code ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+item.old_inv_qty+" / "+item.old_unit+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.new_item_type ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.new_location_code ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+item.new_inv_qty+" / "+item.new_unit+"</td>";
+                            table += "<td width='120px;'>"+(item.detail_remarks ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.name ?? '')+"</td>";
+                        table += '</tr>';
+                    });
+
+                    $('#item_list tbody').append(table);
+
+                } else {
+                    toastr.error(data.message,'Error on saving');
+                }
+            } else {
+                toastr.error('Some fields are required');
+            }
+        },
+        complete: function() {
+           $('#preloading').modal('hide');
+		}
+    });
+});
+
+$(document).on('click', '.submit-movement-xls', function(e) {
+    e.preventDefault();
+    var movement_no = $('#movement_no').val();
+    var client = $('#client').val();
+    var store = $('#store').val();
+    var movement_date = $('#movement_date').val();
+
+    window.location.href= BASEURL + 'reports/export-movement-detailed?movement_no='+movement_no+'&movement_date='+movement_date;
+});
+
+
+$(document).on('click', '.submit-transfer-search', function(e) {
+    e.preventDefault();
+    var transfer_no = $('#transfer_no').val();
+    var transfer_date = $('#transfer_date').val();
+
+    $.ajax({
+        url: BASEURL + 'reports/get-transfer-detailed',
+        method: 'get',
+        data: {
+            transfer_no:transfer_no,
+            transfer_date:transfer_date,
+        },
+        dataType: 'json',
+        beforeSend: function () {
+            $('#preloading').modal('show');
+            $('#submit-dispatch').find('span.error-msg').text('');
+        },
+        success: function (data) {
+            if($.isEmptyObject(data.errors)) {
+                if(data.success == true) {
+                    var results = data.data;
+                    var table = '';
+                    $('#load-search').removeClass('d-none');
+                    $('#load-data').addClass('d-none');
+                    $('#item_list tbody').html('');
+                    results.forEach(function(item) {
+                        //var date = moment();
+                        table += '<tr>';
+                            table += "<td class='text-nowrap'>"+moment(new Date(item.created_at)).format("DD MMM YYYY") +"</td>";
+                            table += "<td class='text-nowrap'>"+item.ref_no+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.client_name ?? '')+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.store_name ?? '')+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.dr_no ?? '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.start_encoding ? moment(new Date(item.start_encoding)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-center' width='120px;'>"+(item.end_encoding ? moment(new Date(item.end_encoding)).format("H:mm") : '')+"</td>";
+                            table += "<td class='text-nowrap'>"+(item.product_code + ' - ' + item.product_name ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.source_item_type ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.source_location_code ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+item.source_inv_qty+" / "+item.source_unit+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.dest_item_type ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+(item.dest_location_code ?? '')+"</td>";
+                            table += "<td class='text-center text-nowrap'>"+item.dest_inv_qty+" / "+item.dest_unit+"</td>";
+                            table += "<td width='120px;'>"+(item.detail_remarks ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.requested_by ?? '')+"</td>";
+                            table += "<td width='120px;'>"+(item.name ?? '')+"</td>";
+                        table += '</tr>';
+                    });
+
+                    $('#item_list tbody').append(table);
+
+                } else {
+                    toastr.error(data.message,'Error on saving');
+                }
+            } else {
+                toastr.error('Some fields are required');
+            }
+        },
+        complete: function() {
+           $('#preloading').modal('hide');
+		}
+    });
+});
+
+$(document).on('click', '.submit-transfer-xls', function(e) {
+    e.preventDefault();
+    var transfer_no = $('#transfer_no').val();
+    var transfer_date = $('#transfer_date').val();
+
+    window.location.href= BASEURL + 'reports/export-transfer-detailed?transfer_no='+transfer_no+'&transfer_date='+transfer_date;
 });

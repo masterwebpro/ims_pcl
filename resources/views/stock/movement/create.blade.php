@@ -85,6 +85,36 @@
                                 </div>
                             </div>
                             <!--end row-->
+                            <div class="col-lg-12 mt-3">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <h6 class="text-muted mb-3">Start Encoding <span class="text-danger">*</span></h6>
+                                        <p class="mb-2">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="start_encoding_date"
+                                                    name="start_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d');?>">
+                                                <input type="time" class="form-control" id="start_encoding_time"
+                                                    name="start_encoding_time" placeholder="Start Time" value="{{ date('H:i') }}">
+                                            </div>
+                                                <span class="text-danger error-msg start_encoding_date_error"></span>
+                                                <span class="text-danger error-msg start_encoding_time_error"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-muted mb-3">End Encoding <span class="text-danger">*</span></h6>
+                                        <p class="mb-2">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="end_encoding_date"
+                                                    name="end_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d');?>">
+                                                <input type="time" class="form-control" id="end_encoding_time"
+                                                    name="end_encoding_time" placeholder="Start Time" value="{{ date('H:i') }}">
+                                            </div>
+                                                <span class="text-danger error-msg end_encoding_date_error"></span>
+                                                <span class="text-danger error-msg end_encoding_time_error"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!--end card-body-->
                     </div>

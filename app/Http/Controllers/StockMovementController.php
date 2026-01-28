@@ -77,6 +77,10 @@ class StockMovementController extends Controller
             'warehouse_id'=>'required',
             'company_id'=>'required',
             'store_id'=>'required',
+            'start_encoding_date' => 'required',
+            'start_encoding_time' => 'required',
+            'end_encoding_date' => 'required',
+            'end_encoding_time' => 'required',
             'item_type.*'=>'required',
             'product_id.*' => 'required',
             'old_location.*' => 'required',
@@ -91,6 +95,10 @@ class StockMovementController extends Controller
             'warehouse'=>'Warehouse is required',
             'company'=>'Company is required',
             'store'=>'Store is required',
+            'start_encoding_date.required' => 'Start Encoding Date is required',
+            'start_encoding_time.required' => 'Start Encoding Time is required',
+            'end_encoding_date.required' => 'End Encoding Date is required',
+            'end_encoding_time.required' => 'End Encoding Time is required',
             'product_id.*' => 'Product is required',
             'item_type.*'=>'Item type is required',
             'old_location.*' => 'Old Location is required',
@@ -158,6 +166,9 @@ class StockMovementController extends Controller
                 SeriesModel::insert($series);
             }
             //updateOrCreate
+            $start_encoding = date("Y-m-d", strtotime($request->start_encoding_date))." ".date("H:i:s", strtotime($request->start_encoding_time));
+            $end_encoding = date("Y-m-d", strtotime($request->end_encoding_date))." ".date("H:i:s", strtotime($request->end_encoding_time));
+
             $sm = MvHdr::updateOrCreate(['ref_no' => $ref_no], [
                 'store_id'=>$request->store_id,
                 'company_id'=>$request->company_id,
@@ -167,6 +178,8 @@ class StockMovementController extends Controller
                 'created_by' =>Auth::user()->id,
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
+                'start_encoding'=>$start_encoding,
+                'end_encoding'=>$end_encoding,
             ]);
             //save on dtl
             $dtl = array();

@@ -74,6 +74,10 @@ class StockTransferController extends Controller
             'source_site'=>'required',
             'transaction_date'=>'required',
             'requested_by'=>'required',
+            'start_encoding_date' => 'required',
+            'start_encoding_time' => 'required',
+            'end_encoding_date' => 'required',
+            'end_encoding_time' => 'required',
             'product_id.*' => 'required',
             'source_warehouse.*' => 'required',
             'source_location.*' => 'required',
@@ -91,6 +95,10 @@ class StockTransferController extends Controller
             'source_site'=>'Source Site is required',
             'transaction_date'=>'Trans date is required',
             'requested_by'=>'Requested By is required',
+            'start_encoding_date.required' => 'Start Encoding Date is required',
+            'start_encoding_time.required' => 'Start Encoding Time is required',
+            'end_encoding_date.required' => 'End Encoding Date is required',
+            'end_encoding_time.required' => 'End Encoding Time is required',
             'product_id.*' => 'Product is required',
             'source_warehouse.*' => 'Source warehouse id required',
             'source_location.*' => 'Source location is required',
@@ -156,6 +164,9 @@ class StockTransferController extends Controller
                 SeriesModel::insert($series);
             }
 
+            $start_encoding = date("Y-m-d", strtotime($request->start_encoding_date))." ".date("H:i:s", strtotime($request->start_encoding_time));
+            $end_encoding = date("Y-m-d", strtotime($request->end_encoding_date))." ".date("H:i:s", strtotime($request->end_encoding_time));
+
             $transfer = TransferHdr::updateOrCreate(['ref_no' => $ref_no], [
                 'source_company_id'=>$request->source_company,
                 'source_store_id'=>$request->source_site,
@@ -167,6 +178,8 @@ class StockTransferController extends Controller
                 'created_by' =>Auth::user()->id,
                 'created_at'=>$this->current_datetime,
                 'updated_at'=>$this->current_datetime,
+                'start_encoding'=>$start_encoding,
+                'end_encoding'=>$end_encoding,
             ]);
             //save on dtl
             $dtl = array();

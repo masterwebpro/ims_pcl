@@ -94,6 +94,36 @@
                                 </div>
                             </div>
                             <!--end row-->
+                            <div class="col-lg-12 mt-3">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <h6 class="text-muted mb-3">Start Encoding <span class="text-danger">*</span></h6>
+                                        <p class="mb-2">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="start_encoding_date" disabled
+                                                    name="start_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d', strtotime($mv_hdr->start_encoding));?>">
+                                                <input type="time" class="form-control" id="start_encoding_time" disabled
+                                                    name="start_encoding_time" placeholder="Start Time" value="<?=date('H:i', strtotime($mv_hdr->start_encoding));?>">
+                                            </div>
+                                                <span class="text-danger error-msg start_encoding_date_error"></span>
+                                                <span class="text-danger error-msg start_encoding_time_error"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-muted mb-3">End Encoding <span class="text-danger">*</span></h6>
+                                        <p class="mb-2">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="end_encoding_date" disabled
+                                                    name="end_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d', strtotime($mv_hdr->end_encoding));?>">
+                                                <input type="time" class="form-control" id="end_encoding_time" disabled
+                                                    name="end_encoding_time" placeholder="Start Time" value="<?=date('H:i', strtotime($mv_hdr->end_encoding));?>">
+                                            </div>
+                                                <span class="text-danger error-msg end_encoding_date_error"></span>
+                                                <span class="text-danger error-msg end_encoding_time_error"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!--end card-body-->
                     </div>

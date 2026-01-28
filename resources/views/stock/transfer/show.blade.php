@@ -92,7 +92,32 @@
                                             <input type="text" class="form-control" placeholder="DR num"  disabled value="{{$transfer_hdr->dr_no}}"  name="dr_no" id="dr_no">
                                         </div>
                                     </div>
-
+                                    <div class="col-4">
+                                            <h6 class="text-muted mb-3">Start Encoding <span class="text-danger">*</span></h6>
+                                            <p class="mb-2">
+                                                <div class="input-group">
+                                                    <input type="date" class="form-control" id="start_encoding_date" disabled
+                                                        name="start_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d', strtotime($transfer_hdr->start_encoding));?>">
+                                                    <input type="time" class="form-control" id="start_encoding_time" disabled
+                                                        name="start_encoding_time" placeholder="Start Time" value="{{ date('H:i', strtotime($transfer_hdr->start_encoding)) }}">
+                                                </div>
+                                                    <span class="text-danger error-msg start_encoding_date_error"></span>
+                                                    <span class="text-danger error-msg start_encoding_time_error"></span>
+                                            </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-muted mb-3">End Encoding <span class="text-danger">*</span></h6>
+                                        <p class="mb-2">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="end_encoding_date" disabled
+                                                    name="end_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d', strtotime($transfer_hdr->end_encoding));?>">
+                                                <input type="time" class="form-control" id="end_encoding_time" disabled
+                                                    name="end_encoding_time" placeholder="Start Time" value="{{ date('H:i', strtotime($transfer_hdr->end_encoding)) }}">
+                                            </div>
+                                                <span class="text-danger error-msg end_encoding_date_error"></span>
+                                                <span class="text-danger error-msg end_encoding_time_error"></span>
+                                        </p>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
@@ -101,7 +126,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-8">
                                         <div class="mb-3">
                                             <label for="remarks" class="form-label">Remarks</label>
                                             <input type="text" class="form-control" name="remarks" disabled  value="{{$transfer_hdr->remarks}}" placeholder="Remarks" id="remarks">

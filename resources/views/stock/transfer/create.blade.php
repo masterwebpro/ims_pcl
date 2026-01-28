@@ -70,7 +70,7 @@
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="transaction_date" class="form-label">Transaction Date <span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control" placeholder="Transaction Date" name="transaction_date" id="transaction_date">
+                                            <input type="date" class="form-control" placeholder="Transaction Date" name="transaction_date" id="transaction_date" value="<?=date('Y-m-d');?>">
                                             <span class="text-danger error-msg transaction_date_error"></span>
                                         </div>
                                     </div>
@@ -85,21 +85,50 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" placeholder="Requested By" name="requested_by" id="requested_by">
-                                            <span class="text-danger error-msg requested_by_error"></span>
+                                    <div class="col-4">
+                                            <h6 class="text-muted mb-3">Start Encoding <span class="text-danger">*</span></h6>
+                                            <p class="mb-2">
+                                                <div class="input-group">
+                                                    <input type="date" class="form-control" id="start_encoding_date"
+                                                        name="start_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d');?>">
+                                                    <input type="time" class="form-control" id="start_encoding_time"
+                                                        name="start_encoding_time" placeholder="Start Time" value="{{ date('H:i') }}">
+                                                </div>
+                                                    <span class="text-danger error-msg start_encoding_date_error"></span>
+                                                    <span class="text-danger error-msg start_encoding_time_error"></span>
+                                            </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <h6 class="text-muted mb-3">End Encoding <span class="text-danger">*</span></h6>
+                                        <p class="mb-2">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="end_encoding_date"
+                                                    name="end_encoding_date" placeholder="Start Date" value="<?=date('Y-m-d');?>">
+                                                <input type="time" class="form-control" id="end_encoding_time"
+                                                    name="end_encoding_time" placeholder="Start Time" value="{{ date('H:i') }}">
+                                            </div>
+                                                <span class="text-danger error-msg end_encoding_date_error"></span>
+                                                <span class="text-danger error-msg end_encoding_time_error"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="requested_by" class="form-label">Requested By <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" placeholder="Requested By" name="requested_by" id="requested_by">
+                                                <span class="text-danger error-msg requested_by_error"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                <label for="remarks" class="form-label">Remarks</label>
+                                                <input type="text" class="form-control" name="remarks" placeholder="Remarks" id="remarks">
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="remarks" class="form-label">Remarks</label>
-                                            <input type="text" class="form-control" name="remarks" placeholder="Remarks" id="remarks">
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
