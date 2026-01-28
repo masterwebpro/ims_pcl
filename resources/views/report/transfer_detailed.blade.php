@@ -12,9 +12,9 @@
 @section('content')
 @component('components.breadcrumb')
 @slot('li_1') Report @endslot
-@slot('title') Dispatch Detailed @endslot
+@slot('title') Stock Transfer Detailed @endslot
 @endcomponent
-<form action="#" name="submit-withdrawal" id="submit-withdrawal">
+<form action="#" name="submit-transfer" id="submit-transfer">
     <div class="row justify-content-center">
         <div class="col-xxl-11">
             <div class="card">
@@ -23,21 +23,21 @@
                         <div class="card-body p-4 ">
                             <div class="row g-3">
                                 <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Dispatch #</h6>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Reference #</h6>
                                     <p class="fw-medium mb-2">
-                                        <input type="text" class="form-control" placeholder="Dispatch No" name="dispatch_no" id="dispatch_no" value="{{$request->dispatch_no}}">
-                                        <span class="text-danger error-msg dispatch_no_error"></span>
+                                        <input type="text" class="form-control" placeholder="Reference No" name="transfer_no" id="transfer_no" value="{{$request->transfer_no}}">
+                                        <span class="text-danger error-msg transfer_no_error"></span>
                                      </p>
                                 </div>
                                 <div class="col-lg-3 col-md-3">
-                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Date Dispatch <small>(YYY-mm-dd)</small></h6>
-                                    <input type="text" class="form-control" name="dispatch_date" id="dispatch_date" value = "{{$request->dispatch_date}}" data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true" placeholder="Select date range">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Transfer Date <small>(YYY-mm-dd)</small></h6>
+                                    <input type="text" class="form-control" name="transfer_date" id="transfer_date" value = "{{$request->transfer_date}}" data-provider="flatpickr" data-date-format="Y-m-d" data-range-date="true" placeholder="Select date range">
                                 </div>
                                 <div class="col-lg-6 col-md-6 d-flex align-items-center">
                                     <h5 class="card-title flex-grow-1"></h5>
                                     <div class="">
-                                        <button class="submit-dispatch-search btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</button>
-                                        <a href="#" class="submit-dispatch-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
+                                        <button class="submit-transfer-search btn btn-warning btn-label rounded-pill"><i class="ri-search-line label-icon align-middle rounded-pill fs-16 me-2"></i> Search</button>
+                                        <a href="#" class="submit-transfer-xls btn btn-secondary btn-label rounded-pill"><i class="ri-file-excel-line label-icon align-middle rounded-pill fs-16 me-2"></i> Export to Excel</a>
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -63,36 +63,29 @@
                         <table id="item_list" style="font-size: 12px;"  width="100%"  class="table table-striped table-bordered table-hover align-middle">
                             <thead  class="table-light">
                                 <tr class="text-nowrap">
-                                    <th class="fw-medium align-middle" rowspan="2">Date Dispatch</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Transfer Date</th>
                                     <th class="fw-medium align-middle" rowspan="2">Reference No</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Withdrawal No</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Plate No</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Truck Type</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Trucker Name</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Seal No</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Dispatch By</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Driver/Helper Name</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Start Picking</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Finish Picking</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Actual Truck Arrival</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Start Loading</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Finish Loading</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Depart Date/Time</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Product Code</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Product Description</th>
-                                    <th class="fw-medium align-middle">Withdraw</th>
-                                    <th class="fw-medium align-middle">Dispatch</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Order No</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Order Date</th>
-                                    <th class="fw-medium align-middle" rowspan="2">DR Number</th>
-                                    <th class="fw-medium align-middle" rowspan="2">Prepared By</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Company </th>
+                                    <th class="fw-medium align-middle" rowspan="2">Site Name</th>
+                                    <th class="fw-medium align-middle" rowspan="2">DR No</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Start Encoding</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Finish Encoding</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Product Details</th>
+                                    <th class="fw-medium text-center" colspan="3">Old Location</th>
+                                    <th class="fw-medium text-center" colspan="3">Target Location</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Remarks</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Request By</th>
+                                    <th class="fw-medium align-middle" rowspan="2">Transfer By</th>
                                 </tr>
                                 <tr class="text-nowrap">
+                                    <th class="fw-medium text-center" width="110px;">Item Type</th>
+                                    <th class="fw-medium text-center" width="110px;">Location</th>
                                     <th class="fw-medium text-center" width="110px;">Quantity / UOM</th>
+                                    <th class="fw-medium text-center" width="110px;">Item Type</th>
+                                    <th class="fw-medium text-center" width="110px;">Location</th>
                                     <th class="fw-medium text-center" width="110px;">Quantity / UOM</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                             </tbody>
                         </table>

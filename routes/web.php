@@ -125,7 +125,6 @@ Route::group(['prefix' => 'stock', 'middleware' => 'auth'], function () {
     Route::resource('/movement', App\Http\Controllers\StockMovementController::class);
     Route::delete('/movement', [App\Http\Controllers\StockMovementController::class, 'destroy']);
     Route::post('/movement/unpost', [App\Http\Controllers\StockMovementController::class, 'unpost']);
-    Route::post('/movement/unpost', [App\Http\Controllers\StockMovementController::class, 'unpost']);
 
     Route::post('/movement/validate', [App\Http\Controllers\StockMovementController::class, 'getValidate']);
     Route::resource('/adjustment', App\Http\Controllers\StockAdjustmentController::class);
@@ -178,6 +177,15 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/export-reserve-monitoring', [App\Http\Controllers\ReportController::class, 'exportInventoryAdjustment'])->name('reports.export-reserve-monitoring');
 
     Route::get('/audit-logs', [App\Http\Controllers\AuditLogsController::class, 'index'])->name('reports.audit-logs');
+
+    Route::get('/movement-detailed', [App\Http\Controllers\ReportController::class, 'getMovementDetailedIndex']);
+    Route::get('/get-movement-detailed', [App\Http\Controllers\ReportController::class, 'getMovementDetailed']);
+    Route::get('/export-movement-detailed',[App\Http\Controllers\ReportController::class,'exportMovementDetailed'])->name('export-movement-detailed');
+
+    Route::get('/transfer-detailed', [App\Http\Controllers\ReportController::class, 'getTransferDetailedIndex']);
+    Route::get('/get-transfer-detailed', [App\Http\Controllers\ReportController::class, 'getTransferDetailed']);
+    Route::get('/export-transfer-detailed',[App\Http\Controllers\ReportController::class,'exportsTransferDetailed'])->name('export-transfer-detailed');
+
 });
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {

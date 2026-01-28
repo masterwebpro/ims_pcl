@@ -24,12 +24,17 @@ use App\Exports\ExportAging;
 use App\Exports\ExportAgingManufacturing;
 use App\Exports\ExportAnalysis;
 use App\Exports\ExportDispatchDetailed;
+use App\Exports\ExportMovementDetailed;
+use App\Exports\ExportTransferDetailed;
 use App\Models\DispatchDtl;
+use App\Models\TransferDtl;
 use App\Models\DispatchHdr;
 use App\Models\ItemType;
 use App\Models\MasterdataModel;
 use App\Models\OrderType;
 use App\Models\WdHdr;
+use App\Models\MvHdr;
+use App\Models\MvDtl;
 use DataTables;
 
 use Illuminate\Support\Facades\Auth;
@@ -1527,27 +1532,12 @@ class ReportController extends Controller
             ->when($request->filled('dispatch_no'), function ($q) use ($request) {
                 $q->where('dh.dispatch_no', $request->dispatch_no);
             })
-            // ->when($request->filled('client'), function ($q) use ($request) {
-            //     $q->where('wh.customer_id', $request->client);
-            // })
-            // ->when($request->filled('store'), function ($q) use ($request) {
-            //     $q->where('wh.store_id', $request->store);
-            // })
-            // ->when($request->filled('product_code'), function ($q) use ($request) {
-            //     $q->where('p.product_code', $request->product_code);
-            // })
-            // ->when($request->filled('order_type'), function ($q) use ($request) {
-            //     $q->where('wh.order_type', $request->order_type);
-            // })
             ->when($request->filled('dispatch_date'), function ($q) use ($request) {
                 $date_split = explode(" to ", $request->dispatch_date);
                 $from = date('Y-m-d', strtotime($date_split[0])) . " 00:00:00";
                 $to = date('Y-m-d', strtotime($date_split[1])) . " 23:59:59";
                 $q->whereBetween('dh.dispatch_date', [$from, $to]);
             })
-            // ->when($request->filled('product_name'), function ($q) use ($request) {
-            //     $q->where('p.product_name', 'LIKE', '%' . $request->product_name . '%');
-            // })
             ->groupBy(
                 'dh.dispatch_date',
                 'dh.dispatch_no',
@@ -1581,5 +1571,177 @@ class ReportController extends Controller
         set_time_limit(0);
 		$file_name = 'export-dispatch-detailed'.date('Ymd-His').'.xls';
         return Excel::download(new ExportDispatchDetailed($request), $file_name);
+    }
+    public function getMovementDetailedIndex(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->where('client_type','C')->get();
+        $order_type = OrderType::all();
+        return view('report/movement_detailed', [
+            'client_list'=>$client_list,
+            'order_type'=>$order_type,
+            'request'=>$request,
+        ]);
+    }
+
+    public function getMovementDetailed(Request $request)
+    {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $data_list = MvDtl::select(
+            'mv_dtl.product_id',
+            'cl.client_name',
+            's.store_name',
+            'w.warehouse_name',
+            'mh.created_at',
+            'mh.remarks as movement_remarks',
+            'mh.start_encoding',
+            'mh.end_encoding',
+            'u.name',
+            'mv_dtl.ref_no',
+            'mh.created_at',
+            'p.product_code',
+            'p.product_name',
+            'mv_dtl.old_item_type',
+            'mv_dtl.new_item_type',
+            'new_sl.location as new_location_code',
+            'old_sl.location as old_location_code',
+            'mv_dtl.old_inv_qty',
+            'mv_dtl.new_inv_qty',
+            'old_ui.code as old_unit',
+            'new_ui.code as new_unit',
+            'mv_dtl.remarks as detail_remarks',
+        )
+        ->leftJoin('mv_hdr as mh', 'mh.ref_no', '=', 'mv_dtl.ref_no')
+        ->leftJoin('products as p', 'p.product_id', '=', 'mv_dtl.product_id')
+        ->leftJoin('storage_locations as old_sl', 'old_sl.storage_location_id', '=', 'mv_dtl.old_storage_location_id')
+        ->leftJoin('storage_locations as new_sl', 'new_sl.storage_location_id', '=', 'mv_dtl.new_storage_location_id')
+        ->leftJoin('uom as old_ui', 'old_ui.uom_id', '=', 'mv_dtl.old_inv_uom')
+        ->leftJoin('uom as new_ui', 'new_ui.uom_id', '=', 'mv_dtl.new_inv_uom')
+        ->leftJoin('client_list as cl', 'cl.id', '=', 'mh.company_id')
+        ->leftJoin('store_list as s', 's.id', '=', 'mh.store_id')
+        ->leftJoin('warehouses as w', 'w.id', '=', 'mh.warehouse_id')
+        ->leftJoin('users as u', 'u.id', '=', 'mh.created_by')
+        ->groupBy('mv_dtl.id')
+        ->orderBy('mh.created_at','ASC')
+        ->where('mh.status','posted')
+            ->when($request->filled('movement_no'), function ($q) use ($request) {
+                $q->where('mh.ref_no', $request->movement_no);
+            })
+            ->when($request->filled('movement_date'), function ($q) use ($request) {
+                $date_split = explode(" to ", $request->movement_date);
+                $from = date('Y-m-d', strtotime($date_split[0])) . " 00:00:00";
+                $to = date('Y-m-d', strtotime($date_split[1])) . " 23:59:59";
+                $q->whereBetween('mh.created_at', [$from, $to]);
+            })
+            ->groupBy(
+                'mv_dtl.id',
+                'mv_dtl.product_id',
+                'cl.client_name',
+                's.store_name',
+                'w.warehouse_name',
+                'mh.created_at',
+                'u.name',
+            );
+        $result = $data_list->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'Record found!',
+            'data' => $result,
+        ]);
+    }
+
+    function exportTransferDetailed(Request $request) {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+		$file_name = 'export-transfer-detailed'.date('Ymd-His').'.xls';
+        return Excel::download(new ExportTransferDetailed($request), $file_name);
+    }
+
+    public function getTransferDetailedIndex(Request $request)
+    {
+        $client_list = Client::where('is_enabled', '1')->where('client_type','C')->get();
+        $order_type = OrderType::all();
+        return view('report/transfer_detailed', [
+            'client_list'=>$client_list,
+            'order_type'=>$order_type,
+            'request'=>$request,
+        ]);
+    }
+
+    public function getTransferDetailed(Request $request)
+    {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+        $data_list = TransferDtl::select(
+            'transfer_dtl.product_id',
+            'cl.client_name',
+            's.store_name',
+            'th.created_at',
+            'th.remarks as movement_remarks',
+            'th.start_encoding',
+            'th.end_encoding',
+            'u.name',
+            'th.requested_by',
+            'th.dr_no',
+            'transfer_dtl.ref_no',
+            'th.created_at',
+            'p.product_code',
+            'p.product_name',
+            'transfer_dtl.source_item_type',
+            'transfer_dtl.dest_item_type',
+            'new_sl.location as dest_location_code',
+            'old_sl.location as source_location_code',
+            'transfer_dtl.source_inv_qty',
+            'transfer_dtl.dest_inv_qty',
+            'old_ui.code as source_unit',
+            'new_ui.code as dest_unit',
+            'transfer_dtl.remarks as detail_remarks',
+        )
+        ->leftJoin('transfer_hdr as th', 'th.ref_no', '=', 'transfer_dtl.ref_no')
+        ->leftJoin('products as p', 'p.product_id', '=', 'transfer_dtl.product_id')
+        ->leftJoin('storage_locations as old_sl', 'old_sl.storage_location_id', '=', 'transfer_dtl.source_storage_location_id')
+        ->leftJoin('storage_locations as new_sl', 'new_sl.storage_location_id', '=', 'transfer_dtl.dest_storage_location_id')
+        ->leftJoin('uom as old_ui', 'old_ui.uom_id', '=', 'transfer_dtl.source_inv_uom')
+        ->leftJoin('uom as new_ui', 'new_ui.uom_id', '=', 'transfer_dtl.dest_inv_uom')
+        ->leftJoin('client_list as cl', 'cl.id', '=', 'th.source_company_id')
+        ->leftJoin('store_list as s', 's.id', '=', 'th.source_store_id')
+        ->leftJoin('users as u', 'u.id', '=', 'th.created_by')
+        ->groupBy('transfer_dtl.id')
+        ->orderBy('th.trans_date','ASC')
+        ->where('th.status','posted')
+            ->when($request->filled('transfer_no'), function ($q) use ($request) {
+                $q->where('th.ref_no', $request->transfer_no);
+            })
+            ->when($request->filled('transfer_date'), function ($q) use ($request) {
+                $date_split = explode(" to ", $request->transfer_date);
+                $from = date('Y-m-d', strtotime($date_split[0])) . " 00:00:00";
+                $to = date('Y-m-d', strtotime($date_split[1])) . " 23:59:59";
+                $q->whereBetween('th.trans_date', [$from, $to]);
+            })
+            ->groupBy(
+                'transfer_dtl.id',
+                'transfer_dtl.product_id',
+                'cl.client_name',
+                's.store_name',
+                'th.trans_date',
+                'u.name',
+            );
+        $result = $data_list->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'Record found!',
+            'data' => $result,
+        ]);
+    }
+
+    function exportsTransferDetailed(Request $request) {
+        ob_start();
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+		$file_name = 'export-transfer-detailed'.date('Ymd-His').'.xls';
+        return Excel::download(new ExportTransferDetailed($request), $file_name);
     }
 }
