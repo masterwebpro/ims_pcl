@@ -59,6 +59,7 @@ class ReportController extends Controller
             'request'=>$request,
             'supplier_list'=>$supplier_list,
             'client_list'=>$client_list,
+            'item_type'=> ItemType::all()
         ]);
     }
 
