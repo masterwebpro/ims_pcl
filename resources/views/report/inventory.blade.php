@@ -125,6 +125,7 @@
                                     <th class="fw-medium text-center">#</th>
                                     <th class="fw-medium text-center">Site</th>
                                     <th class="fw-medium text-center">Warehouse</th>
+                                    <th class="fw-medium text-center">Category</th>
                                     <th class="fw-medium text-center">Brand</th>
                                     <th class="fw-medium text-center">Sap Code</th>
                                     <th class="fw-medium text-center">Product Code</th>

@@ -23,10 +23,11 @@ class ExportInventory implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $rcv = MasterdataModel::select('cl.client_name', 's.store_name', 'w.warehouse_name','b.brand_name', 'sap_code',   'product_code', 'product_name',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date',  'masterdata.item_type', DB::raw("IFNULL(sl.location, 'RA')  as location"),  DB::raw("SUM(masterdata.inv_qty) as inv_qty"),  'ui.code as ui_code',  DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"), 'masterdata.remarks')
+        $rcv = MasterdataModel::select('cl.client_name', 's.store_name', 'w.warehouse_name','c.category_name','b.brand_name', 'sap_code',   'product_code', 'product_name',  'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date',  'masterdata.item_type', DB::raw("IFNULL(sl.location, 'RA')  as location"),  DB::raw("SUM(masterdata.inv_qty) as inv_qty"),  'ui.code as ui_code',  DB::raw("SUM(masterdata.reserve_qty) as reserve_qty"),DB::raw("SUM(masterdata.inv_qty - masterdata.reserve_qty) as balance_qty"), 'masterdata.remarks')
             ->leftJoin('products as p', 'p.product_id', '=', 'masterdata.product_id')
             ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'p.category_brand_id')
             ->leftJoin('brands as b', 'b.brand_id', '=', 'cb.brand_id')
+            ->leftJoin('categories as c', 'c.category_id', '=', 'cb.category_id')
             ->leftJoin('storage_locations as sl', 'sl.storage_location_id', '=', 'masterdata.storage_location_id')
             ->leftJoin('client_list as cl', 'cl.id', '=', 'masterdata.company_id')
             ->leftJoin('store_list as s', 's.id', '=', 'masterdata.store_id')
@@ -34,7 +35,7 @@ class ExportInventory implements FromCollection, WithHeadings
             ->leftJoin('uom as uw', 'uw.uom_id', '=', 'masterdata.whse_uom')
             ->leftJoin('uom as ui', 'ui.uom_id', '=', 'masterdata.inv_uom')
             ->leftJoin('rcv_dtl as rd', 'rd.id', '=', 'masterdata.rcv_dtl_id')
-            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date','masterdata.remarks','b.brand_name')
+            ->groupBy('client_name', 'store_name', 'w.warehouse_name', 'c.category_name','b.brand_name', 'product_name', 'sl.location','masterdata.item_type', 'masterdata.whse_uom', 'masterdata.inv_uom', 'rd.lot_no', 'rd.manufacture_date', 'rd.expiry_date','masterdata.remarks')
             ->having('inv_qty',  '>', 0)
             ->orderBy('product_name')
             ->orderBy('sl.location');
@@ -77,6 +78,7 @@ class ExportInventory implements FromCollection, WithHeadings
         'Company Name',
         'Site Location',
         'Warehouse Name',
+        'Category',
         'Brand',
         'SAP Code',
         'Product Code',
