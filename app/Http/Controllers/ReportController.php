@@ -1285,17 +1285,53 @@ class ReportController extends Controller
         ]);
     }
 
-    function getWeekNumbersFromJan1ToDate($year) {
-        $currentDate = ($year == date('Y')) ? $year.'-'.date('m-d') : $year .'-12-31'; // Get the current date
-        $startDate = $year.'-01-01'; // January 1st of the current year
+    // function getWeekNumbersFromJan1ToDate($year) {
+    //     $currentDate = ($year == date('Y')) ? $year.'-'.date('m-d') : $year .'-12-31'; // Get the current date
+    //     $startDate = $year.'-01-01'; // January 1st of the current year
 
-        $startWeek = date('W', strtotime($startDate)); // Week number of January 1st
-        $currentWeek = date('W', strtotime($currentDate)); // Current week number
-        if ($startWeek == 1 && $year == date('Y')) {
-            $weekNumbers = range(1, $currentWeek);
-        } else {
-            $weekNumbers = range(1, $currentWeek);
+    //     $startWeek = date('W', strtotime($startDate)); // Week number of January 1st
+    //     $currentWeek = date('W', strtotime($currentDate)); // Current week number
+    //     if ($startWeek == 1 && $year == date('Y')) {
+    //         $weekNumbers = range(1, $currentWeek);
+    //     } else {
+    //         $weekNumbers = range(1, $currentWeek);
+    //     }
+    //     sort($weekNumbers);
+    //     return $weekNumbers;
+    // }
+
+    function getWeekNumbersFromJan1ToDate($year) {
+        $currentDate = ($year == date('Y')) ? date('Y-m-d') : $year . '-12-31';
+
+        // Get the first day of the year that belongs to the given year (ISO week)
+        $startDate = new DateTime($year . '-01-01');
+        $startWeek = (int)$startDate->format('W');
+        $startYear = (int)$startDate->format('o'); // ISO year (may differ from calendar year)
+
+        // Get the current/last week
+        $endDate = new DateTime($currentDate);
+        $endWeek = (int)$endDate->format('W');
+        $endYear = (int)$endDate->format('o');
+
+        // If January 1st belongs to the previous year's last week, start from week 1
+        if ($startYear != $year) {
+            $startWeek = 1;
         }
+
+        // If the end date belongs to the next year, use the last week of current year
+        if ($endYear != $year) {
+            // Find the last week of the given year
+            $lastDayOfYear = new DateTime($year . '-12-31');
+            $endWeek = (int)$lastDayOfYear->format('W');
+
+            // Keep going back until we find a date in the current year
+            while ((int)$lastDayOfYear->format('o') != $year) {
+                $lastDayOfYear->modify('-1 day');
+                $endWeek = (int)$lastDayOfYear->format('W');
+            }
+        }
+
+        $weekNumbers = range($startWeek, $endWeek);
         sort($weekNumbers);
         return $weekNumbers;
     }
@@ -1748,5 +1784,70 @@ class ReportController extends Controller
         set_time_limit(0);
 		$file_name = 'export-transfer-detailed'.date('Ymd-His').'.xls';
         return Excel::download(new ExportTransferDetailed($request), $file_name);
+    }
+
+    function getDispatchMonitoring(Request $request) {
+        ob_start();
+        $client_list = Client::where('is_enabled', '1')->get();
+        $year = $request->year ?? date('Y');
+        $result = DispatchDtl::select(
+                            DB::raw('WEEK(dh.dispatch_date, 1) as week_no'),
+                            'dh.dispatch_date',
+                            'prod.product_code',
+                            'prod.product_name',
+                            'prod.sap_code',
+                            'c.category_name',
+                            DB::raw('sum(dispatch_dtl.qty) as dispatch_qty'),
+                        )
+                        ->leftJoin('dispatch_hdr as dh', 'dh.dispatch_no', '=', 'dispatch_dtl.dispatch_no')
+                        ->leftJoin('wd_dtl as wd', 'wd.id', '=', 'dispatch_dtl.wd_dtl_id')
+                        ->leftJoin('wd_hdr as wh', 'wh.wd_no', '=', 'dispatch_dtl.wd_no')
+                        ->leftJoin('products as prod', 'prod.product_id', '=', 'wd.product_id')
+                        ->leftJoin('category_brands as cb', 'cb.category_brand_id', '=', 'prod.category_brand_id')
+                        ->leftJoin('categories as c', 'c.category_id', '=', 'cb.category_id')
+                        ->where('dh.status','posted')
+                        ->whereYear('dh.dispatch_date',$year)
+                        ->groupBy([DB::raw('WEEK(dh.dispatch_date)'),'prod.product_code','prod.sap_code']);
+                        if ($request->q) {
+                            $result->where(function($q)use($request){
+                                $q->where('prod.product_code', $request->q)
+                                ->orWhere('prod.product_name', $request->q);
+                            });
+                        }
+                        if($request->date) {
+                            $result->whereBetween('dh.dispatch_date', [$request->date." 00:00:00", $request->date." 23:59:59"]);
+                        }
+
+                        if($request->customer ){
+                            $result->where('prod.customer_id', $request->customer);
+                        }
+                        if($request->company){
+                            $result->where('wh.company_id', $request->company);
+                        }
+        $data_analysis = $result->get();
+        $workWeeks = $this->getWeekNumbersFromJan1ToDate($year);
+        $data = array();
+        foreach($data_analysis as $value){
+            $data[$value['product_code']]['product_name'] = $value['product_name'];
+            $data[$value['product_code']]['category_name'] = $value['category_name'];
+            for($j = 0; $j < count($workWeeks); $j++) {
+                if($value['week_no'] == $workWeeks[$j]){
+                    $data[$value['product_code']]['week'][$workWeeks[$j]] = $value['dispatch_qty'];
+                }
+                else{
+                    if(!isset($data[$value['product_code']][$workWeeks[$j]])){
+                        $data[$value['product_code']]['week'][$workWeeks[$j]] = 0;
+                    }
+                }
+            }
+        }
+        $monthOfWeek = $this->groupWeeksByMonth($year,$workWeeks);
+        return view('report/dispatch_monitoring',[
+            'client_list'=>$client_list,
+            'data_list'=>$data,
+            'request'=>$request,
+            'workWeeks'=>$workWeeks,
+            'monthofWeek' => $monthOfWeek
+        ]);
     }
 }
