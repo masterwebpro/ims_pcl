@@ -186,6 +186,8 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/get-transfer-detailed', [App\Http\Controllers\ReportController::class, 'getTransferDetailed']);
     Route::get('/export-transfer-detailed',[App\Http\Controllers\ReportController::class,'exportsTransferDetailed'])->name('export-transfer-detailed');
 
+    Route::get('/dispatch-monitoring', [App\Http\Controllers\ReportController::class, 'getDispatchMonitoring'])->name('reports.dispatch.monitoring');
+    Route::get('/export-dispacth-monitoring', [App\Http\Controllers\ReportController::class, 'exportDispatchMonitoring'])->name('reports.export-dispatch-monitoring');
 });
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {

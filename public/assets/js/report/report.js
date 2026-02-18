@@ -581,3 +581,16 @@ $(document).on('click', '.submit-transfer-xls', function(e) {
 
     window.location.href= BASEURL + 'reports/export-transfer-detailed?transfer_no='+transfer_no+'&transfer_date='+transfer_date;
 });
+
+$(document).on('click', '.submit-dispatch-monitoring-xls', function (e) {
+    let table = document.getElementsByTagName("table");
+    var dt = new Date();
+    var time = dt.getHours() + dt.getMinutes() + dt.getSeconds();
+
+    TableToExcel.convert(table[0], {
+        name: `DispacthMonitoringReport_`+time+`.xlsx`,
+        sheet: {
+            name: 'Dispacth'
+        }
+    });
+});
